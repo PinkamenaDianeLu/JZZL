@@ -1,0 +1,78 @@
+# 开发环境使用
+spring:
+  datasource:
+    tljj:
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:oracle:thin:@10.3.18.188:1521:orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      username: tljj
+      password: tljj
+      max-active: 500
+      maximum-pool-size: 100
+      max-idle: 10
+      max-wait: 10000
+      min-idle: 5
+      initial-size: 5
+      validation-query: SELECT 1 FROM DUAL
+      testOnBorrow: false
+      testOnReturn: false
+      test-on-borrow: false
+      poolPreparedStatements: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+  output:
+    ansi:
+      enabled: always
+  devtools:
+    restart:
+      exclude: /**
+  redis:
+    cacheDatabase: 0
+    sessionDatabase: 1
+    host: 10.3.18.188
+    port: 6379
+    password: tljj2020
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 200
+        max-idle: 50
+        max-wait: 15
+        min-idle: 0
+      shutdown-timeout: 10000
+
+  resources:
+    static-locations: classpath:webApp/,classpath:static/
+  servlet:
+    multipart:
+      max-file-size: 13MB
+      max-request-size: 39MB
+  cache:
+    type: redis
+devtools:
+  restart:
+    enabled: true
+    exclude: static/**,public/**,testhtml/**
+http:
+  encoding:
+    charset: UTF-8
+    enabled: true
+    force: true
+server:
+  port: 80
+  error:
+    path: /error
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    session:
+      cookie:
+        max-age: -1s
+
+logging:
+  level:
+    root: warn
+
+
+
+
