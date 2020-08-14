@@ -65,6 +65,7 @@ String value="";//演示实例
  
  5.判断或循环代码块需明确注释
  ```js
+ //判断目的 如： 判断性别
  if (0==gender){
  //情况1 例： 假如判断为男
  }else if (1==gender){
@@ -74,6 +75,7 @@ String value="";//演示实例
  .......
  }
  /*************************************************/
+//标示被循环的数据  如： 循环值为 nameArrary
  for(){
  //标识循环作用  例： 循环拆分值
  }
@@ -91,14 +93,14 @@ String value="";//演示实例
 <td>date</td><td>sysdate</td><td>更新时间</td></tr>
 <tr><td>state</td>
 <td>number</td>
-<td>0</td><td>状态</td></tr>
-<tr><td>scbj</td><td>number</td><td>0</td><td>删除标记</td></tr>
+<td>0</td><td>运维标记</td></tr>
+<tr><td>scbj</td><td>number</td><td>0</td><td>删除标记 0 未删除 1 已删除</td></tr>
 </table>
  4.  数据库除以上5项外所有字段必须带有注释,且所有代码型字段必须标注对应含义
  <pre>
  例子  scbj number 0  删除标记 0默认 1已删除
  </pre>
- 5. 数据库表名： 系统表以sys_开头，功能表以function_开头，例： <strong>function_test_question</strong>为test功能所对应的question表<br/>
+ 5. 数据库表名： 系统表以sys_开头，功能表以fun_开头，例： <strong>fun_test_question</strong>为test功能所对应的question表<br/>
  6. 数据库序列名 seq_表名_使用字段名 例：test表的id字段使用的序列即为   <strong>seq_test_id</strong><br>
  7. 码表数据可自行录入，不同类型的数据定义的不同的type类型，例如新闻类型的type字段为 news001 <br>
  8. 日志表所使用的索引高速缓存大小必须大于80
@@ -133,12 +135,15 @@ String value="";//演示实例
 ```
 4. 所有查询必须加上一条  `SCBJ=0`
 5. 所有更新必须加上 `set UPDATETIME=SYSDATE`
+6. **单个方法刨除注释不可超过100行**
     
 #### 前端
 
 > 禁止使用cookie和localStorage！ 向前端禁止存储如：id、身份证号等涉密信息
 
-1. 禁止使用全局变量
+> 使用js框架、类库必须与其他开发者交流确认！！
+
+1. 禁止使用全局变量（可使用函数）
 2. 尽量使用es6定义变量 （let、const等）
 3. js中字符串一律使用单引号 
 4. 注意删除开发时使用的alert、console.log等输出语句
@@ -207,8 +212,8 @@ String value="";//演示实例
     
 ----------------------------------
 * @**Author:** Mrlu008
-* @**version:** 0.01 Alpha 
+* @**version:** 0.16 Beta 
 * @**CreateTime** 2020年8月13日17:19:16
-* @**UpdateTime** 2020年8月13日17:19:21
+* @**UpdateTime** 2020年8月14日11:03:59
 * @**State** 开发中
 * &copy; 哈尔滨市盛世华博科技发展有限公司
