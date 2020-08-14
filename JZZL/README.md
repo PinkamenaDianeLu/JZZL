@@ -9,7 +9,6 @@
   * 安全框架： Shiro(1.5.2)
   * 图片服务器： vsFtp+Nginx(代理)
   * 消息系统：   WebSocket
-  * 因特殊时期开发考虑，该项目并没有使用前后端分离的架构，项目虽显臃肿，但部署开发环境非常简单
   * 程序正常发布后访问地址为  ： http://127.0.0.1:8080/index.html （端口号在正式发布时为80）
 ## 2. 开发说明
 ### 2.1 命名规范
@@ -205,14 +204,20 @@ String value="";//演示实例
 * 防火墙 关闭 selinux 关闭
 * redis服务器内存 至少12G
 
-## 4. 开发时间
+## 4. 开发
+
+### 4.1 开发时间
   * 起始时间： --
   * 预计完成时间： --
     
+### 4.2 开发环境
+  * idea：IntelliJ IDEA 2020.1.1
+  * 数据库连接工具：plsqlDev 13.0.6.1911
+  * maven： apache-maven-3.6.3（互联网仓库为：http://maven.aliyun.com/nexus/content/groups/public）
 ----------------------------------
 * @**Author:** Mrlu008
-* @**version:** 0.16 Beta 
+* @**Version:** 0.17 Beta 
 * @**CreateTime** 2020年8月13日17:19:16
-* @**UpdateTime** 2020年8月14日11:03:59
+* @**UpdateTime** 2020年8月14日14:54:19
 * @**State** 开发中
 * &copy; 哈尔滨市盛世华博科技发展有限公司
