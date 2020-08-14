@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .list > div {
+            min-height: 50px;
+            border-style: solid;
+            border-width: 1px;
+            text-align: center;
+            line-height: 50px;
+            font-size: 20px;
+            font-family: Helvetica;
+        }
+
+
+        .half {
+            display: inline-block;
+            width: 49%;
+            padding: 0;
+            margin: 0;
+            vertical-align: top;
+        }
+
+        .n1 > div {
+            background-color: lightblue;
+        }
+
+        .n2 > div {
+            background-color: lightgreen
+        }
+
+        /*.list {*/
+        /*    padding: 50px;*/
+        /*}*/
+        div {
+            width: 500px;
+        }
+
+        #list1 {
+            width: 500px;
+        }
+        #recycle {
+            color: red;
+        }
+
+    </style>
+</head>
+<body>
+<!-- 可拖拽列表 -->
+<div id="list1" class="list">
+    <div>卷宗1   （共15页）
+        <div class="list n1">
+            <div class="ignore-elements">卷宗封皮</div>
+            <div class="Z1 J1">xxxx1
+                <div class="Z1 J1 list n2"></div>
+            </div>
+            <div >xxxx2
+                <div class="Z1 J2 list n2" id="tetete">
+                    <div class="Z1 J2" id="1">xxxx2.1</div>
+                    <div class="Z1 J2" id="2">xxxx2.2</div>
+                    <div class="Z1 J2" id="3">xxxx2.3</div>
+                    <div class="Z1 J2" id="4">xxxx2.4</div>
+                    <div class="Z1 J2" id="5">xxxx2.5</div>
+                    <div class="Z1 J2" id="6">xxxx2.6</div>
+                    <div class="Z1 J2" id="7">xxxx2.7</div>
+                </div>
+            </div>
+            <div class="Z1 J3">xxxx3
+                <div class="Z1 J3 list n2"></div>
+            </div>
+        </div>
+    </div>
+    <div>卷宗2   （共15页）</div>
+    <div>卷宗3   （共15页）</div>
+    <div>多媒体材料   （共15页）
+        <div class="list n1">
+            <div>片1</div>
+            <div>片2</div>
+            <div>片3</div>
+            <div>片4</div>
+        </div>
+    </div>
+    <div id="recycle"  class="list">
+        <div   style="background-color: #ac0000;color: blanchedalmond" >
+            <div class="ignore-elements" id="recycleTitle">回收站</div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="/Framework/js/Sortable.js"></script>
+<script src="/Framework/js/jquery.min.js"></script>
+<script src="./js/test.js"></script>
+</html>
