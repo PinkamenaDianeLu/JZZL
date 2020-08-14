@@ -1,7 +1,7 @@
 # 卷宗整理
 
 ## 1. 技术说明
-  * 数据库：Oralce 11gR2
+  * 数据库：Oralce 11gR2 字符集：AMERICAN_AMERICA.AL32UTF8
   * 连接池： druid
   * java版本：jdk-8u251
   * 框架技术： Spring boot(2.2.6)+Mybaits+Maven

@@ -1,12 +1,31 @@
 # 开发环境使用
 spring:
  datasource:
-  tljj:
+  jzgl:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:oracle:thin:@192.168.1.250:1521:orcl
+    url: jdbc:oracle:thin:@192.168.30.3:1521:orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
-    username: tljj
-    password: tljj
+    username: jzgl
+    password: jzgl
+    max-active: 500
+    maximum-pool-size: 100
+    max-idle: 10
+    max-wait: 10000
+    min-idle: 5
+    initial-size: 5
+    validation-query: SELECT 1 FROM DUAL
+    testOnBorrow: false
+    testOnReturn: false
+    test-on-borrow: false
+    poolPreparedStatements: false
+    test-while-idle: true
+    time-between-eviction-runs-millis: 18800
+  zfba:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:oracle:thin:@192.168.30.3:1521:orcl
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+    username: zfba
+    password: zfba_sshb_2017
     max-active: 500
     maximum-pool-size: 100
     max-idle: 10

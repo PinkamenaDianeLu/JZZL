@@ -1,4 +1,4 @@
-# 开发环境使用
+# 部署环境使用
 spring:
   datasource:
     tljj:
