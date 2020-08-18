@@ -5,7 +5,7 @@ import com.bean.jzgl.SysLogs;
 public interface SysLogsMapper {
      /**
      * 插入日志
-     * @author Mrlu
+     * @author MrLu
      * @param  record
      * @createTime  2020/8/14 10:40
      * @return  int  |
@@ -14,7 +14,7 @@ public interface SysLogsMapper {
 
      /**
      * 根据主键查询日志
-     * @author Mrlu
+     * @author MrLu
      * @param id 主键id
      * @createTime  2020/8/14 10:40
      * @return  SysLogs  |

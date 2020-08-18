@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
 
 /**
- * @author Mrlu
+ * @author MrLu
  * @createTime 2020/4/27
  * @describe  用户session 只存储这几个信息
  */

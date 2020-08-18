@@ -1,6 +1,6 @@
 /**
  *  util方法
- * @author Mrlu
+ * @author MrLu
  * @createTime  2020/7/10 9:25
  * @version 1.2
  */
@@ -98,13 +98,13 @@ var utils = {
     },
      /**
      * 获取某种类型的时间
-     * @author Mrlu
+     * @author MrLu
      * @createTime  2020/8/14 14:59
       */
     getDate: {
         //
          /**
-         * @author Mrlu
+         * @author MrLu
          * @param theMonth 月份 不用+1
          * @createTime  2020/5/27 21:13
          * @describe 获取一个月份属于哪个季度的
@@ -131,7 +131,7 @@ var utils = {
             return quarter;
         },
          /**
-         * @author Mrlu
+         * @author MrLu
          * @param  quarter 季度  1 2 3 4
          * @createTime  2020/5/27 21:13
          * @describe 获取季度的结束月
@@ -170,7 +170,7 @@ var utils = {
 
      /**
      * 创建元素标签
-     * @author Mrlu
+     * @author MrLu
      * @createTime  2020/7/20 10:53
      * @version 1.0
       */
@@ -207,7 +207,7 @@ var utils = {
             return el;
         }, /**
           字符串转换element
-         * @author Mrlu
+         * @author MrLu
          * @param str element字符串
          * @createTime  2020/4/28 12:07
          * @version 1.0
@@ -220,7 +220,7 @@ var utils = {
 
     },
      /**
-     * @author Mrlu
+     * @author MrLu
      * @param  arr 数组
       * @param V 要删除的值
      * @createTime  2020/6/11 9:02
@@ -237,7 +237,7 @@ var utils = {
 
      /**
      *  判断element中手否含有某个属性
-     * @author Mrlu
+     * @author MrLu
      * @param el 数组
       * @param name 属性
      * @createTime  2020/8/14 14:57
@@ -249,7 +249,7 @@ var utils = {
     },
     /**
      * 截取标题添加.....
-     * @author Mrlu
+     * @author MrLu
      * @param  title 标题
      * @param length  截取长度
      * @createTime  2020/5/2 17:05
@@ -262,7 +262,7 @@ var utils = {
     },
      /**
      * 判断当前页面是移动版还是pc
-     * @author Mrlu
+     * @author MrLu
      * @createTime  2020/7/20 15:27
      * @version 1.0
       * @return boolean true PC； fasle 移动版

@@ -14,7 +14,7 @@ import org.springframework.data.redis.connection.lettuce.LettucePoolingClientCon
 import java.time.Duration;
 
 /**
- * @author Mrlu
+ * @author MrLu
  * @createTime 2020/5/5
  * @describe
  */
@@ -82,7 +82,7 @@ public class RdisPoolConfig {
         return lettuceConnectionFactory;
     }
      /**
-     * @author Mrlu
+     * @author MrLu
      * @param
      * @createTime  2020/5/5 10:44
      * @describe 连接池配置

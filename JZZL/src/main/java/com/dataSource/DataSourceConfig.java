@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
  /**
  *  用于配置多数据源
- * @author Mrlu
+ * @author MrLu
  * @createTime  2020/8/14 9:21
   */
 @Configuration
@@ -17,7 +17,7 @@ public class DataSourceConfig {
 
      /**
      * 卷宗整理 数据源
-     * @author Mrlu
+     * @author MrLu
      * @createTime  2020/8/14 9:22
       */
     @Bean
@@ -28,7 +28,7 @@ public class DataSourceConfig {
 
     /**
     * 执法办案 数据源
-    * @author Mrlu
+    * @author MrLu
     * @createTime  2020/8/14 9:22
      */
      @Bean

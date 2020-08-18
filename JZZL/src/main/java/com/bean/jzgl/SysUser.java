@@ -2,7 +2,11 @@ package com.bean.jzgl;
 
 import java.io.Serializable;
 import java.util.Date;
-
+ /**
+ * 非数据库表
+ * @author MrLu
+ * @createTime  2020/8/18 15:41
+  */
 public class SysUser implements Serializable {
 
     private static final long serialVersionUID = 1L;

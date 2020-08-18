@@ -8,7 +8,7 @@ import java.util.Properties;
 
 /**
  * 用于读取配置文件
- * @author Mrlu
+ * @author MrLu
  * @createTime 2020/6/28
  * @describe 用于读取配置文件
  */

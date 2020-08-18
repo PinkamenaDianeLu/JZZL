@@ -29,7 +29,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 /**
- * @author Mrlu
+ * @author MrLu
  * @createTime 2020/4/28
  * @describe redis 模板配置
  */
@@ -37,7 +37,7 @@ import java.lang.reflect.Method;
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 public class RedisConfig  extends CachingConfigurerSupport {
      /**
-     * @author Mrlu
+     * @author MrLu
      * @param
      * @createTime  2020/4/28 23:34
      * @describe  将定义新的模板使用Serializable缓存数据在redis上
@@ -53,7 +53,7 @@ public class RedisConfig  extends CachingConfigurerSupport {
     }
 
      /**
-     * @author Mrlu
+     * @author MrLu
      * @param
      * @createTime  2020/4/28 23:55
      * @describe 将定义的List缓存在redis上

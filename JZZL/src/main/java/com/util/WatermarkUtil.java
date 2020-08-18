@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * @author Mrlu
+ * @author MrLu
  * @createTime 2020/7/5
  * @describe 制作水印
  */
@@ -33,7 +33,7 @@ public class WatermarkUtil {
      * @param width    宽
      * @param height   高
      * @return BufferedImage |
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/8/14 14:32
      */
     public static BufferedImage enQRCode(String contents, int width, int height) throws WriterException {
@@ -233,7 +233,7 @@ public class WatermarkUtil {
             e.printStackTrace();
         }
         //背景图片地址
-        String backgroundPath = "C:\\Users\\Mrlu\\Desktop\\1.png";
+        String backgroundPath = "C:\\Users\\MrLu\\Desktop\\1.png";
         InputStream inputStream = null;
         try {
             //合成二维码和背景图
@@ -254,7 +254,7 @@ public class WatermarkUtil {
             e.printStackTrace();
         }
         //保存的图片路径
-        String originalFileName = "C:\\Users\\Mrlu\\Desktop\\111.png";
+        String originalFileName = "C:\\Users\\MrLu\\Desktop\\111.png";
         try {
             //保存为本地图片
             WatermarkUtil.saveFile(inputStream, originalFileName);

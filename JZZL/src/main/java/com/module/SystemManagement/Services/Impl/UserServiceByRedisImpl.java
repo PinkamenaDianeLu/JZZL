@@ -8,11 +8,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
- * @Author Mrlu
+ * @Author MrLu
  * @createTime 2020/4/26 0:05
  * @describe UserService 实现,数据通过redis获取
  */

@@ -1,5 +1,5 @@
 /**
- * @author Mrlu
+ * @author MrLu
  * @createTime  2020/5/12 22:18
  * @describe 权限验证加载  原生js不需要任何依赖
  * @version 1.0

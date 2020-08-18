@@ -1,7 +1,7 @@
 package com.config.aop;
 
 /**
- * @Author Mrlu
+ * @Author MrLu
  * @createTime 2020/4/26 23:14
  * @describe  定义日志的注解
  */

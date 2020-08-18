@@ -14,7 +14,7 @@ public class JzzlApplication {
 
      /**
      * 启动方法
-     * @author Mrlu
+     * @author MrLu
      * @createTime  2020/8/13 17:26
       */
     public static void main(String[] args) {

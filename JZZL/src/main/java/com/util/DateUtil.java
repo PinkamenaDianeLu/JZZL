@@ -8,7 +8,7 @@ import java.util.Calendar;
 /**
  * 个人编辑的时间util
  *
- * @author Mrlu
+ * @author MrLu
  * @createTime 2020/5/27
  * @describe 时间util
  */
@@ -16,7 +16,7 @@ public class DateUtil {
 
     /**
      * @param quarter 季度
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/5/27 21:58
      * @describe 获取一个季度的最后一天
      * @version 1.0
@@ -45,7 +45,7 @@ public class DateUtil {
 
     /**
      * @param month 月份 1-12
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/5/27 22:02
      * @describe 获取一个月份的所属季度
      * @version 1.0

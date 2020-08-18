@@ -14,7 +14,7 @@ import java.util.Base64;
 
 /**
  * des3 加密 操作
- * @Author Mrlu
+ * @Author MrLu
  * @createTime 2020/4/26 14:40
  * @describe des3 加密
  */
@@ -103,7 +103,7 @@ public class ThreeDesUtil {
 
     /**
      * @param
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/4/26 15:09
      * @describe 加密字符串
      * @version 1.0
@@ -116,7 +116,7 @@ public class ThreeDesUtil {
 
     /**
      * @param
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/4/26 15:10
      * @describe 解密字符串
      * @version 1.0
@@ -132,7 +132,7 @@ public class ThreeDesUtil {
     public static void main(String[] args) throws Exception {
         byte[] key = "290CEAD10482CA1FF952892B3F67A24E290CEAD10482CA1F".getBytes();//必须是48位
         byte[] keyiv = {9, 8, 7, 6, 5, 6, 7, 8};
-        byte[] data = "12345678910@Mrlu".getBytes(); //data必须是8的倍数位置
+        byte[] data = "12345678910@MrLu".getBytes(); //data必须是8的倍数位置
         System.out.println("data.length=" + data.length);
         System.out.println("CBC加密解密");
         //加密

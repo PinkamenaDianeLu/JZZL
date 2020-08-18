@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 /**
- * @author Mrlu
+ * @author MrLu
  * @createTime 2020/8/14
  * @describe 执法办案数据源
  */

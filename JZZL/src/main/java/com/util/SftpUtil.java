@@ -9,7 +9,7 @@ import java.util.Properties;
 
 /**
  * 连接 上传ftp 操作
- * @author Mrlu
+ * @author MrLu
  * @createTime 2020/4/29
  * @describe 连接 上传ftp
  */
@@ -39,7 +39,7 @@ public class SftpUtil {
 
     /**
      *
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/4/29 23:00
      * @describe 创建channel
      * @version 1.0
@@ -63,7 +63,7 @@ public class SftpUtil {
 
     /**
      * 关闭channel和session
-     * @author Mrlu
+     * @author MrLu
      * @throws Exception
      */
     private static void closeChannel() throws Exception {
@@ -81,7 +81,7 @@ public class SftpUtil {
      * @param fileType   上传的文件类型 不可为空
      * @param inputFile  上传的文件
      * @return  rePath 文件在服务器的完整路径
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/4/29 23:06
      * @describe
      * @version 1.0

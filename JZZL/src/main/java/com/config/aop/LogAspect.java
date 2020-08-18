@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @Author Mrlu
+ * @Author MrLu
  * @createTime 2020/4/26 22:53
  * @describe Aop切面 用于制作日志
  */
@@ -43,7 +43,7 @@ public class LogAspect {
     UserSession userSession;
 
     /**
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/4/26 23:01
      * @describe 定义切入点
      * @version 1.0
@@ -56,7 +56,7 @@ public class LogAspect {
     /**
      * @param jp      JoinPoint
      * @param reValue 方法返回值
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/4/26 23:27
      * @describe 切入执行后 reValue为方法的返回值
      * @version 1.0
@@ -120,7 +120,7 @@ public class LogAspect {
     /**
      * @param jp JoinPoint
      * @param e  抛出的异常
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/4/26 23:28
      * @describe 被切入点异常日志
      * @version 1.0
@@ -133,7 +133,7 @@ public class LogAspect {
 
     /**
      * @param paramMap request获取的参数数组
-     * @author Mrlu
+     * @author MrLu
      * @createTime 2020/4/27 0:00
      * @describe 转换request 请求参数
      * @version 1.0
@@ -147,7 +147,7 @@ public class LogAspect {
     }
 
      /**
-     * @author Mrlu
+     * @author MrLu
      * @param
      * @createTime  2020/5/19 21:20
      * @describe 获取用的真实ip地址
