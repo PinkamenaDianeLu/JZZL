@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.jzgl.SysLogsMapper">
-  <resultMap id="BaseResultMap" type="com.bean.jzgl.SysLogs">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.SysLogsDTO">
     <id column="ID" jdbcType="DECIMAL" property="id" />
     <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
     <result column="STATE" jdbcType="DECIMAL" property="state" />
@@ -30,7 +30,7 @@
     where ID = #{id,jdbcType=DECIMAL}
   </select>
 
-  <insert id="insertSelective" parameterType="com.bean.jzgl.SysLogs">
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.SysLogsDTO">
     <selectKey resultType="INTEGER" order="BEFORE"
                keyProperty="id">
       select seq_SYS_LOGS_id.nextval from dual

@@ -1,8 +1,8 @@
 package com.config.aop;
 
 import com.alibaba.fastjson.JSON;
-import com.bean.jzgl.SysLogs;
-import com.bean.jzgl.SysUser;
+import com.bean.jzgl.DTO.SysLogsDTO;
+import com.bean.jzgl.Source.SysUser;
 import com.config.session.UserSession;
 import com.module.SystemManagement.Services.LogService;
 import com.module.SystemManagement.Services.UserService;
@@ -68,7 +68,7 @@ public class LogAspect {
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
 
-            SysLogs record = new SysLogs();
+            SysLogsDTO record = new SysLogsDTO();
 // 请求的参数
             Map<String, String> rtnMap = converMap(request.getParameterMap());
             // 将参数所在的数组转换成json
@@ -82,9 +82,10 @@ public class LogAspect {
 //            System.out.println(jp.getSignature().getDeclaringTypeName() + jp.getSignature().getName() + "方法执行结束,返回值为：" + reValue);
 //            System.out.println(opLog.operDesc() + "||" + opLog.operModul() + "||" + opLog.operType());
             record.setMparams(params);//参数Json格式
+//            record.setScbj(Enums.scbj.ALIVE);
             record.setRequesturl(request.getRequestURL().toString());//请求路径
             record.setMname(jp.getSignature().getDeclaringTypeName() + jp.getSignature().getName());//方法名 全路径名
-            String reVString=reValue.toString();
+            String reVString=null==reValue?"无返回值":reValue.toString();
             if (reVString.length()>1998){
                 record.setMresult(reVString.substring(0,1998));//方法返回值
             }else {

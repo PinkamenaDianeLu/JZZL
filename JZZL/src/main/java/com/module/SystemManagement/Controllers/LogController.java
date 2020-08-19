@@ -66,6 +66,7 @@ public class LogController {
             userSession.setUserRedisPerms(UserRedisPerms);
             //上缴redis一个序列化的
             //redisSerializableTemplate.opsForValue().set(UserRedisId, usernow);
+            //TODO MrLu 2020/8/19 9:56  用户信息上缴redis
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

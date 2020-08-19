@@ -3,7 +3,7 @@ ${AnsiColor.RED}
 -*****************--*****************--*****************--*****************-
                卷宗整理
 
-@Author Mrlu
+@Author MrLu
 @CreateTime 2020年8月13日
 springBoot: ${spring-boot.formatted-version}
 © 哈尔滨市盛世华博科技发展有限公司

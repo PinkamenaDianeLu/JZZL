@@ -1,7 +1,7 @@
 package com.module.SystemManagement.Services;
 
 
-import com.bean.jzgl.SysUser;
+import com.bean.jzgl.Source.SysUser;
 
 /**
  * @Author MrLu

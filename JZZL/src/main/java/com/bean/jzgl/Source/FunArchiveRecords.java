@@ -1,8 +1,8 @@
-package com.bean.jzgl;
+package com.bean.jzgl.Source;
 
 import java.util.Date;
 
-public class FunArchiveFiles {
+public class FunArchiveRecords {
     private Integer id;
 
     private Integer scbj;
@@ -19,19 +19,9 @@ public class FunArchiveFiles {
 
     private Integer thisorder;
 
-    private Integer archivetrecordid;
+    private String recordname;
 
     private Integer archivetypeid;
-
-    private Integer filetype;
-
-    private String fileurl;
-
-    private String originurl;
-
-    private Integer isdowland;
-
-    private String filename;
 
     public Integer getId() {
         return id;
@@ -97,12 +87,12 @@ public class FunArchiveFiles {
         this.thisorder = thisorder;
     }
 
-    public Integer getArchivetrecordid() {
-        return archivetrecordid;
+    public String getRecordname() {
+        return recordname;
     }
 
-    public void setArchivetrecordid(Integer archivetrecordid) {
-        this.archivetrecordid = archivetrecordid;
+    public void setRecordname(String recordname) {
+        this.recordname = recordname == null ? null : recordname.trim();
     }
 
     public Integer getArchivetypeid() {
@@ -111,45 +101,5 @@ public class FunArchiveFiles {
 
     public void setArchivetypeid(Integer archivetypeid) {
         this.archivetypeid = archivetypeid;
-    }
-
-    public Integer getFiletype() {
-        return filetype;
-    }
-
-    public void setFiletype(Integer filetype) {
-        this.filetype = filetype;
-    }
-
-    public String getFileurl() {
-        return fileurl;
-    }
-
-    public void setFileurl(String fileurl) {
-        this.fileurl = fileurl == null ? null : fileurl.trim();
-    }
-
-    public String getOriginurl() {
-        return originurl;
-    }
-
-    public void setOriginurl(String originurl) {
-        this.originurl = originurl == null ? null : originurl.trim();
-    }
-
-    public Integer getIsdowland() {
-        return isdowland;
-    }
-
-    public void setIsdowland(Integer isdowland) {
-        this.isdowland = isdowland;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename(String filename) {
-        this.filename = filename == null ? null : filename.trim();
     }
 }

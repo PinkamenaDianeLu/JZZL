@@ -1,7 +1,7 @@
 package com.module.SystemManagement.Services;
 
 
-import com.bean.jzgl.SysLogs;
+import com.bean.jzgl.DTO.SysLogsDTO;
 
 /**
  * @author MrLu
@@ -17,5 +17,5 @@ public interface LogService {
      * @describe 记录日志
      * @version 1.0
       */
-     void insertLog(SysLogs record);
+     void insertLog(SysLogsDTO record);
 }

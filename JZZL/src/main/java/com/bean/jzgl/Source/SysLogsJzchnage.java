@@ -1,8 +1,8 @@
-package com.bean.jzgl;
+package com.bean.jzgl.Source;
 
 import java.util.Date;
 
-public class SysLogsSend {
+public class SysLogsJzchnage {
     private Integer id;
 
     private Integer scbj;
@@ -15,15 +15,9 @@ public class SysLogsSend {
 
     private String author;
 
-    private Integer pushtimes;
+    private Integer authortype;
 
-    private Integer result;
-
-    private String osurl;
-
-    private String ajbh;
-
-    private String jqbh;
+    private String ecn;
 
     public Integer getId() {
         return id;
@@ -73,43 +67,19 @@ public class SysLogsSend {
         this.author = author == null ? null : author.trim();
     }
 
-    public Integer getPushtimes() {
-        return pushtimes;
+    public Integer getAuthortype() {
+        return authortype;
     }
 
-    public void setPushtimes(Integer pushtimes) {
-        this.pushtimes = pushtimes;
+    public void setAuthortype(Integer authortype) {
+        this.authortype = authortype;
     }
 
-    public Integer getResult() {
-        return result;
+    public String getEcn() {
+        return ecn;
     }
 
-    public void setResult(Integer result) {
-        this.result = result;
-    }
-
-    public String getOsurl() {
-        return osurl;
-    }
-
-    public void setOsurl(String osurl) {
-        this.osurl = osurl == null ? null : osurl.trim();
-    }
-
-    public String getAjbh() {
-        return ajbh;
-    }
-
-    public void setAjbh(String ajbh) {
-        this.ajbh = ajbh == null ? null : ajbh.trim();
-    }
-
-    public String getJqbh() {
-        return jqbh;
-    }
-
-    public void setJqbh(String jqbh) {
-        this.jqbh = jqbh == null ? null : jqbh.trim();
+    public void setEcn(String ecn) {
+        this.ecn = ecn == null ? null : ecn.trim();
     }
 }

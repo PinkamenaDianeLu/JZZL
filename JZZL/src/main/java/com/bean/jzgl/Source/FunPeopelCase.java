@@ -1,8 +1,10 @@
-package com.bean.jzgl;
+package com.bean.jzgl.Source;
+
+import com.enums.Enums;
 
 import java.util.Date;
 
-public class FunArchiveType {
+public class FunPeopelCase {
     private Integer id;
 
     private Integer scbj;
@@ -13,15 +15,16 @@ public class FunArchiveType {
 
     private Date updatetime;
 
+    private String idcard;
+
+    private String name;
+
     private String jqbh;
 
     private String ajbh;
 
-    private Integer archivetype;
+    private Enums.PersonType persontype;
 
-    private String archivetypecn;
-
-    private Integer defaultorder;
 
     public Integer getId() {
         return id;
@@ -63,6 +66,22 @@ public class FunArchiveType {
         this.updatetime = updatetime;
     }
 
+    public String getIdcard() {
+        return idcard;
+    }
+
+    public void setIdcard(String idcard) {
+        this.idcard = idcard == null ? null : idcard.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
     public String getJqbh() {
         return jqbh;
     }
@@ -79,27 +98,11 @@ public class FunArchiveType {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public Integer getArchivetype() {
-        return archivetype;
+    public Enums.PersonType getPersontype() {
+        return persontype;
     }
 
-    public void setArchivetype(Integer archivetype) {
-        this.archivetype = archivetype;
-    }
-
-    public String getArchivetypecn() {
-        return archivetypecn;
-    }
-
-    public void setArchivetypecn(String archivetypecn) {
-        this.archivetypecn = archivetypecn == null ? null : archivetypecn.trim();
-    }
-
-    public Integer getDefaultorder() {
-        return defaultorder;
-    }
-
-    public void setDefaultorder(Integer defaultorder) {
-        this.defaultorder = defaultorder;
+    public void setPersontype(Enums.PersonType persontype) {
+        this.persontype = persontype;
     }
 }

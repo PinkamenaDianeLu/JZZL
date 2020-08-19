@@ -1,6 +1,6 @@
 package com.module.SystemManagement.Services.Impl;
 
-import com.bean.jzgl.SysUser;
+import com.bean.jzgl.Source.SysUser;
 import com.config.session.UserSession;
 import com.module.SystemManagement.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

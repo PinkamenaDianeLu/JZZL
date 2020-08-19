@@ -1,6 +1,6 @@
 package com.module.SystemManagement.Services.Impl;
 
-import com.bean.jzgl.SysLogs;
+import com.bean.jzgl.DTO.SysLogsDTO;
 import com.mapper.jzgl.SysLogsMapper;
 import com.module.SystemManagement.Services.LogService;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class LogImpl implements LogService {
     @Resource
     SysLogsMapper sysLogsMapper;
     @Override
-    public void insertLog(SysLogs record) {
+    public void insertLog(SysLogsDTO record) {
         sysLogsMapper.insertSelective(record);
     }
 }

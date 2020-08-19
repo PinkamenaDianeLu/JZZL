@@ -1,4 +1,4 @@
-package com.bean.jzgl;
+package com.bean.jzgl.Source;
 
 import java.util.Date;
 

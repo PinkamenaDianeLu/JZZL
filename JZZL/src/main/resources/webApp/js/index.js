@@ -28,6 +28,16 @@ $(function () {
         }
     });*/
 
+       $.post({
+               url: '/CaseSearch/test',
+               data: {},
+               success: (re) => {
+                   const reV = JSON.parse(re);
+                   if ('success' === reV.message) {
+                   } else {
+                   }
+               }
+           });
      /**
      *  登录信息
      * @author MrLu

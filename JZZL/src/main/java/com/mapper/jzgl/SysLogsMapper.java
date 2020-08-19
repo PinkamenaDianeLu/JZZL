@@ -1,6 +1,6 @@
 package com.mapper.jzgl;
 
-import com.bean.jzgl.SysLogs;
+import com.bean.jzgl.DTO.SysLogsDTO;
 
 public interface SysLogsMapper {
      /**
@@ -10,7 +10,7 @@ public interface SysLogsMapper {
      * @createTime  2020/8/14 10:40
      * @return  int  |
       */
-    int insertSelective(SysLogs record);
+    int insertSelective(SysLogsDTO record);
 
      /**
      * 根据主键查询日志
@@ -19,5 +19,5 @@ public interface SysLogsMapper {
      * @createTime  2020/8/14 10:40
      * @return  SysLogs  |
       */
-    SysLogs selectByPrimaryKey(Integer id);
+    SysLogsDTO selectByPrimaryKey(Integer id);
 }
