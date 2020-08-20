@@ -7,7 +7,6 @@ import com.util.EnumsUtil;
  * @createTime 2020/8/19 10:42
  * @describe  枚举定义类
  */
-//TODO MrLu 2020/8/19   写readme！！
 public class Enums  extends EnumsUtil {
      /**
      * 删除标记
@@ -27,21 +26,21 @@ public class Enums  extends EnumsUtil {
      * @createTime  2020/8/19 10:56
       */
     public  enum  PersonType  {
-         PRIMARY("0","主办人"),//主办人
-         SECONDARY("1","辅办人");//副办人
-         PersonType(String value,String name){
+         PRIMARY(0,"主办人"),//主办人
+         SECONDARY(1,"辅办人");//副办人
+         PersonType(int value,String name){
              this.value=value;
              this.name=name;
          }
          // 定义一个 private 修饰的实例变量
-         private String value;
+         private int value;
          private String name;
 
-         public String getValue() {
+         public int getValue() {
              return value;
          }
 
-         public void setValue(String value) {
+         public void setValue(int value) {
              this.value = value;
          }
 

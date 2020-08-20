@@ -24,7 +24,7 @@ public interface FunPeopelCaseMapper {
     FunPeopelCaseDTO pcToPcDTO(FunPeopelCase fpc);
 
     default int personTypeToInt(Enums.PersonType personType) {
-        return Integer.parseInt(personType.getValue());
+        return personType.getValue();
     }
 
     @Mapping(target = "persontype", expression = "java(personTypeToEnum(fpc.getPersontype()))")

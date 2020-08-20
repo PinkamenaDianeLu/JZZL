@@ -6,10 +6,10 @@
  */
 
 $(function () {
-    //用户名
-    const oriName = utils.getUrlPar('username');
-    //密码
-    const oriPwd = utils.getUrlPar('pwd');
+    // //用户名
+    // const oriName = utils.getUrlPar('username');
+    // //密码
+    // const oriPwd = utils.getUrlPar('pwd');
     //生成的key
     const key = utils.getUrlPar('key');
     location.href='/model/index.html';
@@ -47,6 +47,10 @@ $(function () {
      * @createTime  2020/8/18 16:25
      * @return  string  |
       */
+     /**
+     * @description  废弃 只传key即可
+     * @log  2020/8/20 11:35  MrLu  废弃
+     **/
      function loadMessageFactory()  {
         const loginMessage = function (oriName, oriPwd, key) {
             this.oriName = oriName;

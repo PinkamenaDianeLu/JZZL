@@ -166,6 +166,7 @@
 * 注意： 在数据库中加密的字段在redis中并不是加密的！
 * 拦截器已配置完毕，但没有实际使用，详情请看com.config.Interceptor下的配置
 * session已配置完毕，session中存储了序列化的UserSession，UserSession中存储了对应redis中的key
+* 部分字段使用枚举类，枚举类在 com.enums.Enums.java 下定义
 ### 3.2 日志记录
 
 * 日志使用spring boot AOP，详情请看com.config.aop文件夹下配置
@@ -183,17 +184,14 @@
 * ip地址
 
 **请自觉在所有Controller方法上添加注释** 部分Service方法可选择添加
-### 3.3 权限验证与拦截
-本项目使用shiro进行安全验证，配置在com.config.shiro下
-* 默认拦截所有请求，需要设置请在com.config.shiro.ShiroConfig中设置并填写详细注释
-* O5权限为管理员权限，拥有全部权限
-* 权限部分与数据库中表sys_pemissions、sys_userar 有紧密关系，错误录入数据将会导致无法进行正确的权限验证
-* 在所有需要权限验证的页面引用 
-```js
-<!-- 该js需要utils.js依赖 -->
- <script src="/utils/permissionsUtil.js"></script>
-```
-之后再将所有需要验证权限的元素添加属性 `pCode=""` 值为数据库中设置的对应权限即可
+### 3.3 枚举类
+
+> 数据库中部分字段只有0、1、2等值用于区别标记，这些字段在本项目中使用枚举，并由MapStruct进行映射
+* 枚举类在com.enums.Enums.java
+* 定义枚举类需存储两个字段 (int)value和(String)name 并对应生成get set 方法
+* 重写toString方法时返回name
+* EnumsUtil中的getEnumByValue(final Class<E> , Object )方法可以通过value得到对应的枚举对象
+
 ### 3.4 工具包使用
 * StringUtil 使用commons-lang3
 * DateUtil使用Joda-Time

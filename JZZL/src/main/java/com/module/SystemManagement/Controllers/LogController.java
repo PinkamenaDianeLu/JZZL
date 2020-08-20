@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.config.aop.OperLog;
 import com.config.session.UserSession;
+import com.util.ThreeDesUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -50,20 +51,21 @@ public class LogController {
 
 
             //用户名
-            String username =userMessageJsonObj.getString("oriName");
+//            String username =userMessageJsonObj.getString("oriName");
             //key
             String key =userMessageJsonObj.getString("key");
             //密码
-            String oriPwd =userMessageJsonObj.getString("oriPwd");
+//            String oriPwd =userMessageJsonObj.getString("oriPwd");
 
-            if (StringUtils.isEmpty(username)||StringUtils.isEmpty(key)||StringUtils.isEmpty(oriPwd)){
+            if (StringUtils.isEmpty(key)){
                 throw new Exception("你传nm呢？弟弟？");
             }
-            //TODO MrLu 2020/8/18 16:39 验证登录 使用用户名密码生成key与传来的key比较
-            final String UserRedisId = UUID.randomUUID().toString();
-            final String UserRedisPerms = UUID.randomUUID().toString();//redis key
+            //解密字符串
+            String username= ThreeDesUtil.des3DecodeCBC(key);
+            //TODO MrLu 2020/8/20 查询当前用户  
+            //获取随机字符串作为key
+            final String UserRedisId ="redisUser"+UUID.randomUUID();
             userSession.setUserRedisId(UserRedisId);
-            userSession.setUserRedisPerms(UserRedisPerms);
             //上缴redis一个序列化的
             //redisSerializableTemplate.opsForValue().set(UserRedisId, usernow);
             //TODO MrLu 2020/8/19 9:56  用户信息上缴redis

@@ -129,10 +129,35 @@ public class ThreeDesUtil {
         return new String(str6, "UTF-8");
     }
 
+     /**
+     * 将任意字符串转的长度转化为8的倍数 并以@_填充
+     * @author MrLu
+     * @param oriStr 需要转化的字符串
+     * @createTime  2020/8/20 10:35
+     * @return  String 已经是8的倍数 |
+      */
+    public static String strTo8Length(String oriStr)throws Exception{
+        oriStr=oriStr+"@";
+        StringBuilder reString= new StringBuilder(oriStr);
+        if (StringUtils.isEmpty(oriStr)){
+            throw  new Exception("字符串为空");
+        }
+        int strLength=oriStr.length();//字符串原长度
+        int strTo8=8-(strLength%8);
+        while (strTo8>0){
+            reString.append("_");
+            strTo8--;
+        }
+        return reString.toString();
+    }
+
     public static void main(String[] args) throws Exception {
         byte[] key = "290CEAD10482CA1FF952892B3F67A24E290CEAD10482CA1F".getBytes();//必须是48位
         byte[] keyiv = {9, 8, 7, 6, 5, 6, 7, 8};
-        byte[] data = "12345678910@MrLu".getBytes(); //data必须是8的倍数位置
+        String testLength=strTo8Length("165161651fdgrdgfgdijofe9834kldfshjsldfkm");
+        byte[] data = testLength.getBytes(); //data必须是8的倍数位置
+
+        System.out.println(testLength);
         System.out.println("data.length=" + data.length);
         System.out.println("CBC加密解密");
         //加密
