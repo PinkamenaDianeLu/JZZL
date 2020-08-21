@@ -1,10 +1,10 @@
-# 卷宗整理
+# 卷宗整理Cooly
 
 ## 1. 技术说明
   * 数据库：Oralce 11gR2 字符集：AMERICAN_AMERICA.AL32UTF8
-  * 连接池： druid
+  * 连接池： druid 1.1.23
   * java版本：jdk-8u251
-  * 核心框架： Spring boot(2.2.6)+Mybaits
+  * 核心框架： Mybaits 3.5.5
   * bean映射处理器 : MapStruct 1.3.1.Final
   * 缓存技术： redis(5.0.5) （客户端为Lettuce）
   * 图片服务器： vsFtp+Nginx(代理)
@@ -140,26 +140,11 @@
 5. 所有更新必须加上 `set UPDATETIME=SYSDATE`
 6. **单个方法刨除注释不可超过100行**
     
-#### 前端
+#### webSocket
 
-> 禁止使用cookie和localStorage！ 向前端禁止存储如：id、身份证号等涉密信息
-
-> 使用js框架、类库必须与其他开发者交流确认！！
-
-1. 禁止使用全局变量（可使用函数）
-2. 尽量使用es6定义变量 （let、const等）
-3. js中字符串一律使用单引号 
-4. 注意删除开发时使用的alert、console.log等输出语句
-5. 在对dom元素赋值时必须标明该dom元素用途
-6. 本项目没有设置cookie也禁止使用cookie！
-7. **禁止在交互数据的编译中使用eval()方法!**
-8. 用户信息使用sessionStorage存储，会随着页面关闭而失效。值存储为：username账号、xm姓名、agencyname单位名称、agencycode单位代码
-9. 父窗体向子窗体传值使用原型链中的pValue属性，详情请看 /utils/prototype.js 文件
-10. 时间控件使用laydate，请不要在子窗体再次引用js，否则会造成laydate控件不正常显示的bug
 
 ## 3.使用
 ### 3.1 开发使用
-* 项目在开发时使用application-dev.yml，打包时使用项目在开发时使用application-prod.yml，通过更改项目在开发时使用application.yml的spring.profiles.active属性更改
 * 项目配置了热部署,前后端更改后都会自动重启项目,但是当新添加文件或文件路径改动时仍需手动重启项目
 * redis使用redisTemplate操作，Template在开发中可以增加修改
 * redis存储两个字段 分别是用户信息和用户权限 具体信息请查看代码
@@ -198,9 +183,10 @@
 * md5使用 commons-codec
 * 加密使用ThreeDes 并对数据添加了salt
 * ftp连接使用 jcraft
+* 水印工具使用 com.google.zxing 
+* 文件压缩使用工具包 ant
 * json处理使用 alibaba.fastjson
-
-
+* 单元测试 junit
 ### 3.5 服务器配置
 * vsftp设置 ： 参考vsftp.conf
 * nginx设置 ： 参考nginx.conf
@@ -221,6 +207,6 @@
 * @**Author:** MrLu008
 * @**Version:** 0.18 Beta 
 * @**CreateTime** 2020年8月13日17:19:16
-* @**UpdateTime** 2020年8月18日16:36:35
+* @**UpdateTime** 2020年8月21日14:09:58
 * @**State** 开发中
 * &copy; 哈尔滨市盛世华博科技发展有限公司

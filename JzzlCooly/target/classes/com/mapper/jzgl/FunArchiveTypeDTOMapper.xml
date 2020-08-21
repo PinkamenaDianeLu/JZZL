@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.FunArchiveTypeDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
+    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
+    <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
+    <result column="ARCHIVETYPECN" jdbcType="VARCHAR" property="archivetypecn" />
+    <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ARCHIVETYPE, ARCHIVETYPECN, 
+    DEFAULTORDER
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from FUN_ARCHIVE_TYPE
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from FUN_ARCHIVE_TYPE
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+    insert into FUN_ARCHIVE_TYPE (ID, SCBJ, STATE, 
+      CREATETIME, UPDATETIME, JQBH, 
+      AJBH, ARCHIVETYPE, ARCHIVETYPECN, 
+      DEFAULTORDER)
+    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
+      #{ajbh,jdbcType=VARCHAR}, #{archivetype,jdbcType=DECIMAL}, #{archivetypecn,jdbcType=VARCHAR}, 
+      #{defaultorder,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+    insert into FUN_ARCHIVE_TYPE
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="scbj != null">
+        SCBJ,
+      </if>
+      <if test="state != null">
+        STATE,
+      </if>
+      <if test="createtime != null">
+        CREATETIME,
+      </if>
+      <if test="updatetime != null">
+        UPDATETIME,
+      </if>
+      <if test="jqbh != null">
+        JQBH,
+      </if>
+      <if test="ajbh != null">
+        AJBH,
+      </if>
+      <if test="archivetype != null">
+        ARCHIVETYPE,
+      </if>
+      <if test="archivetypecn != null">
+        ARCHIVETYPECN,
+      </if>
+      <if test="defaultorder != null">
+        DEFAULTORDER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="scbj != null">
+        #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jqbh != null">
+        #{jqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ajbh != null">
+        #{ajbh,jdbcType=VARCHAR},
+      </if>
+      <if test="archivetype != null">
+        #{archivetype,jdbcType=DECIMAL},
+      </if>
+      <if test="archivetypecn != null">
+        #{archivetypecn,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultorder != null">
+        #{defaultorder,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+    update FUN_ARCHIVE_TYPE
+    <set>
+      <if test="scbj != null">
+        SCBJ = #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="jqbh != null">
+        JQBH = #{jqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ajbh != null">
+        AJBH = #{ajbh,jdbcType=VARCHAR},
+      </if>
+      <if test="archivetype != null">
+        ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL},
+      </if>
+      <if test="archivetypecn != null">
+        ARCHIVETYPECN = #{archivetypecn,jdbcType=VARCHAR},
+      </if>
+      <if test="defaultorder != null">
+        DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+    update FUN_ARCHIVE_TYPE
+    set SCBJ = #{scbj,jdbcType=DECIMAL},
+      STATE = #{state,jdbcType=DECIMAL},
+      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      JQBH = #{jqbh,jdbcType=VARCHAR},
+      AJBH = #{ajbh,jdbcType=VARCHAR},
+      ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL},
+      ARCHIVETYPECN = #{archivetypecn,jdbcType=VARCHAR},
+      DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>
