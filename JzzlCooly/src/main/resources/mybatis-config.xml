@@ -4,29 +4,50 @@
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <!-- 指定外部配置 -->
-    <properties resource="src/main/resources/global.properties">
+    <properties resource="global.properties">
     </properties>
+    <settings>
+        <setting name="cacheEnabled" value="false"/>
+        <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <setting name="useColumnLabel" value="true"/>
+        <setting name="useGeneratedKeys" value="false"/>
+        <setting name="autoMappingBehavior" value="PARTIAL"/>
+        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
+        <!-- 3.5.2新增 	指定语句默认的滚动策略 -->
+        <setting name="defaultResultSetType" value="SCROLL_SENSITIVE"/>
+        <!-- 3.5.5新增 删除多余的空格（包括文本中的） -->
+        <setting name="shrinkWhitespacesInSql" value="true "/>
+
+        <setting name="defaultExecutorType" value="SIMPLE"/>
+        <setting name="defaultStatementTimeout" value="25"/>
+        <setting name="defaultFetchSize" value="100"/>
+        <setting name="safeRowBoundsEnabled" value="false"/>
+        <setting name="mapUnderscoreToCamelCase" value="false"/>
+        <setting name="localCacheScope" value="SESSION"/>
+        <setting name="jdbcTypeForNull" value="OTHER"/>
+    </settings>
     <!-- 配置环境-->
     <environments default="jzzl">
         <environment id="jzzl">
             <transactionManager type="JDBC"/>
-            <dataSource type="com.alibaba.druid.pool.DruidDataSource">
-                <property name="driver" value="${jzzlDriver}"/>
-                <property name="url" value="${jzzlUrl}"/>
-                <property name="username" value="${jzzlUsername}"/>
-                <property name="password" value="${jzzlPassword}"/>
-
+            <dataSource type="com.database.DruidDatabase">
                 <property name="poolMaximumActiveConnections " value="20"/>
                 <property name="poolMaximumIdleConnections " value="5"/>
                 <property name="poolPingQuery" value="select * from dual;"/>
                 <property name="poolPingEnabled" value="true"/>
                 <property name="poolPingConnectionsNotUsedFor" value="100"/>
+
+                <property name="driver" value="oracle.jdbc.OracleDriver"/>
+                <property name="url" value="jdbc:oracle:thin:@192.168.30.3:1521:orcl"/>
+                <property name="username" value="jzgl"/>
+                <property name="password" value="jzgl"/>
             </dataSource>
         </environment>
 
         <environment id="zfba">
             <transactionManager type="JDBC"/>
-            <dataSource type="com.alibaba.druid.pool.DruidDataSource">
+            <dataSource type="com.database.DruidDatabase">
                 <property name="driver" value="${zfbaDriver}"/>
                 <property name="url" value="${zfbaUrl}"/>
                 <property name="username" value="${zfbaUsername}"/>
@@ -41,28 +62,7 @@
             </dataSource>
         </environment>
     </environments>
-    <settings>
-        <setting name="cacheEnabled" value="false"/>
-        <setting name="lazyLoadingEnabled" value="true"/>
-        <setting name="multipleResultSetsEnabled" value="true"/>
-        <setting name="useColumnLabel" value="true"/>
-        <setting name="useGeneratedKeys" value="false"/>
-        <setting name="autoMappingBehavior" value="PARTIAL"/>
-        <setting name="autoMappingUnknownColumnBehavior" value="WARNING"/>
-        <!-- 3.5.2新增 	指定语句默认的滚动策略 -->
-        <setting name="defaultResultSetType" value="SCROLL_SENSITIVE "/>
-        <!-- 3.5.5新增 删除多余的空格（包括文本中的） -->
-        <setting name="shrinkWhitespacesInSql" value="true "/>
 
-        <setting name="defaultExecutorType" value="SIMPLE"/>
-        <setting name="defaultStatementTimeout" value="25"/>
-        <setting name="defaultFetchSize" value="100"/>
-        <setting name="safeRowBoundsEnabled" value="false"/>
-        <setting name="mapUnderscoreToCamelCase" value="false"/>
-        <setting name="localCacheScope" value="SESSION"/>
-        <setting name="jdbcTypeForNull" value="OTHER"/>
-        <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode,toString"/>
-    </settings>
     <!-- 指定包下的所有接口全部注册为映射器 -->
     <mappers>
         <package  name="com.mapper.jzgl"/>

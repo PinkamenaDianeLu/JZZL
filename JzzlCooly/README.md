@@ -4,7 +4,7 @@
   * 数据库：Oralce 11gR2 字符集：AMERICAN_AMERICA.AL32UTF8
   * 连接池： druid 1.1.23
   * java版本：jdk-8u251
-  * 核心框架： Mybaits 3.5.5
+  * 核心框架： Mybatis 3.5.5
   * bean映射处理器 : MapStruct 1.3.1.Final
   * 缓存技术： redis(5.0.5) （客户端为Lettuce）
   * 图片服务器： vsFtp+Nginx(代理)
