@@ -9,6 +9,7 @@
   * 缓存技术： redis(5.0.5) （客户端为Lettuce）
   * 图片服务器： vsFtp+Nginx(代理)
   * 消息系统：   WebSocket
+  * 日志记录 slf4j
   * 包管理： Maven
   * 程序正常发布后访问地址为  ： http://127.0.0.1:8080/index.html （端口号在正式发布时为80）
 ## 2. 开发说明
