@@ -29,6 +29,7 @@ public class SysUser implements Serializable {
                 ", agencyname='" + agencyname + '\'' +
                 ", agencycode='" + agencycode + '\'' +
                 ", staffid=" + staffid +
+
                 '}';
     }
 

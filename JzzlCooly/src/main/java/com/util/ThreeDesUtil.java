@@ -8,6 +8,7 @@ import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.IvParameterSpec;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.Security;
 import java.util.Base64;
@@ -21,12 +22,43 @@ import java.util.Base64;
 public class ThreeDesUtil {
 
     // 算法名称
-    public static final String KEY_ALGORITHM = "desede";
+    private static final String KEY_ALGORITHM = "desede";
     // 算法名称/加密模式/填充方式
-    public static final String CIPHER_ALGORITHM = "desede/CBC/NoPadding";
+    private static final String CIPHER_ALGORITHM = "desede/CBC/NoPadding";
 
     private static final byte[] key = "290CEAD10482CA1FF952892B3F67A24E290CEAD10482CA1F".getBytes();//必须是48位
     private static final byte[] keyiv = {9, 8, 7, 6, 5, 6, 7, 8};
+
+    /**
+     * @param
+     * @author MrLu
+     * @createTime 2020/4/26 15:09
+     * @describe 加密字符串
+     * @version 1.0
+     */
+    public static String des3EncodeCBC(String str) throws Exception {
+        if (StringUtils.isEmpty(str)){
+            throw  new Exception("请求加密字符串为空！");
+        }
+        byte[] data=strTo8Length(str).getBytes();//data必须是8的倍数位置
+        byte[] str5 = des3EncodeCBC(key, keyiv, data);
+        return Base64.getEncoder().encodeToString(str5);
+    }
+
+    /**
+     * @param code 加密字符串
+     * @author MrLu
+     * @createTime 2020/4/26 15:10
+     * @describe 解密字符串
+     * @version 1.0
+     */
+    public static String des3DecodeCBC(String code) throws Exception {
+        if(StringUtils.isEmpty(code)){
+            return "";
+        }
+        byte[] str6 = des3DecodeCBC(key, keyiv, Base64.getDecoder().decode(code));
+        return new String(str6, StandardCharsets.UTF_8);
+    }
 
     /**
      * CBC加密
@@ -59,7 +91,7 @@ public class ThreeDesUtil {
      * @throws Exception
      */
     private static Key keyGenerator(String keyStr) throws Exception {
-        byte input[] = HexString2Bytes(keyStr);
+        byte[] input = HexString2Bytes(keyStr);
         DESedeKeySpec KeySpec = new DESedeKeySpec(input);
         SecretKeyFactory KeyFactory = SecretKeyFactory.getInstance(KEY_ALGORITHM);
         return ((Key) (KeyFactory.generateSecret(((java.security.spec.KeySpec) (KeySpec)))));
@@ -101,33 +133,6 @@ public class ThreeDesUtil {
         return bOut;
     }
 
-    /**
-     * @param
-     * @author MrLu
-     * @createTime 2020/4/26 15:09
-     * @describe 加密字符串
-     * @version 1.0
-     */
-    public static String des3EncodeCBC(byte[] data) throws Exception {
-        byte[] str5 = des3EncodeCBC(key, keyiv, data);
-        String reCode = Base64.getEncoder().encodeToString(str5);
-        return reCode;
-    }
-
-    /**
-     * @param
-     * @author MrLu
-     * @createTime 2020/4/26 15:10
-     * @describe 解密字符串
-     * @version 1.0
-     */
-    public static String des3DecodeCBC(String code) throws Exception {
-        if(StringUtils.isEmpty(code)){
-            return "";
-        }
-        byte[] str6 = des3DecodeCBC(key, keyiv, Base64.getDecoder().decode(code));
-        return new String(str6, "UTF-8");
-    }
 
      /**
      * 将任意字符串转的长度转化为8的倍数 并以@_填充
@@ -136,7 +141,7 @@ public class ThreeDesUtil {
      * @createTime  2020/8/20 10:35
      * @return  String 已经是8的倍数 |
       */
-    public static String strTo8Length(String oriStr)throws Exception{
+    private static String strTo8Length(String oriStr)throws Exception{
         oriStr=oriStr+"@";
         StringBuilder reString= new StringBuilder(oriStr);
         if (StringUtils.isEmpty(oriStr)){
@@ -149,26 +154,6 @@ public class ThreeDesUtil {
             strTo8--;
         }
         return reString.toString();
-    }
-
-    public static void main(String[] args) throws Exception {
-        byte[] key = "290CEAD10482CA1FF952892B3F67A24E290CEAD10482CA1F".getBytes();//必须是48位
-        byte[] keyiv = {9, 8, 7, 6, 5, 6, 7, 8};
-        String testLength=strTo8Length("165161651fdgrdgfgdijofe9834kldfshjsldfkm");
-        byte[] data = testLength.getBytes(); //data必须是8的倍数位置
-
-        System.out.println(testLength);
-        System.out.println("data.length=" + data.length);
-        System.out.println("CBC加密解密");
-        //加密
-        byte[] str5 = des3EncodeCBC(key, keyiv, data);
-        String byts = Base64.getEncoder().encodeToString(str5);
-        System.out.println(byts);
-
-        System.out.println(str5);
-        //解密
-        byte[] str6 = des3DecodeCBC(key, keyiv, Base64.getDecoder().decode(byts));
-        System.out.println(new String(str6, "UTF-8"));
     }
 
 }

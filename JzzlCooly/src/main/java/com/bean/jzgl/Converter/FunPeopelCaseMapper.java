@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author MrLu
@@ -31,7 +32,7 @@ public interface FunPeopelCaseMapper {
     FunPeopelCase pcDTOToPc(FunPeopelCaseDTO fpc);
 
     default Enums.PersonType personTypeToEnum(int personType) {
-        return EnumsUtil.getEnumByValue(Enums.PersonType.class, personType+"");
+        return Objects.requireNonNull(EnumsUtil.getEnumByValue(Enums.PersonType.class, personType +""));
     }
 
     List<FunPeopelCase> pcDTOToPcs(List<FunPeopelCaseDTO> fpc);
