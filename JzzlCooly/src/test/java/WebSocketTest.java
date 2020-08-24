@@ -1,10 +1,9 @@
-import com.webSocket.JzzlWebSocketServer;
+import com.action.webSocket.JzzlWebSocketServer;
+import com.service.test.test;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.extensions.permessage_deflate.PerMessageDeflateExtension;
 import org.junit.Test;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 /**
@@ -36,6 +35,11 @@ public class WebSocketTest {
             e.printStackTrace();
         }
 
+    }
+    @Test
+    public void test2(){
+        test a=new test();
+        a.testq("112");
     }
 
 

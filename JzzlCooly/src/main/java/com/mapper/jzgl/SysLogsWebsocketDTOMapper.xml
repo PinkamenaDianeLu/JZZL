@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.SysLogsWebsocketDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.SysLogsWebsocketDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="SENDER" jdbcType="VARCHAR" property="sender" />
+    <result column="MESSAGETYPE" jdbcType="DECIMAL" property="messagetype" />
+    <result column="RECEIVER" jdbcType="VARCHAR" property="receiver" />
+    <result column="SERVERIP" jdbcType="VARCHAR" property="serverip" />
+    <result column="CLIENTIP" jdbcType="VARCHAR" property="clientip" />
+    <result column="MESSAGE" jdbcType="VARCHAR" property="message" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, SENDER, MESSAGETYPE, RECEIVER, SERVERIP, 
+    CLIENTIP, MESSAGE
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_LOGS_WEBSOCKET
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from SYS_LOGS_WEBSOCKET
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.bean.jzgl.DTO.SysLogsWebsocketDTO">
+    insert into SYS_LOGS_WEBSOCKET (ID, SCBJ, STATE, 
+      CREATETIME, UPDATETIME, SENDER, 
+      MESSAGETYPE, RECEIVER, SERVERIP, 
+      CLIENTIP, MESSAGE)
+    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{sender,jdbcType=VARCHAR}, 
+      #{messagetype,jdbcType=DECIMAL}, #{receiver,jdbcType=VARCHAR}, #{serverip,jdbcType=VARCHAR}, 
+      #{clientip,jdbcType=VARCHAR}, #{message,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.SysLogsWebsocketDTO">
+    insert into SYS_LOGS_WEBSOCKET
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="scbj != null">
+        SCBJ,
+      </if>
+      <if test="state != null">
+        STATE,
+      </if>
+      <if test="createtime != null">
+        CREATETIME,
+      </if>
+      <if test="updatetime != null">
+        UPDATETIME,
+      </if>
+      <if test="sender != null">
+        SENDER,
+      </if>
+      <if test="messagetype != null">
+        MESSAGETYPE,
+      </if>
+      <if test="receiver != null">
+        RECEIVER,
+      </if>
+      <if test="serverip != null">
+        SERVERIP,
+      </if>
+      <if test="clientip != null">
+        CLIENTIP,
+      </if>
+      <if test="message != null">
+        MESSAGE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="scbj != null">
+        #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sender != null">
+        #{sender,jdbcType=VARCHAR},
+      </if>
+      <if test="messagetype != null">
+        #{messagetype,jdbcType=DECIMAL},
+      </if>
+      <if test="receiver != null">
+        #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="serverip != null">
+        #{serverip,jdbcType=VARCHAR},
+      </if>
+      <if test="clientip != null">
+        #{clientip,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null">
+        #{message,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.SysLogsWebsocketDTO">
+    update SYS_LOGS_WEBSOCKET
+    <set>
+      <if test="scbj != null">
+        SCBJ = #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sender != null">
+        SENDER = #{sender,jdbcType=VARCHAR},
+      </if>
+      <if test="messagetype != null">
+        MESSAGETYPE = #{messagetype,jdbcType=DECIMAL},
+      </if>
+      <if test="receiver != null">
+        RECEIVER = #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="serverip != null">
+        SERVERIP = #{serverip,jdbcType=VARCHAR},
+      </if>
+      <if test="clientip != null">
+        CLIENTIP = #{clientip,jdbcType=VARCHAR},
+      </if>
+      <if test="message != null">
+        MESSAGE = #{message,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bean.jzgl.DTO.SysLogsWebsocketDTO">
+    update SYS_LOGS_WEBSOCKET
+    set SCBJ = #{scbj,jdbcType=DECIMAL},
+      STATE = #{state,jdbcType=DECIMAL},
+      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      SENDER = #{sender,jdbcType=VARCHAR},
+      MESSAGETYPE = #{messagetype,jdbcType=DECIMAL},
+      RECEIVER = #{receiver,jdbcType=VARCHAR},
+      SERVERIP = #{serverip,jdbcType=VARCHAR},
+      CLIENTIP = #{clientip,jdbcType=VARCHAR},
+      MESSAGE = #{message,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

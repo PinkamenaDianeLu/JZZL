@@ -1,9 +1,6 @@
 import com.util.ThreeDesUtil;
 import org.junit.Test;
 
-import java.util.Base64;
-
-import static com.util.ThreeDesUtil.strTo8Length;
 
 /**
  * @author Mrlu

@@ -7,7 +7,7 @@ import com.util.EnumsUtil;
  * @createTime 2020/8/19 10:42
  * @describe  枚举定义类
  */
-public class Enums  extends EnumsUtil {
+public class Enums   {
      /**
      * 删除标记
      * @author MrLu

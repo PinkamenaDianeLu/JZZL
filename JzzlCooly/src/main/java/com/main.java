@@ -1,6 +1,6 @@
 package com;
 
-import com.webSocket.JzzlWebSocketServer;
+import com.action.webSocket.JzzlWebSocketServer;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.extensions.permessage_deflate.PerMessageDeflateExtension;
 

@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      ORACLE Version 11g                           */
-/* Created on:     2020/8/17 15:12:16                           */
+/* Created on:     2020/8/24 11:11:49                           */
 /*==============================================================*/
 
 
@@ -9,6 +9,8 @@ drop table SYS_BMB cascade constraints;
 drop table SYS_LOGS cascade constraints;
 
 drop table SYS_LOGS_JZCHNAGE cascade constraints;
+
+drop table SYS_LOGS_WEBSOCKET cascade constraints;
 
 drop table fun_PeopelCase cascade constraints;
 
@@ -175,6 +177,58 @@ comment on column SYS_LOGS_JZCHNAGE.authortype is
 
 comment on column SYS_LOGS_JZCHNAGE.ECN is
 '变更内容';
+
+/*==============================================================*/
+/* Table: SYS_LOGS_WEBSOCKET                                    */
+/*==============================================================*/
+create table SYS_LOGS_WEBSOCKET 
+(
+   ID                   number(9)            not null,
+   SCBJ                 number(9)            not null,
+   STATE                number(9)            not null,
+   CREATETIME           DATE                 not null,
+   UPDATETIME           DATE                 not null,
+   sender               VARCHAR2(2000)       not null,
+   messageType          number(9)            not null,
+   receiver             VARCHAR2(2000)       not null,
+   serverip             VARCHAR2(2000)       not null,
+   clientip             VARCHAR2(2000)       not null,
+   message              VARCHAR2(2000),
+   constraint PK_SYS_LOGS_WEBSOCKET primary key (ID)
+);
+
+comment on table SYS_LOGS_WEBSOCKET is
+'系统日志 webSocket信息表';
+
+comment on column SYS_LOGS_WEBSOCKET.SCBJ is
+'删除标记 0 未删除 1 已删除';
+
+comment on column SYS_LOGS_WEBSOCKET.STATE is
+'运维标记';
+
+comment on column SYS_LOGS_WEBSOCKET.CREATETIME is
+'创建时间';
+
+comment on column SYS_LOGS_WEBSOCKET.UPDATETIME is
+'更新时间';
+
+comment on column SYS_LOGS_WEBSOCKET.sender is
+'发送者';
+
+comment on column SYS_LOGS_WEBSOCKET.messageType is
+'消息类型';
+
+comment on column SYS_LOGS_WEBSOCKET.receiver is
+'接收者';
+
+comment on column SYS_LOGS_WEBSOCKET.serverip is
+'服务端IP地址';
+
+comment on column SYS_LOGS_WEBSOCKET.clientip is
+'客户端IP';
+
+comment on column SYS_LOGS_WEBSOCKET.message is
+'消息';
 
 /*==============================================================*/
 /* Table: fun_PeopelCase                                        */

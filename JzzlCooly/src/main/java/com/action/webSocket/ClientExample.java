@@ -1,8 +1,7 @@
-package com.webSocket;
+package com.action.webSocket;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft;
-import org.java_websocket.enums.ReadyState;
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
@@ -52,7 +51,7 @@ public class ClientExample extends WebSocketClient {
         ClientExample c = new ClientExample(new URI("ws://localhost:9003")); // more about drafts here: http://github.com/TooTallNate/Java-WebSocket/wiki/Drafts
         c.connectBlocking();
 
-        c.getReadyState();
+//        c.getReadyState();
         c.send("客户端第二次发送");
         c.send("1");
 //        c.close(1,"我关了啊");

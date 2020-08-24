@@ -17,6 +17,7 @@
         <com.alibaba.druid.version>1.1.23</com.alibaba.druid.version>
         <com.google.zxing.version>3.4.0</com.google.zxing.version>
         <slf4j.version>1.7.25</slf4j.version>
+        <org.aspectj>1.8.13</org.aspectj>
     </properties>
     <dependencies>
         <!-- mybaits -->
@@ -67,6 +68,12 @@
             <version>${slf4j.version}</version>
         </dependency>
 
+        <!-- redis -->
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>5.2.2.RELEASE</version>
+        </dependency>
         <!-- json处理 -->
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
@@ -158,6 +165,35 @@
             <artifactId>Java-WebSocket</artifactId>
             <version>1.5.1</version>
         </dependency>
+        <!-- Aop -->
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjrt -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>${org.aspectj}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${org.aspectj}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjtools -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjtools</artifactId>
+            <version>${org.aspectj}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>4.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+
 
     </dependencies>
 
@@ -234,6 +270,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>aspectj-maven-plugin</artifactId>
+                <version>1.11</version>
+
+                <configuration>
+                    <source>${maven.compiler.version}</source>
+                    <target>${maven.compiler.version}</target>
+                    <complianceLevel>${maven.compiler.version}</complianceLevel>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+                            <goal>test-compile</goal>  <!-- use this goal to weave all your test classes -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
 
     </build>

@@ -1,4 +1,4 @@
-package com.sqlsession;
+package com.database.sqlsession;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -11,7 +11,7 @@ import java.io.InputStream;
 /**
  * @author MrLu
  * @createTime 2020/8/21 14:48
- * @describe
+ * @describe 卷宗管理sqlSession工厂
  */
 public class JzzlSqlSessionFactory {
     private  static SqlSessionFactory sqlSessionFactory=null;

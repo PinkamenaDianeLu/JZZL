@@ -20,7 +20,7 @@ public class EnumsUtil {
      * @author MrLu
      * @createTime 2020/8/19 16:38
      */
-    public static <E extends Enum<?>> E valueOf(Class<E> enumClass, Object value, Method method) {
+    private static <E extends Enum<?>> E valueOf(Class<E> enumClass, Object value, Method method) {
         E[] es = enumClass.getEnumConstants();
         try {
             for (E e : es) {

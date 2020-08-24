@@ -9,7 +9,7 @@ import java.util.Objects;
  * @createTime 2020/8/19 10:42
  * @describe  枚举定义类
  */
-public class Enums extends EnumsUtil {
+public class Enums  {
      /**
      * 删除标记
      * @author MrLu
@@ -55,11 +55,12 @@ public class Enums extends EnumsUtil {
      * @author Mrlu
      * @createTime  2020/8/22 18:51
       */
-    public enum WebSocketMessageType{
+    public enum WebSocketMessageType {
          SEND(0,"发送消息"),//主办人
          CLIENT(1,"连接"),//副办人
          PULL(2,"服务端推送消息"),
-         CLOSE(3,"主动关闭连接");
+         CLOSE(3,"主动关闭连接"),
+         ServerStart(999,"开启连接");
          WebSocketMessageType(int value,String name){
              this.value=value;
              this.name=name;
@@ -73,7 +74,6 @@ public class Enums extends EnumsUtil {
          public String getName() {
              return name;
          }
-         // 重写 toString() 方法
          @Override
          public String toString(){
              return name;

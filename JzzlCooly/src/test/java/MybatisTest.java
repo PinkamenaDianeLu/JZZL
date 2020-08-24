@@ -1,14 +1,11 @@
 
-import java.util.Date;
-
 import com.bean.jzgl.Converter.FunPeopelCaseMapper;
-import com.bean.jzgl.DTO.FunPeopelCaseDTO;
 import com.bean.jzgl.DTO.SysLogsDTO;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.enums.Enums;
 import com.mapper.jzgl.FunPeopelCaseDTOMapper;
 import com.mapper.jzgl.SysLogsMapper;
-import com.sqlsession.JzzlSqlSessionFactory;
+import com.database.sqlsession.JzzlSqlSessionFactory;
 import org.apache.ibatis.session.SqlSession;
 import org.junit.Test;
 
@@ -34,7 +31,6 @@ public class MybatisTest {
 
     }
 
-    // TODO: 2020/8/22  MrLu  上单位测试一下 
     @Test
     public  void testInsert(){
         SqlSession sqlSession=null;
