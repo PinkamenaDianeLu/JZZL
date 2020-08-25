@@ -1,4 +1,4 @@
-package com.service.test;
+package com.aop;
 
 /**
  * @author MrLu
@@ -7,11 +7,11 @@ package com.service.test;
  */
 public class  test {
     public String testq(String aa){
+        System.out.println(aa);
         return aa;
     }
 
     public static void main(String[] args) {
         test a=new test();
-        a.testq("112");
-    }
+        a.testq("112");}
 }

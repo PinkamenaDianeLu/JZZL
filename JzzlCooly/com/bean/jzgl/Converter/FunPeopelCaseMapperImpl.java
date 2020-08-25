@@ -8,7 +8,7 @@ import javax.annotation.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2020-08-24T16:20:24+0800",
+    date = "2020-08-25T09:30:32+0800",
     comments = "version: 1.3.1.Final, compiler: BatchProcessingEnvImpl from aspectjtools-1.8.13.jar, environment: Java 1.8.0_251 (Oracle Corporation)"
 )
 public class FunPeopelCaseMapperImpl implements FunPeopelCaseMapper {

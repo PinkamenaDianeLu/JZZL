@@ -1,5 +1,5 @@
 import com.action.webSocket.JzzlWebSocketServer;
-import com.service.test.test;
+import com.aop.test;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.extensions.permessage_deflate.PerMessageDeflateExtension;
 import org.junit.Test;
@@ -36,11 +36,7 @@ public class WebSocketTest {
         }
 
     }
-    @Test
-    public void test2(){
-        test a=new test();
-        a.testq("112");
-    }
+
 
 
 }

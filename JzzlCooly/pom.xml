@@ -185,6 +185,8 @@
             <version>${org.aspectj}</version>
         </dependency>
 
+
+
         <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -279,6 +281,8 @@
                     <source>${maven.compiler.version}</source>
                     <target>${maven.compiler.version}</target>
                     <complianceLevel>${maven.compiler.version}</complianceLevel>
+                    <showWeaveInfo>true</showWeaveInfo>
+                    <verbose>true</verbose>
                 </configuration>
                 <executions>
                     <execution>

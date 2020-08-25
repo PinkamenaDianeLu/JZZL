@@ -7,7 +7,7 @@ import java.lang.reflect.Proxy;
 /**
  * @author MrLu
  * @createTime 2020/8/24 13:47
- * @describe 面向切面编程
+ * @describe 模拟面向切面编程
  */
 public class AopConfig  implements InvocationHandler {
 

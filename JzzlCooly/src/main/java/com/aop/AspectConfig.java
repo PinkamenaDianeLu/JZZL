@@ -11,7 +11,7 @@ import org.aspectj.lang.annotation.Pointcut;
  * @describe Aspect配置
  */
 @Aspect
-public class AspectConfig extends testAop {
+public class AspectConfig extends LogsRecorder {
      /**
      * 定义切入点
      * @author MrLu

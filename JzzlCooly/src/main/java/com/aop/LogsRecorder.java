@@ -1,5 +1,9 @@
 package com.aop;
 
+import com.sun.istack.internal.NotNull;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.reflect.CodeSignature;
+
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -10,7 +14,7 @@ import java.util.Map;
  * @createTime 2020/8/24 14:52
  * @describe
  */
-public class testAop {
+public class LogsRecorder {
     /**
      * @param paramMap request获取的参数数组
      * @author MrLu
@@ -24,6 +28,38 @@ public class testAop {
             rtnMap.put(key, paramMap.get(key)[0]);
         }
         return rtnMap;
+    }
+
+
+     /**
+     * 获取参数
+     * @author MrLu
+     * @param 
+     * @createTime  2020/8/25 15:44
+     * @return    |  
+      */
+     @NotNull
+    private Map<String, String> getMethodParameters (JoinPoint jp){
+        Map<String, String> reMap=new HashMap<>();
+        Object[] args = jp.getArgs();//参数
+        String[] names = ((CodeSignature)jp.getSignature()).getParameterNames();//参数名
+        Class[] types = ((CodeSignature)jp.getSignature()).getParameterTypes();//参数类型
+        for (int i = 0; i < args.length; i++) {
+            reMap.put(types[i].getName()+"=>"+names[i],String.valueOf(null==args[i]?"":args[i]));
+        }
+        return  reMap;
+        
+    }
+    
+     /**
+     * 记录日志
+     * @author MrLu
+     * @param 
+     * @createTime  2020/8/25 15:43
+     * @return    |  
+      */
+    public void insertLogs(){
+        
     }
 
     /**
