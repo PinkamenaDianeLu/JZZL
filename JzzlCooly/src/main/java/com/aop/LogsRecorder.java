@@ -1,6 +1,5 @@
 package com.aop;
 
-import com.sun.istack.internal.NotNull;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.CodeSignature;
 
@@ -38,7 +37,6 @@ public class LogsRecorder {
      * @createTime  2020/8/25 15:44
      * @return    |  
       */
-     @NotNull
     private Map<String, String> getMethodParameters (JoinPoint jp){
         Map<String, String> reMap=new HashMap<>();
         Object[] args = jp.getArgs();//参数

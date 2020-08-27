@@ -9,7 +9,7 @@ import java.util.Map;
  * @author MrLu
  * @createTime  2020/8/25 11:31
   */
-public aspect LogsAspect extends LogsRecorder {
+public aspect LogsAspect  {
 //    Object  around():call(* com.aop.test.testq(java.lang.String)){
 //        System.out.println("开始事务...");
 //        Object re=  proceed();
@@ -52,7 +52,7 @@ public aspect LogsAspect extends LogsRecorder {
                      " : " +            types[i].getName() +//参数类型
                      " = " +            args[i]);//参数值
          }
-         Map<String, String> pList= super.getMethodParameters(thisJoinPoint);
+//         Map<String, String> pList= super.getMethodParameters(thisJoinPoint);
 
          System.out.println("just successfully moved");
      }
