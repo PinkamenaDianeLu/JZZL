@@ -2,8 +2,6 @@ package com.aop;
 
 import org.aspectj.lang.reflect.CodeSignature;
 
-import java.util.Map;
-
 /**
  * 用于记录日志的切面
  * @author MrLu
@@ -18,7 +16,7 @@ public aspect LogsAspect  {
 //    }
 
     //定义切入点
-     pointcut  runMethod():call(* com.aop.*.*(..));
+     pointcut  runMethod():call(* com.aop.test.*(..));
      //方法执行前  没毛线用
      before(): runMethod() {
          System.out.println("about to move");

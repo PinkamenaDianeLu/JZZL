@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>案卷整理</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
+<script src="/Framework/js/jquery.min.js"></script>
+	<script src="/Framework/layer/layer.js"></script>
+<link type="text/css" rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="header">
+	<div class="logo"></div>
+	<div class="r_nav">
+		<div class="r_nav_l"><i class="ico i_nes"></i><span>admin</span>
+			<div class="r_hover">
+				<p>账户信息<a class="right">账户设置</a></p>
+				<p><b>·</b>所在部门：<span>哈尔滨市公安局道里分局</span></p>
+				<p><b>·</b>本次登录：<span>2020-08-21 14:02:03</span></p>
+				<p><b>·</b>登录IP：<span>(IP:192.168.1.1)</span></p>
+				<p><b>·</b>上次登录：<span>2020-08-21 14:02:03</span></p>
+			</div>
+		</div>
+		<div class="ico r_nav_c"><span>1</span></div>
+		<div class="ico r_nav_r"></div>
+	</div>
+</div>
+<div class="index-main">
+	<div class="in_tab">
+		<ul id="myTab" class="nav nav-tabs">
+		   <li class="active">
+		      <a href="#xingshi" data-toggle="tab">刑事</a>
+		   </li>
+		   <li><a href="#xingzheng" data-toggle="tab">行政</a></li>
+		</ul>
+		<div id="myTabContent" class="tab-content">
+		   <div class="tab-pane fade in active" id="xingshi">
+		      <div class="t_search">
+				  <div class="row">
+				    <div class="col-md-1">案件编号 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+				    <div class="col-md-1">主办人：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">送检状态 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">被害人：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">送检编号 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">辅办人： </div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">立案时间 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">嫌疑人：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">案件名称 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">办案单位 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+					<div class="col-md-1">整理时间 ：</div><div class="col-md-3"><input type="text" placeholder="" style="width: 130px;" />-<input type="text" placeholder="" style="width: 130px;" /></div>
+					<div class="col-md-2"><button class="ok_but">查询</button></div>
+				  </div>
+		      	</div>
+		      	<div class="f_main">
+		      		<div class="table-responsive" style="min-height: 480px;"><!--table-striped//不产生横向滚动条，数据内容折行显示-->
+		      			<table class="table table-striped table-hover text-nowrap" id="sjjlTable">
+		      				<tr>
+		      					<th width="60"><a class="b_but" style="height: 24px;">合案</a></th>
+		      					<th width="100">案件编号</th>
+		      					<th width="100">送检编号</th>
+		      					<th width="200">案件名称</th>
+		      					<th width="80">嫌疑人</th>
+		      					<th width="80">被害人</th>
+		      					<th width="100">立案时间</th>
+		      					<th width="80">主办人</th>
+		      					<th width="80">辅办人</th>
+		      					<th width="200">办案单位</th>
+								<th width="100">送检状态</th>
+								<th width="100">整理时间</th>
+								<th width="200">操作</th>
+		      				</tr>
+		      				<tr>
+		      					<td><input type="checkbox" /></td>
+								<td>201092010</td>
+								<td>201092010</td>
+		      					<td>历盛 </td>
+		      					<td>历盛</td>
+								<td>历盛</td>
+		      					<td>1979-02-01</td>
+		      					<td>历盛</td>
+		      					<td>历盛</td>
+								<td>办案单位</td>
+		      					<td>已整理</td>
+		      					<td>2003-09-01</td>
+								<td><a class="b_but edit" href="/model/zhengli-1.html">整理</a><a class="b_but red" href="">拆案</a></td>
+		      				</tr>
+							<tr>
+								<td><input type="checkbox" /></td>
+								<td>201092010</td>
+								<td>201092010</td>
+								<td>历盛 </td>
+								<td>历盛</td>
+								<td>历盛</td>
+								<td>1979-02-01</td>
+								<td>历盛</td>
+								<td>历盛</td>
+								<td>办案单位</td>
+								<td>待整理</td>
+								<td>2003-09-01</td>
+								<td><a class="b_but edit" onclick="jzzl(1)">整理</a><a class="b_but red" href="">拆案</a></td>
+							</tr>
+		      			</table>
+		      		</div>
+		      		<div class="f_bo">
+		      			<nav aria-label="Page navigation">
+		      			  <ul class="pagination">
+		      				<li>
+		      				  <a href="#" aria-label="Previous">
+		      					<span aria-hidden="true">上一页</span>
+		      				  </a>
+		      				</li>
+		      				<li><a href="#">1</a></li>
+		      				<li><a href="#">2</a></li>
+		      				<li><a href="#">3</a></li>
+		      				<li><a href="#">4</a></li>
+		      				<li><a href="#">5</a></li>
+		      				<li>
+		      				  <a href="#" aria-label="Next">
+		      					<span aria-hidden="true">下一页</span>
+		      				  </a>
+		      				</li>
+		      			  </ul>
+		      			</nav>
+		      		</div>
+		      	</div>
+			  
+		   </div>
+		   <div class="tab-pane fade" id="xingzheng">
+				<div class="t_search">
+								  <div class="row">
+								    <div class="col-md-1">案件编号 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+								    <div class="col-md-1">主办人：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">送检状态 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">被害人：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">送检编号 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">辅办人： </div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">立案时间 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">嫌疑人：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">案件名称 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">办案单位 ：</div><div class="col-md-2"><input type="text" placeholder="" /></div>
+									<div class="col-md-1">整理时间 ：</div><div class="col-md-3"><input type="text" placeholder="" style="width: 130px;" />-<input type="text" placeholder="" style="width: 130px;" /></div>
+									<div class="col-md-2"><button class="ok_but">查询</button></div>
+								  </div>
+					</div>
+					<div class="f_main">
+						<div class="table-responsive" style="min-height: 480px;"><!--table-striped//不产生横向滚动条，数据内容折行显示-->
+							<table class="table table-striped table-hover text-nowrap">
+								<tr>
+									<th width="60"><a class="b_but" style="height: 24px;">合案</a></th>
+									<th width="100">案件编号</th>
+									<th width="100">送检编号</th>
+									<th width="200">案件名称</th>
+									<th width="80">嫌疑人</th>
+									<th width="80">被害人</th>
+									<th width="100">立案时间</th>
+									<th width="80">主办人</th>
+									<th width="80">辅办人</th>
+									<th width="200">办案单位</th>
+												<th width="100">送检状态</th>
+												<th width="100">整理时间</th>
+												<th width="200">操作</th>
+								</tr>
+								<tr>
+									<td><input type="checkbox" /></td>
+												<td>201092010</td>
+												<td>201092010</td>
+									<td>历盛 </td>
+									<td>历盛</td>
+												<td>历盛</td>
+									<td>1979-02-01</td>
+									<td>历盛</td>
+									<td>历盛</td>
+												<td>办案单位</td>
+									<td>待整理</td>
+									<td>2003-09-01</td>
+												<td><a class="b_but edit" href="/model/zhengli-1.html">整理</a><a class="b_but red" href="">拆案</a></td>
+								</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>201092010</td>
+												<td>201092010</td>
+												<td>历盛 </td>
+												<td>历盛</td>
+												<td>历盛</td>
+												<td>1979-02-01</td>
+												<td>历盛</td>
+												<td>历盛</td>
+												<td>办案单位</td>
+												<td>待整理</td>
+												<td>2003-09-01</td>
+												<td><a class="b_but edit" href="/model/zhengli-1.html">整理</a><a class="b_but red" href="">拆案</a></td>
+											</tr>
+							</table>
+						</div>
+						<div class="f_bo">
+							<nav aria-label="Page navigation">
+							  <ul class="pagination">
+								<li>
+								  <a href="#" aria-label="Previous">
+									<span aria-hidden="true">上一页</span>
+								  </a>
+								</li>
+								<li><a href="#">1</a></li>
+								<li><a href="#">2</a></li>
+								<li><a href="#">3</a></li>
+								<li><a href="#">4</a></li>
+								<li><a href="#">5</a></li>
+								<li>
+								  <a href="#" aria-label="Next">
+									<span aria-hidden="true">下一页</span>
+								  </a>
+								</li>
+							  </ul>
+							</nav>
+						</div>
+					</div>
+					
+		   </div>
+		</div>
+	</div>
+</div>
+<div class="bottom">
+	<p>Copyright © www.thkj.com, All Rights Reserved.        <span>Email : 99766850@qq.com  QQ: 99766850</span></p>
+</div>
+<script src="/Framework/js/jquery.min.js"></script>
+<script src="/utils/utils.js"></script>
+<script src="/Framework/js/bootstrap.min.js"></script>
+<script src="/model/ajcx/js/index.js"></script>
+</body>
+</html>

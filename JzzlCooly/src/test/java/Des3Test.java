@@ -25,4 +25,10 @@ public class Des3Test {
         String str6 = ThreeDesUtil.des3DecodeCBC(str5);
         System.out.println(str6);
     }
+    @Test
+    public  void Strongtest(){
+        String a="1234567";
+        System.out.println(a.substring(0,a.length()-1));
+
+    }
 }
