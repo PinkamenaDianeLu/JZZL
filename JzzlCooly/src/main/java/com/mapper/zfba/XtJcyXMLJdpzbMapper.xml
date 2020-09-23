@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="common.mapper.XtJcyXMLJdpzbMapper" >
+  <resultMap id="BaseResultMap" type="common.entity.XtJcyXMLJdpzb" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="FJDID" property="fjdid" jdbcType="DECIMAL" />
+    <result column="FJDMC" property="fjdmc" jdbcType="VARCHAR" />
+    <result column="ZJDMC" property="zjdmc" jdbcType="VARCHAR" />
+    <result column="SFDTSJ" property="sfdtsj" jdbcType="DECIMAL" />
+    <result column="SFBHSJJ" property="sfbhsjj" jdbcType="VARCHAR" />
+    <result column="SSYWJD" property="ssywjd" jdbcType="VARCHAR" />
+    <result column="XH" property="xh" jdbcType="DECIMAL" />
+    <result column="COUNTSQL" property="countsql" jdbcType="VARCHAR" />
+    <result column="COUNTSQLWHERE" property="countsqlwhere" jdbcType="VARCHAR" />
+    <result column="SJSQL" property="sjsql" jdbcType="VARCHAR" />
+    <result column="SJSQLWHERE" property="sjsqlwhere" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, FJDID, FJDMC, ZJDMC, SFDTSJ, SFBHSJJ, SSYWJD, XH, COUNTSQL, COUNTSQLWHERE, SJSQL, SJSQLWHERE
+  </sql>
+  
+  <select id="selectByFjdid" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from XT_JCYXMLJDPZB
+    where FJDID = #{fjdid,jdbcType=DECIMAL} and SSYWJD like '%'|| #{ssywjd,jdbcType=VARCHAR}|| '%' order by xh
+  </select>
+  
+    <select id="selectObject" resultType="java.util.Map" parameterType="map">
+    ${sql}
+  </select>
+  
+</mapper>

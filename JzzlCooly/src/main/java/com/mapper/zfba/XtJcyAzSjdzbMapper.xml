@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="common.mapper.XtJcyAzSjdzbMapper" >
+  <resultMap id="BaseResultMap" type="common.entity.XtJcyAzSjdzb" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="SSJDID" property="ssjdid" jdbcType="DECIMAL" />
+    <result column="JCYJDMC" property="jcyjdmc" jdbcType="VARCHAR" />
+    <result column="AZZDMC" property="azzdmc" jdbcType="VARCHAR" />
+    <result column="AZZDLYB" property="azzdlyb" jdbcType="VARCHAR" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+    <result column="XH" property="xh" jdbcType="DECIMAL" />
+    <result column="DEFUA" property="defua" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SSJDID, JCYJDMC, AZZDMC, AZZDLYB, SCBJ, XH, DEFUA
+  </sql>
+
+   <select id="selectSjjByFjdid" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from XT_JCYAZSJDZB
+    where SSJDID = #{ssjdid,jdbcType=VARCHAR} and scbj = 0 order by xh
+  </select>
+</mapper>

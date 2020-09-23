@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="common.mapper.XtJcylcjdWspzbMapper" >
+  <resultMap id="BaseResultMap" type="common.entity.XtJcylcjdWspzb" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="WJBM" property="wjbm" jdbcType="VARCHAR" />
+    <result column="WJDM" property="wjdm" jdbcType="VARCHAR" />
+    <result column="LCJD" property="lcjd" jdbcType="VARCHAR" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+    <result column="SFDR" property="sfdr" jdbcType="DECIMAL" />
+    <result column="SFGJ" property="sfgj" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, WJBM, WJDM, LCJD, SCBJ, SFDR, SFGJ
+  </sql>
+  <select id="selectByLcjd" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from xt_jcylcjdwspzb where scbj = 0 and lcjd = #{lcjd,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectWjsjByJqbh" resultType="common.entity.WjJzsjb" parameterType="map" >
+    select * from wj_jzsjb where wjbm = #{wjbm,jdbcType=VARCHAR} and wjbid = #{wjbid,jdbcType=VARCHAR}
+     and scbj = 0 and jqbh = #{jqbh,jdbcType=VARCHAR} and wjdm = #{wjdm,jdbcType=VARCHAR} and jzfl = '9'
+  </select>
+  
+  <select id="selectWjidByInfo" resultType="common.entity.XtWjflb" parameterType="map" >
+    select * from xt_wjflb where wjbm = #{wjbm,jdbcType=VARCHAR} and dydm = #{xyrbh,jdbcType=VARCHAR}
+     and scbj = 0 and jqbh = #{jqbh,jdbcType=VARCHAR} and wjdm = #{wjdm,jdbcType=VARCHAR} and wjzt = '9'
+  </select>
+  <select id="selectJzml" resultType="java.util.Map" parameterType="map" >
+    select * from (
+select p.jzfl,w.jqbh,w.wjbm,w.wjdm,w.wjbid,w.wjzw,p.xh,p.ym,w.dydm xyrbh from (select * from wj_jzpzb where jzfl in (1,2) order by xh ) p 
+left join  xt_wjflb w on p.wjbm = w.wjbm and p.wjdm = w.wjdm and w.scbj = 0 and (w.wjzt = '9' or w.wjbm = 'XT_FJZB') ) 
+ where 1=1 and jqbh =#{jqbh,jdbcType=VARCHAR} and jzfl = #{jzfl,jdbcType=VARCHAR}
+and (${xyrsql}) 
+  </select>
+  <select id="selectJzwj" resultType="java.util.Map" parameterType="map" >
+select id,jzfl,WJZW,wjbm,wjbid,
+       (case jzfl
+         when '1' then
+          (case wjbm
+            when 'XT_FJZB' then
+             'DZJZ/sswsj/' || (substr(wjdz, instr(wjdz, '/', -1) + 1))
+            else
+              'DZJZ/sswsj/' ||substr(substr(wjdz,instr(wjdz,'/',1,2)+1),0)
+          end)
+         when '2' then
+          (case wjbm
+            when 'XT_FJZB' then
+             'DZJZ/zjclj/' || (substr(wjdz, instr(wjdz, '/', -1) + 1))
+            when 'XT_FJB' then
+             'DZJZ/zjclj/' || (substr(wjdz, instr(wjdz, '/', -1) + 1))
+            else
+             'DZJZ/zjclj/'||substr(substr(wjdz,instr(wjdz,'/',1,2)+1),0)
+          end) 
+       end)  jzwjdz,
+      wjdz,
+       XH
+  from wj_wjdz
+ where scbj = 0   and jqbh =#{jqbh,jdbcType=VARCHAR} and sfbzj = 1 and wjbid = #{wjbid,jdbcType=VARCHAR} 
+ and wjbm = #{wjbm,jdbcType=VARCHAR} and jzfl = #{jzfl,jdbcType=VARCHAR} 
+  </select>
+  
+</mapper>

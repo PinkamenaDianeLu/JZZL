@@ -1,5 +1,7 @@
 package com.action.webSocket;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
@@ -72,16 +74,24 @@ public class JzzlWebSocketServer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         System.out.println("这里是服务端，我收到了" + message);
-        if (!message.equals("1")) {
-            conn.send(message + "这是服务端返回的！");
-        } else {
-            try {
-                Thread.sleep(10000);
-                conn.send("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-  延迟返回  *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+//        if (!message.equals("1")) {
+//            conn.send(message + "这是服务端返回的！");
+//        } else {
+//            try {
+//                Thread.sleep(10000);
+//                conn.send("*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-  延迟返回  *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-");
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+        JSONObject jsonMessage = JSON.parseObject(message);
+        if (jsonMessage.containsKey("code")){
+            //判断操作
+            if ("createZip".equals(jsonMessage.getString("code"))){
+                //一.生成压缩包
             }
         }
+
     }
 
     @Override
