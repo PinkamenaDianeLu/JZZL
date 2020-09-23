@@ -31,7 +31,7 @@ public interface FunPeopelCaseMapper {
     FunPeopelCase pcDTOToPc(FunPeopelCaseDTO fpc);
 
     default Enums.PersonType personTypeToEnum(int personType) {
-        return EnumsUtil.getEnumByValue(Enums.PersonType.class, personType+"");
+        return EnumsUtil.getEnumByValue(Enums.PersonType.class, personType);
     }
 
     List<FunPeopelCase> pcDTOToPcs(List<FunPeopelCaseDTO> fpc);

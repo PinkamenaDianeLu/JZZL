@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author MrLu
@@ -38,5 +39,14 @@ public class CaseSearchImpl implements CaseSearchService {
     public List<FunPeopelCase> testSearch() {
         return   FunPeopelCaseMapper.INSTANCE.pcDTOToPcs(funPeopelCaseTDOMapper.selectAll());
 
+    }
+
+    @Override
+    public List<FunPeopelCase>  selectPeopleCasePage(Map<String,Object> map) throws Exception{
+        return   FunPeopelCaseMapper.INSTANCE.pcDTOToPcs(funPeopelCaseTDOMapper.selectPeopleCasePage(map));
+    }
+    @Override
+    public int selectPeopleCasePageCount(Map<String,Object> map)throws  Exception  {
+        return funPeopelCaseTDOMapper.selectPeopleCasePageCount(map);
     }
 }

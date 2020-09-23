@@ -24,7 +24,15 @@ public class FunPeopelCase {
     private String ajbh;
 
     private Enums.PersonType persontype;
+    private  String casename;
 
+    public String getCasename() {
+        return casename;
+    }
+
+    public void setCasename(String casename) {
+        this.casename = casename;
+    }
 
     public Integer getId() {
         return id;

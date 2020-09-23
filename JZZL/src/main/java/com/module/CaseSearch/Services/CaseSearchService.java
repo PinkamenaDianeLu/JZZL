@@ -3,6 +3,7 @@ package com.module.CaseSearch.Services;
 import com.bean.jzgl.Source.FunPeopelCase;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author MrLu
@@ -14,5 +15,14 @@ public interface CaseSearchService {
     void testInsert();
 
     List<FunPeopelCase> testSearch();
+    /**
+     * 分页查询人员案件表
+     * @author MrLu
+     * @param
+     * @createTime  2020/9/23 14:08
+     * @return    |
+     */
+    List<FunPeopelCase>  selectPeopleCasePage(Map<String,Object> map) throws Exception;
+    int selectPeopleCasePageCount(Map<String,Object> map)throws  Exception;
 
 }
