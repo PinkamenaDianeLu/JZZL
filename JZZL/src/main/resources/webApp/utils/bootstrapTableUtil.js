@@ -32,7 +32,7 @@ var createTable = (function () {
                 search: false, // 显示搜索框
                 pagination: true, // 分页
                 pageNumber: 1,
-                pageSize: 6,
+                pageSize: $('#' + _tableId).attr('colnum')||13,
                 sidePagination: 'server', // 服务端处理分页
                 trimOnSearch: true,//自动去掉前后空格
                 queryParams: function queryParams(params) {

@@ -45,6 +45,8 @@
 })()*/
 
 $(function () {
+
+
 let a=createTable({tableId:'sjjlTable',
     searchUrl:'/CaseSearch/selectPeopleCasePage',
     column :[{

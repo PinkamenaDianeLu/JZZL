@@ -2,7 +2,6 @@ package com.module.CaseSearch.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bean.jzgl.Source.FunPeopelCase;
 import com.config.aop.OperLog;
 import com.module.CaseSearch.Services.CaseSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +37,15 @@ public class CaseSearchController {
     @OperLog(operModul = operModul, operDesc = "test", operType = OperLog.type.INSERT)
     public void test (){
 //        caseSearchService.testInsert();
-        for (FunPeopelCase thisa:
-        caseSearchService.testSearch()) {
-            System.out.println(thisa.getPersontype());
-        }
+        JSONObject reValue = new JSONObject();
+                try {
+                    System.out.println(caseSearchService.testSearch().getPersontype());
+                    reValue.put("message", "success");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    reValue.put("message", "error");
+                }
+
     }
 
 
@@ -63,7 +67,7 @@ public class CaseSearchController {
             JSONObject pJsonObj = JSON.parseObject(params);
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
-            reMap.put("rows", caseSearchService.selectPeopleCasePage(pJsonObj));
+            reMap.put("rows", caseSearchService.selectPeopleCasePageTest(pJsonObj));
             reMap.put("total", caseSearchService.selectPeopleCasePageCount(pJsonObj));
         } catch (Exception e) {
             e.printStackTrace();

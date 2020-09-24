@@ -1,5 +1,10 @@
+import com.bean.jzgl.Source.FunArchiveRecords;
 import com.util.ThreeDesUtil;
 import org.junit.Test;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,8 +32,26 @@ public class Des3Test {
     }
     @Test
     public  void Strongtest(){
-        String a="1234567";
-        System.out.println(a.substring(0,a.length()-1));
+        try {
+            Object ot = FunArchiveRecords.class.newInstance();
+            Class c = ot.getClass();
+            Field[] fields = c.getDeclaredFields();//取得所有类成员变
+            for (Field thisField:
+            fields) {
+                System.out.println(thisField.getName());
+            }
+            List<?> a=new ArrayList<>();
+            List<FunArchiveRecords> b=new ArrayList<>();
+            a=b;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+//        System.out.println(FunArchiveRecords.class.getMethods().length);
+//        Method[] methods=  FunArchiveRecords.class.getMethods();
+//        for (Method thisMethod:
+//                methods) {
+//            System.out.println( thisMethod.getName());
+//        }
 
     }
 }

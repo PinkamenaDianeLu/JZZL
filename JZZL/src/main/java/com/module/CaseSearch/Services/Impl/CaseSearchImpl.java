@@ -6,6 +6,9 @@ import com.bean.jzgl.Source.FunPeopelCase;
 import com.enums.Enums;
 import com.mapper.jzgl.FunPeopelCaseDTOMapper;
 import com.module.CaseSearch.Services.CaseSearchService;
+import com.util.EnumsUtil;
+import com.util.MapFactory;
+import net.sf.cglib.beans.BeanMap;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,31 +25,50 @@ public class CaseSearchImpl implements CaseSearchService {
 
     @Resource
     FunPeopelCaseDTOMapper funPeopelCaseTDOMapper;
+
     @Override
     public void testInsert() {
-        FunPeopelCase FunPeopelCase=new FunPeopelCase();
+        FunPeopelCase FunPeopelCase = new FunPeopelCase();
 
         FunPeopelCase.setIdcard("230105199810211311");
         FunPeopelCase.setName("lu");
         FunPeopelCase.setJqbh("asd");
         FunPeopelCase.setAjbh("123415");
         FunPeopelCase.setPersontype(Enums.PersonType.SECONDARY);
-        FunPeopelCaseDTO FunPeopelCaseTDO= FunPeopelCaseMapper.INSTANCE.pcToPcDTO(FunPeopelCase);
+        FunPeopelCaseDTO FunPeopelCaseTDO = FunPeopelCaseMapper.INSTANCE.pcToPcDTO(FunPeopelCase);
         funPeopelCaseTDOMapper.insertSelective(FunPeopelCaseTDO);
     }
 
     @Override
-    public List<FunPeopelCase> testSearch() {
-        return   FunPeopelCaseMapper.INSTANCE.pcDTOToPcs(funPeopelCaseTDOMapper.selectAll());
+    public List<FunPeopelCase> testSearchList() {
+        return FunPeopelCaseMapper.INSTANCE.pcDTOToPcs(funPeopelCaseTDOMapper.selectAll());
 
     }
 
+    //selectByPrimaryKey
     @Override
-    public List<FunPeopelCase>  selectPeopleCasePage(Map<String,Object> map) throws Exception{
-        return   FunPeopelCaseMapper.INSTANCE.pcDTOToPcs(funPeopelCaseTDOMapper.selectPeopleCasePage(map));
+    public FunPeopelCase testSearch() throws Exception {
+        Class<?> beanClass = FunPeopelCase.class;
+        System.out.println(beanClass.getName());
+        System.out.println(beanClass.getClassLoader());
+        Object object = beanClass.newInstance();
+        BeanMap beanMap = BeanMap.create(object);
+        Map<String, Object> map = funPeopelCaseTDOMapper.selecTest(21);
+        map.put("persontype", EnumsUtil.getEnumByValue(Enums.PersonType.class,map.get("persontype")));
+        beanMap.putAll(map);
+        return (FunPeopelCase) object;
+    }
+
+    @Override
+    public List<FunPeopelCase> selectPeopleCasePage(Map<String, Object> map) throws Exception {
+        return FunPeopelCaseMapper.INSTANCE.pcDTOToPcs(funPeopelCaseTDOMapper.selectPeopleCasePage(map));
     }
     @Override
-    public int selectPeopleCasePageCount(Map<String,Object> map)throws  Exception  {
+    public List<Object> selectPeopleCasePageTest(Map<String, Object> map) throws Exception {
+        return MapFactory.mapToListBean(funPeopelCaseTDOMapper.selectPeopleCasePageTest(map),FunPeopelCase.class);
+    }
+    @Override
+    public int selectPeopleCasePageCount(Map<String, Object> map) throws Exception {
         return funPeopelCaseTDOMapper.selectPeopleCasePageCount(map);
     }
 }

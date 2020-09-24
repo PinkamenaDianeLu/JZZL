@@ -14,7 +14,9 @@ public interface CaseSearchService {
 
     void testInsert();
 
-    List<FunPeopelCase> testSearch();
+    List<FunPeopelCase> testSearchList();
+
+    FunPeopelCase testSearch() throws Exception;
     /**
      * 分页查询人员案件表
      * @author MrLu
@@ -25,4 +27,5 @@ public interface CaseSearchService {
     List<FunPeopelCase>  selectPeopleCasePage(Map<String,Object> map) throws Exception;
     int selectPeopleCasePageCount(Map<String,Object> map)throws  Exception;
 
+    List<Object> selectPeopleCasePageTest(Map<String, Object> map) throws Exception ;
 }

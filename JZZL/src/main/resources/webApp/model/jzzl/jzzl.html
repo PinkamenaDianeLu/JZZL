@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>案卷整理</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-<link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
-<script src="/Framework/js/jquery.min.js"></script>
-<script src="/Framework/layer/layer.js"></script>
-<link type="text/css" rel="stylesheet" href="/css/style.css">
+	<meta charset="utf-8">
+	<title>案卷整理</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<link href="../Framework/css/bootstrap.min.css" rel="stylesheet">
+	<script src="../Framework/js/jquery.min.js"></script>
+	<script src="../Framework/layer/layer.js"></script>
+	<link type="text/css" rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 <div class="header">
@@ -28,7 +28,8 @@
 		<div class="ico r_nav_r"></div>
 	</div>
 </div>
-<div class="index-main">
+<div class="index-main" style="position:fixed; display: inline-block; width:1360px; left:50%; margin-left:-680px; height:calc(100% - 115px); margin-top: 80px; overflow-y: hidden;">
+
 	<div class="c_left">
 		<div class="left_title"><a href="" class="a_done">完成整理</a><a href=""><i class="ico import"></i></a><a id="aded" title="删除"><i class="ico delete"></i></a></div>
 		<div class="left_text">
@@ -329,68 +330,69 @@
 				<div class="a_title">标签注释说明，有啥问题！</div>
 				<div class="a_title red" style="top: 200px; left:100px">标签注释说明，有啥问题！</div>
 				<div class="a_title green" style="top: 400px; left:400px">标签注释说明，有啥问题！</div>
-				<img src="/images/未标题-1.jpg" class="img_text" id="img1" />
-				<img src="/images/未标题-1.jpg" class="img_text" id="img2" />
-				<img src="/images/未标题-1.jpg" class="img_text" id="img3" />
-				<img src="/images/未标题-1.jpg" class="img_text" id="img4" />
-				<img src="/images/未标题-1.jpg" class="img_text" id="img5" />
+				<img src="../images/未标题-1.jpg" class="img_text" id="img1" />
+				<img src="../images/未标题-1.jpg" class="img_text" id="img2" />
+				<img src="../images/未标题-1.jpg" class="img_text" id="img3" />
+				<img src="../images/未标题-1.jpg" class="img_text" id="img4" />
+				<img src="../images/未标题-1.jpg" class="img_text" id="img5" />
 			</div>
 			<div class="r_img_min">
-				<a href="#img1" class="active"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-				<a href="#img2"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-				<a href="#img3"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-				<a href="#img4"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-				<a href="#img5"><img src="/images/未标题-1.jpg" class="img_text" /></a>
+				<a href="#img1" class="active"><img src="../images/未标题-1.jpg" class="img_text" /></a>
+				<a href="#img2"><img src="../images/未标题-1.jpg" class="img_text" /></a>
+				<a href="#img3"><img src="../images/未标题-1.jpg" class="img_text" /></a>
+				<a href="#img4"><img src="../images/未标题-1.jpg" class="img_text" /></a>
+				<a href="#img5"><img src="../images/未标题-1.jpg" class="img_text" /></a>
 			</div>
 		</div>
 		<div class="img_t">
-			<a href="/images/未标题-1.jpg" class="active"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			<a href="#img2"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			<a href="#img3"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			<a href="#img4"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			<a href="#img5"><img src="/images/未标题-1.jpg" class="img_text" /></a>
+			<a href="../images/未标题-1.jpg" class="active"><img src="../images/未标题-1.jpg" class="img_text" /></a>
+			<a href="#img2"><img src="../images/未标题-1.jpg" class="img_text" /></a>
+			<a href="#img3"><img src="../images/未标题-1.jpg" class="img_text" /></a>
+			<a href="#img4"><img src="../images/未标题-1.jpg" class="img_text" /></a>
+			<a href="#img5"><img src="../images/未标题-1.jpg" class="img_text" /></a>
 		</div>
 	</div>
+
 </div>
 <div class="bottom">
 	<p>Copyright © www.thkj.com, All Rights Reserved.        <span>Email : 99766850@qq.com  QQ: 99766850</span></p>
 </div>
-    
-	<script>
-		$(function(){  
-		　　$('#aded').click(function(){  
-		
-		　　　　 if($('.textt').is(':hidden')){  
-		
-		　　　　　　 $('.delt').hide();  
-					$('.textt').show(); 
-		
-		　　　　 }  else{  
-		
-		　　　　　　 $('.textt').hide();  
-		
-		　　　　　　 $('.delt').show();  
-		
-		　　　　 }
-		　　}); 
-		 $('#aimg').click(function(){
-		 
-		 　　　　 if($('.img_t').is(':hidden')){  
-		 
-		 　　　　　　 $('.img_p').hide();  
-		 			$('.img_t').show(); 
-		 
-		 　　　　 }  else{  
-		 
-		 　　　　　　 $('.img_t').hide();  
-		 
-		 　　　　　　 $('.img_p').show();  
-		 
-		 　　　　 }
-		 　　}); 
-		});  
-		
-	</script>
-<script src="/Framework/js/bootstrap.min.js"></script>
+
+<script>
+	$(function(){
+		$('#aded').click(function(){
+
+			if($('.textt').is(':hidden')){
+
+				$('.delt').hide();
+				$('.textt').show();
+
+			}  else{
+
+				$('.textt').hide();
+
+				$('.delt').show();
+
+			}
+		});
+		$('#aimg').click(function(){
+
+			if($('.img_t').is(':hidden')){
+
+				$('.img_p').hide();
+				$('.img_t').show();
+
+			}  else{
+
+				$('.img_t').hide();
+
+				$('.img_p').show();
+
+			}
+		});
+	});
+
+</script>
+<script src="../Framework/js/bootstrap.min.js"></script>
 </body>
 </html>

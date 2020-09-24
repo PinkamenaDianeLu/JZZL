@@ -11,6 +11,8 @@ public interface FunPeopelCaseDTOMapper {
     int insertSelective(FunPeopelCaseDTO record);
 
     FunPeopelCaseDTO selectByPrimaryKey(Integer id);
+
+    Map<String,Object> selecTest(Integer id);
     List<FunPeopelCaseDTO> selectAll();
 
     int updateByPrimaryKeySelective(FunPeopelCaseDTO record);
@@ -25,4 +27,5 @@ public interface FunPeopelCaseDTOMapper {
     List<FunPeopelCaseDTO> selectPeopleCasePage(Map<String,Object> map);
     int selectPeopleCasePageCount(Map<String,Object> map);
 
+    List<Map<String, Object>> selectPeopleCasePageTest(Map<String, Object> map);
 }

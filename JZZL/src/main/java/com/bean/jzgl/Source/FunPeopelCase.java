@@ -23,9 +23,20 @@ public class FunPeopelCase {
 
     private String ajbh;
 
+    private int tss;
+
+
+
     private Enums.PersonType persontype;
     private  String casename;
 
+    public int getTss() {
+        return tss;
+    }
+
+    public void setTss(int tss) {
+        this.tss = tss;
+    }
     public String getCasename() {
         return casename;
     }
