@@ -4,7 +4,7 @@ import com.enums.Enums;
 
 import java.util.Date;
 
-public class FunPeopelCase {
+public class FunArchiveSeq {
     private Integer id;
 
     private Integer scbj;
@@ -15,35 +15,19 @@ public class FunPeopelCase {
 
     private Date updatetime;
 
-    private String idcard;
-
-    private String name;
-
     private String jqbh;
 
     private String ajbh;
 
-    private Integer submitcount;
+    private Enums.IsSend issend;
 
-    private Enums.PersonType persontype;
+    private String author;
 
-    private  String casename;
+    private String authoridcard;
 
-    public Integer getSubmitcount() {
-        return submitcount;
-    }
+    private Integer batchesseq;
 
-    public void setSubmitcount(Integer submitcount) {
-        this.submitcount = submitcount;
-    }
-
-    public String getCasename() {
-        return casename;
-    }
-
-    public void setCasename(String casename) {
-        this.casename = casename;
-    }
+    private Enums.IsFinal isfinal;
 
     public Integer getId() {
         return id;
@@ -85,22 +69,6 @@ public class FunPeopelCase {
         this.updatetime = updatetime;
     }
 
-    public String getIdcard() {
-        return idcard;
-    }
-
-    public void setIdcard(String idcard) {
-        this.idcard = idcard == null ? null : idcard.trim();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
     public String getJqbh() {
         return jqbh;
     }
@@ -117,11 +85,45 @@ public class FunPeopelCase {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public Enums.PersonType getPersontype() {
-        return persontype;
+
+
+    public String getAuthor() {
+        return author;
     }
 
-    public void setPersontype(Enums.PersonType persontype) {
-        this.persontype = persontype;
+    public void setAuthor(String author) {
+        this.author = author == null ? null : author.trim();
+    }
+
+    public String getAuthoridcard() {
+        return authoridcard;
+    }
+
+    public void setAuthoridcard(String authoridcard) {
+        this.authoridcard = authoridcard == null ? null : authoridcard.trim();
+    }
+
+    public Integer getBatchesseq() {
+        return batchesseq;
+    }
+
+    public void setBatchesseq(Integer batchesseq) {
+        this.batchesseq = batchesseq;
+    }
+
+    public Enums.IsSend getIssend() {
+        return issend;
+    }
+
+    public void setIssend(Enums.IsSend issend) {
+        this.issend = issend;
+    }
+
+    public Enums.IsFinal getIsfinal() {
+        return isfinal;
+    }
+
+    public void setIsfinal(Enums.IsFinal isfinal) {
+        this.isfinal = isfinal;
     }
 }

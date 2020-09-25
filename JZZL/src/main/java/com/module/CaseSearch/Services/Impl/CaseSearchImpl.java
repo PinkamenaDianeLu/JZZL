@@ -60,12 +60,8 @@ public class CaseSearchImpl implements CaseSearchService {
     }
 
     @Override
-    public List<FunPeopelCase> selectPeopleCasePage(Map<String, Object> map) throws Exception {
-        return FunPeopelCaseMapper.INSTANCE.pcDTOToPcs(funPeopelCaseTDOMapper.selectPeopleCasePage(map));
-    }
-    @Override
-    public List<Object> selectPeopleCasePageTest(Map<String, Object> map) throws Exception {
-        return MapFactory.mapToListBean(funPeopelCaseTDOMapper.selectPeopleCasePageTest(map),FunPeopelCase.class);
+    public List<Object>selectPeopleCasePage(Map<String, Object> map) throws Exception {
+        return MapFactory.mapToListBean(funPeopelCaseTDOMapper.selectPeopleCasePage(map),FunPeopelCase.class);
     }
     @Override
     public int selectPeopleCasePageCount(Map<String, Object> map) throws Exception {

@@ -14,11 +14,34 @@ public class Enums   {
      * @createTime  2020/8/19 10:54
       */
     public enum scbj {
-        DELETED(1),//已删除
-        ALIVE(0);
-         scbj(int i) {
+        DELETED(1,"已删除"),//已删除
+        ALIVE(0,"未删除");
+         scbj(int value,String name) {
+             this.value=value;
+             this.name=name;
         }
+         private int value;
+         private String name;
 
+         public String getName() {
+             return name;
+         }
+
+         public void setName(String name) {
+             this.name = name;
+         }
+
+         public int getValue() {
+             return value;
+         }
+
+         public void setValue(int value) {
+             this.value = value;
+         }
+         @Override
+         public String toString(){
+             return name;
+         }
      }
      /**
      * 人员类型
@@ -58,6 +81,78 @@ public class Enums   {
              return name;
          }
 
+    }
+
+     /**
+     * 是否已发送
+     * @author MrLu
+     * @createTime  2020/9/25 15:36
+      */
+    public  enum  IsSend {
+        SENDED(1,"已发送"),
+        NOTSENDED(0,"未发送");
+        IsSend(int value,String name) {
+            this.value=value;
+            this.name=name;
+        }
+        private int value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        @Override
+        public String toString(){
+            return name;
+        }
+    }
+
+     /**
+     * 是否已完结
+     * @author MrLu
+     * @createTime  2020/9/25 15:36
+      */
+    public  enum IsFinal{
+        FINAL(1,"已完结"),
+        NOTFINAL(0,"未完结");
+        IsFinal(int value,String name) {
+            this.value=value;
+            this.name=name;
+        }
+        private int value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        @Override
+        public String toString(){
+            return name;
+        }
     }
 
 

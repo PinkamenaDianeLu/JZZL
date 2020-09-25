@@ -24,8 +24,7 @@ public interface FunPeopelCaseDTOMapper {
      * @createTime  2020/9/23 14:08
      * @return    |
       */
-    List<FunPeopelCaseDTO> selectPeopleCasePage(Map<String,Object> map);
+     List<Map<String, Object>>  selectPeopleCasePage(Map<String,Object> map);
     int selectPeopleCasePageCount(Map<String,Object> map);
 
-    List<Map<String, Object>> selectPeopleCasePageTest(Map<String, Object> map);
 }

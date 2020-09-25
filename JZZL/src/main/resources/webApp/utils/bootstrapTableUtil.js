@@ -3,14 +3,14 @@
  * @createTime 2020/9/23
  * @url webApp.utils
  * @describe  bootstrapTable的工具方法
+ * 依赖于utils.js
  */
 
 var createTable = (function () {
     //框架js文件位置
-    const FRAMEWORKURL = '/Framework/bootstrapTable/bootstrap-table.min.js';
     let _tableId = '';
     let _column = [];
-    let _param = {};
+    let _param;
     let _searchUrl = '';
 
     /**
@@ -19,6 +19,7 @@ var createTable = (function () {
      * @createTime  2020/9/23 15:50
      */
     function loadTable() {
+        console.log(_param())
         //生成table
         $('#' + _tableId).bootstrapTable('destroy', {}).bootstrapTable(
             {
@@ -32,14 +33,14 @@ var createTable = (function () {
                 search: false, // 显示搜索框
                 pagination: true, // 分页
                 pageNumber: 1,
-                pageSize: $('#' + _tableId).attr('colnum')||13,
+                pageSize: $('#' + _tableId).attr('colnum') || 13,
                 sidePagination: 'server', // 服务端处理分页
                 trimOnSearch: true,//自动去掉前后空格
                 queryParams: function queryParams(params) {
                     return {
                         offset: params.pageNumber,
                         limit: params.pageSize,
-                        params: _param
+                        params: JSON.stringify(_param())
                     };
                 },
                 queryParamsType: 'undefined',
@@ -58,7 +59,6 @@ var createTable = (function () {
         $('#' + _tableId).bootstrapTable('refresh', {
             url: _searchUrl,
             silent: true,
-            query: newParam
         })
     }
 
@@ -69,29 +69,14 @@ var createTable = (function () {
      */
     function loadFramework() {
         if (!document.getElementById('bootStrapJs')) {
-            let script = document.createElement("script");
-            script.type = 'text/javascript';
-            script.id = 'bootStrapJs';
-            if (!script.readyState) {
-                script.onload = function () {
+            utils.heartJs('bootStrapJs', '/Framework/bootstrapTable/bootstrap-table.js',function(){
+                utils.heartJs('bootStrapLocalJs', '/Framework/bootstrapTable/bootstrap-table-zh-CN.min.js', function () {
                     loadTable();
-                }
-            } else {
-                //ie
-                script.onreadystatechange = function () {
-                    if ('loaded' === script.readyState || 'complete' === script.readyState) {
-                        script.onreadystatechange = null;
-                        loadTable();
-                    }
-                }
-            }
-            script.src = FRAMEWORKURL;
-            document.getElementsByTagName("head")[0].appendChild(script);
-
+                })})
         }
     }
 
-    let _createTable = function ({tableId, searchUrl, column = [], param='{}'}) {
+    let _createTable = function ({tableId, searchUrl, column = [], param}) {
         if (this instanceof _createTable) {
             _tableId = tableId;
             _column = column;

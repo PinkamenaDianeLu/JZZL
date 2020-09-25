@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author MrLu
  * @createTime 2020/8/19 11:05
- * @describe
+ * @describe  案件
  */
 @Mapper
 public interface FunPeopelCaseMapper {

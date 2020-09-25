@@ -12,7 +12,7 @@ $(function () {
     // const oriPwd = utils.getUrlPar('pwd');
     //生成的key
     const key = utils.getUrlPar('key');
-    location.href='/model/ajcx/sjjl.html';
+    location.href='../model/ajcx/ajcx.html';
     //验证登录
    /* $.post({
         url: '/Login/login',

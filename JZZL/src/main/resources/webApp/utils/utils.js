@@ -96,20 +96,20 @@ var utils = {
             return date.getFullYear();
         }
     },
-     /**
+    /**
      * 获取某种类型的时间
      * @author MrLu
      * @createTime  2020/8/14 14:59
-      */
+     */
     getDate: {
         //
-         /**
+        /**
          * @author MrLu
          * @param theMonth 月份 不用+1
          * @createTime  2020/5/27 21:13
          * @describe 获取一个月份属于哪个季度的
          * @version 1.0
-          */
+         */
         getQuarter: function (theMonth) {
             if (!theMonth) {
                 let date = new Date;
@@ -130,50 +130,54 @@ var utils = {
             }
             return quarter;
         },
-         /**
+        /**
          * @author MrLu
          * @param  quarter 季度  1 2 3 4
          * @createTime  2020/5/27 21:13
          * @describe 获取季度的结束月
          * @version 1.0
-          */
-        getQuarterEndMouth:function (quarter) {
-             if(!quarter) {
-                 quarter =utils.getDate.getQuarter();
-             }
-             let quarterEndMonth = 0;
+         */
+        getQuarterEndMouth: function (quarter) {
+            if (!quarter) {
+                quarter = utils.getDate.getQuarter();
+            }
+            let quarterEndMonth = 0;
 
-             switch (parseInt(quarter)) {
-                 case 1:
-                     quarterEndMonth=3;break;
-                 case 2:
-                     quarterEndMonth=6;break;
-                 case 3:
-                     quarterEndMonth=9;break;
-                 case 4:
-                     quarterEndMonth=12;break;
-                 default:
-                     throw new Error('错误的季度！ 季度为 1 2 3 4 ');
+            switch (parseInt(quarter)) {
+                case 1:
+                    quarterEndMonth = 3;
+                    break;
+                case 2:
+                    quarterEndMonth = 6;
+                    break;
+                case 3:
+                    quarterEndMonth = 9;
+                    break;
+                case 4:
+                    quarterEndMonth = 12;
+                    break;
+                default:
+                    throw new Error('错误的季度！ 季度为 1 2 3 4 ');
 
-             }
-             return quarterEndMonth;
+            }
+            return quarterEndMonth;
         },
-        getLastOfMonth(month){
-            let date=new Date();
-            let nextMonth=++month;
-            let nextMonthFirstDay=new Date(date.getFullYear(),nextMonth,1);
-            let oneDay=1000*60*60*24;
-            return utils.timeFormat.timestampToDate2(new Date(nextMonthFirstDay-oneDay));
+        getLastOfMonth(month) {
+            let date = new Date();
+            let nextMonth = ++month;
+            let nextMonthFirstDay = new Date(date.getFullYear(), nextMonth, 1);
+            let oneDay = 1000 * 60 * 60 * 24;
+            return utils.timeFormat.timestampToDate2(new Date(nextMonthFirstDay - oneDay));
         }
 
     },
 
-     /**
+    /**
      * 创建元素标签
      * @author MrLu
      * @createTime  2020/7/20 10:53
      * @version 1.0
-      */
+     */
     createElement: {
         /**
          * svg用的标签
@@ -192,6 +196,7 @@ var utils = {
          * 普通的元素
          * @param tag
          * @param attrs
+         * @param arg
          * @returns {HTMLElement}
          */
         createElement: function ({tag, attrs = {}, arg} = {}) {
@@ -206,7 +211,7 @@ var utils = {
             }
             return el;
         }, /**
-          字符串转换element
+         字符串转换element
          * @author MrLu
          * @param str element字符串
          * @createTime  2020/4/28 12:07
@@ -219,14 +224,14 @@ var utils = {
         },
 
     },
-     /**
+    /**
      * @author MrLu
      * @param  arr 数组
-      * @param V 要删除的值
+     * @param V 要删除的值
      * @createTime  2020/6/11 9:02
      * @describe 从一个数组中删除某元素
      * @version 1.0
-      */
+     */
     deleteFromAry: function (arr, V) {
         arr.splice(arr.findIndex(thisV => {
             //这里不能写es6的 ===
@@ -235,14 +240,14 @@ var utils = {
         return arr;
     },
 
-     /**
+    /**
      *  判断element中手否含有某个属性
      * @author MrLu
      * @param el 数组
-      * @param name 属性
+     * @param name 属性
      * @createTime  2020/8/14 14:57
      * @return  boolean  |
-      */
+     */
     hasAttr: function (el, name) {
         let attr = el.getAttributeNode && el.getAttributeNode(name);
         return attr ? attr.specified : false;
@@ -260,21 +265,50 @@ var utils = {
         if (this.isEmpty(title)) return '';
         return '<span>' + (title.substring(0, length) + (title.length > length ? "....." : "") + '</span>');
     },
-     /**
+    /**
      * 判断当前页面是移动版还是pc
      * @author MrLu
      * @createTime  2020/7/20 15:27
      * @version 1.0
-      * @return boolean true PC； fasle 移动版
-      */
-    navigator:function () {
+     * @return boolean | true PC； fasle 移动版
+     */
+    navigator: function () {
         const sUserAgent = navigator.userAgent;
         if (sUserAgent.indexOf('Android') > -1 || sUserAgent.indexOf('iPhone') > -1 || sUserAgent.indexOf('iPad') > -1 || sUserAgent.indexOf('iPod') > -1 || sUserAgent.indexOf('Symbian') > -1) {
             return false;//移动端
         } else {
             //电脑
-            return  true;
+            return true;
         }
+    },
+    /**
+     * 在heart上加载一个js文件并回调方法
+     * @author MrLu
+     * @param id script标签id
+     * @param url script文件路径
+     * @param fn  回调方法
+     * @createTime  2020/9/25 11:10
+     */
+    heartJs: function (id, url, fn) {
+        let script = document.createElement("script");
+        script.type = 'text/javascript';
+        script.id = id;
+        if (!script.readyState) {
+            script.onload = function () {
+                fn();
+            }
+        } else {
+            //ie
+            script.onreadystatechange = function () {
+                if ('loaded' === script.readyState || 'complete' === script.readyState) {
+                    script.onreadystatechange = null;
+                    fn();
+                }
+            }
+        }
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+
     }
 
 

@@ -2,7 +2,6 @@ package com.util;
 
 import com.enums.Enums;
 import net.sf.cglib.beans.BeanMap;
-import org.apache.poi.ss.formula.functions.T;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
@@ -38,6 +37,12 @@ public class MapFactory {
             switch (thisField.getName()) {
                 case "persontype":
                     map.put("persontype", EnumsUtil.getEnumByValue(Enums.PersonType.class, map.get("persontype")));
+                    break;
+                case "issend":
+                    map.put("issend", EnumsUtil.getEnumByValue(Enums.IsSend.class, map.get("issend")));
+                    break;
+                case "isfinal":
+                    map.put("persontype", EnumsUtil.getEnumByValue(Enums.IsFinal.class, map.get("isfinal")));
                     break;
             }
         }

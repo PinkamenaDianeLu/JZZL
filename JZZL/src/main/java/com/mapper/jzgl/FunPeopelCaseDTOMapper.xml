@@ -27,6 +27,7 @@
         <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
         <result column="PERSONTYPE" jdbcType="INTEGER" javaType="INTEGER" property="persontype"/>
         <result column="CASENAME" jdbcType="VARCHAR" property="casename"/>
+        <result column="SUBMITCOUNT" jdbcType="VARCHAR" javaType="INTEGER" property="submitcount"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE,CASENAME
@@ -35,12 +36,18 @@
     select * from FUN_PEOPELCASE
   </select>
 
-    <select id="selectPeopleCasePage" resultMap="BaseResultMap" parameterType="map">
+    <select id="selectPeopleCasePage" resultMap="BaseResultForMap" parameterType="map">
         select * from ( SELECT A.*, ROWNUM RUM FROM (
         select
         <include refid="Base_Column_List"/>,
-        (select count(0) from fun_archive_seq aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) tts
+        (select count(0) from fun_archive_seq aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) submitcount
         from FUN_PEOPELCASE pcase where 1=1 and scbj=0
+        <if test="null != jqbh and jqbh!=''">
+            AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != ajbh and ajbh!=''">
+            AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
+        </if>
         order by id desc
         ) A )
         WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
@@ -48,24 +55,19 @@
     </select>
     <select id="selectPeopleCasePageCount" resultType="java.lang.Integer" parameterType="map">
         select count(0) from   FUN_PEOPELCASE where 1=1 and scbj=0
+        <if test="null != jqbh and jqbh!=''">
+            AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != ajbh and ajbh!=''">
+            AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
+        </if>
     </select>
     <select id="selecTest"  parameterType="java.lang.Integer" resultMap="BaseResultForMap">
         select
         <include refid="Base_Column_List"/>,
-        (select count(0) from fun_archive_seq aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) as "tss"
+        (select count(0) from fun_archive_seq aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) as tss
         from FUN_PEOPELCASE pcase
         where ID = #{id,jdbcType=DECIMAL}
-    </select>
-    <select id="selectPeopleCasePageTest" parameterType="map" resultMap="BaseResultForMap">
-        select * from ( SELECT A.*, ROWNUM RUM FROM (
-        select
-        <include refid="Base_Column_List"/>,
-        (select count(0) from fun_archive_seq aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) as "tss"
-        from FUN_PEOPELCASE pcase where 1=1 and scbj=0
-        order by id desc
-        ) A )
-        WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
-        AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
     </select>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
