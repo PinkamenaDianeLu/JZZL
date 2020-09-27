@@ -14,6 +14,9 @@
     <result column="AUTHORIDCARD" jdbcType="VARCHAR" property="authoridcard" />
     <result column="BATCHESSEQ" jdbcType="DECIMAL" property="batchesseq" />
     <result column="ISFINAL" jdbcType="DECIMAL" property="isfinal" />
+    <result column="RECORDSNUMBER" jdbcType="VARCHAR" property="recordsnumber" />
+    <result column="PEOPELCASEID" jdbcType="VARCHAR" property="peopelcaseid" />
+
   </resultMap>
 
   <resultMap id="BaseResultForMap" type="java.util.Map">
@@ -29,10 +32,12 @@
     <result column="AUTHORIDCARD" jdbcType="VARCHAR" property="authoridcard" />
     <result column="BATCHESSEQ" jdbcType="DECIMAL" javaType="INTEGER" property="batchesseq" />
     <result column="ISFINAL" jdbcType="DECIMAL" javaType="INTEGER" property="isfinal" />
+    <result column="RECORDSNUMBER" jdbcType="VARCHAR" property="recordsnumber" />
+    <result column="PEOPELCASEID" jdbcType="VARCHAR" property="peopelcaseid" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ISSEND, AUTHOR, AUTHORIDCARD, 
-    BATCHESSEQ, ISFINAL
+    BATCHESSEQ, ISFINAL,RECORDSNUMBER,PEOPELCASEID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -170,4 +175,32 @@
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
+
+  <select id="selectArchiveSeqPage" resultMap="BaseResultMap" parameterType="map">
+    select * from ( SELECT A.*, ROWNUM RUM FROM (
+    select
+    <include refid="Base_Column_List"/>
+    from FUN_ARCHIVE_SEQ aseq where 1=1 and scbj=0
+    and PEOPELCASEID = #{peopelcaseid,jdbcType=DECIMAL}
+    <if test="null != jqbh and jqbh!=''">
+      AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+    </if>
+    <if test="null != ajbh and ajbh!=''">
+      AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
+    </if>
+    order by id desc
+    ) A )
+    WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
+    AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
+  </select>
+  <select id="selectArchiveSeqPageCount" resultType="java.lang.Integer" parameterType="map">
+    select count(0) from   FUN_ARCHIVE_SEQ where 1=1 and scbj=0
+    AND PEOPELCASEID = #{peopelcaseid,jdbcType=DECIMAL}
+    <if test="null != jqbh and jqbh!=''">
+      AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+    </if>
+    <if test="null != ajbh and ajbh!=''">
+      AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
+    </if>
+  </select>
 </mapper>

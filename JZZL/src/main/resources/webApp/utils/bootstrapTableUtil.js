@@ -3,7 +3,7 @@
  * @createTime 2020/9/23
  * @url webApp.utils
  * @describe  bootstrapTable的工具方法
- * 依赖于utils.js
+ * @dependence utils.js，jquery.js
  */
 
 var createTable = (function () {
@@ -19,7 +19,6 @@ var createTable = (function () {
      * @createTime  2020/9/23 15:50
      */
     function loadTable() {
-        console.log(_param())
         //生成table
         $('#' + _tableId).bootstrapTable('destroy', {}).bootstrapTable(
             {
@@ -82,7 +81,7 @@ var createTable = (function () {
             _column = column;
             _searchUrl = searchUrl;
             _param = param;
-            loadFramework();
+            utils.once(loadFramework());
         } else {
 
             return new _createTable({

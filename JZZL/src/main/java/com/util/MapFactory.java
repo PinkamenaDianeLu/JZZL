@@ -44,6 +44,10 @@ public class MapFactory {
                 case "isfinal":
                     map.put("persontype", EnumsUtil.getEnumByValue(Enums.IsFinal.class, map.get("isfinal")));
                     break;
+                case "casetype":
+                    map.put("casetype", EnumsUtil.getEnumByValue(Enums.CaseType.class, map.get("casetype")));
+                    break;
+
             }
         }
         BeanMap beanMap = BeanMap.create(object);

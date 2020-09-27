@@ -3,6 +3,7 @@ package com.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
@@ -149,6 +150,18 @@ public class ThreeDesUtil {
             strTo8--;
         }
         return reString.toString();
+    }
+
+    //TODO MrLu 2020/9/27  将会改为使用redis获取salt
+    public static String DecodeUrlP(String p) throws Exception{
+        String finSalt = GlobalUtil.getGlobal("salt") ;
+        if (StringUtils.isEmpty(finSalt)){
+            throw  new  Exception("salt获取异常！请重启项目并检查redis连接");
+        }else {
+            final BASE64Decoder decoder = new BASE64Decoder();
+
+            return  new String(decoder.decodeBuffer(p), "UTF-8").replace(finSalt,"");
+        }
     }
 
     public static void main(String[] args) throws Exception {

@@ -3,11 +3,12 @@
  * @createTime 2020/9/17
  * @url webApp.model.ajcx.js
  * @describe 送检记录js
+ * @dependence [jquery,layer,utils,bootstrapTableUtil]
  */
 
 
 
-var sjjlTable = (function () {
+var ajcxTable = (function () {
 
     let tableObject;
 
@@ -30,12 +31,13 @@ var sjjlTable = (function () {
      * @return    |
      */
     this.submitHistory = function (id) {
-        window.open('/model/ajcx/sjjl.html?id='+id);
+        let urlP= window.btoa(id+sessionStorage.salt)
+        window.open('/model/ajcx/sjjl.html?id='+urlP);
     }
 
     function loadTable() {
         tableObject = createTable({
-            tableId: 'sjjlTable',
+            tableId: 'ajcxTable',
             searchUrl: '/CaseSearch/selectPeopleCasePage',
             column: [{
                 field: 'jqbh',
@@ -87,18 +89,18 @@ var sjjlTable = (function () {
         tableObject.refreshTable();
     }
 
-    function _sjjlTable() {
+    function _ajcxTable() {
         loadTable();
     }
 
-    _sjjlTable.prototype = {
+    _ajcxTable.prototype = {
         searchTable
     }
-    return _sjjlTable;
+    return _ajcxTable;
 })()
 $(function () {
-    let st=new sjjlTable();
-    $('#sjjlSearchBtn').click(function () {
-        st.searchTable();
+    let at=new ajcxTable();
+    $('#ajcxSearchBtn').click(function () {
+        at.searchTable();
     })
 })

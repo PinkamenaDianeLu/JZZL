@@ -156,6 +156,44 @@ public class Enums   {
     }
 
 
+     /**
+     * 案件类型
+     * @author MrLu
+     * @createTime  2020/9/27 14:55
+      */
+    public enum CaseType{
+        NORMAL(0,"未完结"),
+        MERGE(1,"已合案"),
+        SPLIT(2,"已拆案件");
+        CaseType(int value,String name) {
+            this.value=value;
+            this.name=name;
+        }
+        private int value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        @Override
+        public String toString(){
+            return name;
+        }
+    }
+
+
 
 
     public static void main(String[] args) {

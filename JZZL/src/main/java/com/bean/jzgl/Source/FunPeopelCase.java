@@ -29,6 +29,11 @@ public class FunPeopelCase {
 
     private  String casename;
 
+
+    private String sfcnumber;
+
+    private Enums.CaseType casetype;
+
     public Integer getSubmitcount() {
         return submitcount;
     }
@@ -123,5 +128,21 @@ public class FunPeopelCase {
 
     public void setPersontype(Enums.PersonType persontype) {
         this.persontype = persontype;
+    }
+
+    public String getSfcnumber() {
+        return sfcnumber;
+    }
+
+    public void setSfcnumber(String sfcnumber) {
+        this.sfcnumber = sfcnumber;
+    }
+
+    public Enums.CaseType getCasetype() {
+        return casetype;
+    }
+
+    public void setCasetype(Enums.CaseType casetype) {
+        this.casetype = casetype;
     }
 }

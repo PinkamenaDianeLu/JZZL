@@ -13,6 +13,8 @@
         <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
         <result column="PERSONTYPE" jdbcType="DECIMAL" property="persontype"/>
         <result column="CASENAME" jdbcType="VARCHAR" property="casename"/>
+        <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber"/>
+        <result column="CASETYPE" jdbcType="DECIMAL" property="casetype"/>
     </resultMap>
 
     <resultMap id="BaseResultForMap" type="java.util.Map">
@@ -28,9 +30,11 @@
         <result column="PERSONTYPE" jdbcType="INTEGER" javaType="INTEGER" property="persontype"/>
         <result column="CASENAME" jdbcType="VARCHAR" property="casename"/>
         <result column="SUBMITCOUNT" jdbcType="VARCHAR" javaType="INTEGER" property="submitcount"/>
+        <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber"/>
+        <result column="CASETYPE" jdbcType="INTEGER"  javaType="INTEGER" property="casetype"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE,CASENAME
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE,CASENAME,SFCNUMBER,CASETYPE
   </sql>
     <select id="selectAll" resultMap="BaseResultMap">
     select * from FUN_PEOPELCASE

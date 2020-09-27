@@ -18,7 +18,7 @@ public class GlobalUtil {
         //加载通用配置配置文件
         loadGlobalConfig();
     }
-    public static void loadGlobalConfig(){
+    private static void loadGlobalConfig(){
         //加载错误信息配置文件
         InputStreamReader isr = null;
         try {

@@ -25,6 +25,9 @@ public class FunPeopelCaseDTO {
 
     private  String casename;
 
+    private String sfcnumber;
+
+    private Integer casetype;
     public String getCasename() {
         return casename;
     }
@@ -111,5 +114,21 @@ public class FunPeopelCaseDTO {
 
     public void setPersontype(Integer persontype) {
         this.persontype = persontype;
+    }
+
+    public String getSfcnumber() {
+        return sfcnumber;
+    }
+
+    public void setSfcnumber(String sfcnumber) {
+        this.sfcnumber = sfcnumber;
+    }
+
+    public Integer getCasetype() {
+        return casetype;
+    }
+
+    public void setCasetype(Integer casetype) {
+        this.casetype = casetype;
     }
 }

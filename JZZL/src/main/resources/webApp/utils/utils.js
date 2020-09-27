@@ -2,7 +2,7 @@
  *  util方法
  * @author MrLu
  * @createTime  2020/7/10 9:25
- * @version 1.2
+ * @version 1.3
  */
 var utils = {
     /**
@@ -274,12 +274,7 @@ var utils = {
      */
     navigator: function () {
         const sUserAgent = navigator.userAgent;
-        if (sUserAgent.indexOf('Android') > -1 || sUserAgent.indexOf('iPhone') > -1 || sUserAgent.indexOf('iPad') > -1 || sUserAgent.indexOf('iPod') > -1 || sUserAgent.indexOf('Symbian') > -1) {
-            return false;//移动端
-        } else {
-            //电脑
-            return true;
-        }
+        return !(sUserAgent.indexOf('Android') > -1 || sUserAgent.indexOf('iPhone') > -1 || sUserAgent.indexOf('iPad') > -1 || sUserAgent.indexOf('iPod') > -1 || sUserAgent.indexOf('Symbian') > -1);
     },
     /**
      * 在heart上加载一个js文件并回调方法
@@ -308,6 +303,38 @@ var utils = {
         }
         script.src = url;
         document.getElementsByTagName("head")[0].appendChild(script);
+
+    },
+     /**
+     * 传递的参数只能运行一次
+     * @author MrLu
+     * @param fn 方法
+     * @createTime  2020/9/27 8:54
+     * @return    |
+      */
+    once: function (fn) {
+        let done = false;
+        return function () {
+            return done ? undefined : (done = true), fn.apply(this, arguments)
+        }
+
+    },
+     /**
+     * 转换函数
+      * 常见使用方法 ["1","2","3"].map(utils.unary(parseInt))=>[1,2,3]
+     * @author MrLu
+     * @param fn 方法
+     * @createTime  2020/9/27 9:33
+      */
+    unary: function (fn) {
+         1 === fn.length?fn:(arg)=>fn(arg);
+
+    },encryption:function (p) {
+        if (sessionStorage.salt){
+            return window.btoa(p+sessionStorage.salt)
+        }else {
+           throw '未能捕获到加密串，请重新登录或检查服务器连接'
+        }
 
     }
 

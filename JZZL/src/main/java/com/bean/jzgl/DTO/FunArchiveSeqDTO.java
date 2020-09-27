@@ -27,6 +27,9 @@ public class FunArchiveSeqDTO {
 
     private Integer isfinal;
 
+    private  String recordsnumber;
+    private  String peopelcaseid;
+
     public Integer getId() {
         return id;
     }
@@ -121,5 +124,21 @@ public class FunArchiveSeqDTO {
 
     public void setIsfinal(Integer isfinal) {
         this.isfinal = isfinal;
+    }
+
+    public String getRecordsnumber() {
+        return recordsnumber;
+    }
+
+    public void setRecordsnumber(String recordsnumber) {
+        this.recordsnumber = recordsnumber;
+    }
+
+    public String getPeopelcaseid() {
+        return peopelcaseid;
+    }
+
+    public void setPeopelcaseid(String peopelcaseid) {
+        this.peopelcaseid = peopelcaseid;
     }
 }

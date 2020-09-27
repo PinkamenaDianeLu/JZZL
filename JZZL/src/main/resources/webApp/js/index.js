@@ -29,12 +29,13 @@ $(function () {
     });*/
 
        $.post({
-               url: '/CaseSearch/test',
-               data: {},
+               url: '/Salt/getSalt',
                success: (re) => {
                    const reV = JSON.parse(re);
                    if ('success' === reV.message) {
+                       sessionStorage.salt = reV.value;
                    } else {
+                       //TODO MrLu 2020/9/27 不允许登录  
                    }
                }
            });
