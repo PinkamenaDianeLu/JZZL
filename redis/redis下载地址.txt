@@ -1,0 +1,7 @@
+http://download.redis.io/releases/redis-5.0.5.tar.gz
+linux下直接
+wget http://download.redis.io/releases/redis-5.0.5.tar.gz
+
+redis桌面连接工具
+百度网盘下载地址：https://pan.baidu.com/s/1JOfq_yOohsCu3sAsK3wqQg 
+提取码：16hs 
