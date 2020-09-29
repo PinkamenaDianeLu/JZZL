@@ -21,20 +21,6 @@
     from SYS_BMB
     where ID = #{id,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from SYS_BMB
-    where ID = #{id,jdbcType=DECIMAL}
-  </delete>
-  <insert id="insert" parameterType="com.bean.jzgl.DTO.SysBmbDTO">
-    insert into SYS_BMB (ID, SCBJ, STATE, 
-      CREATETIME, UPDATETIME, AUTHOR, 
-      TYPE, CODE, CODENAME
-      )
-    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{author,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{codename,jdbcType=VARCHAR}
-      )
-  </insert>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.SysBmbDTO">
     insert into SYS_BMB
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -138,4 +124,12 @@
       CODENAME = #{codename,jdbcType=VARCHAR}
     where ID = #{id,jdbcType=DECIMAL}
   </update>
+
+  <select id="getBmbType" resultType="java.lang.String">
+    SELECT TYPE FROM sys_bmb GROUP BY TYPE
+  </select>
+  <select id="getBmbMapByType" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" /> from SYS_BMB
+    where scbj=0 and  TYPE = #{type,jdbcType=VARCHAR}
+  </select>
 </mapper>

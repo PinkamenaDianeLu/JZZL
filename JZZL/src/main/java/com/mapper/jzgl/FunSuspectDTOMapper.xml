@@ -1,37 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mapper.jzgl.FunArchiveTypeDTOMapper">
-  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+<mapper namespace="com.mapper.jzgl.FunSuspectDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunSuspectDTO">
     <id column="ID" jdbcType="DECIMAL" property="id" />
     <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
     <result column="STATE" jdbcType="DECIMAL" property="state" />
     <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
     <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="SUSPECTIDCARD" jdbcType="VARCHAR" property="suspectidcard" />
+    <result column="SUSPECTNAME" jdbcType="VARCHAR" property="suspectname" />
     <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
     <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
-    <result column="ARCHIVETYPECN" jdbcType="VARCHAR" property="archivetypecn" />
-    <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder" />
-    <result column="ARCHIVENAME" jdbcType="VARCHAR"  property="archivename" />
-    <result column="ISAZXT"  jdbcType="DECIMAL"  property="isazxt" />
-
+    <result column="PEOPELCASEID" jdbcType="DECIMAL" property="peopelcaseid" />
+    <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
+    <result column="CASETYPE" jdbcType="DECIMAL" property="casetype" />
+    <result column="SUSPECTSTATE" jdbcType="DECIMAL" property="suspectstate" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ARCHIVETYPE, ARCHIVETYPECN, 
-    DEFAULTORDER,ARCHIVENAME,ISAZXT
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, SUSPECTIDCARD, SUSPECTNAME, JQBH, AJBH, 
+    PEOPELCASEID, SFCNUMBER, CASETYPE, SUSPECTSTATE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from FUN_ARCHIVE_TYPE
+    from FUN_SUSPECT
     where ID = #{id,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from FUN_ARCHIVE_TYPE
-    where ID = #{id,jdbcType=DECIMAL}
-  </delete>
-  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
-    insert into FUN_ARCHIVE_TYPE
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunSuspectDTO">
+    insert into FUN_SUSPECT
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         ID,
@@ -48,26 +44,29 @@
       <if test="updatetime != null">
         UPDATETIME,
       </if>
+      <if test="suspectidcard != null">
+        SUSPECTIDCARD,
+      </if>
+      <if test="suspectname != null">
+        SUSPECTNAME,
+      </if>
       <if test="jqbh != null">
         JQBH,
       </if>
       <if test="ajbh != null">
         AJBH,
       </if>
-      <if test="archivetype != null">
-        ARCHIVETYPE,
+      <if test="peopelcaseid != null">
+        PEOPELCASEID,
       </if>
-      <if test="archivetypecn != null">
-        ARCHIVETYPECN,
+      <if test="sfcnumber != null">
+        SFCNUMBER,
       </if>
-      <if test="defaultorder != null">
-        DEFAULTORDER,
+      <if test="casetype != null">
+        CASETYPE,
       </if>
-      <if test="archivename != null">
-        ARCHIVENAME,
-      </if>
-      <if test="isazxt != null">
-        ISAZXT,
+      <if test="suspectstate != null">
+        SUSPECTSTATE,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -86,31 +85,34 @@
       <if test="updatetime != null">
         #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="suspectidcard != null">
+        #{suspectidcard,jdbcType=VARCHAR},
+      </if>
+      <if test="suspectname != null">
+        #{suspectname,jdbcType=VARCHAR},
+      </if>
       <if test="jqbh != null">
         #{jqbh,jdbcType=VARCHAR},
       </if>
       <if test="ajbh != null">
         #{ajbh,jdbcType=VARCHAR},
       </if>
-      <if test="archivetype != null">
-        #{archivetype,jdbcType=DECIMAL},
+      <if test="peopelcaseid != null">
+        #{peopelcaseid,jdbcType=DECIMAL},
       </if>
-      <if test="archivetypecn != null">
-        #{archivetypecn,jdbcType=VARCHAR},
+      <if test="sfcnumber != null">
+        #{sfcnumber,jdbcType=VARCHAR},
       </if>
-      <if test="defaultorder != null">
-        #{defaultorder,jdbcType=DECIMAL},
+      <if test="casetype != null">
+        #{casetype,jdbcType=DECIMAL},
       </if>
-      <if test="archivename != null">
-        #{archivename,jdbcType=VARCHAR},
-      </if>
-      <if test="isazxt != null">
-        #{isazxt,jdbcType=DECIMAL},
+      <if test="suspectstate != null">
+        #{suspectstate,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
-    update FUN_ARCHIVE_TYPE
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunSuspectDTO">
+    update FUN_SUSPECT
     <set>
       <if test="scbj != null">
         SCBJ = #{scbj,jdbcType=DECIMAL},
@@ -124,26 +126,29 @@
       <if test="updatetime != null">
         UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
       </if>
+      <if test="suspectidcard != null">
+        SUSPECTIDCARD = #{suspectidcard,jdbcType=VARCHAR},
+      </if>
+      <if test="suspectname != null">
+        SUSPECTNAME = #{suspectname,jdbcType=VARCHAR},
+      </if>
       <if test="jqbh != null">
         JQBH = #{jqbh,jdbcType=VARCHAR},
       </if>
       <if test="ajbh != null">
         AJBH = #{ajbh,jdbcType=VARCHAR},
       </if>
-      <if test="archivetype != null">
-        ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL},
+      <if test="peopelcaseid != null">
+        PEOPELCASEID = #{peopelcaseid,jdbcType=DECIMAL},
       </if>
-      <if test="archivetypecn != null">
-        ARCHIVETYPECN = #{archivetypecn,jdbcType=VARCHAR},
+      <if test="sfcnumber != null">
+        SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
       </if>
-      <if test="defaultorder != null">
-        DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
+      <if test="casetype != null">
+        CASETYPE = #{casetype,jdbcType=DECIMAL},
       </if>
-      <if test="archivename != null">
-        ARCHIVENAME =    #{archivename,jdbcType=VARCHAR},
-      </if>
-      <if test="isazxt != null">
-        ISAZXT=  #{isazxt,jdbcType=DECIMAL},
+      <if test="suspectstate != null">
+        SUSPECTSTATE = #{suspectstate,jdbcType=DECIMAL},
       </if>
     </set>
     where ID = #{id,jdbcType=DECIMAL}

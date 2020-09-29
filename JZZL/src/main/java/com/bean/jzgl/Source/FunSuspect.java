@@ -1,10 +1,8 @@
 package com.bean.jzgl.Source;
 
-import com.enums.Enums;
-
 import java.util.Date;
 
-public class FunArchiveType {
+public class FunSuspect {
     private Integer id;
 
     private Integer scbj;
@@ -15,17 +13,21 @@ public class FunArchiveType {
 
     private Date updatetime;
 
+    private String suspectidcard;
+
+    private String suspectname;
+
     private String jqbh;
 
     private String ajbh;
 
-    private Integer archivetype;
+    private Integer peopelcaseid;
 
-    private String archivetypecn;
+    private String sfcnumber;
 
-    private Integer defaultorder;
-    private Enums.IsAzxt isazxt;
-    private String archivename;
+    private Integer casetype;
+
+    private Integer suspectstate;
 
     public Integer getId() {
         return id;
@@ -67,6 +69,22 @@ public class FunArchiveType {
         this.updatetime = updatetime;
     }
 
+    public String getSuspectidcard() {
+        return suspectidcard;
+    }
+
+    public void setSuspectidcard(String suspectidcard) {
+        this.suspectidcard = suspectidcard == null ? null : suspectidcard.trim();
+    }
+
+    public String getSuspectname() {
+        return suspectname;
+    }
+
+    public void setSuspectname(String suspectname) {
+        this.suspectname = suspectname == null ? null : suspectname.trim();
+    }
+
     public String getJqbh() {
         return jqbh;
     }
@@ -83,43 +101,35 @@ public class FunArchiveType {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public Integer getArchivetype() {
-        return archivetype;
+    public Integer getPeopelcaseid() {
+        return peopelcaseid;
     }
 
-    public void setArchivetype(Integer archivetype) {
-        this.archivetype = archivetype;
+    public void setPeopelcaseid(Integer peopelcaseid) {
+        this.peopelcaseid = peopelcaseid;
     }
 
-    public String getArchivetypecn() {
-        return archivetypecn;
+    public String getSfcnumber() {
+        return sfcnumber;
     }
 
-    public void setArchivetypecn(String archivetypecn) {
-        this.archivetypecn = archivetypecn == null ? null : archivetypecn.trim();
+    public void setSfcnumber(String sfcnumber) {
+        this.sfcnumber = sfcnumber == null ? null : sfcnumber.trim();
     }
 
-    public Integer getDefaultorder() {
-        return defaultorder;
+    public Integer getCasetype() {
+        return casetype;
     }
 
-    public void setDefaultorder(Integer defaultorder) {
-        this.defaultorder = defaultorder;
+    public void setCasetype(Integer casetype) {
+        this.casetype = casetype;
     }
 
-    public Enums.IsAzxt getIsazxt() {
-        return isazxt;
+    public Integer getSuspectstate() {
+        return suspectstate;
     }
 
-    public void setIsazxt(Enums.IsAzxt isazxt) {
-        this.isazxt = isazxt;
-    }
-
-    public String getArchivename() {
-        return archivename;
-    }
-
-    public void setArchivename(String archivename) {
-        this.archivename = archivename;
+    public void setSuspectstate(Integer suspectstate) {
+        this.suspectstate = suspectstate;
     }
 }

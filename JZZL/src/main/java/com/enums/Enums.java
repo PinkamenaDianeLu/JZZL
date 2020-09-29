@@ -89,8 +89,8 @@ public class Enums   {
      * @createTime  2020/9/25 15:36
       */
     public  enum  IsSend {
-        SENDED(1,"已发送"),
-        NOTSENDED(0,"未发送");
+         YES(1,"已发送"),
+        NO(0,"未发送");
         IsSend(int value,String name) {
             this.value=value;
             this.name=name;
@@ -125,9 +125,47 @@ public class Enums   {
      * @createTime  2020/9/25 15:36
       */
     public  enum IsFinal{
-        FINAL(1,"已完结"),
-        NOTFINAL(0,"未完结");
+        YES(1,"已完结"),
+        NO(0,"未完结");
         IsFinal(int value,String name) {
+            this.value=value;
+            this.name=name;
+        }
+        private int value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        @Override
+        public String toString(){
+            return name;
+        }
+    }
+
+
+     /**
+     * 案件状态
+     * @author MrLu
+     * @createTime  2020/9/27 14:55
+      */
+    public enum CaseState{
+        NORMAL(0,"未完结"),
+        MERGE(1,"已合案"),
+        SPLIT(2,"已拆案件");
+         CaseState(int value,String name) {
             this.value=value;
             this.name=name;
         }
@@ -159,13 +197,48 @@ public class Enums   {
      /**
      * 案件类型
      * @author MrLu
-     * @createTime  2020/9/27 14:55
+     * @createTime  2020/9/28 9:24
       */
     public enum CaseType{
-        NORMAL(0,"未完结"),
-        MERGE(1,"已合案"),
-        SPLIT(2,"已拆案件");
+        OPEN(0,"未定"),
+        CRIMINAL(1,"刑事"),
+        ADMINISTRATIVE(2,"行政");
         CaseType(int value,String name) {
+            this.value=value;
+            this.name=name;
+        }
+        private int value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        @Override
+        public String toString(){
+            return name;
+        }
+    }
+    /**
+     * 是否安综系统
+     * @author MrLu
+     * @createTime  2020/9/28 9:24
+     */
+    public enum IsAzxt{
+        YES(0,"安综抽取"),
+        NO(1,"系统新建");
+        IsAzxt(int value,String name) {
             this.value=value;
             this.name=name;
         }

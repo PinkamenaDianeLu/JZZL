@@ -3,8 +3,8 @@ package com.module.SFCensorship.Controllers;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.config.aop.OperLog;
+import com.factory.SaltFactory;
 import com.module.SFCensorship.Services.SFCensorshipService;
-import com.util.ThreeDesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/SFCensorship")
-public class SFCensorshipController {
+public class SFCensorshipController extends SaltFactory {
     private final String operModul = "SFCensorship";
 
     final
@@ -51,7 +51,7 @@ public class SFCensorshipController {
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
             //解密id参数
-            pJsonObj.put("peopelcaseid",ThreeDesUtil.DecodeUrlP(pJsonObj.getString("id")));//解密的id
+            pJsonObj.put("peopelcaseid",DecodeUrlP(pJsonObj.getString("id")));//解密的id
             reMap.put("rows", sFCensorshipService.selectArchiveSeqPage(pJsonObj));
             reMap.put("total", sFCensorshipService.selectArchiveSeqPageCount(pJsonObj));
         } catch (Exception e) {

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.SysUserDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.SysUserDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="USERNAME" jdbcType="VARCHAR" property="username" />
+    <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+    <result column="ORIGIN" jdbcType="VARCHAR" property="origin" />
+    <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+    <result column="IDCARDNUMBER" jdbcType="VARCHAR" property="idcardnumber" />
+    <result column="XM" jdbcType="VARCHAR" property="xm" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, USERNAME, PASSWORD, ORIGIN, PHONE, IDCARDNUMBER, 
+    XM
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_USER
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.SysUserDTO">
+    insert into SYS_USER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="scbj != null">
+        SCBJ,
+      </if>
+      <if test="state != null">
+        STATE,
+      </if>
+      <if test="createtime != null">
+        CREATETIME,
+      </if>
+      <if test="updatetime != null">
+        UPDATETIME,
+      </if>
+      <if test="username != null">
+        USERNAME,
+      </if>
+      <if test="password != null">
+        PASSWORD,
+      </if>
+      <if test="origin != null">
+        ORIGIN,
+      </if>
+      <if test="phone != null">
+        PHONE,
+      </if>
+      <if test="idcardnumber != null">
+        IDCARDNUMBER,
+      </if>
+      <if test="xm != null">
+        XM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="scbj != null">
+        #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null">
+        #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardnumber != null">
+        #{idcardnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="xm != null">
+        #{xm,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.SysUserDTO">
+    update SYS_USER
+    <set>
+      <if test="scbj != null">
+        SCBJ = #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="username != null">
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="origin != null">
+        ORIGIN = #{origin,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardnumber != null">
+        IDCARDNUMBER = #{idcardnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="xm != null">
+        XM = #{xm,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+  <select id="login" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select  <include refid="Base_Column_List" /> from  SYS_USER
+    WHERE USERNAME=#{username,jdbcType=VARCHAR}
+    AND PASSWORD=#{pwd,jdbcType=VARCHAR}
+    AND SCBJ=0 AND STATE=0
+  </select>
+</mapper>

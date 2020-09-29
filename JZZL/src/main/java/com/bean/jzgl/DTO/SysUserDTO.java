@@ -1,10 +1,8 @@
-package com.bean.jzgl.Source;
+package com.bean.jzgl.DTO;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class SysUser implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class SysUserDTO {
     private Integer id;
 
     private Integer scbj;
@@ -22,26 +20,10 @@ public class SysUser implements Serializable {
     private String origin;
 
     private String phone;
+
     private String idcardnumber;
 
     private String xm;
-
-    @Override
-    public String toString() {
-        return "SysUser{" +
-                "id=" + id +
-                ", scbj=" + scbj +
-                ", state=" + state +
-                ", createtime=" + createtime +
-                ", updatetime=" + updatetime +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", origin='" + origin + '\'' +
-                ", phone=" + phone +
-                ", idcardnumber='" + idcardnumber + '\'' +
-                ", xm='" + xm + '\'' +
-                '}';
-    }
 
     public Integer getId() {
         return id;
@@ -120,7 +102,7 @@ public class SysUser implements Serializable {
     }
 
     public void setIdcardnumber(String idcardnumber) {
-        this.idcardnumber = idcardnumber;
+        this.idcardnumber = idcardnumber == null ? null : idcardnumber.trim();
     }
 
     public String getXm() {
@@ -128,6 +110,6 @@ public class SysUser implements Serializable {
     }
 
     public void setXm(String xm) {
-        this.xm = xm;
+        this.xm = xm == null ? null : xm.trim();
     }
 }

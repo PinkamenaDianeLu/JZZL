@@ -40,11 +40,11 @@ public class RedisConfig  extends CachingConfigurerSupport {
      * @author MrLu
      * @param
      * @createTime  2020/4/28 23:34
-     * @describe  将定义新的模板使用Serializable缓存数据在redis上
+     * @describe  将定义新的模板使用Serializable缓存数据在redis上 缓存位置： session
      * @version 1.0
       */
     @Bean
-    public RedisTemplate<String, Serializable> redisCSTemplate(@Qualifier("createLettuceConnectionFactory") @Autowired LettuceConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Serializable> redisCSTemplate(@Qualifier("createSessionLettuceConnectionFactory") @Autowired LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Serializable> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
@@ -54,21 +54,41 @@ public class RedisConfig  extends CachingConfigurerSupport {
 
      /**
      * @author MrLu
-     * @param
      * @createTime  2020/4/28 23:55
-     * @describe 将定义的List缓存在redis上
+     * @describe 将定义的List缓存在redis上 缓存位置： session
      * @version 1.0
       */
     @Bean
-    public RedisTemplate<String, Object> redisCLTemplate(@Qualifier("createLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
+    public RedisTemplate<String, Object> redisCLTemplate(@Qualifier("createSessionLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
+        initDomainRedisTemplate(redisTemplate,cf);
+        return redisTemplate;
+    }
+
+
+     /**
+     * 将定义的Map缓存在redis上 缓存位置： cache
+     * @author MrLu
+     * @createTime  2020/9/29 10:24
+     * @return  RedisTemplate<String, Object>  |
+      */
+    @Bean
+    public RedisTemplate<String, Object> redisCCTemplate(@Qualifier("createCacheLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        initDomainRedisTemplate(redisTemplate,cf);
+        return redisTemplate;
+    }
+
+
+    private void initDomainRedisTemplate(RedisTemplate<String, Object> redisTemplate, RedisConnectionFactory cf) {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(jackson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer());
         redisTemplate.setConnectionFactory(cf);
         redisTemplate.afterPropertiesSet();
-        return redisTemplate;
     }
+
+
 
     @Bean
     public Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer() {

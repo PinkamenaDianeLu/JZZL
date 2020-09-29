@@ -27,12 +27,18 @@ public class FunPeopelCase {
 
     private Enums.PersonType persontype;
 
-    private  String casename;
+    private String casename;
 
 
     private String sfcnumber;
 
+    private Enums.CaseState casestate;
+
     private Enums.CaseType casetype;
+    private Integer casestage;
+    private String caseclass;
+    private String caseclasscn;
+
 
     public Integer getSubmitcount() {
         return submitcount;
@@ -138,11 +144,44 @@ public class FunPeopelCase {
         this.sfcnumber = sfcnumber;
     }
 
+
+    public Enums.CaseState getCasestate() {
+        return casestate;
+    }
+
+    public void setCasestate(Enums.CaseState casestate) {
+        this.casestate = casestate;
+    }
+
     public Enums.CaseType getCasetype() {
         return casetype;
     }
 
     public void setCasetype(Enums.CaseType casetype) {
         this.casetype = casetype;
+    }
+
+    public Integer getCasestage() {
+        return casestage;
+    }
+
+    public void setCasestage(Integer casestage) {
+        this.casestage = casestage;
+    }
+
+    public String getCaseclass() {
+        return caseclass;
+    }
+
+    public void setCaseclass(String caseclass) {
+        this.caseclass = caseclass;
+    }
+
+    public String getCaseclasscn() {
+        return caseclasscn;
+    }
+
+    public void setCaseclasscn(String caseclasscn) {
+        this.caseclasscn = caseclasscn;
     }
 }

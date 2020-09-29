@@ -14,25 +14,25 @@
 <form class="form-horizontal">
 	<div class="form-horizontal">
 		<div class="form-group">
-		    <label for="inputEmail3" class="col-sm-2 control-label">&nbsp;</label>
+		    <label  class="col-sm-2 control-label">&nbsp;</label>
 		    <div class="col-sm-3">
-		    <label><input type="radio" name="juan" checked="" >提请批捕卷</label>
+		    <label><input type="radio" name="archivetype" value="8" checked="checked" >提请批捕卷</label>
 		    </div>
 			<div class="col-sm-3">
-			<label><input type="radio" name="juan">刑事侦查卷</label>
+			<label><input type="radio" name="archivetype" value="9" >刑事侦查卷</label>
 			</div>
 			<div class="col-sm-4">
-			<label><input type="radio" name="juan">补充侦查工作卷</label>
+			<label><input type="radio" name="archivetype" value="7" >补充侦查工作卷</label>
 			</div>
 		  </div>
 		<div class="form-group">
-		    <label for="inputEmail3" class="col-sm-2 control-label">卷宗名称：</label>
+		    <label  class="col-sm-2 control-label">卷宗名称：</label>
 		    <div class="col-sm-10">
 		      <input type="text" placeholder="卷宗名称">
 		    </div>
 		  </div>
 		<div class="form-group">
-		    <label for="inputEmail3" class="col-sm-2 control-label">选择文书：</label>
+		    <label  class="col-sm-2 control-label">选择文书：</label>
 		    <div class="col-sm-10">
 		      <select class="form-control">
 		        <option>1</option>
@@ -48,6 +48,9 @@
 		</div>
 	</div>
 </form>
-<script src="/Framework/js/bootstrap.min.js"></script>
+<script src="/Framework/js/jquery.min.js"></script>
+<script src="/Framework/layer/layer.js"></script>
+<script src="/utils/utils.js"></script>
+<script src="/model/ajcx/js/createSFC_f.js"></script>
 </body>
 </html>

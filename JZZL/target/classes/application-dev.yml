@@ -48,9 +48,9 @@ spring:
  redis:
    cacheDatabase: 0
    sessionDatabase: 1
-   host: 192.168.1.124
+   host: 192.168.30.3
    port: 6379
-   password: tljj2020
+   password: sshbjzzl2020
    timeout: 3000
    lettuce:
      pool:

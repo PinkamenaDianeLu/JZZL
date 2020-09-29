@@ -2,7 +2,7 @@ package com.bean.jzgl.DTO;
 
 import java.util.Date;
 
-public class FunArchiveRecordsDTO {
+public class FunSuspectDTO {
     private Integer id;
 
     private Integer scbj;
@@ -13,18 +13,21 @@ public class FunArchiveRecordsDTO {
 
     private Date updatetime;
 
+    private String suspectidcard;
+
+    private String suspectname;
+
     private String jqbh;
 
     private String ajbh;
 
-    private Integer thisorder;
+    private Integer peopelcaseid;
 
-    private String recordname;
+    private String sfcnumber;
 
-    private Integer archivetypeid;
+    private Integer casetype;
 
-    private String archivecode;
-    private Integer recordstyle;
+    private Integer suspectstate;
 
     public Integer getId() {
         return id;
@@ -66,6 +69,22 @@ public class FunArchiveRecordsDTO {
         this.updatetime = updatetime;
     }
 
+    public String getSuspectidcard() {
+        return suspectidcard;
+    }
+
+    public void setSuspectidcard(String suspectidcard) {
+        this.suspectidcard = suspectidcard == null ? null : suspectidcard.trim();
+    }
+
+    public String getSuspectname() {
+        return suspectname;
+    }
+
+    public void setSuspectname(String suspectname) {
+        this.suspectname = suspectname == null ? null : suspectname.trim();
+    }
+
     public String getJqbh() {
         return jqbh;
     }
@@ -82,43 +101,35 @@ public class FunArchiveRecordsDTO {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public Integer getThisorder() {
-        return thisorder;
+    public Integer getPeopelcaseid() {
+        return peopelcaseid;
     }
 
-    public void setThisorder(Integer thisorder) {
-        this.thisorder = thisorder;
+    public void setPeopelcaseid(Integer peopelcaseid) {
+        this.peopelcaseid = peopelcaseid;
     }
 
-    public String getRecordname() {
-        return recordname;
+    public String getSfcnumber() {
+        return sfcnumber;
     }
 
-    public void setRecordname(String recordname) {
-        this.recordname = recordname == null ? null : recordname.trim();
+    public void setSfcnumber(String sfcnumber) {
+        this.sfcnumber = sfcnumber == null ? null : sfcnumber.trim();
     }
 
-    public Integer getArchivetypeid() {
-        return archivetypeid;
+    public Integer getCasetype() {
+        return casetype;
     }
 
-    public void setArchivetypeid(Integer archivetypeid) {
-        this.archivetypeid = archivetypeid;
+    public void setCasetype(Integer casetype) {
+        this.casetype = casetype;
     }
 
-    public String getArchivecode() {
-        return archivecode;
+    public Integer getSuspectstate() {
+        return suspectstate;
     }
 
-    public void setArchivecode(String archivecode) {
-        this.archivecode = archivecode;
-    }
-
-    public Integer getRecordstyle() {
-        return recordstyle;
-    }
-
-    public void setRecordstyle(Integer recordstyle) {
-        this.recordstyle = recordstyle;
+    public void setSuspectstate(Integer suspectstate) {
+        this.suspectstate = suspectstate;
     }
 }

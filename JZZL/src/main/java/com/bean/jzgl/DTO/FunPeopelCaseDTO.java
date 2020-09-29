@@ -23,11 +23,18 @@ public class FunPeopelCaseDTO {
 
     private Integer persontype;
 
-    private  String casename;
+    private String casename;
 
     private String sfcnumber;
 
+    private Integer casestate;
+
     private Integer casetype;
+
+    private Integer casestage;
+    private String caseclass;
+    private String caseclasscn;
+
     public String getCasename() {
         return casename;
     }
@@ -124,11 +131,43 @@ public class FunPeopelCaseDTO {
         this.sfcnumber = sfcnumber;
     }
 
+    public Integer getCasestate() {
+        return casestate;
+    }
+
+    public void setCasestate(Integer casestate) {
+        this.casestate = casestate;
+    }
+
     public Integer getCasetype() {
         return casetype;
     }
 
     public void setCasetype(Integer casetype) {
         this.casetype = casetype;
+    }
+
+    public Integer getCasestage() {
+        return casestage;
+    }
+
+    public void setCasestage(Integer casestage) {
+        this.casestage = casestage;
+    }
+
+    public String getCaseclass() {
+        return caseclass;
+    }
+
+    public void setCaseclass(String caseclass) {
+        this.caseclass = caseclass;
+    }
+
+    public String getCaseclasscn() {
+        return caseclasscn;
+    }
+
+    public void setCaseclasscn(String caseclasscn) {
+        this.caseclasscn = caseclasscn;
     }
 }

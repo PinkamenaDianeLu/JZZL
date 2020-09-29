@@ -22,11 +22,12 @@ public class UserServiceByRedisImpl implements UserService {
     @Autowired
     RedisTemplate<String, Serializable> redisSerializableTemplate;
     @Autowired
-    RedisTemplate<String, Object> redisSerializableObj;
+    RedisTemplate<String, Object> redisCLTemplate;
     @Autowired
     UserSession userSession;
+
     @Override
-    public SysUser getUserNow() throws Exception {
+    public SysUser getUserNow(String VKey) throws Exception {
         String userUUid=userSession.getUserRedisId();
         if (null!=userUUid){
             //不为空  有用户登录
@@ -37,5 +38,8 @@ public class UserServiceByRedisImpl implements UserService {
         }
     }
 
-
+    @Override
+    public SysUser loginVerification(String username, String pwd) throws Exception {
+        return null;
+    }
 }

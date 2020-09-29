@@ -1,9 +1,11 @@
 package com.config.redis;
 
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.connection.RedisConfiguration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
@@ -20,13 +22,11 @@ import java.time.Duration;
  */
 @Configuration
 @PropertySource("classpath:application.yml")
-public class RdisPoolConfig {
+public class RedisSessionPoolConfig {
 
     @Value("${spring.redis.sessionDatabase}")
     private Integer sessionDatabaseIndex;
     //如果想把码表也缓存的话启用这个池  但是没有写定时更新相关的代码
-//    @Value("${spring.redis.database}")
-//    private int database;
 
     @Value("${spring.redis.host}")
     private String host;
@@ -57,7 +57,9 @@ public class RdisPoolConfig {
     @Value("${spring.redis.lettuce.shutdown-timeout}")
     private Long shutdownTimeOut;
     @Bean
-      LettuceConnectionFactory createLettuceConnectionFactory(GenericObjectPoolConfig genericObjectPoolConfig){
+    @Primary
+    @Qualifier("createSessionLettuceConnectionFactory")
+    LettuceConnectionFactory createSessionLettuceConnectionFactory(GenericObjectPoolConfig genericObjectPoolConfig){
 
         //redis配置
         RedisConfiguration redisConfiguration = new
@@ -78,9 +80,12 @@ public class RdisPoolConfig {
         LettuceConnectionFactory lettuceConnectionFactory = new
                 LettuceConnectionFactory(redisConfiguration,lettuceClientConfiguration);
 //        lettuceConnectionFactory .afterPropertiesSet();
-
         return lettuceConnectionFactory;
     }
+
+
+
+
      /**
      * @author MrLu
      * @param

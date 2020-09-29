@@ -22,7 +22,8 @@ public class FunArchiveRecords {
     private String recordname;
 
     private Integer archivetypeid;
-
+    private String archivecode;
+    private String recordstyle;
     public Integer getId() {
         return id;
     }
@@ -101,5 +102,21 @@ public class FunArchiveRecords {
 
     public void setArchivetypeid(Integer archivetypeid) {
         this.archivetypeid = archivetypeid;
+    }
+
+    public String getArchivecode() {
+        return archivecode;
+    }
+
+    public void setArchivecode(String archivecode) {
+        this.archivecode = archivecode;
+    }
+
+    public String getRecordstyle() {
+        return recordstyle;
+    }
+
+    public void setRecordstyle(String recordstyle) {
+        this.recordstyle = recordstyle;
     }
 }

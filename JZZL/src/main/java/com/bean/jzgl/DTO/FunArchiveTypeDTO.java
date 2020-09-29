@@ -23,6 +23,9 @@ public class FunArchiveTypeDTO {
 
     private Integer defaultorder;
 
+    private Integer isazxt;
+    private String archivename;
+
     public Integer getId() {
         return id;
     }
@@ -101,5 +104,21 @@ public class FunArchiveTypeDTO {
 
     public void setDefaultorder(Integer defaultorder) {
         this.defaultorder = defaultorder;
+    }
+
+    public Integer getIsazxt() {
+        return isazxt;
+    }
+
+    public void setIsazxt(Integer isazxt) {
+        this.isazxt = isazxt;
+    }
+
+    public String getArchivename() {
+        return archivename;
+    }
+
+    public void setArchivename(String archivename) {
+        this.archivename = archivename;
     }
 }

@@ -96,7 +96,7 @@ public class LogAspect {
             record.setOpermodul(opLog.operModul());//模块
             record.setOpertype(opLog.operType().toString());//操作类型，枚举项
             record.setIp(getIpAddress(request));
-            SysUser userNow = userServiceByRedis.getUserNow();
+            SysUser userNow = userServiceByRedis.getUserNow(null);
             //判断登录状态
             if (null!=userNow){
                //已经登录

@@ -14,7 +14,11 @@
         <result column="PERSONTYPE" jdbcType="DECIMAL" property="persontype"/>
         <result column="CASENAME" jdbcType="VARCHAR" property="casename"/>
         <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber"/>
+        <result column="CASESTATE" jdbcType="DECIMAL" property="casestate"/>
         <result column="CASETYPE" jdbcType="DECIMAL" property="casetype"/>
+        <result column="CASESTAGE" jdbcType="DECIMAL" property="casestage"/>
+        <result column="CASECLASS" jdbcType="VARCHAR" property="caseclass"/>
+        <result column="CASECLASSCN" jdbcType="VARCHAR" property="caseclasscn"/>
     </resultMap>
 
     <resultMap id="BaseResultForMap" type="java.util.Map">
@@ -31,10 +35,14 @@
         <result column="CASENAME" jdbcType="VARCHAR" property="casename"/>
         <result column="SUBMITCOUNT" jdbcType="VARCHAR" javaType="INTEGER" property="submitcount"/>
         <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber"/>
+        <result column="CASESTATE" jdbcType="INTEGER"  javaType="INTEGER" property="casestate"/>
         <result column="CASETYPE" jdbcType="INTEGER"  javaType="INTEGER" property="casetype"/>
+        <result column="CASESTAGE" jdbcType="DECIMAL" javaType="INTEGER"  property="casestage"/>
+        <result column="CASECLASS" jdbcType="VARCHAR" property="caseclass"/>
+        <result column="CASECLASSCN" jdbcType="VARCHAR" property="caseclasscn"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE,CASENAME,SFCNUMBER,CASETYPE
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE,CASENAME,SFCNUMBER,CASESTATE,CASETYPE,CASESTAGE,CASECLASS,CASECLASSCN
   </sql>
     <select id="selectAll" resultMap="BaseResultMap">
     select * from FUN_PEOPELCASE
