@@ -99,6 +99,17 @@ var ajcxTable = (function () {
     return _ajcxTable;
 })()
 $(function () {
+       $.post({
+               url: '/Records/getFunArchiveRecordsById',
+               data: {id:2587284},
+               success: (re) => {
+                   const reV = JSON.parse(re);
+                   if ('success' === reV.message) {
+                       console.log(reV.value);
+                   } else {
+                   }
+               }
+           });
     let at=new ajcxTable();
     $('#ajcxSearchBtn').click(function () {
         at.searchTable();

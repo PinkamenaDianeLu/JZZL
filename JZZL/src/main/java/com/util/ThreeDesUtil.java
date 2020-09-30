@@ -3,6 +3,7 @@ package com.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import sun.misc.BASE64Decoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
@@ -151,7 +152,20 @@ public class ThreeDesUtil {
         return reString.toString();
     }
 
-
+    /**
+    * @description
+    * @log  2020/9/30 10:10  MrLu  移动至 BaseFactory.DecodeUrlP
+    **/
+    @Deprecated
+    public static String DecodeUrlP(String p) throws Exception{
+        String finSalt = GlobalUtil.getGlobal("salt") ;
+        if (StringUtils.isEmpty(finSalt)){
+            throw  new  Exception("salt获取异常！请重启项目并检查redis连接");
+        }else {
+            final BASE64Decoder decoder = new BASE64Decoder();
+            return  new String(decoder.decodeBuffer(p), "UTF-8");
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         byte[] key = "290CEAD10482CA1FF952892B3F67A24E290CEAD10482CA1F".getBytes();//必须是48位

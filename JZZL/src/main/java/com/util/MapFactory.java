@@ -30,7 +30,7 @@ public class MapFactory {
     public static Object mapToBean(Map<String, Object> map, Class<?> beanClass) throws Exception {
         Object object =  beanClass.newInstance();
         Class c = object.getClass();
-        Field[] fields = c.getDeclaredFields();//取得所有类成员变
+        Field[] fields = c.getDeclaredFields();//取得所有类成员变量
         for (Field thisField :
                 fields) {
             //此位置中case的将判断泛型等特殊类型

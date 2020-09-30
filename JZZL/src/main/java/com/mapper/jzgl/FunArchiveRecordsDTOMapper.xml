@@ -22,20 +22,6 @@
     from FUN_ARCHIVE_RECORDS
     where ID = #{id,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from FUN_ARCHIVE_RECORDS
-    where ID = #{id,jdbcType=DECIMAL}
-  </delete>
-  <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
-    insert into FUN_ARCHIVE_RECORDS (ID, SCBJ, STATE, 
-      CREATETIME, UPDATETIME, JQBH, 
-      AJBH, THISORDER, RECORDNAME, 
-      ARCHIVETYPEID)
-    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
-      #{ajbh,jdbcType=VARCHAR}, #{thisorder,jdbcType=DECIMAL}, #{recordname,jdbcType=VARCHAR}, 
-      #{archivetypeid,jdbcType=DECIMAL})
-  </insert>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
     insert into FUN_ARCHIVE_RECORDS
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -134,19 +120,6 @@
         ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
       </if>
     </set>
-    where ID = #{id,jdbcType=DECIMAL}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
-    update FUN_ARCHIVE_RECORDS
-    set SCBJ = #{scbj,jdbcType=DECIMAL},
-      STATE = #{state,jdbcType=DECIMAL},
-      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      JQBH = #{jqbh,jdbcType=VARCHAR},
-      AJBH = #{ajbh,jdbcType=VARCHAR},
-      THISORDER = #{thisorder,jdbcType=DECIMAL},
-      RECORDNAME = #{recordname,jdbcType=VARCHAR},
-      ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
     where ID = #{id,jdbcType=DECIMAL}
   </update>
 </mapper>
