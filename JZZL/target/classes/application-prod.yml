@@ -1,12 +1,31 @@
-# 部署环境使用
+# 生产环境使用（在家使用）
 spring:
   datasource:
-    tljj:
+    jzgl:
       type: com.alibaba.druid.pool.DruidDataSource
-      url: jdbc:oracle:thin:@10.3.18.188:1521:orcl
+      url: jdbc:oracle:thin:@192.168.52.16:1521:orcl
       driver-class-name: oracle.jdbc.driver.OracleDriver
-      username: tljj
-      password: tljj
+      username: jzzl
+      password: jzzl
+      max-active: 500
+      maximum-pool-size: 100
+      max-idle: 10
+      max-wait: 10000
+      min-idle: 5
+      initial-size: 5
+      validation-query: SELECT 1 FROM DUAL
+      testOnBorrow: false
+      testOnReturn: false
+      test-on-borrow: false
+      poolPreparedStatements: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+    zfba:
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:oracle:thin:@192.168.30.3:1521:orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      username: zfba
+      password: zfba_sshb_2017
       max-active: 500
       maximum-pool-size: 100
       max-idle: 10
@@ -29,15 +48,15 @@ spring:
   redis:
     cacheDatabase: 0
     sessionDatabase: 1
-    host: 10.3.18.188
+    host: 192.168.52.16
     port: 6379
     password: tljj2020
     timeout: 3000
     lettuce:
       pool:
-        max-active: 200
-        max-idle: 50
-        max-wait: 15
+        max-active: 20
+        max-idle: 5
+        max-wait: 5
         min-idle: 0
       shutdown-timeout: 10000
 
@@ -59,7 +78,7 @@ http:
     enabled: true
     force: true
 server:
-  port: 80
+  port: 8080
   error:
     path: /error
   tomcat:
@@ -71,8 +90,12 @@ server:
 
 logging:
   level:
-    root: warn
-
-
+    root: info
+    com.mapper: debug
+mybatis:
+  typeAliasesPackage: com.bean
+  mapperLocations: classpath:mapper/**/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 

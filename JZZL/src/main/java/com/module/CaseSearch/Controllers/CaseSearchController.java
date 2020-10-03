@@ -2,7 +2,7 @@ package com.module.CaseSearch.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.config.aop.OperLog;
+import com.config.annotations.OperLog;
 import com.module.CaseSearch.Services.CaseSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +24,7 @@ import java.util.Map;
 public class CaseSearchController {
     private final String operModul = "CaseSearch";
 
-    final
+    private final
     CaseSearchService caseSearchService;
 
     @Autowired

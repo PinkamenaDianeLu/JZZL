@@ -2,7 +2,7 @@ package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.config.aop.OperLog;
+import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
 import com.module.SFCensorship.Services.SFCensorshipService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,6 +3,7 @@ package com.config.aop;
 import com.alibaba.fastjson.JSON;
 import com.bean.jzgl.DTO.SysLogsDTO;
 import com.bean.jzgl.Source.SysUser;
+import com.config.annotations.OperLog;
 import com.config.session.UserSession;
 import com.module.SystemManagement.Services.LogService;
 import com.module.SystemManagement.Services.UserService;
@@ -49,7 +50,7 @@ public class LogAspect {
      * @version 1.0
      */
 //    @Pointcut("execution(* com.module.*.*.*.*(..))")
-    @Pointcut("@annotation(com.config.aop.OperLog)")
+    @Pointcut("@annotation(com.config.annotations.OperLog)")
     public void operLogPoint() {
     }
 

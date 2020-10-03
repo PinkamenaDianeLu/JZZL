@@ -2,7 +2,7 @@ package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.Source.FunArchiveRecords;
-import com.config.aop.OperLog;
+import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
 import com.module.SFCensorship.Services.RecordsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author MrLu
@@ -23,7 +20,7 @@ import java.util.List;
 @RequestMapping("/Records")
 public class RecordsController extends BaseFactory {
     private final String operModul = "Records";
-    final
+    private final
     RecordsService recordsService;
 
     @Autowired
@@ -39,11 +36,7 @@ public class RecordsController extends BaseFactory {
     public String getFunArchiveRecordsById(Integer id) {
         JSONObject reValue = new JSONObject();
         try {
-
-            List<FunArchiveRecords> a=new ArrayList<>();
-            a.add(recordsService.getFunArchiveRecordsById(id));
-            setBmbName(FunArchiveRecords.class, a);
-//            reValue.put("value", recordsService.getFunArchiveRecordsById(id));
+            reValue.put("value", transformBmField(recordsService.getFunArchiveRecordsById(id),FunArchiveRecords.class));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

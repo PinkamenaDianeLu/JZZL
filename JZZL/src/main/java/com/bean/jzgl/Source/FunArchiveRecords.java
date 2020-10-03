@@ -1,6 +1,9 @@
 package com.bean.jzgl.Source;
 
+import com.config.annotations.CodeTableMapper;
+
 import java.util.Date;
+
 
 public class FunArchiveRecords {
     private Integer id;
@@ -20,11 +23,13 @@ public class FunArchiveRecords {
     private Integer thisorder;
 
     private String recordname;
-
     private Integer archivetypeid;
     private String archivecode;
+
     private String recordstyle;
+    @CodeTableMapper(sourceFiled = "recordstyle", codeTableType = "recordstyle")
     private String recordstyle_name;
+
     public Integer getId() {
         return id;
     }

@@ -1,16 +1,15 @@
 package com.factory;
 
+import com.config.annotations.CodeTableMapper;
+import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import sun.misc.BASE64Decoder;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * @author MrLu
@@ -49,7 +48,7 @@ public class BaseFactory {
      * @createTime 2020/9/30 10:12
      */
     public Map<String, String> getBmb(String type) throws Exception {
-        RedisTemplate<String, Object> redisCCTemplate = new RedisTemplate<String, Object>();
+        //这里没有对object是否能转成Map做检查处理，是因为我希望这世上没有sb
         Map<String, String> finSalt = (Map<String, String>) redisCCTemplate.opsForValue().get(type);
         finSalt = Optional.ofNullable(finSalt).orElse(new HashMap<>());
         return finSalt;
@@ -69,7 +68,6 @@ public class BaseFactory {
         String reString = "";
         try {
             reString = Optional.ofNullable(getBmb(type).get(code)).orElse(nullString);
-            ;
         } catch (Exception e) {
             reString = nullString;
             e.printStackTrace();
@@ -77,37 +75,82 @@ public class BaseFactory {
         return reString;
     }
 
-    //TODO MrLu 2020/9/30  反射将对应名字的值setValue
-    public List<?> setBmbName(final Class<?> ObjClass, List<T> listObj) throws Exception {
+    /**
+     * 反射将对应名字的码表字段的值setValue
+     * 注意： 这里将bean中带有_name的字段判断为需要与码表映射的字段，值来源为去掉_name的字段
+     * 如： recordstyle_name 将寻找 recordstyle 字段的值来映射码表的字段
+     * 如果 recordstyle的值为null，那么recordstyle_name 的值对应也会为null
+     *
+     * @param listObj  对象List
+     * @param ObjClass 对象Class
+     * @return List<Object>  |  处理完了的
+     * @author MrLu
+     * @createTime 2020/10/3 14:16
+     */
+    protected List<?> transformBmField(List<?> listObj, final Class<?> ObjClass) throws Exception {
         Object object = ObjClass.newInstance();
         Class c = object.getClass();
         Field[] fields = c.getDeclaredFields();//取得所有类成员变
-        Map<String, Map<String, String>> bmbMap = new HashMap<>();
+        //循环所有成员变量 判断哪些是需要映射码表的
         for (Field thisField :
                 fields) {
-            String FieldName = thisField.getName();
+            thisField.setAccessible(true);
+            //获取CodeTableMapper注解
+            CodeTableMapper annotation = thisField.getAnnotation(CodeTableMapper.class);
+
             //是在source中新添的与码表相关值
-            if (FieldName.indexOf("_name") > 0) {
-                Map<String, String> bmb = getBmb(sourceBmbCoulmn(FieldName));
-                bmbMap.put(FieldName, bmb);
-            }
-        }
-
-        for (T a :
+            if (null != annotation) {
+                //映射字段名
+                String sourceFieldName = annotation.sourceFiled();
+                //在redis获取码表缓存
+                Map<String, String> bmb = getBmb(annotation.codeTableType());
+                //get方法  get码表字段的值
+                Method getMethod = ObjClass.getDeclaredMethod("get" + StringUtil.UpCaseFirst(sourceFieldName));
+                for (Object thisobj:
                 listObj) {
-            for (Map.Entry<String, Map<String, String>> entry : bmbMap.entrySet()) {
-                //获取code
-//                a.getMethod("set" + entry.getKey()).invoke("111");
+                    thisField.set(thisobj, bmb.get(getMethod.invoke(thisobj)));
+                }
             }
-
         }
+
+
         return listObj;
     }
 
-    private String sourceBmbCoulmn(String name) {
-        name = name.replace("_name", "");
-        char[] cs = name.toCharArray();
-        cs[0] -= 32;
-        return String.valueOf(cs);
+    /**
+     * 反射将对应名字的码表字段的值setValue
+     * 注意： 这里将bean中带有_name的字段判断为需要与码表映射的字段，值来源为去掉_name的字段
+     * 如： recordstyle_name 将寻找 recordstyle 字段的值来映射码表的字段
+     * 如果 recordstyle的值为null，那么recordstyle_name 的值对应也会为null
+     *
+     * @param Obj      对象
+     * @param ObjClass 对象Class
+     * @return Object |
+     * @createTime 2020/10/3 14:39
+     * @author MrLu
+     */
+    protected Object transformBmField(Object Obj, final Class<?> ObjClass) throws Exception {
+        Class c =  ObjClass.newInstance().getClass();
+        Field[] fields = c.getDeclaredFields();//取得所有类成员变
+        //循环所有成员变量 判断哪些是需要映射码表的
+        for (Field thisField :
+                fields) {
+            //关闭安全监测
+            thisField.setAccessible(true);
+            //获取CodeTableMapper注解
+            CodeTableMapper annotation = thisField.getAnnotation(CodeTableMapper.class);
+            //是在source中新添的与码表相关值
+            if (null != annotation) {//该字段拥有此注解
+                //映射字段名
+                String sourceFieldName = annotation.sourceFiled();
+                //获取缓存
+                Map<String, String> bmb = getBmb(annotation.codeTableType());
+                //get方法  get码表字段的值
+                Method getMethod = ObjClass.getDeclaredMethod("get" + StringUtil.UpCaseFirst(sourceFieldName));
+                thisField.set(Obj, bmb.get(getMethod.invoke(Obj)));
+            }
+        }
+        return Obj;
     }
+
 }

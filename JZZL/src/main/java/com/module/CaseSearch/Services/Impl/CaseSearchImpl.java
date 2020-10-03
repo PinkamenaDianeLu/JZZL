@@ -4,6 +4,7 @@ import com.bean.jzgl.Converter.FunPeopelCaseMapper;
 import com.bean.jzgl.DTO.FunPeopelCaseDTO;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.enums.Enums;
+import com.factory.BaseFactory;
 import com.mapper.jzgl.FunPeopelCaseDTOMapper;
 import com.module.CaseSearch.Services.CaseSearchService;
 import com.util.EnumsUtil;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @describe
  */
 @Service
-public class CaseSearchImpl implements CaseSearchService {
+public class CaseSearchImpl extends BaseFactory implements CaseSearchService {
 
     @Resource
     FunPeopelCaseDTOMapper funPeopelCaseTDOMapper;

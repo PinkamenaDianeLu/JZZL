@@ -3,7 +3,7 @@ package com.module.SystemManagement.Controllers;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.Source.SysUser;
-import com.config.aop.OperLog;
+import com.config.annotations.OperLog;
 import com.config.session.UserSession;
 import com.module.SystemManagement.Services.UserService;
 import org.apache.commons.lang3.StringUtils;

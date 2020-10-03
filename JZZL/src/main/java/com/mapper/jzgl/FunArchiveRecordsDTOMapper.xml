@@ -12,9 +12,11 @@
     <result column="THISORDER" jdbcType="DECIMAL" property="thisorder" />
     <result column="RECORDNAME" jdbcType="VARCHAR" property="recordname" />
     <result column="ARCHIVETYPEID" jdbcType="DECIMAL" property="archivetypeid" />
+    <result column="ARCHIVECODE" jdbcType="VARCHAR" property="archivecode" />
+    <result column="RECORDSTYLE" jdbcType="VARCHAR" property="recordstyle" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

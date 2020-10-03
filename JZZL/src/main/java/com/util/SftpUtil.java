@@ -18,23 +18,6 @@ public class SftpUtil {
 
     static private Session session = null;
     static private Channel channel = null;
-    /**
-     * FTP 登录用户名
-     */
-    final static private String username = "tljj";
-    /**
-     * FTP 登录密码
-     */
-    final static private String password = "tljj2020";
-    /**
-     * FTP 服务器地址IP地址
-     */
-    final static private String host = "192.168.1.124";
-    /**
-     * FTP 端口
-     */
-    final static private int port = 22;
-
     final static private int timeout = 60000; //超时数,一分钟
 
     /**
