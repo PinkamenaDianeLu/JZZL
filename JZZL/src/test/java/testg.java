@@ -5,7 +5,9 @@ import com.config.annotations.CodeTableMapper;
 import com.util.EnumsUtil;
 import org.junit.Test;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -78,24 +80,39 @@ public class testg {
             }
         }
     }
-        @Test public void testType() throws Exception{
-            Class<?> ObjClass = FunPeopelCase.class;
-            Object object = ObjClass.newInstance();
-            Class c = object.getClass();
-            Field[] fields = c.getDeclaredFields();//取得所有类成员变
-            //循环所有成员变量 判断哪些是需要映射码表的
-            for (Field thisField :
-                    fields) {
-                //关闭安全监测
-                thisField.setAccessible(true);
-                if (thisField.getType().toString().indexOf("com.enums.Enums") > -1) {
-                    System.out.println(thisField.getType());
-                    String fieldName = thisField.getName();
-                    System.out.println(thisField.toGenericString());
-                    Class b=Class.forName(String.valueOf(thisField.getType()).replace("class ",""));
+
+    @Test
+    public void testType() throws Exception {
+        Class<?> ObjClass = FunPeopelCase.class;
+        Object object = ObjClass.newInstance();
+        Class c = object.getClass();
+        Field[] fields = c.getDeclaredFields();//取得所有类成员变
+        //循环所有成员变量 判断哪些是需要映射码表的
+        for (Field thisField :
+                fields) {
+            //关闭安全监测
+            thisField.setAccessible(true);
+            if (thisField.getType().toString().indexOf("com.enums.Enums") > -1) {
+                System.out.println(thisField.getType());
+                String fieldName = thisField.getName();
+                System.out.println(thisField.toGenericString());
+                Class b = Class.forName(String.valueOf(thisField.getType()).replace("class ", ""));
 //                    Class b = thisField.getType().newInstance().getClass();
-                    System.out.println(EnumsUtil.getEnumByValue(b, 0));
-                }
+                System.out.println(EnumsUtil.getEnumByValue(b, 0));
             }
-            }
+        }
+    }
+
+    @Test
+    public void fs() {
+        Class c =com.enums.Enums.class;
+        Class<?>[] fields = c.getClasses();//取得所有类成员变
+        System.out.println(fields.length);
+        Map<String,Class<?>> map=new HashMap<>();
+        for (Class<?> field : fields) {
+            System.out.println(field.toString().replace("class com.enums.Enums$","").toLowerCase());
+            map.put(field.toString().replace("class com.enums.Enums$","").toLowerCase(),field);
+        }
+        System.out.println(map.size());
+    }
 }

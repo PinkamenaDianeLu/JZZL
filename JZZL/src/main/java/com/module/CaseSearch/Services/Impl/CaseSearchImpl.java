@@ -61,7 +61,7 @@ public class CaseSearchImpl extends BaseFactory implements CaseSearchService {
 
     @Override
     public List<Object>selectPeopleCasePage(Map<String, Object> map) throws Exception {
-        return MapFactory.mapToListBean(funPeopelCaseTDOMapper.selectPeopleCasePage(map),FunPeopelCase.class);
+        return MapFactory.mapToListBean(funPeopelCaseTDOMapper.selectPeopleCasePage(map));
     }
     @Override
     public int selectPeopleCasePageCount(Map<String, Object> map) throws Exception {

@@ -48,7 +48,7 @@
     select * from FUN_PEOPELCASE
   </select>
 
-    <select id="selectPeopleCasePage" resultMap="BaseResultForMap" parameterType="map">
+    <select id="selectPeopleCasePage" resultType="map" parameterType="map">
         select * from ( SELECT A.*, ROWNUM RUM FROM (
         select
         <include refid="Base_Column_List"/>,
