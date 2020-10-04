@@ -35,6 +35,9 @@ var createTable = (function () {
                 pageSize: $('#' + _tableId).attr('colnum') || 13,
                 sidePagination: 'server', // 服务端处理分页
                 trimOnSearch: true,//自动去掉前后空格
+
+                maintainSelected:true,//分页时记住其它页的checkbox
+
                 queryParams: function queryParams(params) {
                     return {
                         offset: params.pageNumber,

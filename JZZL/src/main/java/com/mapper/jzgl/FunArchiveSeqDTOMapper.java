@@ -7,9 +7,16 @@ import java.util.Map;
 
 public interface FunArchiveSeqDTOMapper {
 
-    int insert(FunArchiveSeqDTO record);
 
-    int insertSelective(FunArchiveSeqDTO record);
+
+     /**
+     *  插入
+     * @author MrLu
+     * @param record (  JQBH,AJBH,RECORDSNUMBER,PEOPELCASEID,AUTHOR,AUTHORIDCARD,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME,)
+     * @createTime  2020/10/4 14:57
+     * @return    |
+      */
+    void insertSelective(FunArchiveSeqDTO record);
 
     FunArchiveSeqDTO selectByPrimaryKey(Integer id);
 
@@ -24,4 +31,13 @@ public interface FunArchiveSeqDTOMapper {
       */
     List<FunArchiveSeqDTO> selectArchiveSeqPage(Map<String,Object> map);
     int selectArchiveSeqPageCount(Map<String,Object> map);
+
+     /**
+     * 得到某个案件最后的送检次序
+     * @author MrLu
+     * @param peoplecaseid 案件表id
+     * @createTime  2020/10/4 16:31
+     * @return   int  |
+      */
+    int getLastSFCSeq(int peoplecaseid);
 }

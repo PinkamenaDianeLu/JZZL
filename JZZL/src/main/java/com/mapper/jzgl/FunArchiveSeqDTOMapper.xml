@@ -16,7 +16,9 @@
     <result column="ISFINAL" jdbcType="DECIMAL" property="isfinal" />
     <result column="RECORDSNUMBER" jdbcType="VARCHAR" property="recordsnumber" />
     <result column="PEOPELCASEID" jdbcType="VARCHAR" property="peopelcaseid" />
-
+    <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
+    <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
+    <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
   </resultMap>
 
   <resultMap id="BaseResultForMap" type="java.util.Map">
@@ -34,10 +36,13 @@
     <result column="ISFINAL" jdbcType="DECIMAL" javaType="INTEGER" property="isfinal" />
     <result column="RECORDSNUMBER" jdbcType="VARCHAR" property="recordsnumber" />
     <result column="PEOPELCASEID" jdbcType="VARCHAR" property="peopelcaseid" />
+    <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
+    <result column="ARCHIVETYPE" jdbcType="DECIMAL" javaType="INTEGER"  property="archivetype" />
+    <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ISSEND, AUTHOR, AUTHORIDCARD, 
-    BATCHESSEQ, ISFINAL,RECORDSNUMBER,PEOPELCASEID
+    BATCHESSEQ, ISFINAL,RECORDSNUMBER,PEOPELCASEID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -45,50 +50,29 @@
     from FUN_ARCHIVE_SEQ
     where ID = #{id,jdbcType=DECIMAL}
   </select>
-  <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveSeqDTO">
-    insert into FUN_ARCHIVE_SEQ (ID, SCBJ, STATE, 
-      CREATETIME, UPDATETIME, JQBH, 
-      AJBH, ISSEND, AUTHOR, 
-      AUTHORIDCARD, BATCHESSEQ, ISFINAL
-      )
-    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
-      #{ajbh,jdbcType=VARCHAR}, #{issend,jdbcType=DECIMAL}, #{author,jdbcType=VARCHAR}, 
-      #{authoridcard,jdbcType=VARCHAR}, #{batchesseq,jdbcType=DECIMAL}, #{isfinal,jdbcType=DECIMAL}
-      )
-  </insert>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveSeqDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select seq_FUN_ARCHIVE_SEQ_id.nextval from dual
+    </selectKey>
     insert into FUN_ARCHIVE_SEQ
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         ID,
-      </if>
-      <if test="scbj != null">
         SCBJ,
-      </if>
-      <if test="state != null">
         STATE,
-      </if>
-      <if test="createtime != null">
         CREATETIME,
-      </if>
-      <if test="updatetime != null">
         UPDATETIME,
-      </if>
-      <if test="jqbh != null">
         JQBH,
-      </if>
-      <if test="ajbh != null">
         AJBH,
-      </if>
+        RECORDSNUMBER,
+        PEOPELCASEID,
+        AUTHOR,
+        AUTHORIDCARD,
+      SFCNUMBER,
+      ARCHIVETYPE,
+      ARCHIVENAME,
       <if test="issend != null">
         ISSEND,
-      </if>
-      <if test="author != null">
-        AUTHOR,
-      </if>
-      <if test="authoridcard != null">
-        AUTHORIDCARD,
       </if>
       <if test="batchesseq != null">
         BATCHESSEQ,
@@ -96,37 +80,25 @@
       <if test="isfinal != null">
         ISFINAL,
       </if>
+
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="scbj != null">
-        #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jqbh != null">
+       0,
+        0,
+        sysdate,
+      sysdate,
         #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
         #{ajbh,jdbcType=VARCHAR},
-      </if>
+        #{recordsnumber,jdbcType=VARCHAR},
+        #{peopelcaseid,jdbcType=VARCHAR},
+        #{author,jdbcType=VARCHAR},
+        #{authoridcard,jdbcType=VARCHAR},
+      #{sfcnumber,jdbcType=DECIMAL},
+      #{archivetype,jdbcType=DECIMAL},
+      #{archivename,jdbcType=VARCHAR},
       <if test="issend != null">
         #{issend,jdbcType=DECIMAL},
-      </if>
-      <if test="author != null">
-        #{author,jdbcType=VARCHAR},
-      </if>
-      <if test="authoridcard != null">
-        #{authoridcard,jdbcType=VARCHAR},
       </if>
       <if test="batchesseq != null">
         #{batchesseq,jdbcType=DECIMAL},
@@ -134,6 +106,7 @@
       <if test="isfinal != null">
         #{isfinal,jdbcType=DECIMAL},
       </if>
+
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveSeqDTO">
@@ -202,5 +175,9 @@
     <if test="null != ajbh and ajbh!=''">
       AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
     </if>
+  </select>
+
+  <select id="getLastSFCSeq" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+    select nvl(max(BATCHESSEQ),0) from FUN_ARCHIVE_SEQ where scbj=0 and PEOPELCASEID=#{peopelcaseid,jdbcType=VARCHAR}
   </select>
 </mapper>

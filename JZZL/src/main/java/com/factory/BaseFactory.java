@@ -1,9 +1,13 @@
 package com.factory;
 
+import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.CodeTableMapper;
+import com.config.session.UserSession;
+import com.module.SystemManagement.Services.UserService;
 import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import sun.misc.BASE64Decoder;
 
@@ -19,6 +23,7 @@ import java.util.*;
 public class BaseFactory {
     @Autowired
     RedisTemplate<String, Object> redisCCTemplate;
+
 
     /**
      * 解码添加了salt的base64
@@ -87,6 +92,8 @@ public class BaseFactory {
      * @author MrLu
      * @createTime 2020/10/3 14:16
      */
+
+    //TODO MrLu 2020/10/4    ObjClass必须要跟list是一个类型，这个可以直接获取泛型的类型不用穿了
     protected List<?> transformBmField(List<?> listObj, final Class<?> ObjClass) throws Exception {
         Object object = ObjClass.newInstance();
         Class c = object.getClass();
@@ -108,7 +115,7 @@ public class BaseFactory {
                 Method getMethod = ObjClass.getDeclaredMethod("get" + StringUtil.UpCaseFirst(sourceFieldName));
                 for (Object thisobj:
                 listObj) {
-                    thisField.set(thisobj, bmb.get(getMethod.invoke(thisobj)));
+                    thisField.set(thisobj, Optional.ofNullable(bmb.get(getMethod.invoke(thisobj))).orElse("-"));
                 }
             }
         }
@@ -152,5 +159,6 @@ public class BaseFactory {
         }
         return Obj;
     }
+
 
 }

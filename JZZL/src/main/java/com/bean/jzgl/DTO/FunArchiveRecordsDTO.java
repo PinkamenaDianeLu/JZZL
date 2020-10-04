@@ -22,6 +22,7 @@ public class FunArchiveRecordsDTO {
     private String recordname;
 
     private Integer archivetypeid;
+    private Integer archiveseqid;
 
     private String archivecode;
     private Integer recordstyle;
@@ -120,5 +121,13 @@ public class FunArchiveRecordsDTO {
 
     public void setRecordstyle(Integer recordstyle) {
         this.recordstyle = recordstyle;
+    }
+
+    public Integer getArchiveseqid() {
+        return archiveseqid;
+    }
+
+    public void setArchiveseqid(Integer archiveseqid) {
+        this.archiveseqid = archiveseqid;
     }
 }

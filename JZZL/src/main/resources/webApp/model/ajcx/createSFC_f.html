@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 <link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
-<script src="/Framework/js/jquery.min.js"></script>
-	<script src="/Framework/layer/layer.js"></script>
+<link href="/Framework/bootstrapTable/bootstrap-table.min.css" rel="stylesheet">
 <link type="text/css" rel="stylesheet" href="/css/style.css">
 </head>
 <body>
@@ -28,29 +27,24 @@
 		<div class="form-group">
 		    <label  class="col-sm-2 control-label">卷宗名称：</label>
 		    <div class="col-sm-10">
-		      <input type="text" placeholder="卷宗名称">
+		      <input type="text" id="archivename" placeholder="卷宗名称">
 		    </div>
 		  </div>
 		<div class="form-group">
 		    <label  class="col-sm-2 control-label">选择文书：</label>
 		    <div class="col-sm-10">
-		      <select class="form-control">
-		        <option>1</option>
-		        <option>2</option>
-		        <option>3</option>
-		        <option>4</option>
-		        <option>5</option>
-		      </select>
+				<table id="recordsTable" colnum="13"></table>
 		    </div>
 		  </div>
 		<div class="row">
-			<div class="col-md-12" style="position: absolute;bottom:0px; padding:15px 0; width: 100%;"><button class="ok_but">查询</button>&nbsp;&nbsp;&nbsp;&nbsp;<button class="close_but">取消</button></div>
+			<div class="col-md-12" style="position: absolute;bottom:0px; padding:15px 0; width: 100%;"><button class="ok_but" id="createNewSFC">确认</button>&nbsp;&nbsp;&nbsp;&nbsp;<button class="close_but">取消</button></div>
 		</div>
 	</div>
 </form>
 <script src="/Framework/js/jquery.min.js"></script>
 <script src="/Framework/layer/layer.js"></script>
 <script src="/utils/utils.js"></script>
+<script src="/utils/bootstrapTableUtil.js"></script>
 <script src="/model/ajcx/js/createSFC_f.js"></script>
 </body>
 </html>

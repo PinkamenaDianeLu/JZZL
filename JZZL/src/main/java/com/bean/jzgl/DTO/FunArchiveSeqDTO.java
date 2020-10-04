@@ -27,8 +27,11 @@ public class FunArchiveSeqDTO {
 
     private Integer isfinal;
 
-    private  String recordsnumber;
-    private  String peopelcaseid;
+    private String recordsnumber;
+    private int peopelcaseid;
+    private String sfcnumber;
+    private int archivetype;
+    private String archivename;
 
     public Integer getId() {
         return id;
@@ -134,11 +137,35 @@ public class FunArchiveSeqDTO {
         this.recordsnumber = recordsnumber;
     }
 
-    public String getPeopelcaseid() {
+    public int getPeopelcaseid() {
         return peopelcaseid;
     }
 
-    public void setPeopelcaseid(String peopelcaseid) {
+    public void setPeopelcaseid(int peopelcaseid) {
         this.peopelcaseid = peopelcaseid;
+    }
+
+    public String getSfcnumber() {
+        return sfcnumber;
+    }
+
+    public void setSfcnumber(String sfcnumber) {
+        this.sfcnumber = sfcnumber;
+    }
+
+    public int getArchivetype() {
+        return archivetype;
+    }
+
+    public void setArchivetype(int archivetype) {
+        this.archivetype = archivetype;
+    }
+
+    public String getArchivename() {
+        return archivename;
+    }
+
+    public void setArchivename(String archivename) {
+        this.archivename = archivename;
     }
 }

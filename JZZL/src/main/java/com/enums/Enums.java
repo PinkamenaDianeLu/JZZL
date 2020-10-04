@@ -229,6 +229,7 @@ public class Enums   {
         public String toString(){
             return name;
         }
+
     }
     /**
      * 是否安综系统

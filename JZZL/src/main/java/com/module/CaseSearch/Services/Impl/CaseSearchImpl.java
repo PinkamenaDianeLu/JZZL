@@ -46,7 +46,6 @@ public class CaseSearchImpl extends BaseFactory implements CaseSearchService {
 
     }
 
-    //selectByPrimaryKey
     @Override
     public FunPeopelCase testSearch() throws Exception {
         Class<?> beanClass = FunPeopelCase.class;

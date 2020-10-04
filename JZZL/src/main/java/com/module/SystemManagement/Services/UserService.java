@@ -10,7 +10,7 @@ import com.bean.jzgl.Source.SysUser;
  */
 public interface UserService {
     /**
-     * @param VKey 验证用字符串
+     * @param VKey 验证用字符串 可以手动输入session以获取用户在redis上的信息，或者传null以获取当前用户信息
      * @Author MrLu
      * @createTime 2020/4/26 0:13
      * @describe 获取当前用户信息

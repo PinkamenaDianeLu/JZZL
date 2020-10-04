@@ -92,7 +92,6 @@
                    keyProperty="id">
             select seq_FUN_PEOPELCASE_id.nextval from dual
         </selectKey>
-
         insert into FUN_PEOPELCASE
         <trim prefix="(" suffix=")" suffixOverrides=",">
             ID,

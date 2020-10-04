@@ -28,10 +28,11 @@ public class saltLoader implements CommandLineRunner {
     }
 
 
+    //TODO MrLu 2020/10/4 之后改为增加时间混淆 开发为了方便先写死
     private  void go(){
         LocalDateTime currentTime = LocalDateTime.now();
         String saltSalt = currentTime.getHour() + "" + currentTime.getSecond();
-        String finSalt = GlobalUtil.getGlobal("salt") + saltSalt;
+        String finSalt = GlobalUtil.getGlobal("salt") ;
         redisCCTemplate.opsForValue().set("salt", finSalt);
     }
 }

@@ -66,6 +66,9 @@ var ajcxTable = (function () {
             }, {
                 field: 'submitcount',
                 title: '送检次数'
+            },{
+                field: 'casetype',
+                title: '案件类型'
             }, {
                 title: '操作',
                 align: 'center',
@@ -101,7 +104,7 @@ var ajcxTable = (function () {
 $(function () {
        $.post({
                url: '/Records/getFunArchiveRecordsById',
-               data: {id:2587284},
+               data: {id:85},
                success: (re) => {
                    const reV = JSON.parse(re);
                    if ('success' === reV.message) {

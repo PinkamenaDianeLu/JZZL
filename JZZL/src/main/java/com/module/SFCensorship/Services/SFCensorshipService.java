@@ -1,6 +1,8 @@
 package com.module.SFCensorship.Services;
 
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
+import com.bean.jzgl.Source.FunArchiveSeq;
+import com.bean.jzgl.Source.FunPeopelCase;
 
 import java.util.List;
 import java.util.Map;
@@ -14,7 +16,25 @@ public interface SFCensorshipService {
      * @createTime  2020/9/27 15:48
      * @return    |
      */
-    List<FunArchiveSeqDTO> selectArchiveSeqPage(Map<String,Object> map);
+    List<FunArchiveSeq> selectArchiveSeqPage(Map<String,Object> map);
     int selectArchiveSeqPageCount(Map<String,Object> map);
 
+    void insertSelective(FunArchiveSeq record);
+     /**
+     * 通过id查询人案表
+     * @author MrLu
+     * @param id 表id
+     * @createTime  2020/10/4 16:19
+     * @return  FunPeopelCase  |
+      */
+    FunPeopelCase getFunPeopelCaseById(Integer id);
+
+    /**
+     * 得到某个案件最后的送检次序
+     * @author MrLu
+     * @param peoplecaseid 案件表id
+     * @createTime  2020/10/4 16:31
+     * @return   int  |
+     */
+    int getLastSFCSeq(int peoplecaseid);
 }

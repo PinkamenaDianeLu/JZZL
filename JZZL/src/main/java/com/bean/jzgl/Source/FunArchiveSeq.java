@@ -1,5 +1,6 @@
 package com.bean.jzgl.Source;
 
+import com.config.annotations.CodeTableMapper;
 import com.enums.Enums;
 
 import java.util.Date;
@@ -31,7 +32,12 @@ public class FunArchiveSeq {
 
 
     private  String recordsnumber;
-    private  String peopelcaseid;
+    private  int peopelcaseid;
+    private String sfcnumber;
+    private int archivetype;
+    @CodeTableMapper(sourceFiled = "archivetype", codeTableType = "archivetype")
+    private String archivetype_name;
+    private String archivename;
 
     public Integer getId() {
         return id;
@@ -139,11 +145,43 @@ public class FunArchiveSeq {
         this.recordsnumber = recordsnumber;
     }
 
-    public String getPeopelcaseid() {
+    public int getPeopelcaseid() {
         return peopelcaseid;
     }
 
-    public void setPeopelcaseid(String peopelcaseid) {
+    public void setPeopelcaseid(int peopelcaseid) {
         this.peopelcaseid = peopelcaseid;
+    }
+
+    public String getSfcnumber() {
+        return sfcnumber;
+    }
+
+    public void setSfcnumber(String sfcnumber) {
+        this.sfcnumber = sfcnumber;
+    }
+
+    public int getArchivetype() {
+        return archivetype;
+    }
+
+    public void setArchivetype(int archivetype) {
+        this.archivetype = archivetype;
+    }
+
+    public String getArchivename() {
+        return archivename;
+    }
+
+    public void setArchivename(String archivename) {
+        this.archivename = archivename;
+    }
+
+    public String getArchivetype_name() {
+        return archivetype_name;
+    }
+
+    public void setArchivetype_name(String archivetype_name) {
+        this.archivetype_name = archivetype_name;
     }
 }

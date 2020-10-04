@@ -3,7 +3,7 @@ package com.bean.jzgl.Source;
 import com.enums.Enums;
 
 import java.util.Date;
-
+//TODO MrLu 2020/10/4    FunPeopelCase表已经改名为FunPeopleCase
 public class FunPeopelCase {
     private Integer id;
 
@@ -28,7 +28,6 @@ public class FunPeopelCase {
     private Enums.PersonType persontype;
 
     private String casename;
-
 
     private String sfcnumber;
 

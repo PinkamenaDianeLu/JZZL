@@ -8,6 +8,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * @Author MrLu
@@ -28,7 +30,7 @@ public class UserServiceByRedisImpl implements UserService {
 
     @Override
     public SysUser getUserNow(String VKey) throws Exception {
-        String userUUid=userSession.getUserRedisId();
+        String userUUid= Optional.ofNullable(VKey).orElse(userSession.getUserRedisId());
         if (null!=userUUid){
             //不为空  有用户登录
             return (SysUser) redisSerializableTemplate.opsForValue().get(userSession.getUserRedisId());
