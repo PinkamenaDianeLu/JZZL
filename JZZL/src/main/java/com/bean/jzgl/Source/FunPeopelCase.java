@@ -127,8 +127,8 @@ public class FunPeopelCase {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public Enums.PersonType getPersontype() {
-        return persontype;
+    public String getPersontype() {
+        return persontype.getName();
     }
 
     public void setPersontype(Enums.PersonType persontype) {
@@ -144,16 +144,16 @@ public class FunPeopelCase {
     }
 
 
-    public Enums.CaseState getCasestate() {
-        return casestate;
+    public String getCasestate() {
+        return casestate.getName();
     }
 
     public void setCasestate(Enums.CaseState casestate) {
         this.casestate = casestate;
     }
 
-    public Enums.CaseType getCasetype() {
-        return casetype;
+    public String getCasetype() {
+        return casetype.getName();
     }
 
     public void setCasetype(Enums.CaseType casetype) {

@@ -64,10 +64,7 @@ var sjjlTable = (function () {
                     title: '卷类型'
                 }, {
                     field: 'issend',
-                    title: '是否已发送',
-                    formatter:function (value, row, index) {
-                        console.log(value)
-                    }
+                    title: '是否已发送'
                 }, {
                     title: '操作',
                     align: 'center',

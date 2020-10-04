@@ -5,10 +5,7 @@ import net.sf.cglib.beans.BeanMap;
 
 import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author MrLu
@@ -39,12 +36,10 @@ public class MapFactory {
                 String fieldName = thisField.getName();
                 //注意class后面有个空格！
                 Class b = Class.forName(String.valueOf(thisField.getType()).replace("class ",""));
-                map.put(fieldName, EnumsUtil.getEnumByValue(b, map.get(fieldName)));
+                map.put(fieldName, Objects.requireNonNull(EnumsUtil.getEnumByValue(b, map.get(fieldName))).toString());
             }
         }
-        BeanMap beanMap = BeanMap.create(object);
-        beanMap.putAll(map);
-        return object;
+        return map;
     }
 
     /**

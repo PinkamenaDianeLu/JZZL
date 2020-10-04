@@ -121,16 +121,16 @@ public class FunArchiveSeq {
         this.batchesseq = batchesseq;
     }
 
-    public Enums.IsSend getIssend() {
-        return issend;
+    public String getIssend() {
+        return issend.getName();
     }
 
     public void setIssend(Enums.IsSend issend) {
         this.issend = issend;
     }
 
-    public Enums.IsFinal getIsfinal() {
-        return isfinal;
+    public String getIsfinal() {
+        return isfinal.getName();
     }
 
     public void setIsfinal(Enums.IsFinal isfinal) {

@@ -43,7 +43,7 @@ public class RecordsController extends BaseFactory {
     public String getFunArchiveRecordsById(Integer id) {
         JSONObject reValue = new JSONObject();
         try {
-            reValue.put("value", transformBmField(recordsService.getFunPeopleCaseById(id), FunPeopelCase.class));
+            reValue.put("value", recordsService.getFunPeopleCaseById(id));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
