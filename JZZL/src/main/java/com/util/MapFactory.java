@@ -15,6 +15,11 @@ import java.util.*;
 public class MapFactory {
     private static Map<String, Class<?>> ENUMMAP = new HashMap<>();
 
+     /**
+     * 加载所有需要枚举的类名称和对应的枚举类
+     * @author MrLu
+     * @createTime  2020/10/4 10:08
+      */
     private static void loadENUMMAP() {
         Class c = com.enums.Enums.class;
         Class<?>[] fields = c.getClasses();//取得所有类成员变
@@ -64,7 +69,6 @@ public class MapFactory {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String key = entry.getKey().toLowerCase();
             if (null != ENUMMAP.get(key)) {
-                System.out.println(entry.getKey());
                 Class cla = ENUMMAP.get(key);
                 //此处报错说明你很有可能值枚举不到
                 newmap.put(key, Objects.requireNonNull(EnumsUtil.getEnumByValue(cla, entry.getValue())).toString());
@@ -89,7 +93,6 @@ public class MapFactory {
             return null;
         } else {
             loadENUMMAP();
-
             List<Object> list = new ArrayList(maps.size());
             for (Map<String, Object> thisMap:
             maps) {

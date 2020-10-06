@@ -35,7 +35,20 @@ var sjjlTable = (function () {
         tableObject = createTable({
             tableId: 'sjjlTable',
             searchUrl: '/SFCensorship/selectSFCensorshipPage',
-            column: [
+            column: [{
+                field: 'checked',
+                checkbox: true,
+                align: 'center',
+                valign: 'middle',
+                formatter : function(value, row, index) {
+                    console.log(tableObject.getSelections());
+                    if (tableObject.getSelections().has(row.id) ){
+                        return {
+                            checked: true//设置选中
+                        };
+                    }
+                }
+            },
                 {
                     field: 'jqbh',
                     title: '卷宗编号'

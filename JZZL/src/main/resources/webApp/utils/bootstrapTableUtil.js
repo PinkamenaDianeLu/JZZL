@@ -13,6 +13,8 @@ var createTable = (function () {
     let _param;
     let _searchUrl = '';
 
+    let selectedIds = new Set();
+
     /**
      * 创建表格
      * @author MrLu
@@ -35,9 +37,7 @@ var createTable = (function () {
                 pageSize: $('#' + _tableId).attr('colnum') || 13,
                 sidePagination: 'server', // 服务端处理分页
                 trimOnSearch: true,//自动去掉前后空格
-
-                maintainSelected:true,//分页时记住其它页的checkbox
-
+                maintainSelected: true,//分页时记住其它页的checkbox 但是只能记住客户端分页（废物）
                 queryParams: function queryParams(params) {
                     return {
                         offset: params.pageNumber,
@@ -48,9 +48,37 @@ var createTable = (function () {
                 queryParamsType: 'undefined',
                 undefinedText: '-',//某个值为null时的替补值
                 columns: _column
-            });
+            }).on('uncheck.bs.table check.bs.table check-all.bs.table uncheck-all.bs.table', function (e, rows) {
+            console.log(e)
+            console.log(rows)
+            setClo(e.type, $.isArray(rows) ? rows : [rows]);                                 // 保存到全局 Set() 里
+        })
     }
 
+    function setClo(type, datas) {
+        //判断是否是选择
+        let isCheck = type.indexOf('uncheck') === -1;
+        $.each(datas,function (i, e) {
+            if (isCheck)
+                //选择则添加
+                selectedIds.add(e.id);
+            else
+                //取消勾选则删除
+                selectedIds.delete(e.id);
+        });
+
+    }
+
+     /**
+     * 返回所有被选中的列的id
+     * @author MrLu
+     * @param 
+     * @createTime  2020/10/6 12:45
+     * @return    |  
+      */
+    function getSelections() {
+        return selectedIds;
+    }
     /**
      * 刷新表格 多用于查询
      * @author MrLu
@@ -71,10 +99,11 @@ var createTable = (function () {
      */
     function loadFramework() {
         if (!document.getElementById('bootStrapJs')) {
-            utils.heartJs('bootStrapJs', '/Framework/bootstrapTable/bootstrap-table.js',function(){
+            utils.heartJs('bootStrapJs', '/Framework/bootstrapTable/bootstrap-table.js', function () {
                 utils.heartJs('bootStrapLocalJs', '/Framework/bootstrapTable/bootstrap-table-zh-CN.min.js', function () {
                     loadTable();
-                })})
+                })
+            })
         }
     }
 
@@ -96,7 +125,7 @@ var createTable = (function () {
         }
     }
     _createTable.prototype = {
-        refreshTable
+        refreshTable,getSelections
     }
     return _createTable;
 

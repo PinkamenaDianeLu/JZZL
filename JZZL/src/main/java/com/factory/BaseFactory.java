@@ -113,9 +113,10 @@ public class BaseFactory {
                 Map<String, String> bmb = getBmb(annotation.codeTableType());
                 //get方法  get码表字段的值
                 Method getMethod = ObjClass.getDeclaredMethod("get" + StringUtil.UpCaseFirst(sourceFieldName));
-                for (Object thisobj:
-                listObj) {
-                    thisField.set(thisobj, Optional.ofNullable(bmb.get(getMethod.invoke(thisobj))).orElse("-"));
+                for (Object thisObj :
+                        listObj) {
+                    String keyValue = getMethod.invoke(thisObj).toString();
+                    thisField.set(thisObj, Optional.ofNullable(bmb.get(keyValue)).orElse("-"));
                 }
             }
         }
@@ -137,7 +138,7 @@ public class BaseFactory {
      * @author MrLu
      */
     protected Object transformBmField(Object Obj, final Class<?> ObjClass) throws Exception {
-        Class c =  ObjClass.newInstance().getClass();
+        Class c = ObjClass.newInstance().getClass();
         Field[] fields = c.getDeclaredFields();//取得所有类成员变
         //循环所有成员变量 判断哪些是需要映射码表的
         for (Field thisField :

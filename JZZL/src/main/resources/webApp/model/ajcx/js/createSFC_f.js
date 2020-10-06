@@ -67,6 +67,9 @@ var recordsTable = (function () {
     function searchTable() {
         tableObject.refreshTable();
     }
+    function getTable() {
+        return tableObject;
+    }
 
     function _recordsTable(idP) {
         pid = idP;
@@ -74,7 +77,7 @@ var recordsTable = (function () {
     }
 
     _recordsTable.prototype = {
-        searchTable
+        searchTable,getTable
     };
     return _recordsTable;
 })();
@@ -124,6 +127,8 @@ $(function () {
     });
     let cnf = new createNewSFC(ajid);
     $('#createNewSFC').click(function () {
+        let tableObject=rt.getTable().getSelections();
+        console.log(tableObject)
         cnf.createNSFC();
     });
 })
