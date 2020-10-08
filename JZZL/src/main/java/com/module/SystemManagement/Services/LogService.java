@@ -2,6 +2,7 @@ package com.module.SystemManagement.Services;
 
 
 import com.bean.jzgl.DTO.SysLogsDTO;
+import com.bean.jzgl.DTO.SysLogsLoginDTO;
 
 /**
  * @author MrLu
@@ -18,4 +19,14 @@ public interface LogService {
      * @version 1.0
       */
      void insertLog(SysLogsDTO record);
+
+      /**
+      * 新建登录日志
+      * @author MrLu
+      * @param sysLogsLoginDTO
+      * @createTime  2020/10/8 15:13
+      * @return void   |
+       */
+     void insertLogLogin(SysLogsLoginDTO sysLogsLoginDTO);
+
 }

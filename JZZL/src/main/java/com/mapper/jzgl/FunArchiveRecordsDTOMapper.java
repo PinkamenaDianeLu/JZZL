@@ -34,10 +34,10 @@ public interface FunArchiveRecordsDTOMapper {
      /**
      * 通过警情编号查询警情对应文书
      * @author MrLu
-     * @param jqbh 警情编号
+     * @param map （jqbh）
      * @createTime  2020/10/8 10:37
      * @return  List<FunArchiveRecordsDTO>  |
       */
-    List<FunArchiveRecordsDTO>  selectRecordsByJqbh(String jqbh);
+    List<FunArchiveRecordsDTO>  selectRecordsByJqbh(Map<String,Object> map);
 
 }

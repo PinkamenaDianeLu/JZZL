@@ -15,11 +15,11 @@
     <result column="ARCHIVENAME" jdbcType="VARCHAR"  property="archivename" />
     <result column="ISAZXT"  jdbcType="DECIMAL"  property="isazxt" />
     <result column="ARCHIVESEQID"  jdbcType="DECIMAL"  property="archiveseqid" />
-
+    <result column="ARCHIVECODE" jdbcType="VARCHAR"  property="archivecode" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ARCHIVETYPE, ARCHIVETYPECN, 
-    DEFAULTORDER,ARCHIVENAME,ISAZXT,ARCHIVESEQID
+    DEFAULTORDER,ARCHIVENAME,ISAZXT,ARCHIVESEQID,ARCHIVECODE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -28,88 +28,47 @@
     where ID = #{id,jdbcType=DECIMAL}
   </select>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARCHIVE_TYPE_ID.nextval from dual
+    </selectKey>
     insert into FUN_ARCHIVE_TYPE
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         ID,
-      </if>
-      <if test="scbj != null">
         SCBJ,
-      </if>
-      <if test="state != null">
         STATE,
-      </if>
-      <if test="createtime != null">
         CREATETIME,
-      </if>
-      <if test="updatetime != null">
         UPDATETIME,
-      </if>
-      <if test="jqbh != null">
         JQBH,
-      </if>
-      <if test="ajbh != null">
         AJBH,
-      </if>
-      <if test="archivetype != null">
         ARCHIVETYPE,
-      </if>
-      <if test="archivetypecn != null">
         ARCHIVETYPECN,
-      </if>
-      <if test="defaultorder != null">
         DEFAULTORDER,
-      </if>
+        ISAZXT,
+        ARCHIVESEQID,
+        ARCHIVECODE,
       <if test="archivename != null">
         ARCHIVENAME,
       </if>
-      <if test="isazxt != null">
-        ISAZXT,
-      </if>
-      <if test="archiveseqid != null">
-        ARCHIVESEQID,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="scbj != null">
-        #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jqbh != null">
+        0,
+        0,
+        sysdate,
+        sysdate,
         #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
         #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="archivetype != null">
         #{archivetype,jdbcType=DECIMAL},
-      </if>
-      <if test="archivetypecn != null">
         #{archivetypecn,jdbcType=VARCHAR},
-      </if>
-      <if test="defaultorder != null">
         #{defaultorder,jdbcType=DECIMAL},
-      </if>
+        #{isazxt,jdbcType=DECIMAL},
+        #{archiveseqid,jdbcType=DECIMAL},
+        #{archivecode,jdbcType=DECIMAL},
       <if test="archivename != null">
         #{archivename,jdbcType=VARCHAR},
       </if>
-      <if test="isazxt != null">
-        #{isazxt,jdbcType=DECIMAL},
-      </if>
-      <if test="archiveseqid != null">
-        #{archiveseqid,jdbcType=DECIMAL},
-      </if>
+
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">

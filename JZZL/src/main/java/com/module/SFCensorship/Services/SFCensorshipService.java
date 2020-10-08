@@ -1,6 +1,7 @@
 package com.module.SFCensorship.Services;
 
-import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunPeopelCase;
 
@@ -19,7 +20,14 @@ public interface SFCensorshipService {
     List<FunArchiveSeq> selectArchiveSeqPage(Map<String,Object> map);
     int selectArchiveSeqPageCount(Map<String,Object> map);
 
-    void insertSelective(FunArchiveSeq record);
+     /**
+     * 新建送检记录
+     * @author MrLu
+     * @param record
+     * @createTime  2020/10/8 13:58
+     * @return  void  |
+      */
+    void insertFunArchiveSeq(FunArchiveSeq record);
      /**
      * 通过id查询人案表
      * @author MrLu
@@ -41,12 +49,39 @@ public interface SFCensorshipService {
     /**
      * 通过警情编号查询警情对应文书
      * @author MrLu
-     * @param jqbh 警情编号
+     * @param map （jqbh）
      * @createTime  2020/10/8 10:37
      * @return  List<FunArchiveRecordsDTO>  |
      */
-    List<FunArchiveRecords>  selectRecordsByJqbh(String jqbh);
+    List<FunArchiveRecordsDTO> selectRecordsByJqbh(Map<String,Object> map);
+
+    /**
+     * 查询卷类型表
+     * @author MrLu
+     * @param map（ARCHIVESEQID，jqbh）
+     * @createTime  2020/10/8 11:05
+     * @return  List<FunArchiveTypeDTO>  |
+     */
+    List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(Map<String,Object> map);
 
 
+     /**
+     * 新建卷类型
+     * @author MrLu
+     * @param funArchiveTypeDTO
+     * @createTime  2020/10/8 11:18
+     * @return   void |
+      */
+    void insertFunArchiveType(FunArchiveTypeDTO funArchiveTypeDTO);
+
+
+     /**
+     * 新建送检卷
+     * @author MrLu
+     * @param record
+     * @createTime  2020/10/8 11:38
+     * @return  void  |
+      */
+   void insertFunArchiveRecords(FunArchiveRecordsDTO record);
 
 }

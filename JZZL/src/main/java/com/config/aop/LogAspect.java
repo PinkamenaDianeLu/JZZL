@@ -7,6 +7,7 @@ import com.config.annotations.OperLog;
 import com.config.session.UserSession;
 import com.module.SystemManagement.Services.LogService;
 import com.module.SystemManagement.Services.UserService;
+import com.util.IpUtil;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
@@ -22,8 +23,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -96,7 +95,7 @@ public class LogAspect {
             record.setOperdesc(opLog.operDesc());//描述
             record.setOpermodul(opLog.operModul());//模块
             record.setOpertype(opLog.operType().toString());//操作类型，枚举项
-            record.setIp(getIpAddress(request));
+            record.setIp(IpUtil.getIpAddress(request));
             SysUser userNow = userServiceByRedis.getUserNow(null);
             //判断登录状态
             if (null!=userNow){
@@ -148,40 +147,5 @@ public class LogAspect {
         return rtnMap;
     }
 
-     /**
-     * @author MrLu
-     * @param
-     * @createTime  2020/5/19 21:20
-     * @describe 获取用的真实ip地址
-     * @version 1.0
-      */
-    private static String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-            if("127.0.0.1".equals(ip)||"0:0:0:0:0:0:0:1".equals(ip)){
-                //根据网卡取本机配置的IP
-                InetAddress inet=null;
-                try {
-                    inet = InetAddress.getLocalHost();
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
-                ip= inet.getHostAddress();
-            }
-        }
-        return ip;
-    }
+
 }

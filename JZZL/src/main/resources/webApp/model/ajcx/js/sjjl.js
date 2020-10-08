@@ -26,9 +26,9 @@ var sjjlTable = (function () {
      * @createTime  2020/9/25 9:56
      * @return    |
      */
-    this.submitHistory = function () {
+    this.submitForCensorship = function (id) {
         let urlP = window.btoa(id + sessionStorage.salt)
-        window.open('/model/ajcx/sjjl.html?id=' + urlP);
+        window.open('/model/jzzl/jzzl.html?id=' + urlP);
     }
 
     function loadTable(ajidP) {
@@ -71,7 +71,7 @@ var sjjlTable = (function () {
                     title: '操作',
                     align: 'center',
                     formatter: function (value, row, index) {
-                        return '<a class="b_but edit" onclick="submitHistory(\'' + row.id + '\')">送检</a>';
+                        return '<a class="b_but edit" onclick="submitForCensorship(\'' + row.id + '\')">送检</a>';
                     }
                 }
             ], param: function () {

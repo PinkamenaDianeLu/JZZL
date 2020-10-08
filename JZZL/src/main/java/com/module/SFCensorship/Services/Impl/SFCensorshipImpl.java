@@ -1,13 +1,15 @@
 package com.module.SFCensorship.Services.Impl;
 
-import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunPeopelCaseMapper;
-import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import com.bean.jzgl.DTO.FunArchiveSeqDTO;
+import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
 import com.mapper.jzgl.FunArchiveSeqDTOMapper;
+import com.mapper.jzgl.FunArchiveTypeDTOMapper;
 import com.mapper.jzgl.FunPeopelCaseDTOMapper;
 import com.module.SFCensorship.Services.SFCensorshipService;
 import org.springframework.stereotype.Service;
@@ -29,24 +31,33 @@ public class SFCensorshipImpl implements SFCensorshipService {
     FunPeopelCaseDTOMapper funPeopelCaseDTOMapper;
     @Resource
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
+    @Resource
+    FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
+
     @Override
-  public   List<FunArchiveSeq> selectArchiveSeqPage(Map<String,Object> map){
-        return  FunArchiveSeqMapper.INSTANCE.pcDTOToPcs(funArchiveSeqDTOMapper.selectArchiveSeqPage(map));
-    };
-    @Override
-    public  int selectArchiveSeqPageCount(Map<String,Object> map){
-        return  funArchiveSeqDTOMapper.selectArchiveSeqPageCount(map);
+    public List<FunArchiveSeq> selectArchiveSeqPage(Map<String, Object> map) {
+        return FunArchiveSeqMapper.INSTANCE.pcDTOToPcs(funArchiveSeqDTOMapper.selectArchiveSeqPage(map));
     }
 
-     /**
-     * 新建送检记录表
-     * @author MrLu
-     * @param record
-     * @createTime  2020/10/4 15:18
-      */
+    ;
+
     @Override
-    public void insertSelective(FunArchiveSeq record) {
-        funArchiveSeqDTOMapper.insertSelective(FunArchiveSeqMapper.INSTANCE.pcToPcDTO(record));
+    public int selectArchiveSeqPageCount(Map<String, Object> map) {
+        return funArchiveSeqDTOMapper.selectArchiveSeqPageCount(map);
+    }
+
+    /**
+     * 新建送检记录表
+     *
+     * @param record
+     * @author MrLu
+     * @createTime 2020/10/4 15:18
+     */
+    @Override
+    public void insertFunArchiveSeq(FunArchiveSeq record) {
+        FunArchiveSeqDTO FunArchiveSeqDTO=FunArchiveSeqMapper.INSTANCE.pcToPcDTO(record);
+        funArchiveSeqDTOMapper.insertSelective(FunArchiveSeqDTO);
+        record.setId(FunArchiveSeqDTO.getId());
     }
 
     @Override
@@ -60,10 +71,24 @@ public class SFCensorshipImpl implements SFCensorshipService {
     }
 
     @Override
-    public List<FunArchiveRecords> selectRecordsByJqbh(String jqbh){
-        return  FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(funArchiveRecordsDTOMapper.selectRecordsByJqbh(jqbh));
+    public List<FunArchiveRecordsDTO> selectRecordsByJqbh(Map<String,Object> map) {
+        return funArchiveRecordsDTOMapper.selectRecordsByJqbh(map);
     }
 
+    @Override
+    public List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(Map<String, Object> map) {
+        return funArchiveTypeDTOMapper.selectArchiveTypeByJqSeq(map);
+    }
+
+    @Override
+    public void insertFunArchiveType(FunArchiveTypeDTO funArchiveTypeDTO) {
+        funArchiveTypeDTOMapper.insertSelective(funArchiveTypeDTO);
+    }
+
+    @Override
+    public void insertFunArchiveRecords(FunArchiveRecordsDTO record) {
+        funArchiveRecordsDTOMapper.insertSelective(record);
+    }
 
 
 }

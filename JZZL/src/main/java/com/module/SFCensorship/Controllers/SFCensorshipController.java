@@ -2,7 +2,8 @@ package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.bean.jzgl.Source.SysUser;
@@ -108,14 +109,16 @@ public class SFCensorshipController extends BaseFactory {
             EnumSoft.sjlx thisSjlx = EnumUtils.getEnum(EnumSoft.sjlx.class, sjlxString);
             newSFC.setArchivetype(thisSjlx.getValue());//送检类型
             newSFC.setArchivename(pJsonObj.getString("archivename"));//名
-            sFCensorshipService.insertSelective(newSFC);
+            sFCensorshipService.insertFunArchiveSeq(newSFC);
 
             //得到新建的送检记录id  用此id得到对应的人
             //TODO MrLu 2020/10/4   recordsId插入
-            Integer recordsId = pJsonObj.getInteger("recordsId");
+//            Integer recordsId = pJsonObj.getInteger("recordsId");
             //查询关联人  插入关联人的文书和一些基础文书
-            List<FunArchiveRecords> cloneRecords = sFCensorshipService.selectRecordsByJqbh(thisFunPeopelCase.getJqbh());
 
+            //创建新建卷
+            //TODO MrLu 2020/10/8   未对应人筛选文书
+            cloneRecords(thisFunPeopelCase.getJqbh(), newSFC.getId());
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,6 +127,59 @@ public class SFCensorshipController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+    /**
+     * 复制卷宗到对应的送检记录
+     *
+     * @param jqbh  警情编号
+     * @param seqId 送检记录表id  int类型防止传null值
+     * @return void  |
+     * @author MrLu
+     * @createTime 2020/10/8 13:55
+     */
     private void cloneRecords(String jqbh, int seqId) {
+        Map<String, Object> pMap = new HashMap<>();//查询参数
+        pMap.put("jqbh", jqbh);
+        pMap.put("archiveseqid", 0);
+        List<FunArchiveTypeDTO> oriArchiveTypes = sFCensorshipService.selectArchiveTypeByJqSeq(pMap);
+        for (FunArchiveTypeDTO thisOriAt :
+                oriArchiveTypes) {
+            int oriTypeId = thisOriAt.getId();//源id
+            thisOriAt.setArchiveseqid(seqId);//送检次序id
+            //新建一个
+            sFCensorshipService.insertFunArchiveType(thisOriAt);
+            //新的id
+            int newTypeId = thisOriAt.getId();
+            /*新建records*/
+            Map<String, Object> precordMap = new HashMap<>();//查询参数
+            precordMap.put("jqbh", jqbh);
+            precordMap.put("archivetypeid", oriTypeId);
+            //查询该类型的文书
+            List<FunArchiveRecordsDTO> cloneRecords = sFCensorshipService.selectRecordsByJqbh(precordMap);
+            //新建封皮和封底
+            FunArchiveRecordsDTO cover=new FunArchiveRecordsDTO();
+            cover.setJqbh(thisOriAt.getJqbh());
+            cover.setAjbh(thisOriAt.getAjbh());
+            cover.setThisorder(EnumSoft.fplx.COVER.getOrder());
+            cover.setRecordname(EnumSoft.fplx.COVER.getName());
+            cover.setArchivetypeid(newTypeId);
+            cover.setArchivecode(thisOriAt.getArchivecode());
+            cover.setRecordstyle(0);
+            cover.setArchiveseqid(seqId);
+            cover.setRecordscode(EnumSoft.fplx.COVER.getValue());//文件代码
+            sFCensorshipService.insertFunArchiveRecords(cover);
+
+            //封底
+            cover.setThisorder(EnumSoft.fplx.BACKCOVER.getOrder());
+            cover.setRecordname(EnumSoft.fplx.BACKCOVER.getName());
+            cover.setRecordscode(EnumSoft.fplx.BACKCOVER.getValue());//文件代码
+            sFCensorshipService.insertFunArchiveRecords(cover);
+            //插入文书
+            for (FunArchiveRecordsDTO thisRecord :
+                    cloneRecords) {
+                thisRecord.setArchiveseqid(seqId);//送检次序id
+                thisRecord.setArchivetypeid(newTypeId);//对应了新的archiveType表id
+                sFCensorshipService.insertFunArchiveRecords(thisRecord);
+            }
+        }
     }
 }

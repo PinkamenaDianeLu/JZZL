@@ -38,10 +38,11 @@
             STATE,
             CREATETIME,
             UPDATETIME,
-          ARCHIVECODE,
-            <if test="jqbh != null">
-                JQBH,
-            </if>
+            ARCHIVECODE,
+            JQBH,
+            ARCHIVETYPEID,
+            ARCHIVESEQID,
+            RECORDSCODE,
             <if test="ajbh != null">
                 AJBH,
             </if>
@@ -51,9 +52,11 @@
             <if test="recordname != null">
                 RECORDNAME,
             </if>
-            <if test="archivetypeid != null">
-                ARCHIVETYPEID,
+
+            <if test="recordstyle != null">
+                RECORDSTYLE,
             </if>
+
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             #{id,jdbcType=DECIMAL},
@@ -62,9 +65,10 @@
             sysdate,
             sysdate,
             #{archivecode,jdbcType=VARCHAR},
-            <if test="jqbh != null">
-                #{jqbh,jdbcType=VARCHAR},
-            </if>
+            #{jqbh,jdbcType=VARCHAR},
+            #{archivetypeid,jdbcType=DECIMAL},
+            #{archiveseqid,jdbcType=DECIMAL},
+            #{recordscode,jdbcType=VARCHAR},
             <if test="ajbh != null">
                 #{ajbh,jdbcType=VARCHAR},
             </if>
@@ -74,9 +78,11 @@
             <if test="recordname != null">
                 #{recordname,jdbcType=VARCHAR},
             </if>
-            <if test="archivetypeid != null">
-                #{archivetypeid,jdbcType=DECIMAL},
+
+            <if test="recordstyle != null">
+                #{recordstyle,jdbcType=VARCHAR},
             </if>
+
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
@@ -117,10 +123,13 @@
         select
         <include refid="Base_Column_List"/>
         from FUN_ARCHIVE_RECORDS where 1=1 and scbj=0
-            AND JQBH = #{jqbh,jdbcType=VARCHAR}
-            <if test="recordscode != null">
+        AND JQBH = #{jqbh,jdbcType=VARCHAR}
+        <if test="recordscode != null">
             AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
-            </if>
+        </if>
+        <if test="archiveseqid != null">
+            AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        </if>
         order by id desc
         ) A )
         WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
@@ -128,15 +137,26 @@
     </select>
     <select id="selectRecordsByJqbhCount" resultType="java.lang.Integer" parameterType="java.lang.String">
         SELECT COUNT(0) FROM FUN_ARCHIVE_RECORDS where 1=1 and scbj=0
-            AND JQBH = #{jqbh,jdbcType=VARCHAR}
+        AND JQBH = #{jqbh,jdbcType=VARCHAR}
         <if test="recordscode != null">
             AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
         </if>
+        <if test="archiveseqid != null">
+            AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        </if>
     </select>
 
-    <select id="selectRecordsByJqbh" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT  <include refid="Base_Column_List"/>
+    <select id="selectRecordsByJqbh" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
         from FUN_ARCHIVE_RECORDS
-        where SCBJ=0 AND  JQBH = #{jqbh,jdbcType=VARCHAR}
+        where SCBJ=0 AND
+        JQBH = #{jqbh,jdbcType=VARCHAR}
+        <if test="recordscode != null">
+            AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
+        </if>
+        <if test="archivetypeid != null">
+            AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        </if>
     </select>
 </mapper>

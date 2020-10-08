@@ -8,7 +8,7 @@ import java.util.Map;
 public interface FunArchiveTypeDTOMapper {
 
 
-    int insertSelective(FunArchiveTypeDTO record);
+    int insertSelective(FunArchiveTypeDTO funArchiveTypeDTO);
 
     FunArchiveTypeDTO selectByPrimaryKey(Integer id);
 

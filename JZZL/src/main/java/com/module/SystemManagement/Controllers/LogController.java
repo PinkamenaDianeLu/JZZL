@@ -2,19 +2,24 @@ package com.module.SystemManagement.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bean.jzgl.DTO.SysLogsLoginDTO;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.config.session.UserSession;
+import com.module.SystemManagement.Services.LogService;
 import com.module.SystemManagement.Services.UserService;
+import com.util.IpUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -27,17 +32,27 @@ import java.util.UUID;
 @RequestMapping("/Login")
 public class LogController {
 
-    @Autowired
+    private final
     UserSession userSession;
 
-    @Qualifier("UserService")
-    @Autowired
+    private final
     UserService userService;
 
-    @Autowired
+    private final
+    LogService logService;
+
+    private final
     RedisTemplate<String, Serializable> redisCSTemplate;
-    @Autowired
+    private final
     RedisTemplate<String, Object> redisCCTemplate;
+
+    public LogController(LogService logService, RedisTemplate<String, Serializable> redisCSTemplate, RedisTemplate<String, Object> redisCCTemplate, @Qualifier("UserService") UserService userService, UserSession userSession) {
+        this.logService = logService;
+        this.redisCSTemplate = redisCSTemplate;
+        this.redisCCTemplate = redisCCTemplate;
+        this.userService = userService;
+        this.userSession = userSession;
+    }
 
     /**
      * 登录
@@ -84,7 +99,8 @@ public class LogController {
                 userSession.setUserRedisId(UserRedisId);
                 //上缴redis一个序列化的
                 redisCSTemplate.opsForValue().set(UserRedisId, sysUserNow);
-
+                //记录登录日志
+                saveLoginLog(sysUserNow);
             }
 
         } catch (Exception e) {
@@ -92,6 +108,25 @@ public class LogController {
             reValue.put("message", "error");
         }
         return reValue.toJSONString();
+    }
+
+     /**
+     * 记录登录日志
+     * @author MrLu
+     * @param sysUserNow 已经登录的用户
+     * @createTime  2020/10/8 15:03
+     * @return  void  |
+      */
+    private void saveLoginLog(SysUser sysUserNow){
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        SysLogsLoginDTO SysLogsLoginDTO=new SysLogsLoginDTO();
+        SysLogsLoginDTO.setIp(IpUtil.getIpAddress(request));
+        SysLogsLoginDTO.setXm(sysUserNow.getXm());
+        SysLogsLoginDTO.setOperator(sysUserNow.getIdcardnumber());
+        SysLogsLoginDTO.setSysusername(sysUserNow.getUsername());
+        SysLogsLoginDTO.setSysuserid(sysUserNow.getId());
+        logService.insertLogLogin(SysLogsLoginDTO);
     }
 
 }
