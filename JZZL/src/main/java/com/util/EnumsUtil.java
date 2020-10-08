@@ -58,4 +58,13 @@ public class EnumsUtil {
         }
         return null;
     }
+
+    public static <E extends Enum<E>> E getEnumByName(final Class<E> enumClass, Object name) {
+        try {
+            return valueOf(enumClass, name, enumClass.getMethod("getName"));
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

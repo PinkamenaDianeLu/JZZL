@@ -1,6 +1,6 @@
 package com.module.SFCensorship.Services;
 
-import com.bean.jzgl.DTO.FunArchiveSeqDTO;
+import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunPeopelCase;
 
@@ -37,4 +37,16 @@ public interface SFCensorshipService {
      * @return   int  |
      */
     int getLastSFCSeq(int peoplecaseid);
+
+    /**
+     * 通过警情编号查询警情对应文书
+     * @author MrLu
+     * @param jqbh 警情编号
+     * @createTime  2020/10/8 10:37
+     * @return  List<FunArchiveRecordsDTO>  |
+     */
+    List<FunArchiveRecords>  selectRecordsByJqbh(String jqbh);
+
+
+
 }

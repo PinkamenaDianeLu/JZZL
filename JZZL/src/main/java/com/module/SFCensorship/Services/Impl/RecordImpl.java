@@ -2,7 +2,6 @@ package com.module.SFCensorship.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunPeopelCaseMapper;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
@@ -34,6 +33,8 @@ public class RecordImpl implements RecordsService {
     public List<FunArchiveRecords> selectRecordsByJqbhPage(Map<String,Object> map){
         return  FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(funArchiveRecordsDTOMapper.selectRecordsByJqbhPage(map));
     }
+
+
 
     @Override
     public int selectRecordsByJqbhCount(Map<String,Object> map) {

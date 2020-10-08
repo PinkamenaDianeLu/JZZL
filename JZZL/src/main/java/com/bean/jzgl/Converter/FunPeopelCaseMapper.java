@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author MrLu
@@ -25,14 +26,14 @@ public interface FunPeopelCaseMapper {
     @Mapping(target = "casetype", expression = "java(casestypeToInt(fpc.getCasetype()))")
     FunPeopelCaseDTO pcToPcDTO(FunPeopelCase fpc);
 
-    default int personTypeToInt(Enums.PersonType personType) {
-        return personType.getValue();
+    default int personTypeToInt(String personType) {
+        return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.PersonType.class, personType)).getValue();
     }
-    default int casestateToInt(Enums.CaseState CaseState) {
-        return CaseState.getValue();
+    default int casestateToInt(String CaseState) {
+        return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.CaseState.class, CaseState)).getValue();
     }
-    default int casestypeToInt(Enums.CaseType CaseType) {
-        return CaseType.getValue();
+    default int casestypeToInt(String CaseType) {
+        return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.CaseType.class, CaseType)).getValue();
     }
     @Mapping(target = "persontype", expression = "java(personTypeToEnum(fpc.getPersontype()))")
     @Mapping(target = "casestate", expression = "java(casestateToEnum(fpc.getCasestate()))")

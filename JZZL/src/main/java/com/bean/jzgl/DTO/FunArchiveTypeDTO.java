@@ -25,6 +25,7 @@ public class FunArchiveTypeDTO {
 
     private Integer isazxt;
     private String archivename;
+    private  Integer archiveseqid;
 
     public Integer getId() {
         return id;
@@ -120,5 +121,13 @@ public class FunArchiveTypeDTO {
 
     public void setArchivename(String archivename) {
         this.archivename = archivename;
+    }
+
+    public Integer getArchiveseqid() {
+        return archiveseqid;
+    }
+
+    public void setArchiveseqid(Integer archiveseqid) {
+        this.archiveseqid = archiveseqid;
     }
 }

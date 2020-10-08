@@ -11,12 +11,14 @@ var recordsTable = (function () {
     let pid;
     let tableObject;
 
-    const searchParam = function () {
+    const searchParam = function (recordscode) {
         this.pid = pid;
+        this.recordscode = recordscode;
     };
 
     function getSearchParam() {
         let reS = new searchParam();
+        reS.recordscode=$('[name=recordscode]:checked').val();
         return reS;
     };
 
@@ -26,7 +28,7 @@ var recordsTable = (function () {
             searchUrl: '/Records/selectRecordsByJqbhPage',
             column: [{
                 field: 'checked',
-                checkbox: true,
+                radio: true,
                 align: 'center',
                 valign: 'middle',
             },
@@ -51,7 +53,7 @@ var recordsTable = (function () {
                     }
                 }, {
                     field: 'archivecode',
-                    title: '文件代码'
+                    title: '犯罪嫌疑人'
                 },], param: function () {
                 return getSearchParam();
             }
@@ -67,6 +69,7 @@ var recordsTable = (function () {
     function searchTable() {
         tableObject.refreshTable();
     }
+    //返回表格对象
     function getTable() {
         return tableObject;
     }
@@ -84,19 +87,27 @@ var recordsTable = (function () {
 
 var createNewSFC = (function () {
     let peopelcaseid;
-    const searchParam = function (archivetype, archivename) {
+    const searchParam = function (recordscode, archivename,recordsId) {
         this.peopelcaseid = peopelcaseid;
-        this.archivetype = archivetype;
+        this.recordscode = recordscode;
         this.archivename = archivename;
+        this.recordsId=recordsId;
     };
 
     function getSearchParam() {
         let reS = new searchParam();
-        reS.archivetype = $('[name=archivetype]:checked').val();
+        reS.recordscode = $('[name=recordscode]:checked').val();
         reS.archivename = $('#archivename').val().trim();
+        reS.recordsId=$('#recordsTable').bootstrapTable('getSelections')[0].id;
+        reS.peopelcaseid=peopelcaseid;
         return reS;
     };
 
+     /**
+     * 保存内容
+     * @author MrLu
+     * @createTime  2020/10/7 15:17
+      */
     function createNSFC() {
         $.post({
             url: '/SFCensorship/createNewSFCensorship',
@@ -104,9 +115,10 @@ var createNewSFC = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
-                    alert('成功')
+                    layer.msg('成功');
+                    window.parent.st.searchTable();//父页面表格刷新
                 } else {
-                    alert('失败')
+                    layer.msg('失败');
                 }
             }
         });
@@ -120,15 +132,22 @@ var createNewSFC = (function () {
     return _createNewSFC;
 })();
 $(function () {
-    const ajid = parent.sjjlTable.pValue;//案件表id
+
+    const ajid = parent.st.pValue;//案件表id
     let rt = new recordsTable(ajid);
-    $('#recordsSearchBtn').click(function () {
+    //搜索按钮
+    $('[name=recordscode]').click(function () {
         rt.searchTable();
     });
+
     let cnf = new createNewSFC(ajid);
+    //保存按钮
     $('#createNewSFC').click(function () {
-        let tableObject=rt.getTable().getSelections();
-        console.log(tableObject)
         cnf.createNSFC();
     });
+    //关闭当前页面
+    $('#closeWindow').click(function () {
+        const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+        parent.layer.close(index);
+    })
 })

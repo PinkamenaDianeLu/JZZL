@@ -14,11 +14,12 @@
     <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder" />
     <result column="ARCHIVENAME" jdbcType="VARCHAR"  property="archivename" />
     <result column="ISAZXT"  jdbcType="DECIMAL"  property="isazxt" />
+    <result column="ARCHIVESEQID"  jdbcType="DECIMAL"  property="archiveseqid" />
 
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ARCHIVETYPE, ARCHIVETYPECN, 
-    DEFAULTORDER,ARCHIVENAME,ISAZXT
+    DEFAULTORDER,ARCHIVENAME,ISAZXT,ARCHIVESEQID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,10 +27,6 @@
     from FUN_ARCHIVE_TYPE
     where ID = #{id,jdbcType=DECIMAL}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from FUN_ARCHIVE_TYPE
-    where ID = #{id,jdbcType=DECIMAL}
-  </delete>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
     insert into FUN_ARCHIVE_TYPE
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -69,6 +66,9 @@
       <if test="isazxt != null">
         ISAZXT,
       </if>
+      <if test="archiveseqid != null">
+        ARCHIVESEQID,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -106,6 +106,9 @@
       </if>
       <if test="isazxt != null">
         #{isazxt,jdbcType=DECIMAL},
+      </if>
+      <if test="archiveseqid != null">
+        #{archiveseqid,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -148,4 +151,11 @@
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
+<select id="selectArchiveTypeByJqSeq" parameterType="map" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from FUN_ARCHIVE_TYPE WHERE scbj=0
+  AND ARCHIVESEQID=#{archiveseqid,jdbcType=DECIMAL}
+  AND jqbh=#{jqbh,jdbcType=VARCHAR}
+</select>
 </mapper>

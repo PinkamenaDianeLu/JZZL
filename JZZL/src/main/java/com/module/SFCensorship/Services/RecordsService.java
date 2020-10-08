@@ -1,7 +1,5 @@
 package com.module.SFCensorship.Services;
 
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunPeopelCaseDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunPeopelCase;
 
@@ -34,4 +32,6 @@ public interface RecordsService {
      * @return  FunPeopelCase  |
       */
     FunPeopelCase getFunPeopleCaseById(Integer id);
+
+
 }

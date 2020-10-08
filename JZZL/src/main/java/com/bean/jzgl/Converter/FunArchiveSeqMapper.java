@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author MrLu
@@ -23,11 +24,11 @@ public interface FunArchiveSeqMapper {
     @Mapping(target = "isfinal", expression = "java(isfinalToInt(fpc.getIsfinal()))")
     FunArchiveSeqDTO pcToPcDTO(FunArchiveSeq fpc);
 
-    default int issendToInt(Enums.IsSend issend) {
-        return issend.getValue();
+    default int issendToInt(String issend) {
+        return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.IsSend.class, issend)).getValue();
     }
-    default int isfinalToInt(Enums.IsFinal isfinal) {
-        return isfinal.getValue();
+    default int isfinalToInt(String isfinal) {
+        return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.IsFinal.class, isfinal)).getValue();
     }
     @Mapping(target = "issend", expression = "java(issendToEnum(fpc.getIssend()))")
     @Mapping(target = "isfinal", expression = "java(isfinalToEnum(fpc.getIsfinal()))")

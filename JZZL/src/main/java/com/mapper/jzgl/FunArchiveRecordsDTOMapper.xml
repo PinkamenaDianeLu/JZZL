@@ -15,9 +15,10 @@
         <result column="ARCHIVESEQID" jdbcType="DECIMAL" property="archiveseqid"/>
         <result column="ARCHIVECODE" jdbcType="VARCHAR" property="archivecode"/>
         <result column="RECORDSTYLE" jdbcType="VARCHAR" property="recordstyle"/>
+        <result column="RECORDSCODE" jdbcType="VARCHAR" property="recordscode"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -117,6 +118,9 @@
         <include refid="Base_Column_List"/>
         from FUN_ARCHIVE_RECORDS where 1=1 and scbj=0
             AND JQBH = #{jqbh,jdbcType=VARCHAR}
+            <if test="recordscode != null">
+            AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
+            </if>
         order by id desc
         ) A )
         WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
@@ -125,5 +129,14 @@
     <select id="selectRecordsByJqbhCount" resultType="java.lang.Integer" parameterType="java.lang.String">
         SELECT COUNT(0) FROM FUN_ARCHIVE_RECORDS where 1=1 and scbj=0
             AND JQBH = #{jqbh,jdbcType=VARCHAR}
+        <if test="recordscode != null">
+            AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectRecordsByJqbh" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT  <include refid="Base_Column_List"/>
+        from FUN_ARCHIVE_RECORDS
+        where SCBJ=0 AND  JQBH = #{jqbh,jdbcType=VARCHAR}
     </select>
 </mapper>

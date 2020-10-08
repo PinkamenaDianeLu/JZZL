@@ -29,7 +29,7 @@ public class FunArchiveRecords {
     private String recordstyle;
     @CodeTableMapper(sourceFiled = "recordstyle", codeTableType = "recordstyle")
     private String recordstyle_name;
-
+    private  String recordscode;
     public Integer getId() {
         return id;
     }
@@ -140,5 +140,13 @@ public class FunArchiveRecords {
 
     public void setArchiveseqid(Integer archiveseqid) {
         this.archiveseqid = archiveseqid;
+    }
+
+    public String getRecordscode() {
+        return recordscode;
+    }
+
+    public void setRecordscode(String recordscode) {
+        this.recordscode = recordscode;
     }
 }

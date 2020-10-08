@@ -31,4 +31,13 @@ public interface FunArchiveRecordsDTOMapper {
     List<FunArchiveRecordsDTO> selectRecordsByJqbhPage(Map<String,Object> map);
     int selectRecordsByJqbhCount(Map<String,Object> map);
 
+     /**
+     * 通过警情编号查询警情对应文书
+     * @author MrLu
+     * @param jqbh 警情编号
+     * @createTime  2020/10/8 10:37
+     * @return  List<FunArchiveRecordsDTO>  |
+      */
+    List<FunArchiveRecordsDTO>  selectRecordsByJqbh(String jqbh);
+
 }

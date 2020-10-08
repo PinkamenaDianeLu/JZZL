@@ -1,10 +1,12 @@
 package com.module.SFCensorship.Services.Impl;
 
+import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunPeopelCaseMapper;
-import com.bean.jzgl.DTO.FunArchiveSeqDTO;
+import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunPeopelCase;
+import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
 import com.mapper.jzgl.FunArchiveSeqDTOMapper;
 import com.mapper.jzgl.FunPeopelCaseDTOMapper;
 import com.module.SFCensorship.Services.SFCensorshipService;
@@ -25,6 +27,8 @@ public class SFCensorshipImpl implements SFCensorshipService {
     FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
     @Resource
     FunPeopelCaseDTOMapper funPeopelCaseDTOMapper;
+    @Resource
+    FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
     @Override
   public   List<FunArchiveSeq> selectArchiveSeqPage(Map<String,Object> map){
         return  FunArchiveSeqMapper.INSTANCE.pcDTOToPcs(funArchiveSeqDTOMapper.selectArchiveSeqPage(map));
@@ -55,6 +59,10 @@ public class SFCensorshipImpl implements SFCensorshipService {
         return funArchiveSeqDTOMapper.getLastSFCSeq(peoplecaseid);
     }
 
+    @Override
+    public List<FunArchiveRecords> selectRecordsByJqbh(String jqbh){
+        return  FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(funArchiveRecordsDTOMapper.selectRecordsByJqbh(jqbh));
+    }
 
 
 

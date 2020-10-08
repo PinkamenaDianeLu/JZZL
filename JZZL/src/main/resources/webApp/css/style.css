@@ -60,6 +60,7 @@ input[type=checkbox]{ margin: 0;}
 .form-horizontal .form-group{ margin-left: 0px; margin-right: 0px;}
 .form-horizontal{ margin-top: 15px;}
 input{width: 100%;}
+input[type=checkbox]{width:auto;}
 input[type=radio]{ width: 13px; height: 13px; vertical-align: middle; float: left; margin-right: 5px;}
 .t_search .row{margin: 0px;}
 button.ok_but,.close_but{ padding: 0px 36px; display: inline-block; cursor: pointer;}
@@ -182,4 +183,8 @@ ul.l_nav.delt li p{text-decoration:line-through; color:#C0C0C0;}
 /**Mrlu 添加**/
 .leftsideCliked {
     background-color: #2980d7;
+}
+#userHeart{
+    width:100%;
+    height:80px
 }

@@ -1,19 +1,18 @@
 package com.factory;
 
-import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.CodeTableMapper;
-import com.config.session.UserSession;
-import com.module.SystemManagement.Services.UserService;
 import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import sun.misc.BASE64Decoder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author MrLu
@@ -115,8 +114,8 @@ public class BaseFactory {
                 Method getMethod = ObjClass.getDeclaredMethod("get" + StringUtil.UpCaseFirst(sourceFieldName));
                 for (Object thisObj :
                         listObj) {
-                    String keyValue = getMethod.invoke(thisObj).toString();
-                    thisField.set(thisObj, Optional.ofNullable(bmb.get(keyValue)).orElse("-"));
+                    String keyValue = Optional.ofNullable(getMethod.invoke(thisObj)).orElse("-").toString();
+                    thisField.set(thisObj, bmb.get(keyValue));
                 }
             }
         }

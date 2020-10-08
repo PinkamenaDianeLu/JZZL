@@ -31,24 +31,13 @@ var sjjlTable = (function () {
         window.open('/model/ajcx/sjjl.html?id=' + urlP);
     }
 
-    function loadTable() {
+    function loadTable(ajidP) {
+        ajid = ajidP;
+        // sjjlTable.pValue = ajidP;
         tableObject = createTable({
             tableId: 'sjjlTable',
             searchUrl: '/SFCensorship/selectSFCensorshipPage',
-            column: [{
-                field: 'checked',
-                checkbox: true,
-                align: 'center',
-                valign: 'middle',
-                formatter : function(value, row, index) {
-                    console.log(tableObject.getSelections());
-                    if (tableObject.getSelections().has(row.id) ){
-                        return {
-                            checked: true//设置选中
-                        };
-                    }
-                }
-            },
+            column: [
                 {
                     field: 'jqbh',
                     title: '卷宗编号'
@@ -94,33 +83,35 @@ var sjjlTable = (function () {
     /**
      * 查询
      * @author MrLu
-     * @param
      * @createTime  2020/9/25 10:40
      * @return    |
      */
-    function searchTable() {
+    function searchTable  () {
         tableObject.refreshTable();
     }
 
-    function _sjjlTable(ajidP) {
-        ajid = ajidP;
-        sjjlTable.pValue = ajidP;
-        loadTable();
+
+    function _sjjlTable() {
     }
 
     _sjjlTable.prototype = {
-        searchTable
+        loadTable,searchTable
     };
     return _sjjlTable;
 })();
+var st = new sjjlTable();
 $(function () {
+    $('#userHeart').load('/userHeart.html');
     //案件的id
     const ajid = utils.getUrlPar('id');
-    let st = new sjjlTable(ajid);
+    st.pValue=ajid;//设置pv
+    st.loadTable(ajid);//加载表格
+    //查询按钮
     $('#sjjlSearchBtn').click(function () {
-        st.searchTable();
+        st.searchTable(ajid);
     })
 
+    //新建送检按钮
     $('#createSFC').on('click', function () {
         layer.open({
             icon: 1,
@@ -129,7 +120,7 @@ $(function () {
             skin: 'layui-layer-lan',
             maxmin: false,
             shadeClose: true, //点击遮罩关闭层
-            area: ['780px', '300px'],
+            area: ['1111px', '600px'],
             content: '/model/ajcx/createSFC_f.html'
         });
     });
