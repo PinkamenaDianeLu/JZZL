@@ -40,4 +40,13 @@ public interface FunArchiveRecordsDTOMapper {
       */
     List<FunArchiveRecordsDTO>  selectRecordsByJqbh(Map<String,Object> map);
 
+     /**
+     * 根据typeid查找文书  根据thisorder排序
+     * @author MrLu
+     * @param archivetypeid  typeid
+     * @createTime  2020/10/9 11:33
+     * @return   List<FunArchiveRecordsDTO> |
+      */
+    List<FunArchiveRecordsDTO>  selectRecordsByTypeid(int archivetypeid);
+
 }

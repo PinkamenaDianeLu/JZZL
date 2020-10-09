@@ -137,10 +137,8 @@ public class SFCensorshipController extends BaseFactory {
      * @createTime 2020/10/8 13:55
      */
     private void cloneRecords(String jqbh, int seqId) {
-        Map<String, Object> pMap = new HashMap<>();//查询参数
-        pMap.put("jqbh", jqbh);
-        pMap.put("archiveseqid", 0);
-        List<FunArchiveTypeDTO> oriArchiveTypes = sFCensorshipService.selectArchiveTypeByJqSeq(pMap);
+
+        List<FunArchiveTypeDTO> oriArchiveTypes = sFCensorshipService.selectArchiveTypeByJqSeq(jqbh,0);
         for (FunArchiveTypeDTO thisOriAt :
                 oriArchiveTypes) {
             int oriTypeId = thisOriAt.getId();//源id

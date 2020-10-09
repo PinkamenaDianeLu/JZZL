@@ -58,11 +58,12 @@ public interface SFCensorshipService {
     /**
      * 查询卷类型表
      * @author MrLu
-     * @param map（ARCHIVESEQID，jqbh）
+     * @param jqbh 警情编号
+     * @param archiveseqid 送检次序id
      * @createTime  2020/10/8 11:05
      * @return  List<FunArchiveTypeDTO>  |
      */
-    List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(Map<String,Object> map);
+    List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(String jqbh,int archiveseqid);
 
 
      /**

@@ -15,6 +15,7 @@ import com.module.SFCensorship.Services.SFCensorshipService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,8 +77,11 @@ public class SFCensorshipImpl implements SFCensorshipService {
     }
 
     @Override
-    public List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(Map<String, Object> map) {
-        return funArchiveTypeDTOMapper.selectArchiveTypeByJqSeq(map);
+    public List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(String jqbh,int archiveseqid) {
+        Map<String, Object> pMap = new HashMap<>();//查询参数
+        pMap.put("jqbh", jqbh);
+        pMap.put("archiveseqid", 0);
+        return funArchiveTypeDTOMapper.selectArchiveTypeByJqSeq(pMap);
     }
 
     @Override

@@ -19,30 +19,16 @@
         <result column="CASESTAGE" jdbcType="DECIMAL" property="casestage"/>
         <result column="CASECLASS" jdbcType="VARCHAR" property="caseclass"/>
         <result column="CASECLASSCN" jdbcType="VARCHAR" property="caseclasscn"/>
+        <result column="BADWDWDM" jdbcType="VARCHAR" property="badwdwdm"/>
+        <result column="BADWDWMC" jdbcType="VARCHAR" property="badwdwmc"/>
+        <result column="LARQ" jdbcType="TIMESTAMP" property="larq"/>
+        <result column="JARQ" jdbcType="TIMESTAMP" property="jarq"/>
+
     </resultMap>
 
-    <resultMap id="BaseResultForMap" type="java.util.Map">
-        <id column="ID" jdbcType="INTEGER" javaType="INTEGER"  property="id"/>
-        <result column="SCBJ" jdbcType="INTEGER" javaType="INTEGER" property="scbj"/>
-        <result column="STATE" jdbcType="INTEGER" javaType="INTEGER" property="state"/>
-        <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime"/>
-        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
-        <result column="IDCARD" jdbcType="VARCHAR" property="idcard"/>
-        <result column="NAME" jdbcType="VARCHAR" property="name"/>
-        <result column="JQBH" jdbcType="VARCHAR" property="jqbh"/>
-        <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
-        <result column="PERSONTYPE" jdbcType="INTEGER" javaType="INTEGER" property="persontype"/>
-        <result column="CASENAME" jdbcType="VARCHAR" property="casename"/>
-        <result column="SUBMITCOUNT" jdbcType="VARCHAR" javaType="INTEGER" property="submitcount"/>
-        <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber"/>
-        <result column="CASESTATE" jdbcType="INTEGER"  javaType="INTEGER" property="casestate"/>
-        <result column="CASETYPE" jdbcType="INTEGER"  javaType="INTEGER" property="casetype"/>
-        <result column="CASESTAGE" jdbcType="DECIMAL" javaType="INTEGER"  property="casestage"/>
-        <result column="CASECLASS" jdbcType="VARCHAR" property="caseclass"/>
-        <result column="CASECLASSCN" jdbcType="VARCHAR" property="caseclasscn"/>
-    </resultMap>
     <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE,CASENAME,SFCNUMBER,CASESTATE,CASETYPE,CASESTAGE,CASECLASS,CASECLASSCN
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE,CASENAME,SFCNUMBER,CASESTATE,CASETYPE,CASESTAGE,CASECLASS,CASECLASSCN,BADWDWDM
+    ,BADWDWMC,LARQ,JARQ
   </sql>
     <select id="selectAll" resultMap="BaseResultMap">
     select * from FUN_PEOPELCASE
@@ -74,7 +60,7 @@
             AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
         </if>
     </select>
-    <select id="selecTest"  parameterType="java.lang.Integer" resultMap="BaseResultForMap">
+    <select id="selecTest"  parameterType="java.lang.Integer"  resultType="map">
         select
         <include refid="Base_Column_List"/>,
         (select count(0) from fun_archive_seq aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) as tss

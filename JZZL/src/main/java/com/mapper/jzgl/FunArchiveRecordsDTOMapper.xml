@@ -159,4 +159,15 @@
             AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
         </if>
     </select>
+
+    <select id="selectRecordsByTypeid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from FUN_ARCHIVE_RECORDS
+        where SCBJ=0
+        <if test="archivetypeid != null">
+            AND ARCHIVETYPEID =  #{archivetypeid,jdbcType=DECIMAL}
+        </if>
+        ORDER BY THISORDER ASC
+    </select>
 </mapper>

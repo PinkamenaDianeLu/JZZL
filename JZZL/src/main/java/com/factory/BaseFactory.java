@@ -35,7 +35,9 @@ public class BaseFactory {
     public String DecodeUrlP(String p) throws Exception {
 
         String finSalt = (String) redisCCTemplate.opsForValue().get("salt");
-        if (StringUtils.isEmpty(finSalt)) {
+        if (StringUtils.isEmpty(p)) {
+            throw new Exception("加密字段为空！wdnmd");
+        } else if (StringUtils.isEmpty(finSalt)) {
             throw new Exception("salt获取异常！请重启项目并检查redis连接");
         } else {
             final BASE64Decoder decoder = new BASE64Decoder();

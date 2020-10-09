@@ -35,6 +35,12 @@ public class FunPeopelCaseDTO {
     private String caseclass;
     private String caseclasscn;
 
+    private String badwdwdm;
+    private String badwdwmc;
+    private Date larq;
+    private Date jarq;
+
+
     public String getCasename() {
         return casename;
     }
@@ -169,5 +175,37 @@ public class FunPeopelCaseDTO {
 
     public void setCaseclasscn(String caseclasscn) {
         this.caseclasscn = caseclasscn;
+    }
+
+    public String getBadwdwdm() {
+        return badwdwdm;
+    }
+
+    public void setBadwdwdm(String badwdwdm) {
+        this.badwdwdm = badwdwdm;
+    }
+
+    public String getBadwdwmc() {
+        return badwdwmc;
+    }
+
+    public void setBadwdwmc(String badwdwmc) {
+        this.badwdwmc = badwdwmc;
+    }
+
+    public Date getLarq() {
+        return larq;
+    }
+
+    public void setLarq(Date larq) {
+        this.larq = larq;
+    }
+
+    public Date getJarq() {
+        return jarq;
+    }
+
+    public void setJarq(Date jarq) {
+        this.jarq = jarq;
     }
 }

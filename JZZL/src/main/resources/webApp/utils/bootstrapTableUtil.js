@@ -113,7 +113,7 @@ var createTable = (function () {
             _column = column;
             _searchUrl = searchUrl;
             _param = param;
-            utils.once(loadFramework());
+            utils.functional.once(loadFramework());
         } else {
 
             return new _createTable({

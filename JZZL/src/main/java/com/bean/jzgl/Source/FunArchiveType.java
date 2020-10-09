@@ -108,8 +108,8 @@ public class FunArchiveType {
         this.defaultorder = defaultorder;
     }
 
-    public Enums.IsAzxt getIsazxt() {
-        return isazxt;
+    public String getIsazxt() {
+        return isazxt.getName();
     }
 
     public void setIsazxt(Enums.IsAzxt isazxt) {

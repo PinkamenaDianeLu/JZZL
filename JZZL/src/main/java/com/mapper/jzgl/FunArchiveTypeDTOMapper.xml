@@ -114,7 +114,11 @@
   select
   <include refid="Base_Column_List" />
   from FUN_ARCHIVE_TYPE WHERE scbj=0
+    <if test="archiveseqid != null">
   AND ARCHIVESEQID=#{archiveseqid,jdbcType=DECIMAL}
+    </if>
+    <if test="jqbh != null">
   AND jqbh=#{jqbh,jdbcType=VARCHAR}
+    </if>
 </select>
 </mapper>
