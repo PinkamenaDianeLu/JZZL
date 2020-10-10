@@ -2,6 +2,7 @@ package com.module.SFCensorship.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunArchiveTypeMapper;
+import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
@@ -34,6 +35,7 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
 
     @Override
     public List<FunArchiveRecords> selectRecordsByTypeid(int archivetypeid) {
-        return FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(funArchiveRecordsDTOMapper.selectRecordsByTypeid(archivetypeid));
+        List<FunArchiveRecordsDTO> a=funArchiveRecordsDTOMapper.selectRecordsByTypeid(archivetypeid);
+        return FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(a);
     }
 }

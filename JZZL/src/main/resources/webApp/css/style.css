@@ -28,6 +28,7 @@ form{ display:inline-block; width: 100%;}
 input[type=checkbox]{ margin: 0;}
 .right{ float: right;}
 .ico{display: inline-block; background-image: url(../images/ico.png); background-repeat: no-repeat;}
+.ico01{display: inline-block; background-image: url(../images/ico_1.png); background-repeat: no-repeat;}
 
 /***********top*********/
 .header{position:absolute;top:0px; left:0px; z-index: 99; width: 100%; height:80px; background-image: url(../images/her-bg.jpg); background-position: center 0px; background-repeat:no-repeat;moz-box-shadow:0px 5px 10px rgba(73,110,176,0.35); -webkit-box-shadow:0px 5px 10px rgba(73,110,176,0.35); box-shadow:0px 5px 10px rgba(73,110,176,0.35);}
