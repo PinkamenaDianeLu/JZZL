@@ -72,6 +72,7 @@ var loadArchiveIndex = (function () {
                         f: reV.value.length
                     }
                     utils.functional.forEach(reV.value, function (thisRecord) {
+                        //这两行顺序不能动！
                         $('#' + liD).append(createRecordDD(thisRecord, indexing));
                         indexing.i++;
                     })
@@ -173,11 +174,12 @@ var loadArchiveIndex = (function () {
         } else {
             //当元素已经加载时判断
             //不是封皮封底
-            let nextOne = $('#dd' + thisRecord.id).nextAll('dd');//获取下位元素
-            //当后面只有一个元素（封底时） 无法下移
-            if (nextOne.length <= 2) {
-                haveFun = false;
-            }
+            // let nextOne = $('#dd' + thisRecord.id).nextAll('dd');//获取下位元素
+            // //当后面只有一个元素（封底时） 无法下移
+            // console.log(nextOne.length)
+            // if (nextOne.length <= 2) {
+            //     haveFun = false;
+            // }
         }
         let down = utils.createElement.createElement({
             tag: 'a', attrs: {
