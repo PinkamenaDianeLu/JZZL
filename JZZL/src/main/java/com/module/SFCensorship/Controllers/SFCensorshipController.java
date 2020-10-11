@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.bean.jzgl.Source.SysUser;
@@ -66,9 +67,9 @@ public class SFCensorshipController extends BaseFactory {
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
             //解密id参数
-            pJsonObj.put("peopelcaseid", DecodeUrlP(pJsonObj.getString("id")));//解密的id
-            reMap.put("rows", transformBmField(sFCensorshipService.selectArchiveSeqPage(pJsonObj), FunArchiveSeq.class));
-            reMap.put("total", sFCensorshipService.selectArchiveSeqPageCount(pJsonObj));
+            pJsonObj.put("peoplecaseid", DecodeUrlP(pJsonObj.getString("id")));//解密的id
+            reMap.put("rows", transformBmField(sFCensorshipService.selectArchiveSFCPage(pJsonObj), FunArchiveSFC.class));
+            reMap.put("total", sFCensorshipService.selectArchiveSFCPageCount(pJsonObj));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -90,26 +91,37 @@ public class SFCensorshipController extends BaseFactory {
             }
             int peopelcaseid = Integer.parseInt(DecodeUrlP(id));//得到解密后的案件表id
             FunPeopelCase thisFunPeopelCase = sFCensorshipService.getFunPeopelCaseById(peopelcaseid);
-            //新建送检记录
-            FunArchiveSeq newSFC = new FunArchiveSeq();
-            newSFC.setJqbh(thisFunPeopelCase.getJqbh());
-            newSFC.setAjbh(thisFunPeopelCase.getAjbh());
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
-            newSFC.setAuthor(userNow.getXm());//整理人姓名
-            newSFC.setAuthoridcard(userNow.getIdcardnumber());//整理人身份证号
-            newSFC.setBatchesseq(sFCensorshipService.getLastSFCSeq(peopelcaseid) + 1);//第几次送检
-            //TODO MrLu 2020/10/4 卷宗编号是干啥的来着？？
-            newSFC.setRecordsnumber("卷宗编号？");//卷宗编号?
-            newSFC.setSfcnumber(thisFunPeopelCase.getSfcnumber());//送检编号
-            newSFC.setPeopelcaseid(peopelcaseid);//案件表id
-            newSFC.setIsfinal(Enums.IsFinal.NO);
-            newSFC.setIssend(Enums.IsSend.NO);
+            //新建送检记录
+            FunArchiveSFC newSfc=new FunArchiveSFC();
+            newSfc.setJqbh(thisFunPeopelCase.getJqbh());
+            newSfc.setAjbh(thisFunPeopelCase.getAjbh());
+            newSfc.setIssend(Enums.IsSend.NO);
+            newSfc.setAuthor(userNow.getXm());
+            newSfc.setAuthoridcard(userNow.getIdcardnumber());
+            newSfc.setPeoplecaseid(peopelcaseid);
             String sjlxString = pJsonObj.getString("recordscode");
             //recordscode如果为空怎么办呢？   你不会不让他空啊
             EnumSoft.sjlx thisSjlx = EnumUtils.getEnum(EnumSoft.sjlx.class, sjlxString);
-            newSFC.setArchivetype(thisSjlx.getValue());//送检类型
-            newSFC.setArchivename(pJsonObj.getString("archivename"));//名
-            sFCensorshipService.insertFunArchiveSeq(newSFC);
+            newSfc.setSfcnumber(thisFunPeopelCase.getSfcnumber());//送检编号
+            newSfc.setArchivetype(thisSjlx.getValue());//
+            newSfc.setArchivename(pJsonObj.getString("archivename"));
+            sFCensorshipService.insertFunArchiveSFC(newSfc);
+            //新建送检整理次序
+            FunArchiveSeq newSeq = new FunArchiveSeq();
+            newSeq.setArchivesfcid(newSfc.getId());//送检次序id
+            newSeq.setJqbh(newSfc.getJqbh());
+            newSeq.setAjbh(newSfc.getAjbh());
+            newSeq.setAuthor(userNow.getXm());//整理人姓名
+            newSeq.setAuthoridcard(userNow.getIdcardnumber());//整理人身份证号
+            newSeq.setBatchesseq(0);//新建送检记录 为第0次
+            //TODO MrLu 2020/10/4 卷宗编号是干啥的来着？？
+            newSeq.setPeopelcaseid(newSfc.getPeoplecaseid());//案件表id
+            newSeq.setIsfinal(Enums.IsFinal.NO);//是否是完结版
+            newSeq.setSfcnumber(newSfc.getSfcnumber());//送检编号
+            newSeq.setArchivetype(newSfc.getArchivetype());//送检类型
+            newSeq.setArchivename(newSfc.getArchivename());//送检名
+            sFCensorshipService.insertFunArchiveSeq(newSeq);
 
             //得到新建的送检记录id  用此id得到对应的人
             //TODO MrLu 2020/10/4   recordsId插入
@@ -118,7 +130,7 @@ public class SFCensorshipController extends BaseFactory {
 
             //创建新建卷
             //TODO MrLu 2020/10/8   未对应人筛选文书
-            cloneRecords(thisFunPeopelCase.getJqbh(), newSFC.getId());
+            cloneRecords(thisFunPeopelCase.getJqbh(), newSeq.getId());
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -142,7 +154,8 @@ public class SFCensorshipController extends BaseFactory {
         for (FunArchiveTypeDTO thisOriAt :
                 oriArchiveTypes) {
             int oriTypeId = thisOriAt.getId();//源id
-            thisOriAt.setArchiveseqid(seqId);//送检次序id
+            thisOriAt.setArchiveseqid(seqId);//整理次序id
+            thisOriAt.setIsazxt(1);//非安综系统抽取
             //新建一个
             sFCensorshipService.insertFunArchiveType(thisOriAt);
             //新的id

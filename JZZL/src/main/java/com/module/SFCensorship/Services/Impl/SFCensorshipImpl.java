@@ -1,16 +1,16 @@
 package com.module.SFCensorship.Services.Impl;
 
+import com.bean.jzgl.Converter.FunArchiveSFCMapper;
 import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunPeopelCaseMapper;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import com.bean.jzgl.DTO.FunArchiveSFCDTO;
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunPeopelCase;
-import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
-import com.mapper.jzgl.FunArchiveSeqDTOMapper;
-import com.mapper.jzgl.FunArchiveTypeDTOMapper;
-import com.mapper.jzgl.FunPeopelCaseDTOMapper;
+import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.SFCensorshipService;
 import org.springframework.stereotype.Service;
 
@@ -34,17 +34,17 @@ public class SFCensorshipImpl implements SFCensorshipService {
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
     @Resource
     FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
+    @Resource
+    FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
 
     @Override
-    public List<FunArchiveSeq> selectArchiveSeqPage(Map<String, Object> map) {
-        return FunArchiveSeqMapper.INSTANCE.pcDTOToPcs(funArchiveSeqDTOMapper.selectArchiveSeqPage(map));
+    public List<FunArchiveSFC> selectArchiveSFCPage(Map<String, Object> map) {
+        return FunArchiveSFCMapper.INSTANCE.pcDTOToPcs(funArchiveSFCDTOMapper.selectArchiveSFCPage(map));
     }
 
-    ;
-
     @Override
-    public int selectArchiveSeqPageCount(Map<String, Object> map) {
-        return funArchiveSeqDTOMapper.selectArchiveSeqPageCount(map);
+    public int selectArchiveSFCPageCount(Map<String, Object> map) {
+        return funArchiveSFCDTOMapper.selectArchiveSFCPageCount(map);
     }
 
     /**
@@ -59,6 +59,13 @@ public class SFCensorshipImpl implements SFCensorshipService {
         FunArchiveSeqDTO FunArchiveSeqDTO=FunArchiveSeqMapper.INSTANCE.pcToPcDTO(record);
         funArchiveSeqDTOMapper.insertSelective(FunArchiveSeqDTO);
         record.setId(FunArchiveSeqDTO.getId());
+    }
+
+    @Override
+    public void insertFunArchiveSFC(FunArchiveSFC funArchiveSFC) {
+        FunArchiveSFCDTO funArchiveSFCDTO= FunArchiveSFCMapper.INSTANCE.pcToPcDTO(funArchiveSFC);
+        funArchiveSFCDTOMapper.insertSelective(funArchiveSFCDTO);
+        funArchiveSFC.setId(funArchiveSFCDTO.getId());
     }
 
     @Override

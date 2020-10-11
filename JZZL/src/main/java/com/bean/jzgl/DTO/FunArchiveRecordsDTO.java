@@ -29,6 +29,9 @@ public class FunArchiveRecordsDTO {
 
     private  String recordscode;
 
+    private  Integer isdelete;
+    private Integer isazxt;
+
     public Integer getId() {
         return id;
     }
@@ -139,5 +142,21 @@ public class FunArchiveRecordsDTO {
 
     public void setRecordscode(String recordscode) {
         this.recordscode = recordscode;
+    }
+
+    public Integer getIsdelete() {
+        return isdelete;
+    }
+
+    public void setIsdelete(Integer isdelete) {
+        this.isdelete = isdelete;
+    }
+
+    public Integer getIsazxt() {
+        return isazxt;
+    }
+
+    public void setIsazxt(Integer isazxt) {
+        this.isazxt = isazxt;
     }
 }

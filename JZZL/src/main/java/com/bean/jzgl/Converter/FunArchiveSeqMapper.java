@@ -20,23 +20,14 @@ import java.util.Objects;
 public interface FunArchiveSeqMapper {
     FunArchiveSeqMapper INSTANCE = Mappers.getMapper(FunArchiveSeqMapper.class);
 
-    @Mapping(target = "issend", expression = "java(issendToInt(fpc.getIssend()))")
     @Mapping(target = "isfinal", expression = "java(isfinalToInt(fpc.getIsfinal()))")
     FunArchiveSeqDTO pcToPcDTO(FunArchiveSeq fpc);
-
-    default int issendToInt(String issend) {
-        return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.IsSend.class, issend)).getValue();
-    }
     default int isfinalToInt(String isfinal) {
         return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.IsFinal.class, isfinal)).getValue();
     }
-    @Mapping(target = "issend", expression = "java(issendToEnum(fpc.getIssend()))")
     @Mapping(target = "isfinal", expression = "java(isfinalToEnum(fpc.getIsfinal()))")
     FunArchiveSeq pcDTOToPc(FunArchiveSeqDTO fpc);
 
-    default Enums.IsSend issendToEnum(int issend) {
-        return EnumsUtil.getEnumByValue(Enums.IsSend.class, issend);
-    }
     default Enums.IsFinal isfinalToEnum(int isfinal) {
         return EnumsUtil.getEnumByValue(Enums.IsFinal.class, isfinal);
     }

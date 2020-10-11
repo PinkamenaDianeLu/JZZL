@@ -1,8 +1,11 @@
-package com.bean.jzgl.DTO;
+package com.bean.jzgl.Source;
+
+import com.config.annotations.CodeTableMapper;
+import com.enums.Enums;
 
 import java.util.Date;
 
-public class FunArchiveSeqDTO {
+public class FunArchiveSFC {
     private Integer id;
 
     private Integer scbj;
@@ -17,22 +20,21 @@ public class FunArchiveSeqDTO {
 
     private String ajbh;
 
-    private  String sfcnumber;
+    private Enums.IsSend issend;
 
     private String author;
 
     private String authoridcard;
 
-    private Integer batchesseq;
 
-    private Integer isfinal;
+    private Integer peoplecaseid;
 
-    private String recordsnumber;
-    private int peopelcaseid;
-    private int archivetype;
+    private String sfcnumber;
+
+    private Integer archivetype;
+    @CodeTableMapper(sourceFiled = "archivetype", codeTableType = "archivetype")
+    private String archivetype_name;
     private String archivename;
-
-    private int archivesfcid;
 
     public Integer getId() {
         return id;
@@ -90,6 +92,13 @@ public class FunArchiveSeqDTO {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
+    public String getIssend() {
+        return issend.getName();
+    }
+
+    public void setIssend(Enums.IsSend issend) {
+        this.issend = issend;
+    }
 
     public String getAuthor() {
         return author;
@@ -107,44 +116,28 @@ public class FunArchiveSeqDTO {
         this.authoridcard = authoridcard == null ? null : authoridcard.trim();
     }
 
-    public Integer getBatchesseq() {
-        return batchesseq;
+
+    public Integer getPeoplecaseid() {
+        return peoplecaseid;
     }
 
-    public void setBatchesseq(Integer batchesseq) {
-        this.batchesseq = batchesseq;
+    public void setPeoplecaseid(Integer peoplecaseid) {
+        this.peoplecaseid = peoplecaseid;
     }
 
-    public Integer getIsfinal() {
-        return isfinal;
+    public String getSfcnumber() {
+        return sfcnumber;
     }
 
-    public void setIsfinal(Integer isfinal) {
-        this.isfinal = isfinal;
+    public void setSfcnumber(String sfcnumber) {
+        this.sfcnumber = sfcnumber == null ? null : sfcnumber.trim();
     }
 
-    public String getRecordsnumber() {
-        return recordsnumber;
-    }
-
-    public void setRecordsnumber(String recordsnumber) {
-        this.recordsnumber = recordsnumber;
-    }
-
-    public int getPeopelcaseid() {
-        return peopelcaseid;
-    }
-
-    public void setPeopelcaseid(int peopelcaseid) {
-        this.peopelcaseid = peopelcaseid;
-    }
-
-
-    public int getArchivetype() {
+    public Integer getArchivetype() {
         return archivetype;
     }
 
-    public void setArchivetype(int archivetype) {
+    public void setArchivetype(Integer archivetype) {
         this.archivetype = archivetype;
     }
 
@@ -153,22 +146,14 @@ public class FunArchiveSeqDTO {
     }
 
     public void setArchivename(String archivename) {
-        this.archivename = archivename;
+        this.archivename = archivename == null ? null : archivename.trim();
     }
 
-    public int getArchivesfcid() {
-        return archivesfcid;
+    public String getArchivetype_name() {
+        return archivetype_name;
     }
 
-    public void setArchivesfcid(int archivesfcid) {
-        this.archivesfcid = archivesfcid;
-    }
-
-    public String getSfcnumber() {
-        return sfcnumber;
-    }
-
-    public void setSfcnumber(String sfcnumber) {
-        this.sfcnumber = sfcnumber;
+    public void setArchivetype_name(String archivetype_name) {
+        this.archivetype_name = archivetype_name;
     }
 }

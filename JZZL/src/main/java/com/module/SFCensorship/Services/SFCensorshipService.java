@@ -2,6 +2,7 @@ package com.module.SFCensorship.Services;
 
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunPeopelCase;
 
@@ -17,17 +18,19 @@ public interface SFCensorshipService {
      * @createTime  2020/9/27 15:48
      * @return    |
      */
-    List<FunArchiveSeq> selectArchiveSeqPage(Map<String,Object> map);
-    int selectArchiveSeqPageCount(Map<String,Object> map);
+    List<FunArchiveSFC> selectArchiveSFCPage(Map<String,Object> map);
+    int selectArchiveSFCPageCount(Map<String,Object> map);
 
      /**
-     * 新建送检记录
+     * 新建送检整理次序
      * @author MrLu
      * @param record
      * @createTime  2020/10/8 13:58
      * @return  void  |
       */
     void insertFunArchiveSeq(FunArchiveSeq record);
+
+    void insertFunArchiveSFC(FunArchiveSFC funArchiveSFC);
      /**
      * 通过id查询人案表
      * @author MrLu

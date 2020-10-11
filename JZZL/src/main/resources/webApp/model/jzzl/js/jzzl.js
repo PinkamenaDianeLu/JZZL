@@ -22,7 +22,7 @@ var loadArchiveIndex = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
-                    recordsMap=new Map();
+                    recordsMap = new Map();
                     utils.functional.forEach(reV.value, function (thisType) {
                         loadArchiveType(thisType);
                     });
@@ -48,12 +48,13 @@ var loadArchiveIndex = (function () {
             tag: 'dt', attrs: {
                 id: 'typeTitle' + thisType.id
             }, arg: '<i class="u_up"></i><a><p>' + thisType.archivetypecn + '</p>'
-        })
+        });
         thisTypeEle.addEventListener('click', function () {
             console.log('点一下收缩或展示' + thisType.archivetypecn)
-        })
+        });
         li.append(thisTypeEle);
         $('#archiveIndex').append(li);
+        //加载文书
         loadRecords(thisType.id, li.id)
 
     }
@@ -68,7 +69,7 @@ var loadArchiveIndex = (function () {
     function loadRecords(typeId, liD) {
         $.post({
             url: '/ArrangeArchives/getRecordsIndex',
-            data: {id: typeId},
+            data: {id: typeId,isDelete:0},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -83,24 +84,24 @@ var loadArchiveIndex = (function () {
                         indexing.i++; //此行必须在$('#' + liD).append的后边
                     });
                 } else {
-                    throw  '该卷文书加载失败：'+typeId;
+                    throw  '该卷文书加载失败：' + typeId;
                 }
             }
         });
     }
 
     function createRecordDD(thisRecord, indexing) {
-        if (!thisRecord.id){
+        if (!thisRecord.id) {
             throw  '文书id未获取，无法加载该文书！！';
         }
-        let key='dd' + thisRecord.id;
+        let key = 'dd' + thisRecord.id;
         let dd = utils.createElement.createElement({
             tag: 'dd', attrs: {
                 id: key
-            }, arg: '<a><p>' + thisRecord.recordname + '</p></a>'
+            }, arg: '<a><p class="recordname">' + thisRecord.recordname + '</p></a>'
         });
         //文书缓存至recordsMap
-        recordsMap.set(key,{recordname:thisRecord.recordname,recordscode:thisRecord.recordscode});//缓存信息
+        recordsMap.set(key, {recordname: thisRecord.recordname, recordscode: thisRecord.recordscode});//缓存信息
         //加载文书
         dd.append(createButtons(key, indexing));
         return dd;
@@ -115,7 +116,7 @@ var loadArchiveIndex = (function () {
      * @return  HTMLDivElement  |
      */
     function createButtons(ddId, indexing) {
-        const  thisRecord=recordsMap.get( ddId);
+        const thisRecord = recordsMap.get(ddId);
         let div = document.createElement('div');
         //判断卷类型
         if (!('ZL001' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
@@ -123,8 +124,8 @@ var loadArchiveIndex = (function () {
 
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
-            div.append(upButton(ddId,indexing));//加载上移按钮
-            div.append(downButton(ddId,indexing));//加载下移按钮
+            div.append(upButton(ddId, indexing));//加载上移按钮
+            div.append(downButton(ddId, indexing));//加载下移按钮
             div.append(renameButton(ddId));//加载重命名按钮
             div.append(delButton(ddId));//加载删除按钮
         }
@@ -150,7 +151,7 @@ var loadArchiveIndex = (function () {
         } else {
             //当元素已经加载时判断
             //不是封皮封底
-            let prevOne = $('#' +ddId).prevAll('dd');//获取上一个元素
+            let prevOne = $('#' + ddId).prevAll('dd');//获取上一个元素
             //当前面只有一个元素（封皮时） 无法上移
             if (prevOne.length < 2) {
                 haveFun = false;
@@ -160,7 +161,7 @@ var loadArchiveIndex = (function () {
             tag: 'a', attrs: {
                 title: '上移',
             }, arg: '<i class="' + (haveFun ? 'ico' : 'ico01') + ' up"></i>'
-        })
+        });
         if (haveFun) {
             up.addEventListener('click', function () {
                 upFun(ddId);
@@ -186,7 +187,7 @@ var loadArchiveIndex = (function () {
                 haveFun = false;
             }
         } else {
-           // 当元素已经加载时判断
+            // 当元素已经加载时判断
             //此时已经移动完了  重新加载按钮
             let nextOne = $('#' + ddId).nextAll('dd');//获取下位元素
             //当后面只有一个元素（封底时） 无法下移
@@ -198,7 +199,7 @@ var loadArchiveIndex = (function () {
             tag: 'a', attrs: {
                 title: '下移',
             }, arg: '<i class="' + (haveFun ? 'ico' : 'ico01') + ' Down"></i>'
-        })
+        });
         if (haveFun) {
             down.addEventListener('click', function () {
                 downFun(ddId);
@@ -210,11 +211,11 @@ var loadArchiveIndex = (function () {
     /**
      * 重命名按钮
      * @author MrLu
-     * @param thisRecord
+     * @param ddId
      * @createTime  2020/10/10 15:13
      * @return  HTMLDivElement  |
      */
-    function renameButton(thisRecord) {
+    function renameButton(ddId) {
         let haveFun = true;//是否激活方法
         let edit = utils.createElement.createElement({
             tag: 'a', attrs: {
@@ -223,7 +224,7 @@ var loadArchiveIndex = (function () {
         })
         if (haveFun) {
             edit.addEventListener('click', function () {
-                renameFun(thisRecord);
+                renameFun(ddId);
             })
         }
         return edit;
@@ -233,11 +234,11 @@ var loadArchiveIndex = (function () {
     /**
      * 删除按钮
      * @author MrLu
-     * @param thisRecord
+     * @param ddId
      * @createTime  2020/10/10 15:13
      * @return  HTMLDivElement  |
      */
-    function delButton(thisRecord) {
+    function delButton(ddId) {
         let haveFun = true;//是否激活方法
         let del = utils.createElement.createElement({
             tag: 'a', attrs: {
@@ -246,7 +247,7 @@ var loadArchiveIndex = (function () {
         })
         if (haveFun) {
             del.addEventListener('click', function () {
-                delFun(thisRecord);
+                delFun(ddId);
             })
         }
         return del;
@@ -263,8 +264,8 @@ var loadArchiveIndex = (function () {
         if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
-        let dd=$('#' +ddId);
-        let prevDD=dd.prev('dd');//上一个
+        let dd = $('#' + ddId);
+        let prevDD = dd.prev('dd');//上一个
         prevDD.before(dd);
         reloadButton(dd);//重新加载按钮
         reloadButton(prevDD);//重新加载按钮
@@ -280,8 +281,8 @@ var loadArchiveIndex = (function () {
         if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
-        let dd=$('#' +ddId);//要移动的
-        let nextDD=dd.next('dd');//下一个
+        let dd = $('#' + ddId);//要移动的
+        let nextDD = dd.next('dd');//下一个
         nextDD.after(dd);//移动顺序
         reloadButton(dd);//重新加载按钮
         reloadButton(nextDD);//重新加载按钮
@@ -290,30 +291,45 @@ var loadArchiveIndex = (function () {
     /**
      * 重命名
      * @author MrLu
-     * @param thisRecord
+     * @param ddId
      * @createTime  2020/10/10 14:12
      */
-    function renameFun(thisRecord) {
-
+    function renameFun(ddId) {
+        let thisP = $('#' + ddId).find('.recordname');
+        thisP.attr('contenteditable', 'plaintext-only');//该p可编辑
+        // thisP.removeClass('').addClass();//更换class更换样式
+        thisP.focus();//给予焦点
+        //失去焦点事件
+        thisP.blur(function () {
+            $(this).removeAttr('contenteditable').unbind();//该p不可编辑 解除事件
+            let thisOne = recordsMap.get(ddId);
+            thisOne.recordname = $(this).html();
+            recordsMap.set(ddId, thisOne);//缓存信息
+        });
+        console.log(recordsMap.get(ddId));
+        //
     }
 
     /**
      * 删除
      * @author MrLu
-     * @param thisRecord
+     * @param ddId
      * @createTime  2020/10/10 14:13
      */
-    function delFun(thisRecord) {
+    function delFun(ddId) {
+        $('#' + ddId).clone();
+        //回收站
+        $('#recycleBinArchiveIndex')
 
     }
 
 
-     /**
+    /**
      * 重新加载一个文书的按钮列表
      * @author MrLu
      * @param dd 该文书在列表中的dd
      * @createTime  2020/10/11 12:42
-      */
+     */
     function reloadButton(dd) {
         dd.find('div').remove();
         dd.append(createButtons(dd.attr('id')));
@@ -330,8 +346,20 @@ var loadArchiveIndex = (function () {
 $(function () {
     $('#userHeart').load('/userHeart.html');
     //送检的id
-    const seqId = utils.getUrlPar('id');
-    let lai = new loadArchiveIndex();
-    lai.loadIndex(seqId);
+    const sfcId = utils.getUrlPar('id');
+    //查询送检最后一次整理的记录
+    $.post({
+        url: '/ArrangeArchives/selectLastSeqBySfc',
+        data: {id: sfcId},
+        success: (re) => {
+            const reV = JSON.parse(re);
+            if ('success' === reV.message) {
+                let lai = new loadArchiveIndex();
+                lai.loadIndex(reV.value.id);
+            } else {
+            }
+        }
+    });
+
 
 })

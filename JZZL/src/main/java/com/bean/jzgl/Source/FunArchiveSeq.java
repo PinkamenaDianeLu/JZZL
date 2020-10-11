@@ -20,8 +20,7 @@ public class FunArchiveSeq {
 
     private String ajbh;
 
-    private Enums.IsSend issend;
-
+    private  String sfcnumber;
     private String author;
 
     private String authoridcard;
@@ -33,11 +32,11 @@ public class FunArchiveSeq {
 
     private  String recordsnumber;
     private  int peopelcaseid;
-    private String sfcnumber;
     private int archivetype;
     @CodeTableMapper(sourceFiled = "archivetype", codeTableType = "archivetype")
     private String archivetype_name;
     private String archivename;
+    private int archivesfcid;
 
     public Integer getId() {
         return id;
@@ -121,13 +120,6 @@ public class FunArchiveSeq {
         this.batchesseq = batchesseq;
     }
 
-    public String getIssend() {
-        return issend.getName();
-    }
-
-    public void setIssend(Enums.IsSend issend) {
-        this.issend = issend;
-    }
 
     public String getIsfinal() {
         return isfinal.getName();
@@ -153,13 +145,6 @@ public class FunArchiveSeq {
         this.peopelcaseid = peopelcaseid;
     }
 
-    public String getSfcnumber() {
-        return sfcnumber;
-    }
-
-    public void setSfcnumber(String sfcnumber) {
-        this.sfcnumber = sfcnumber;
-    }
 
     public int getArchivetype() {
         return archivetype;
@@ -183,5 +168,21 @@ public class FunArchiveSeq {
 
     public void setArchivetype_name(String archivetype_name) {
         this.archivetype_name = archivetype_name;
+    }
+
+    public int getArchivesfcid() {
+        return archivesfcid;
+    }
+
+    public void setArchivesfcid(int archivesfcid) {
+        this.archivesfcid = archivesfcid;
+    }
+
+    public String getSfcnumber() {
+        return sfcnumber;
+    }
+
+    public void setSfcnumber(String sfcnumber) {
+        this.sfcnumber = sfcnumber;
     }
 }

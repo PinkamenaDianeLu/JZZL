@@ -20,7 +20,7 @@ public interface FunPeopelCaseDTOMapper {
      /**
      * 分页查询人员案件表
      * @author MrLu
-     * @param
+     * @param map
      * @createTime  2020/9/23 14:08
      * @return    |
       */

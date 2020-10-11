@@ -32,8 +32,16 @@ public interface FunArchiveSeqDTOMapper {
     List<FunArchiveSeqDTO> selectArchiveSeqPage(Map<String,Object> map);
     int selectArchiveSeqPageCount(Map<String,Object> map);
 
+    /**
+     * 查询送检记录下最后一次整理
+     * @author MrLu
+     * @param archivesfcid 送检记录id
+     * @createTime  2020/10/11 16:13
+     * @return  FunArchiveSeq  |
+     */
+    FunArchiveSeqDTO selectLastSeqBySfc(int archivesfcid);
      /**
-     * 得到某个案件最后的送检次序
+     * 得到某个案件最后的整理次序
      * @author MrLu
      * @param peoplecaseid 案件表id
      * @createTime  2020/10/4 16:31

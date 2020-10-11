@@ -9,40 +9,20 @@
     <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
     <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
     <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="ISSEND" jdbcType="DECIMAL" property="issend" />
     <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
     <result column="AUTHORIDCARD" jdbcType="VARCHAR" property="authoridcard" />
     <result column="BATCHESSEQ" jdbcType="DECIMAL" property="batchesseq" />
     <result column="ISFINAL" jdbcType="DECIMAL" property="isfinal" />
-    <result column="RECORDSNUMBER" jdbcType="VARCHAR" property="recordsnumber" />
     <result column="PEOPELCASEID" jdbcType="VARCHAR" property="peopelcaseid" />
     <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
     <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
     <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
+    <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid" />
   </resultMap>
 
-  <resultMap id="BaseResultForMap" type="java.util.Map">
-    <id column="ID" jdbcType="DECIMAL" javaType="INTEGER" property="id" />
-    <result column="SCBJ" jdbcType="DECIMAL" javaType="INTEGER" property="scbj" />
-    <result column="STATE" jdbcType="DECIMAL" javaType="INTEGER" property="state" />
-    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
-    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
-    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="ISSEND" jdbcType="DECIMAL" javaType="INTEGER"  property="issend" />
-    <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
-    <result column="AUTHORIDCARD" jdbcType="VARCHAR" property="authoridcard" />
-    <result column="BATCHESSEQ" jdbcType="DECIMAL" javaType="INTEGER" property="batchesseq" />
-    <result column="ISFINAL" jdbcType="DECIMAL" javaType="INTEGER" property="isfinal" />
-    <result column="RECORDSNUMBER" jdbcType="VARCHAR" property="recordsnumber" />
-    <result column="PEOPELCASEID" jdbcType="VARCHAR" property="peopelcaseid" />
-    <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
-    <result column="ARCHIVETYPE" jdbcType="DECIMAL" javaType="INTEGER"  property="archivetype" />
-    <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
-  </resultMap>
   <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ISSEND, AUTHOR, AUTHORIDCARD, 
-    BATCHESSEQ, ISFINAL,RECORDSNUMBER,PEOPELCASEID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,  AUTHOR, AUTHORIDCARD,
+    BATCHESSEQ, ISFINAL,PEOPELCASEID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME,ARCHIVESFCID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -64,16 +44,13 @@
         UPDATETIME,
         JQBH,
         AJBH,
-        RECORDSNUMBER,
         PEOPELCASEID,
         AUTHOR,
         AUTHORIDCARD,
       SFCNUMBER,
       ARCHIVETYPE,
       ARCHIVENAME,
-      <if test="issend != null">
-        ISSEND,
-      </if>
+      ARCHIVESFCID,
       <if test="batchesseq != null">
         BATCHESSEQ,
       </if>
@@ -90,16 +67,13 @@
       sysdate,
         #{jqbh,jdbcType=VARCHAR},
         #{ajbh,jdbcType=VARCHAR},
-        #{recordsnumber,jdbcType=VARCHAR},
         #{peopelcaseid,jdbcType=VARCHAR},
         #{author,jdbcType=VARCHAR},
         #{authoridcard,jdbcType=VARCHAR},
       #{sfcnumber,jdbcType=DECIMAL},
       #{archivetype,jdbcType=DECIMAL},
       #{archivename,jdbcType=VARCHAR},
-      <if test="issend != null">
-        #{issend,jdbcType=DECIMAL},
-      </if>
+      #{archivesfcid,jdbcType=DECIMAL},
       <if test="batchesseq != null">
         #{batchesseq,jdbcType=DECIMAL},
       </if>
@@ -129,9 +103,6 @@
       </if>
       <if test="ajbh != null">
         AJBH = #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="issend != null">
-        ISSEND = #{issend,jdbcType=DECIMAL},
       </if>
       <if test="author != null">
         AUTHOR = #{author,jdbcType=VARCHAR},
@@ -179,5 +150,10 @@
 
   <select id="getLastSFCSeq" resultType="java.lang.Integer" parameterType="java.lang.Integer">
     select nvl(max(BATCHESSEQ),0) from FUN_ARCHIVE_SEQ where scbj=0 and PEOPELCASEID=#{peopelcaseid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectLastSeqBySfc"  resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select <include refid="Base_Column_List" /> from  FUN_ARCHIVE_SEQ where scbj=0
+     and  archivesfcid=#{archivesfcid,jdbcType=DECIMAL}
+     and  rownum=1 order by id desc
   </select>
 </mapper>

@@ -16,9 +16,11 @@
         <result column="ARCHIVECODE" jdbcType="VARCHAR" property="archivecode"/>
         <result column="RECORDSTYLE" jdbcType="VARCHAR" property="recordstyle"/>
         <result column="RECORDSCODE" jdbcType="VARCHAR" property="recordscode"/>
+        <result column="ISDELETE" jdbcType="DECIMAL" property="isdelete"/>
+        <result column="ISAZXT" jdbcType="DECIMAL" property="isazxt"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE,ISDELETE,ISAZXT
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -43,6 +45,7 @@
             ARCHIVETYPEID,
             ARCHIVESEQID,
             RECORDSCODE,
+            ISAZXT,
             <if test="ajbh != null">
                 AJBH,
             </if>
@@ -55,6 +58,9 @@
 
             <if test="recordstyle != null">
                 RECORDSTYLE,
+            </if>
+            <if test="isdelete != null">
+                ISDELETE,
             </if>
 
         </trim>
@@ -69,6 +75,7 @@
             #{archivetypeid,jdbcType=DECIMAL},
             #{archiveseqid,jdbcType=DECIMAL},
             #{recordscode,jdbcType=VARCHAR},
+            #{isazxt,jdbcType=DECIMAL},
             <if test="ajbh != null">
                 #{ajbh,jdbcType=VARCHAR},
             </if>
@@ -82,7 +89,9 @@
             <if test="recordstyle != null">
                 #{recordstyle,jdbcType=VARCHAR},
             </if>
-
+            <if test="isdelete != null">
+                #{isdelete,jdbcType=DECIMAL},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
@@ -114,6 +123,9 @@
             </if>
             <if test="archivetypeid != null">
                 ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+            </if>
+            <if test="isdelete != null">
+                ISDELETE =  #{isdelete,jdbcType=DECIMAL},
             </if>
         </set>
         where ID = #{id,jdbcType=DECIMAL}
@@ -167,6 +179,9 @@
         where SCBJ=0
         <if test="archivetypeid != null">
             AND ARCHIVETYPEID =  #{archivetypeid,jdbcType=DECIMAL}
+        </if>
+        <if test="isdelete != null">
+           AND ISDELETE =  #{isdelete,jdbcType=DECIMAL}
         </if>
         ORDER BY THISORDER ASC
     </select>

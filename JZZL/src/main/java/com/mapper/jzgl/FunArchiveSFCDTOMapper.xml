@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.FunArchiveSFCDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveSFCDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
+    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
+    <result column="ISSEND" jdbcType="DECIMAL" property="issend" />
+    <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
+    <result column="AUTHORIDCARD" jdbcType="VARCHAR" property="authoridcard" />
+    <result column="PEOPLECASEID" jdbcType="DECIMAL" property="peoplecaseid" />
+    <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
+    <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
+    <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ISSEND, AUTHOR, AUTHORIDCARD, 
+     PEOPLECASEID, SFCNUMBER, ARCHIVETYPE, ARCHIVENAME
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from FUN_ARCHIVE_SFC
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveSFCDTO">
+    insert into FUN_ARCHIVE_SFC (ID, SCBJ, STATE, 
+      CREATETIME, UPDATETIME, JQBH, 
+      AJBH, ISSEND, AUTHOR, 
+      AUTHORIDCARD,  PEOPLECASEID,
+      SFCNUMBER, ARCHIVETYPE, ARCHIVENAME
+      )
+    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
+      #{ajbh,jdbcType=VARCHAR}, #{issend,jdbcType=DECIMAL}, #{author,jdbcType=VARCHAR}, 
+      #{authoridcard,jdbcType=VARCHAR}, #{peoplecaseid,jdbcType=DECIMAL},
+      #{sfcnumber,jdbcType=VARCHAR}, #{archivetype,jdbcType=DECIMAL}, #{archivename,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveSFCDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARCHIVE_SFC_ID.nextval from dual
+    </selectKey>
+    insert into FUN_ARCHIVE_SFC
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      ID,
+      SCBJ,
+      STATE,
+      CREATETIME,
+      UPDATETIME,
+      JQBH,
+      AJBH,
+      PEOPLECASEID,
+      AUTHOR,
+      AUTHORIDCARD,
+      <if test="issend != null">
+        ISSEND,
+      </if>
+      <if test="sfcnumber != null">
+        SFCNUMBER,
+      </if>
+      <if test="archivetype != null">
+        ARCHIVETYPE,
+      </if>
+      <if test="archivename != null">
+        ARCHIVENAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{id,jdbcType=DECIMAL},
+      0,
+      0,
+      sysdate,
+      sysdate,
+      #{jqbh,jdbcType=VARCHAR},
+      #{ajbh,jdbcType=VARCHAR},
+      #{peoplecaseid,jdbcType=DECIMAL},
+      #{author,jdbcType=VARCHAR},
+      #{authoridcard,jdbcType=VARCHAR},
+      <if test="issend != null">
+        #{issend,jdbcType=DECIMAL},
+      </if>
+      <if test="sfcnumber != null">
+        #{sfcnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="archivetype != null">
+        #{archivetype,jdbcType=DECIMAL},
+      </if>
+      <if test="archivename != null">
+        #{archivename,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveSFCDTO">
+    update FUN_ARCHIVE_SFC
+    <set>
+      <if test="scbj != null">
+        SCBJ = #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+        UPDATETIME = sysdate,
+      <if test="jqbh != null">
+        JQBH = #{jqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ajbh != null">
+        AJBH = #{ajbh,jdbcType=VARCHAR},
+      </if>
+      <if test="issend != null">
+        ISSEND = #{issend,jdbcType=DECIMAL},
+      </if>
+      <if test="author != null">
+        AUTHOR = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="authoridcard != null">
+        AUTHORIDCARD = #{authoridcard,jdbcType=VARCHAR},
+      </if>
+      <if test="peoplecaseid != null">
+        PEOPLECASEID = #{peoplecaseid,jdbcType=DECIMAL},
+      </if>
+      <if test="sfcnumber != null">
+        SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
+      </if>
+      <if test="archivetype != null">
+        ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL},
+      </if>
+      <if test="archivename != null">
+        ARCHIVENAME = #{archivename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+  <select id="selectArchiveSFCPage"  resultMap="BaseResultMap" parameterType="map">
+    select * from ( SELECT A.*, ROWNUM RUM FROM (
+    select
+    <include refid="Base_Column_List"/>
+    from FUN_ARCHIVE_SFC asfc where 1=1 and scbj=0
+    and PEOPLECASEID = #{peoplecaseid,jdbcType=DECIMAL}
+    <if test="null != jqbh and jqbh!=''">
+      AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+    </if>
+    <if test="null != ajbh and ajbh!=''">
+      AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
+    </if>
+    order by id desc
+    ) A )
+    WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
+    AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
+  </select>
+  <select id="selectArchiveSFCPageCount" resultType="java.lang.Integer" parameterType="map">
+    select count(0) from   FUN_ARCHIVE_SFC where 1=1 and scbj=0
+    AND PEOPLECASEID = #{peoplecaseid,jdbcType=DECIMAL}
+    <if test="null != jqbh and jqbh!=''">
+      AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+    </if>
+    <if test="null != ajbh and ajbh!=''">
+      AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
+    </if>
+  </select>
+</mapper>

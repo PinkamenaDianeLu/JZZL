@@ -1,11 +1,15 @@
 package com.module.SFCensorship.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
+import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunArchiveTypeMapper;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
+import com.mapper.jzgl.FunArchiveSeqDTOMapper;
 import com.mapper.jzgl.FunArchiveTypeDTOMapper;
 import com.module.SFCensorship.Services.ArrangeArchivesService;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,8 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
     @Resource
     FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
+    @Resource
+    FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
     @Override
     public List<FunArchiveType> selectArchiveTypeByJqSeq(int seqId) {
         Map<String,Object> pMap=new HashMap<>();
@@ -34,8 +40,16 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public List<FunArchiveRecords> selectRecordsByTypeid(int archivetypeid) {
-        List<FunArchiveRecordsDTO> a=funArchiveRecordsDTOMapper.selectRecordsByTypeid(archivetypeid);
-        return FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(a);
+    public List<FunArchiveRecords> selectRecordsByTypeid(int archivetypeid,int isDelete) {
+        Map<String,Object> pMap=new HashMap<>();
+        pMap.put("archivetypeid",archivetypeid);
+        pMap.put("isdelete",isDelete);
+
+        return FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(funArchiveRecordsDTOMapper.selectRecordsByTypeid(pMap));
+    }
+
+    @Override
+    public FunArchiveSeq selectLastSeqBySfc(int sfcId) {
+        return FunArchiveSeqMapper.INSTANCE.pcDTOToPc(funArchiveSeqDTOMapper.selectLastSeqBySfc(sfcId));
     }
 }

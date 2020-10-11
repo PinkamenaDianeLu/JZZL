@@ -30,6 +30,10 @@ public class FunArchiveRecords {
     @CodeTableMapper(sourceFiled = "recordstyle", codeTableType = "recordstyle")
     private String recordstyle_name;
     private  String recordscode;
+    private  Integer isdelete;
+    private Integer isazxt;
+
+
     public Integer getId() {
         return id;
     }
@@ -148,5 +152,21 @@ public class FunArchiveRecords {
 
     public void setRecordscode(String recordscode) {
         this.recordscode = recordscode;
+    }
+
+    public Integer getIsdelete() {
+        return isdelete;
+    }
+
+    public void setIsdelete(Integer isdelete) {
+        this.isdelete = isdelete;
+    }
+
+    public Integer getIsazxt() {
+        return isazxt;
+    }
+
+    public void setIsazxt(Integer isazxt) {
+        this.isazxt = isazxt;
     }
 }
