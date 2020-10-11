@@ -7,7 +7,12 @@
  */
 
 var loadArchiveIndex = (function () {
-    let seqid;
+    let seqid;//送检次序id
+    /*
+    *文书map,y因为文书是多卷异步加载的，所以该map中的顺序并不可靠
+    *key:dd+文书id value:{recordname(文书名),recordscode(文书代码)}
+    * */
+    let recordsMap;//
 
     function loadIndex(id) {
         seqid = id;
@@ -17,6 +22,7 @@ var loadArchiveIndex = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
+                    recordsMap=new Map();
                     utils.functional.forEach(reV.value, function (thisType) {
                         loadArchiveType(thisType);
                     });
@@ -67,65 +73,73 @@ var loadArchiveIndex = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
 
+                    //索引信息
                     let indexing = {
                         i: 0,
                         f: reV.value.length
-                    }
+                    };
                     utils.functional.forEach(reV.value, function (thisRecord) {
-                        //这两行顺序不能动！
                         $('#' + liD).append(createRecordDD(thisRecord, indexing));
-                        indexing.i++;
-                    })
+                        indexing.i++; //此行必须在$('#' + liD).append的后边
+                    });
                 } else {
+                    throw  '该卷文书加载失败：'+typeId;
                 }
             }
         });
     }
 
     function createRecordDD(thisRecord, indexing) {
+        if (!thisRecord.id){
+            throw  '文书id未获取，无法加载该文书！！';
+        }
+        let key='dd' + thisRecord.id;
         let dd = utils.createElement.createElement({
             tag: 'dd', attrs: {
-                id: 'dd' + thisRecord.id
+                id: key
             }, arg: '<a><p>' + thisRecord.recordname + '</p></a>'
-        })
-        dd.append(createButtons(thisRecord, indexing));
+        });
+        //文书缓存至recordsMap
+        recordsMap.set(key,{recordname:thisRecord.recordname,recordscode:thisRecord.recordscode});//缓存信息
+        //加载文书
+        dd.append(createButtons(key, indexing));
         return dd;
     }
 
     /**
      * 创建下面那四个按钮
      * @author MrLu
-     * @param thisRecord 文书
+     * @param ddId recordsMap的key
      * @param indexing
      * @createTime  2020/10/10 9:52
      * @return  HTMLDivElement  |
      */
-    function createButtons(thisRecord, indexing) {
-        let div = document.createElement('div')
+    function createButtons(ddId, indexing) {
+        const  thisRecord=recordsMap.get( ddId);
+        let div = document.createElement('div');
         //判断卷类型
         if (!('ZL001' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
             //封皮//封底  没有操作按钮
 
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
-            div.append(upButton(thisRecord,indexing));
-            div.append(downButton(thisRecord,indexing));
-            div.append(renameButton(thisRecord));
-            div.append(delButton(thisRecord));
+            div.append(upButton(ddId,indexing));//加载上移按钮
+            div.append(downButton(ddId,indexing));//加载下移按钮
+            div.append(renameButton(ddId));//加载重命名按钮
+            div.append(delButton(ddId));//加载删除按钮
         }
-
         return div;
     }
 
     /**
      * 上一位按钮
      * @author MrLu
-     * @param thisRecord
+     * @param ddId
      * @param indexing {i 数组下标,f 数组长度} 可为空
      * @createTime  2020/10/10 14:14
      * @return  HTMLDivElement  |
      */
-    function upButton(thisRecord, indexing = {}) {
+    function upButton(ddId, indexing = {}) {
         let haveFun = true;//是否激活方法
         if (indexing.i) {
             //此参数有值说明为首次加载
@@ -136,9 +150,9 @@ var loadArchiveIndex = (function () {
         } else {
             //当元素已经加载时判断
             //不是封皮封底
-            let prevOne = $('#dd' + thisRecord.id).prevAll('dd');//获取上一个元素
+            let prevOne = $('#' +ddId).prevAll('dd');//获取上一个元素
             //当前面只有一个元素（封皮时） 无法上移
-            if (prevOne.length <= 2) {
+            if (prevOne.length < 2) {
                 haveFun = false;
             }
         }
@@ -149,7 +163,7 @@ var loadArchiveIndex = (function () {
         })
         if (haveFun) {
             up.addEventListener('click', function () {
-                upFun(thisRecord);
+                upFun(ddId);
             })
         }
         return up;
@@ -158,12 +172,12 @@ var loadArchiveIndex = (function () {
     /**
      * 下一位按钮
      * @author MrLu
-     * @param thisRecord
+     * @param ddId
      * @param indexing {i 数组下标,f 数组长度} 可为空
      * @createTime  2020/10/10 14:14
      * @return  HTMLDivElement  |
      */
-    function downButton(thisRecord, indexing = {}) {
+    function downButton(ddId, indexing = {}) {
         let haveFun = true;//是否激活方法
         if (indexing.i && indexing.f) {
             //此参数有值说明为首次加载
@@ -172,14 +186,13 @@ var loadArchiveIndex = (function () {
                 haveFun = false;
             }
         } else {
-            //当元素已经加载时判断
-            //不是封皮封底
-            // let nextOne = $('#dd' + thisRecord.id).nextAll('dd');//获取下位元素
-            // //当后面只有一个元素（封底时） 无法下移
-            // console.log(nextOne.length)
-            // if (nextOne.length <= 2) {
-            //     haveFun = false;
-            // }
+           // 当元素已经加载时判断
+            //此时已经移动完了  重新加载按钮
+            let nextOne = $('#' + ddId).nextAll('dd');//获取下位元素
+            //当后面只有一个元素（封底时） 无法下移
+            if (nextOne.length < 2) {
+                haveFun = false;
+            }
         }
         let down = utils.createElement.createElement({
             tag: 'a', attrs: {
@@ -188,7 +201,7 @@ var loadArchiveIndex = (function () {
         })
         if (haveFun) {
             down.addEventListener('click', function () {
-                downFun(thisRecord);
+                downFun(ddId);
             })
         }
         return down;
@@ -243,32 +256,35 @@ var loadArchiveIndex = (function () {
     /**
      * 上移一位
      * @author MrLu
-     * @param thisRecord
+     * @param ddId
      * @createTime  2020/10/10 11:06
      */
-    function upFun(thisRecord) {
-        if (!thisRecord) {
+    function upFun(ddId) {
+        if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
-        let dd=$('#dd' + thisRecord.id);
-        dd.prev('dd').before(createRecordDD(thisRecord));
-        dd.remove();
+        let dd=$('#' +ddId);
+        let prevDD=dd.prev('dd');//上一个
+        prevDD.before(dd);
+        reloadButton(dd);//重新加载按钮
+        reloadButton(prevDD);//重新加载按钮
     }
 
     /**
      * 下移一位
      * @author MrLu
-     * @param thisRecord
+     * @param ddId
      * @createTime  2020/10/10 14:11
      */
-    function downFun(thisRecord) {
-        if (!thisRecord) {
+    function downFun(ddId) {
+        if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
-        let dd=$('#dd' + thisRecord.id);
-        //获取dd信息
-        dd.next('dd').after(createRecordDD(thisRecord));
-        dd.remove();
+        let dd=$('#' +ddId);//要移动的
+        let nextDD=dd.next('dd');//下一个
+        nextDD.after(dd);//移动顺序
+        reloadButton(dd);//重新加载按钮
+        reloadButton(nextDD);//重新加载按钮
     }
 
     /**
@@ -291,13 +307,25 @@ var loadArchiveIndex = (function () {
 
     }
 
+
+     /**
+     * 重新加载一个文书的按钮列表
+     * @author MrLu
+     * @param dd 该文书在列表中的dd
+     * @createTime  2020/10/11 12:42
+      */
+    function reloadButton(dd) {
+        dd.find('div').remove();
+        dd.append(createButtons(dd.attr('id')));
+    }
+
     function _loadArchiveIndex() {
 
     }
 
     _loadArchiveIndex.prototype = {loadIndex}
     return _loadArchiveIndex;
-})()
+})();
 
 $(function () {
     $('#userHeart').load('/userHeart.html');
