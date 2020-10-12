@@ -311,7 +311,7 @@ var loadArchiveIndex = (function () {
     function renameFun(ddId) {
         let thisP = $('#' + ddId).find('.recordname');
         thisP.attr('contenteditable', 'plaintext-only');//该p可编辑
-        // thisP.removeClass('').addClass();//更换class更换样式
+        thisP.addClass('pinput');//更换class更换样式
         thisP.focus();//给予焦点
         //失去焦点事件
         thisP.blur(function () {
@@ -319,6 +319,7 @@ var loadArchiveIndex = (function () {
             let thisOne = recordsMap.get(ddId);
             thisOne.recordname = $(this).html();
             recordsMap.set(ddId, thisOne);//缓存信息
+            thisP.removeClass('pinput')
         });
         console.log(recordsMap.get(ddId));
         //
