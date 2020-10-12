@@ -123,6 +123,9 @@ ul.l_nav.delt li p{text-decoration:line-through; color:#C0C0C0;}
 .tools a i.Down{background-position:-485px -58px;}
 .tools a i.aedit{background-position:-526px -58px;}
 .tools a i.delete{background-position:-46px -56px;}
+.hy_a{ position: absolute; left:-3px; top:-2px; z-index: 99;}
+.hy_a a{ display: inline-block;background: #124eb8 ; padding: 0px 5px; margin: 0px 8px; line-height: 20px; height: 20px; font-size: 12px; border-radius: 3px; color:#fff;}
+ul.l_nav li dd:hover .hy_a a{ text-decoration: none; background: #fff; color: #124eb8;}
 
 .c_right{position:absolute; right:0px; top:0; width:1030px;height:calc(100% - 70px); margin-top: 60px;}
 .right_title a{display: inline-block; width: 60px; height: 50px; background:rgba(0,0,0,0.3); border-radius: 3px; border: 1px solid rgba(72,71,71,0.6); margin: 5px 0px 5px 3px; color: #d3d3d3; font-size: 12px; text-align: center;}

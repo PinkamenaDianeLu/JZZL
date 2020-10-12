@@ -9,10 +9,12 @@
 var loadArchiveIndex = (function () {
     let seqid;//送检次序id
     /*
-    *文书map,y因为文书是多卷异步加载的，所以该map中的顺序并不可靠
-    *key:dd+文书id value:{recordname(文书名),recordscode(文书代码)}
+    *文书map,因为文书是多卷异步加载的，所以该map中的顺序并不可靠
+    *key:dd+文书id value:{recordname(文书名),recordscode(文书代码),archivetypeid(文书类别id)}
     * */
     let recordsMap;//
+
+    let recycleBinObj;//回收站对象
 
     function loadIndex(id) {
         seqid = id;
@@ -69,7 +71,7 @@ var loadArchiveIndex = (function () {
     function loadRecords(typeId, liD) {
         $.post({
             url: '/ArrangeArchives/getRecordsIndex',
-            data: {id: typeId,isDelete:0},
+            data: {id: typeId, isDelete: 0},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -90,6 +92,14 @@ var loadArchiveIndex = (function () {
         });
     }
 
+    /**
+     * 创建文书的dd element
+     * @author MrLu
+     * @param thisRecord 文书对象 数据库
+     * @param indexing {i 数组下标,f 数组长度} 可为空
+     * @createTime  2020/10/12 9:37
+     * @return  HTMLDivElement  |
+     */
     function createRecordDD(thisRecord, indexing) {
         if (!thisRecord.id) {
             throw  '文书id未获取，无法加载该文书！！';
@@ -101,12 +111,16 @@ var loadArchiveIndex = (function () {
             }, arg: '<a><p class="recordname">' + thisRecord.recordname + '</p></a>'
         });
         //文书缓存至recordsMap
-        recordsMap.set(key, {recordname: thisRecord.recordname, recordscode: thisRecord.recordscode});//缓存信息
+        recordsMap.set(key,
+            {
+                recordname: thisRecord.recordname,
+                recordscode: thisRecord.recordscode,
+                archivetypeid: thisRecord.archivetypeid
+            });//缓存信息
         //加载文书
         dd.append(createButtons(key, indexing));
         return dd;
     }
-
     /**
      * 创建下面那四个按钮
      * @author MrLu
@@ -317,10 +331,29 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/10 14:13
      */
     function delFun(ddId) {
-        $('#' + ddId).clone();
-        //回收站
-        $('#recycleBinArchiveIndex')
+        // try {
+            $('#' + ddId).remove();
+            //回收站
+            recycleBinObj.addRecycleBin(ddId, recordsMap.get(ddId));
+            //从recordsMap中删除
+            recordsMap.delete(ddId);
+      /*  } catch (e) {
+            console.log(e.message);
+            alert('该页面未加载回收站功能！')
+        }*/
 
+
+    }
+
+    /**
+     * 加载回收站对象
+     * @author MrLu
+     * @param recycleBin 实例化
+     * @createTime  2020/10/12 10:08
+     * @return    |
+     */
+    function loadRecycleBin(recycleBin) {
+        recycleBinObj = recycleBin;
     }
 
 
@@ -339,9 +372,10 @@ var loadArchiveIndex = (function () {
 
     }
 
-    _loadArchiveIndex.prototype = {loadIndex}
+    _loadArchiveIndex.prototype = {loadIndex, loadRecycleBin,createRecordDD}
     return _loadArchiveIndex;
 })();
+
 
 $(function () {
     $('#userHeart').load('/userHeart.html');
@@ -356,6 +390,9 @@ $(function () {
             if ('success' === reV.message) {
                 let lai = new loadArchiveIndex();
                 lai.loadIndex(reV.value.id);
+                let rcb = new recycleBin(lai);
+                rcb.loadIndex(reV.value.id);
+                lai.loadRecycleBin(rcb);
             } else {
             }
         }

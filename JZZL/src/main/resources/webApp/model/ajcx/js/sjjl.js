@@ -71,7 +71,7 @@ var sjjlTable = (function () {
                     title: '操作',
                     align: 'center',
                     formatter: function (value, row, index) {
-                        return '<a class="b_but edit" onclick="submitForCensorship(\'' + row.id + '\')">送检</a>';
+                        return '<a class="b_but edit" onclick="submitForCensorship(\'' + row.id + '\')">整理</a>';
                     }
                 }
             ], param: function () {
