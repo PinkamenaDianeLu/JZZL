@@ -32,18 +32,19 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
     @Resource
     FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
+
     @Override
     public List<FunArchiveType> selectArchiveTypeByJqSeq(int seqId) {
-        Map<String,Object> pMap=new HashMap<>();
-        pMap.put("archiveseqid",seqId);
+        Map<String, Object> pMap = new HashMap<>();
+        pMap.put("archiveseqid", seqId);
         return FunArchiveTypeMapper.INSTANCE.pcDTOToPcs(funArchiveTypeDTOMapper.selectArchiveTypeByJqSeq(pMap));
     }
 
     @Override
-    public List<FunArchiveRecords> selectRecordsByTypeid(int archivetypeid,int isDelete) {
-        Map<String,Object> pMap=new HashMap<>();
-        pMap.put("archivetypeid",archivetypeid);
-        pMap.put("isdelete",isDelete);
+    public List<FunArchiveRecords> selectRecordsByTypeid(int archivetypeid, int isDelete) {
+        Map<String, Object> pMap = new HashMap<>();
+        pMap.put("archivetypeid", archivetypeid);
+        pMap.put("isdelete", isDelete);
 
         return FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(funArchiveRecordsDTOMapper.selectRecordsByTypeid(pMap));
     }
@@ -51,5 +52,27 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public FunArchiveSeq selectLastSeqBySfc(int sfcId) {
         return FunArchiveSeqMapper.INSTANCE.pcDTOToPc(funArchiveSeqDTOMapper.selectLastSeqBySfc(sfcId));
+    }
+
+    @Override
+    public FunArchiveSeqDTO selectFunArchiveSeqById(Integer id) {
+        return funArchiveSeqDTOMapper.selectByPrimaryKey(id);
+    }
+
+    ;
+
+    @Override
+    public FunArchiveRecordsDTO selectFunArchiveRecordsById(Integer id) {
+        return funArchiveRecordsDTOMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public void insertFunArchiveSeq(FunArchiveSeqDTO record) {
+        funArchiveSeqDTOMapper.insertSelective(record);
+    }
+
+    @Override
+    public void insertFunArchiveRecords(FunArchiveRecordsDTO record) {
+        funArchiveRecordsDTOMapper.insertSelective(record);
     }
 }

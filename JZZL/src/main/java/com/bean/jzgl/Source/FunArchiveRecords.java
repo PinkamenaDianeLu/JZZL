@@ -29,9 +29,10 @@ public class FunArchiveRecords {
     private String recordstyle;
     @CodeTableMapper(sourceFiled = "recordstyle", codeTableType = "recordstyle")
     private String recordstyle_name;
-    private  String recordscode;
-    private  Integer isdelete;
+    private String recordscode;
+    private Integer isdelete;
     private Integer isazxt;
+    private  Integer archivesfcid;
 
 
     public Integer getId() {
@@ -168,5 +169,13 @@ public class FunArchiveRecords {
 
     public void setIsazxt(Integer isazxt) {
         this.isazxt = isazxt;
+    }
+
+    public Integer getArchivesfcid() {
+        return archivesfcid;
+    }
+
+    public void setArchivesfcid(Integer archivesfcid) {
+        this.archivesfcid = archivesfcid;
     }
 }

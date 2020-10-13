@@ -18,9 +18,11 @@
         <result column="RECORDSCODE" jdbcType="VARCHAR" property="recordscode"/>
         <result column="ISDELETE" jdbcType="DECIMAL" property="isdelete"/>
         <result column="ISAZXT" jdbcType="DECIMAL" property="isazxt"/>
+        <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid"/>
+
     </resultMap>
     <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE,ISDELETE,ISAZXT
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE,ISDELETE,ISAZXT,ARCHIVESFCID
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -46,6 +48,7 @@
             ARCHIVESEQID,
             RECORDSCODE,
             ISAZXT,
+            ARCHIVESFCID,
             <if test="ajbh != null">
                 AJBH,
             </if>
@@ -76,6 +79,7 @@
             #{archiveseqid,jdbcType=DECIMAL},
             #{recordscode,jdbcType=VARCHAR},
             #{isazxt,jdbcType=DECIMAL},
+                #{archivesfcid,jdbcType=DECIMAL},
             <if test="ajbh != null">
                 #{ajbh,jdbcType=VARCHAR},
             </if>

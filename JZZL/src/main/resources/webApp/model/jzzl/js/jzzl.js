@@ -121,6 +121,7 @@ var loadArchiveIndex = (function () {
         dd.append(createButtons(key, indexing));
         return dd;
     }
+
     /**
      * 创建下面那四个按钮
      * @author MrLu
@@ -333,15 +334,15 @@ var loadArchiveIndex = (function () {
      */
     function delFun(ddId) {
         // try {
-            $('#' + ddId).remove();
-            //回收站
-            recycleBinObj.addRecycleBin(ddId, recordsMap.get(ddId));
-            //从recordsMap中删除
-            recordsMap.delete(ddId);
-      /*  } catch (e) {
-            console.log(e.message);
-            alert('该页面未加载回收站功能！')
-        }*/
+        $('#' + ddId).remove();
+        //回收站
+        recycleBinObj.addRecycleBin(ddId, recordsMap.get(ddId));
+        //从recordsMap中删除
+        recordsMap.delete(ddId);
+        /*  } catch (e) {
+              console.log(e.message);
+              alert('该页面未加载回收站功能！')
+          }*/
 
 
     }
@@ -361,7 +362,7 @@ var loadArchiveIndex = (function () {
     /**
      * 重新加载一个文书的按钮列表
      * @author MrLu
-     * @param dd 该文书在列表中的dd
+     * @param dd 该文书在列表中的dd(注意是一个jquery对象！)
      * @createTime  2020/10/11 12:42
      */
     function reloadButton(dd) {
@@ -369,11 +370,99 @@ var loadArchiveIndex = (function () {
         dd.append(createButtons(dd.attr('id')));
     }
 
-    function _loadArchiveIndex() {
+    //保存数据
+    /**
+     * 保存文书目录的加载
+     * @author MrLu
+     * @createTime  2020/10/13 15:44
+     */
+    function saveData() {
+
+        const archiveTypeList = $('#archiveIndex').find('li');
+        if (archiveTypeList.length < 1) {
+            alert('未正确加载文书目录，无法保存！');
+            throw  '未正确加载文书目录，无法保存！';
+        }
+
+        $.post({
+            url: '/ArrangeArchives/createNewSeq',
+            data: {seqid},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    const newSeqId = reV.value;
+                    console.log(archiveTypeList)
+                    saveArchiveIndexSortByType(archiveTypeList, newSeqId);
+                } else {
+                    throw  '未能创建新的整理记录';
+                }
+            }
+        });
+
 
     }
 
-    _loadArchiveIndex.prototype = {loadIndex, loadRecycleBin,createRecordDD}
+    /**
+     * 以文书类型保存整理顺序
+     * @author MrLu
+     * @param archiveTypeList li的list
+     * @param newSeqId 新建的整理次序id
+     * @createTime  2020/10/13 17:45
+     * @return    |
+     */
+    function saveArchiveIndexSortByType(archiveTypeList, newSeqId) {
+        /**
+         *
+         * @author MrLu
+         * @param id 文书id
+         * @param name 文书名
+         * @param typeid typeId
+         * @param order 文书顺序
+         * @createTime  2020/10/13 16:12
+         */
+        const saveD = function (id, name, typeid, order) {
+            this.id = id;
+            this.name = name;
+            this.typeid = typeid;
+            this.order = order;
+        };
+        utils.functional.forEach(archiveTypeList, function (thisType) {
+            let saveData = [];//用以存储saveD的对象数组
+            $.each($(thisType).find('dd'), function (i, v) {
+                let thisDDid = $(v).attr('id');//获取文书的id  该id也是recordsMap中的key
+                let thisRecord = recordsMap.get(thisDDid);//通过key获取该文书的value
+                if ('ZL001' === thisRecord.recordscode) {
+                    i = -1;//卷宗封皮顺序永远是-1
+                } else if ('ZL002' === thisRecord.recordscode) {
+                    i = 99999;//封底顺序永远是99999  最后一个
+                }
+                saveData[saveData.length] = new saveD(thisDDid.replace('dd', ''), thisRecord.recordname, thisRecord.archivetypeid, i);
+
+            })
+            console.log(saveData);
+            //数据保存到后台
+            $.post({
+                url: '/ArrangeArchives/saveArchiveIndexSortByType',
+                data: {saveData: JSON.stringify(saveData), seqid: newSeqId},
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        console.log( '   保存成功')
+                    } else {
+                    }
+                }
+            });
+        })
+    }
+
+
+    function _loadArchiveIndex() {
+        console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=开始加载-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
+    }
+
+    _loadArchiveIndex.prototype = {
+        loadIndex, loadRecycleBin, createRecordDD, reloadButton, saveData
+    }
     return _loadArchiveIndex;
 })();
 
@@ -394,6 +483,11 @@ $(function () {
                 let rcb = new recycleBin(lai);
                 rcb.loadIndex(reV.value.id);
                 lai.loadRecycleBin(rcb);
+
+                //完成整理按钮
+                $('#saveData').click(function () {
+                    lai.saveData();
+                })
             } else {
             }
         }

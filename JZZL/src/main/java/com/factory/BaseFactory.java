@@ -24,6 +24,7 @@ public class BaseFactory {
     RedisTemplate<String, Object> redisCCTemplate;
 
 
+
     /**
      * 解码添加了salt的base64
      *

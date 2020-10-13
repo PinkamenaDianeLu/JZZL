@@ -1,6 +1,8 @@
 package com.module.SFCensorship.Services;
 
 
+import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
@@ -28,7 +30,14 @@ public interface ArrangeArchivesService {
      */
     List<FunArchiveRecords>  selectRecordsByTypeid(int archivetypeid,int isDelete);
 
-
+     /**
+     * 根据id查找整理记录
+     * @author MrLu
+     * @param  id
+     * @createTime  2020/10/13 16:30
+     * @return  FunArchiveSeqDTO  |
+      */
+    FunArchiveSeqDTO selectFunArchiveSeqById(Integer id);
 
      /**
      * 查询送检记录下最后一次整理
@@ -38,4 +47,30 @@ public interface ArrangeArchivesService {
      * @return  FunArchiveSeq  |
       */
     FunArchiveSeq selectLastSeqBySfc(int sfcId);
+    /**
+     *根据id查询文书
+     * @author MrLu
+     * @param id
+     * @createTime  2020/10/13 16:37
+     * @return   FunArchiveRecords |
+     */
+    FunArchiveRecordsDTO selectFunArchiveRecordsById(Integer id);
+
+     /**
+     * 新建整理记录
+     * @author MrLu
+     * @param  record
+     * @createTime  2020/10/13 17:35
+     * @return    |
+      */
+    void insertFunArchiveSeq(FunArchiveSeqDTO record);
+
+     /**
+     * 新建文书
+     * @author MrLu
+     * @param record
+     * @createTime  2020/10/13 17:58
+     * @return    |
+      */
+    void insertFunArchiveRecords(FunArchiveRecordsDTO record);
 }

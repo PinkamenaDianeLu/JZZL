@@ -30,6 +30,7 @@ public class FunArchiveRecordsDTO {
     private  String recordscode;
 
     private  Integer isdelete;
+    private  Integer archivesfcid;
     private Integer isazxt;
 
     public Integer getId() {
@@ -158,5 +159,13 @@ public class FunArchiveRecordsDTO {
 
     public void setIsazxt(Integer isazxt) {
         this.isazxt = isazxt;
+    }
+
+    public Integer getArchivesfcid() {
+        return archivesfcid;
+    }
+
+    public void setArchivesfcid(Integer archivesfcid) {
+        this.archivesfcid = archivesfcid;
     }
 }

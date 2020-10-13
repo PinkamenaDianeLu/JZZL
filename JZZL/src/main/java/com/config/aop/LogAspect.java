@@ -81,6 +81,12 @@ public class LogAspect {
 //            System.out.println(request.getRequestURL().toString());//请求路径
 //            System.out.println(jp.getSignature().getDeclaringTypeName() + jp.getSignature().getName() + "方法执行结束,返回值为：" + reValue);
 //            System.out.println(opLog.operDesc() + "||" + opLog.operModul() + "||" + opLog.operType());
+            if (params.length()>1998){
+                record.setMparams(params.substring(0,1998));//方法返回值
+            }else {
+                record.setMparams(params);
+            }
+
             record.setMparams(params);//参数Json格式
 //            record.setScbj(Enums.scbj.ALIVE);
             record.setRequesturl(request.getRequestURL().toString());//请求路径

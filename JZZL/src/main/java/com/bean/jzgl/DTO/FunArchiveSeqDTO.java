@@ -33,6 +33,7 @@ public class FunArchiveSeqDTO {
     private String archivename;
 
     private int archivesfcid;
+    private int authorid;
 
     public Integer getId() {
         return id;
@@ -170,5 +171,13 @@ public class FunArchiveSeqDTO {
 
     public void setSfcnumber(String sfcnumber) {
         this.sfcnumber = sfcnumber;
+    }
+
+    public int getAuthorid() {
+        return authorid;
+    }
+
+    public void setAuthorid(int authorid) {
+        this.authorid = authorid;
     }
 }

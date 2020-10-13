@@ -148,11 +148,23 @@ var recycleBin = (function () {
     function restored(ddId) {
         //获取保存的文书对象
         const thisRecord = recycleRecordsMap.get(ddId);
+        let typeFd=$('#P' + thisRecord.archivetypeid+' dd').last();//该类型文书的封底
+        let lastRecord= typeFd.prev('dd');//该类型文书的最后一个文书
         //重返阳间
-        $('#P' + thisRecord.archivetypeid+' dd').last().before(archiveIndex.createRecordDD(thisRecord));
+        //通过传递一个假的indexing  使createRecordDD方法不需要再查找dom元素 降低损耗
+        let indexing = {
+            i: 0,
+            f: 0
+        };
+        let reArchive= archiveIndex.createRecordDD(thisRecord,indexing);//重塑肉身
+        typeFd.before(reArchive);//返回人界
+        console.log(reArchive)
+        archiveIndex.reloadButton($(reArchive));//重新加载按钮
+        archiveIndex.reloadButton(lastRecord);//重新加载按钮
         //把回收站的删除
         $('#'+ddId).remove();
         recycleRecordsMap.delete(ddId);
+        //重新加载被还原文书的上一个文书的按钮
     }
 
     let _recycleBin = function (lai) {
