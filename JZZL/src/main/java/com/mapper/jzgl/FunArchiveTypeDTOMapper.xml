@@ -16,10 +16,12 @@
     <result column="ISAZXT"  jdbcType="DECIMAL"  property="isazxt" />
     <result column="ARCHIVESEQID"  jdbcType="DECIMAL"  property="archiveseqid" />
     <result column="ARCHIVECODE" jdbcType="VARCHAR"  property="archivecode" />
+    <result column="ARCHIVESFCID"  jdbcType="DECIMAL"  property="archivesfcid" />
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ARCHIVETYPE, ARCHIVETYPECN, 
-    DEFAULTORDER,ARCHIVENAME,ISAZXT,ARCHIVESEQID,ARCHIVECODE
+    DEFAULTORDER,ARCHIVENAME,ISAZXT,ARCHIVESEQID,ARCHIVECODE,ARCHIVESFCID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -47,6 +49,7 @@
         ISAZXT,
         ARCHIVESEQID,
         ARCHIVECODE,
+        ARCHIVESFCID,
       <if test="archivename != null">
         ARCHIVENAME,
       </if>
@@ -65,6 +68,7 @@
         #{isazxt,jdbcType=DECIMAL},
         #{archiveseqid,jdbcType=DECIMAL},
         #{archivecode,jdbcType=DECIMAL},
+        #{archivesfcid,jdbcType=VARCHAR},
       <if test="archivename != null">
         #{archivename,jdbcType=VARCHAR},
       </if>
@@ -120,5 +124,6 @@
     <if test="jqbh != null">
   AND jqbh=#{jqbh,jdbcType=VARCHAR}
     </if>
+    ORDER BY DEFAULTORDER ASC
 </select>
 </mapper>

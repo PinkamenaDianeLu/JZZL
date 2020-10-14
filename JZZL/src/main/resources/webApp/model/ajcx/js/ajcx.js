@@ -73,7 +73,7 @@ var ajcxTable = (function () {
                 title: '操作',
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.id + '\')">送检</a>';
+                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.id + '\')">新建卷</a>';
                 }
             }],param:function (){
                 return getSearchParam();

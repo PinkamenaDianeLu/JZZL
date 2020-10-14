@@ -27,6 +27,7 @@ public class FunArchiveTypeDTO {
     private String archivename;
     private  Integer archiveseqid;
     private String archivecode;
+    private  Integer archivesfcid;
 
     public Integer getId() {
         return id;
@@ -138,5 +139,13 @@ public class FunArchiveTypeDTO {
 
     public void setArchivecode(String archivecode) {
         this.archivecode = archivecode;
+    }
+
+    public Integer getArchivesfcid() {
+        return archivesfcid;
+    }
+
+    public void setArchivesfcid(Integer archivesfcid) {
+        this.archivesfcid = archivesfcid;
     }
 }

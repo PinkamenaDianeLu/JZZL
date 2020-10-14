@@ -392,7 +392,7 @@ var loadArchiveIndex = (function () {
                 if ('success' === reV.message) {
                     const newSeqId = reV.value;
                     console.log(archiveTypeList)
-                    saveArchiveIndexSortByType(archiveTypeList, newSeqId);
+                    saveArchiveIndexSortByType(archiveTypeList,newSeqId);
                 } else {
                     throw  '未能创建新的整理记录';
                 }
@@ -443,7 +443,9 @@ var loadArchiveIndex = (function () {
             //数据保存到后台
             $.post({
                 url: '/ArrangeArchives/saveArchiveIndexSortByType',
-                data: {saveData: JSON.stringify(saveData), seqid: newSeqId},
+                data: {saveData: JSON.stringify(saveData),
+                    typeid:$(thisType).attr('id').replace('P',''),
+                    seqid: newSeqId},
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {

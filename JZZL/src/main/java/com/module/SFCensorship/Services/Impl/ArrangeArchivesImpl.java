@@ -5,6 +5,7 @@ import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunArchiveTypeMapper;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
+import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
@@ -74,5 +75,13 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public void insertFunArchiveRecords(FunArchiveRecordsDTO record) {
         funArchiveRecordsDTOMapper.insertSelective(record);
+    }
+    @Override
+    public  void insertFunArchiveType(FunArchiveTypeDTO funArchiveTypeDTO){
+        funArchiveTypeDTOMapper.insertSelective(funArchiveTypeDTO);
+    }
+    @Override
+    public FunArchiveTypeDTO selectFunArchiveTypeById(Integer id){
+        return  funArchiveTypeDTOMapper.selectByPrimaryKey(id);
     }
 }

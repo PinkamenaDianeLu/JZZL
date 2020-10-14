@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
+import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
@@ -165,18 +166,26 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "保存卷整理顺序", operType = OperLog.type.INSERT)
-    public String saveArchiveIndexSortByType(String saveData, String seqid) {
+    public String saveArchiveIndexSortByType(String saveData, String typeid,String seqid) {
         JSONObject reValue = new JSONObject();
         try {
             FunArchiveSeqDTO thisSeq = arrangeArchivesService.selectFunArchiveSeqById(Integer.parseInt(seqid));
             if (null == thisSeq) {
                 throw new Exception("该整理次序id无法查询到对应信息！");
             }
+            int oriTypeId=Integer.parseInt(typeid);//原类型id
+            FunArchiveTypeDTO oriArchiveType=arrangeArchivesService.selectFunArchiveTypeById(oriTypeId);
+            if (null==oriArchiveType){
+                throw new Exception("该文书类型id无法查询到对应信息！");
+            }
+            oriArchiveType.setArchivesfcid(thisSeq.getArchivesfcid());//送检卷id
+            oriArchiveType.setArchiveseqid(thisSeq.getId());//设置新的整理次序
+            arrangeArchivesService.insertFunArchiveType(oriArchiveType);//新建卷宗类型
+            int newArchiveTypeId=oriArchiveType.getId();//新建的卷类型id
+
+
             JSONArray pDate = JSON.parseArray(saveData);
-            int thisBatches = thisSeq.getBatchesseq() ;
             //开始复制文书信息
-            //1.通过文书id得到对应文书
-            int i=0;
             for (Object thisP :
                     pDate) {
                 JSONObject thisJsonObj = (JSONObject) thisP;
@@ -184,11 +193,10 @@ public class ArrangeArchivesController extends BaseFactory {
                 FunArchiveRecordsDTO thisRecord = arrangeArchivesService.selectFunArchiveRecordsById(thisJsonObj.getInteger("id"));
                 thisRecord.setRecordname(thisJsonObj.getString("name"));//新的文书名
                 thisRecord.setThisorder(thisJsonObj.getInteger("order"));//新的顺序
-                thisRecord.setArchivetypeid(thisJsonObj.getInteger("typeid"));//说不定会更新的文书类型
+                thisRecord.setArchivetypeid(newArchiveTypeId);//类型id
                 thisRecord.setArchiveseqid(thisSeq.getId());//seqId
                 thisRecord.setArchivesfcid(thisSeq.getArchivesfcid());//送检（新建卷）次序id
                 arrangeArchivesService.insertFunArchiveRecords(thisRecord);//保存新建
-                System.out.println(i++);
             }
             reValue.put("message", "success");
         } catch (Exception e) {

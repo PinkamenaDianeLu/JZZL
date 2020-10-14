@@ -130,7 +130,7 @@ public class SFCensorshipController extends BaseFactory {
 
             //创建新建卷
             //TODO MrLu 2020/10/8   未对应人筛选文书
-            cloneRecords(thisFunPeopelCase.getJqbh(), newSeq.getId());
+            cloneRecords(thisFunPeopelCase.getJqbh(), newSeq);
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -143,18 +143,18 @@ public class SFCensorshipController extends BaseFactory {
      * 复制卷宗到对应的送检记录
      *
      * @param jqbh  警情编号
-     * @param seqId 送检记录表id  int类型防止传null值
+     * @param newSeq 送检记录表
      * @return void  |
      * @author MrLu
      * @createTime 2020/10/8 13:55
      */
-    private void cloneRecords(String jqbh, int seqId) {
-
+    private void cloneRecords(String jqbh, final FunArchiveSeq newSeq) {
         List<FunArchiveTypeDTO> oriArchiveTypes = sFCensorshipService.selectArchiveTypeByJqSeq(jqbh,0);
         for (FunArchiveTypeDTO thisOriAt :
                 oriArchiveTypes) {
             int oriTypeId = thisOriAt.getId();//源id
-            thisOriAt.setArchiveseqid(seqId);//整理次序id
+            thisOriAt.setArchiveseqid(newSeq.getId());//整理次序id
+            thisOriAt.setArchivesfcid(newSeq.getArchivesfcid());//送检记录id
             thisOriAt.setIsazxt(1);//非安综系统抽取
             //新建一个
             sFCensorshipService.insertFunArchiveType(thisOriAt);
@@ -175,7 +175,7 @@ public class SFCensorshipController extends BaseFactory {
             cover.setArchivetypeid(newTypeId);
             cover.setArchivecode(thisOriAt.getArchivecode());
             cover.setRecordstyle(0);
-            cover.setArchiveseqid(seqId);
+            cover.setArchiveseqid(newSeq.getId());
             cover.setRecordscode(EnumSoft.fplx.COVER.getValue());//文件代码
             sFCensorshipService.insertFunArchiveRecords(cover);
 
@@ -187,7 +187,7 @@ public class SFCensorshipController extends BaseFactory {
             //插入文书
             for (FunArchiveRecordsDTO thisRecord :
                     cloneRecords) {
-                thisRecord.setArchiveseqid(seqId);//送检次序id
+                thisRecord.setArchiveseqid(newSeq.getId());//送检次序id
                 thisRecord.setArchivetypeid(newTypeId);//对应了新的archiveType表id
                 sFCensorshipService.insertFunArchiveRecords(thisRecord);
             }

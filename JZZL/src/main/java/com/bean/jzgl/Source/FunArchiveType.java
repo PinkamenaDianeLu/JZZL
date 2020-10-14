@@ -27,6 +27,7 @@ public class FunArchiveType {
     private Enums.IsAzxt isazxt;
     private String archivename;
     private String archivecode;
+    private  Integer archivesfcid;
 
     public Integer getId() {
         return id;
@@ -130,5 +131,13 @@ public class FunArchiveType {
 
     public void setArchivecode(String archivecode) {
         this.archivecode = archivecode;
+    }
+
+    public Integer getArchivesfcid() {
+        return archivesfcid;
+    }
+
+    public void setArchivesfcid(Integer archivesfcid) {
+        this.archivesfcid = archivesfcid;
     }
 }

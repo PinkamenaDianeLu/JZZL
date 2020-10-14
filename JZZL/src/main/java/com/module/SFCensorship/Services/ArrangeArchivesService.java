@@ -3,6 +3,7 @@ package com.module.SFCensorship.Services;
 
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
+import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
@@ -73,4 +74,23 @@ public interface ArrangeArchivesService {
      * @return    |
       */
     void insertFunArchiveRecords(FunArchiveRecordsDTO record);
+
+
+     /**
+     * 新建文书类型
+     * @author MrLu
+     * @param funArchiveTypeDTO
+     * @createTime  2020/10/14 10:07
+      */
+    void insertFunArchiveType(FunArchiveTypeDTO funArchiveTypeDTO);
+
+
+     /**
+     * 根据id查询文书类型
+     * @author MrLu
+     * @param id id
+     * @createTime  2020/10/14 10:09
+     * @return  FunArchiveTypeDTO  |
+      */
+    FunArchiveTypeDTO selectFunArchiveTypeById(Integer id);
 }
