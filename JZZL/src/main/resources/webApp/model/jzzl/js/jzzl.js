@@ -391,8 +391,7 @@ var loadArchiveIndex = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     const newSeqId = reV.value;
-                    console.log(archiveTypeList)
-                    saveArchiveIndexSortByType(archiveTypeList,newSeqId);
+                    saveArchiveIndexSortByType(archiveTypeList, newSeqId);
                 } else {
                     throw  '未能创建新的整理记录';
                 }
@@ -428,6 +427,7 @@ var loadArchiveIndex = (function () {
         };
         utils.functional.forEach(archiveTypeList, function (thisType) {
             let saveData = [];//用以存储saveD的对象数组
+            const oriTypeId = $(thisType).attr('id').replace('P', '');
             $.each($(thisType).find('dd'), function (i, v) {
                 let thisDDid = $(v).attr('id');//获取文书的id  该id也是recordsMap中的key
                 let thisRecord = recordsMap.get(thisDDid);//通过key获取该文书的value
@@ -439,17 +439,20 @@ var loadArchiveIndex = (function () {
                 saveData[saveData.length] = new saveD(thisDDid.replace('dd', ''), thisRecord.recordname, thisRecord.archivetypeid, i);
 
             })
-            console.log(saveData);
             //数据保存到后台
             $.post({
                 url: '/ArrangeArchives/saveArchiveIndexSortByType',
-                data: {saveData: JSON.stringify(saveData),
-                    typeid:$(thisType).attr('id').replace('P',''),
-                    seqid: newSeqId},
+                data: {
+                    saveData: JSON.stringify(saveData),
+                    typeid: oriTypeId,
+                    seqid: newSeqId
+                },
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
-                        console.log( '   保存成功')
+                        const newTypeId = reV.value;
+                        recycleBinObj.saveRecycleIndexSortByType(oriTypeId, newTypeId);
+                        console.log('   保存成功')
                     } else {
                     }
                 }
@@ -488,7 +491,10 @@ $(function () {
 
                 //完成整理按钮
                 $('#saveData').click(function () {
-                    lai.saveData();
+                    if (confirm('确定完成整理？')) {
+                        //加载整理动画
+                        lai.saveData();
+                    }
                 })
             } else {
             }
