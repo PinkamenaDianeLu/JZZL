@@ -42,6 +42,8 @@ public class FunArchiveFilesDTO {
     private String author;
 
     private Integer authorid;
+    private Integer isshow;
+    private  String filecode;
 
     public Integer getId() {
         return id;
@@ -201,5 +203,21 @@ public class FunArchiveFilesDTO {
 
     public void setAuthorid(Integer authorid) {
         this.authorid = authorid;
+    }
+
+    public Integer getIsshow() {
+        return isshow;
+    }
+
+    public void setIsshow(Integer isshow) {
+        this.isshow = isshow;
+    }
+
+    public String getFilecode() {
+        return filecode;
+    }
+
+    public void setFilecode(String filecode) {
+        this.filecode = filecode;
     }
 }

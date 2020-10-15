@@ -1,7 +1,7 @@
 /**
  * @author Mrlu
  * @createTime 2020/10/8
- * @dependence 依赖js
+ * @dependence jquery.min.js,layer.js,utils.js,jzzl_imgLoad.js,jzzl_recycleBin.js
  * @describe 卷宗整理
  *
  */
@@ -119,6 +119,10 @@ var loadArchiveIndex = (function () {
             });//缓存信息
         //加载文书
         dd.append(createButtons(key, indexing));
+        dd.addEventListener('click', function () {
+            //加载文书图片
+            let ril=new recordImgLoad(thisRecord.id);
+        })
         return dd;
     }
 
@@ -470,6 +474,9 @@ var loadArchiveIndex = (function () {
     }
     return _loadArchiveIndex;
 })();
+
+
+
 
 
 $(function () {

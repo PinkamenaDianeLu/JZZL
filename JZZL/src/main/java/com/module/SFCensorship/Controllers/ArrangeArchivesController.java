@@ -158,8 +158,8 @@ public class ArrangeArchivesController extends BaseFactory {
 
     /**
      * @param saveData 一个json对象数组 对象格式为： {id, name, typeid, order}
-     * @param typeid  文书类型id（原有的）
-     *  @param seqid  整理次序id（新建的）
+     * @param typeid   文书类型id（原有的）
+     * @param seqid    整理次序id（新建的）
      * @return |
      * @author MrLu
      * @createTime 2020/10/13 16:42
@@ -209,14 +209,15 @@ public class ArrangeArchivesController extends BaseFactory {
         return reValue.toJSONString();
     }
 
-     /**
+    /**
      * 保存卷整理顺序中被删除的文书
+     *
+     * @param saveData  一个json对象数组 对象格式为： {id, name, typeid, order}
+     * @param newTypeid 文书类型id（新建的）
+     * @return |
      * @author MrLu
-     *  @param saveData 一个json对象数组 对象格式为： {id, name, typeid, order}
-      * @param newTypeid  文书类型id（新建的）
-     * @createTime  2020/10/14 16:25
-     * @return    |
-      */
+     * @createTime 2020/10/14 16:25
+     */
     @RequestMapping(value = "/saveRecycleIndexSortByType", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -244,6 +245,29 @@ public class ArrangeArchivesController extends BaseFactory {
                 thisRecord.setArchivesfcid(archiveType.getArchivesfcid());//送检（新建卷）次序id
                 arrangeArchivesService.insertFunArchiveRecords(thisRecord);//保存新建
             }
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+     /**
+     * 查询一个文书下的文书图片
+     * @author MrLu
+     * @param
+     * @createTime  2020/10/15 18:17
+     * @return    |
+      */
+    @RequestMapping(value = "/loadFilesByRecord", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "保存卷整理顺序中被删除的文书", operType = OperLog.type.INSERT)
+    public String loadFilesByRecord(Integer recordId ) {
+        JSONObject reValue = new JSONObject();
+        try {
+            reValue.put("value",arrangeArchivesService.selectRecordFilesByRecordId(recordId));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

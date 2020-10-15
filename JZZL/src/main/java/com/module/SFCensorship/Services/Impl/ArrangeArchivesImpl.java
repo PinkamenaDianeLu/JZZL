@@ -3,12 +3,14 @@ package com.module.SFCensorship.Services.Impl;
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunArchiveTypeMapper;
+import com.bean.jzgl.DTO.FunArchiveFilesDTO;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
+import com.mapper.jzgl.FunArchiveFilesDTOMapper;
 import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
 import com.mapper.jzgl.FunArchiveSeqDTOMapper;
 import com.mapper.jzgl.FunArchiveTypeDTOMapper;
@@ -33,6 +35,8 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
     @Resource
     FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
+    @Resource
+    FunArchiveFilesDTOMapper funArchiveFilesDTOMapper;
 
     @Override
     public List<FunArchiveType> selectArchiveTypeByJqSeq(int seqId) {
@@ -83,5 +87,15 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public FunArchiveTypeDTO selectFunArchiveTypeById(Integer id){
         return  funArchiveTypeDTOMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid) {
+        return funArchiveFilesDTOMapper.selectRecordFilesByRecordId(archiverecordid);
+    }
+
+    @Override
+    public List<FunArchiveFilesDTO> selectFilesHistory(String filecode) {
+        return funArchiveFilesDTOMapper.selectFilesHistory(filecode);
     }
 }

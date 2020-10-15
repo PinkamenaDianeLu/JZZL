@@ -22,11 +22,14 @@
     <result column="ISAZXT" jdbcType="DECIMAL" property="isazxt" />
     <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
     <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
+    <result column="ISSHOW" jdbcType="DECIMAL" property="isshow" />
+    <result column="FILECODE" jdbcType="VARCHAR" property="filecode" />
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, ARCHIVERECORDID, 
     ARCHIVETYPEID, FILETYPE, FILEURL, ORIGINURL, ISDOWLAND, FILENAME, ARCHIVESEQID, ARCHIVESFCID, 
-    ISAZXT, AUTHOR, AUTHORID
+    ISAZXT, AUTHOR, AUTHORID,ISSHOW,FILECODE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -240,4 +243,20 @@
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
+
+  <select id="selectRecordFilesByRecordId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FUN_ARCHIVE_FILES
+    WHERE SCBJ=0
+    AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+    AND ISSHOW=0 ORDER BY THISORDER ASC
+  </select>
+
+  <select id="selectFilesHistory" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM FUN_ARCHIVE_FILES
+    AND SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
+    ORDER BY ISSHOW DESC
+  </select>
 </mapper>

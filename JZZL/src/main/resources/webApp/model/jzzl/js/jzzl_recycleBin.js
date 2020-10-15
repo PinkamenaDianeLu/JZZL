@@ -1,7 +1,7 @@
 /**
  * @author Mrlu
  * @createTime 2020/10/12
- * @dependence 依赖js
+ * @dependence jquery.min.js,layer.js,utils.js,jzzl_imgLoad.js
  * @describe 卷宗整理 回收站
  *
  */

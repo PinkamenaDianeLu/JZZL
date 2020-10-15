@@ -116,7 +116,7 @@ public class LogAspect {
                 record.setSysusername("未登录");
             }
 
-            logService.insertLog(record);
+           // logService.insertLog(record);
         } catch (Exception e) {
             System.err.println("Aop日志出现了大问题！");
             e.printStackTrace();

@@ -52,6 +52,8 @@ public class FunArchiveFiles {
 
     private Integer authorid;
 
+    private Integer isshow;
+    private  String filecode;
     public Integer getId() {
         return id;
     }
@@ -218,5 +220,21 @@ public class FunArchiveFiles {
 
     public void setFiletype_name(String filetype_name) {
         this.filetype_name = filetype_name;
+    }
+
+    public Integer getIsshow() {
+        return isshow;
+    }
+
+    public void setIsshow(Integer isshow) {
+        this.isshow = isshow;
+    }
+
+    public String getFilecode() {
+        return filecode;
+    }
+
+    public void setFilecode(String filecode) {
+        this.filecode = filecode;
     }
 }
