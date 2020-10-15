@@ -1,5 +1,7 @@
 package com.bean.jzgl.Source;
 
+import com.config.annotations.CodeTableMapper;
+
 import java.util.Date;
 
 /**
@@ -8,153 +10,213 @@ import java.util.Date;
  * @describe
  */
 public class FunArchiveFiles {
-        private Integer id;
+    private Integer id;
 
-        private Integer scbj;
+    private Integer scbj;
 
-        private Integer state;
+    private Integer state;
 
-        private Date createtime;
+    private Date createtime;
 
-        private Date updatetime;
+    private Date updatetime;
 
-        private String jqbh;
+    private String jqbh;
 
-        private String ajbh;
+    private String ajbh;
 
-        private Integer thisorder;
+    private Integer thisorder;
 
-        private Integer archivetrecordid;
+    private Integer archiverecordid;
 
-        private Integer archivetypeid;
+    private Integer archivetypeid;
 
-        private Integer filetype;
+    private Integer filetype;
+    @CodeTableMapper(sourceFiled = "filetype", codeTableType = "filetype")
+    private String filetype_name;
 
-        private String fileurl;
+    private String fileurl;
 
-        private String originurl;
+    private String originurl;
 
-        private Integer isdowland;
+    private Integer isdowland;
 
-        private String filename;
+    private String filename;
 
-        public Integer getId() {
+    private Integer archiveseqid;
+
+    private Integer archivesfcid;
+
+    private Integer isazxt;
+
+    private String author;
+
+    private Integer authorid;
+
+    public Integer getId() {
         return id;
     }
 
-        public void setId(Integer id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-        public Integer getScbj() {
+    public Integer getScbj() {
         return scbj;
     }
 
-        public void setScbj(Integer scbj) {
+    public void setScbj(Integer scbj) {
         this.scbj = scbj;
     }
 
-        public Integer getState() {
+    public Integer getState() {
         return state;
     }
 
-        public void setState(Integer state) {
+    public void setState(Integer state) {
         this.state = state;
     }
 
-        public Date getCreatetime() {
+    public Date getCreatetime() {
         return createtime;
     }
 
-        public void setCreatetime(Date createtime) {
+    public void setCreatetime(Date createtime) {
         this.createtime = createtime;
     }
 
-        public Date getUpdatetime() {
+    public Date getUpdatetime() {
         return updatetime;
     }
 
-        public void setUpdatetime(Date updatetime) {
+    public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
     }
 
-        public String getJqbh() {
+    public String getJqbh() {
         return jqbh;
     }
 
-        public void setJqbh(String jqbh) {
+    public void setJqbh(String jqbh) {
         this.jqbh = jqbh == null ? null : jqbh.trim();
     }
 
-        public String getAjbh() {
+    public String getAjbh() {
         return ajbh;
     }
 
-        public void setAjbh(String ajbh) {
+    public void setAjbh(String ajbh) {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-        public Integer getThisorder() {
+    public Integer getThisorder() {
         return thisorder;
     }
 
-        public void setThisorder(Integer thisorder) {
+    public void setThisorder(Integer thisorder) {
         this.thisorder = thisorder;
     }
 
-        public Integer getArchivetrecordid() {
-        return archivetrecordid;
+    public Integer getArchiverecordid() {
+        return archiverecordid;
     }
 
-        public void setArchivetrecordid(Integer archivetrecordid) {
-        this.archivetrecordid = archivetrecordid;
+    public void setArchiverecordid(Integer archiverecordid) {
+        this.archiverecordid = archiverecordid;
     }
 
-        public Integer getArchivetypeid() {
+    public Integer getArchivetypeid() {
         return archivetypeid;
     }
 
-        public void setArchivetypeid(Integer archivetypeid) {
+    public void setArchivetypeid(Integer archivetypeid) {
         this.archivetypeid = archivetypeid;
     }
 
-        public Integer getFiletype() {
+    public Integer getFiletype() {
         return filetype;
     }
 
-        public void setFiletype(Integer filetype) {
+    public void setFiletype(Integer filetype) {
         this.filetype = filetype;
     }
 
-        public String getFileurl() {
+    public String getFileurl() {
         return fileurl;
     }
 
-        public void setFileurl(String fileurl) {
+    public void setFileurl(String fileurl) {
         this.fileurl = fileurl == null ? null : fileurl.trim();
     }
 
-        public String getOriginurl() {
+    public String getOriginurl() {
         return originurl;
     }
 
-        public void setOriginurl(String originurl) {
+    public void setOriginurl(String originurl) {
         this.originurl = originurl == null ? null : originurl.trim();
     }
 
-        public Integer getIsdowland() {
+    public Integer getIsdowland() {
         return isdowland;
     }
 
-        public void setIsdowland(Integer isdowland) {
+    public void setIsdowland(Integer isdowland) {
         this.isdowland = isdowland;
     }
 
-        public String getFilename() {
+    public String getFilename() {
         return filename;
     }
 
-        public void setFilename(String filename) {
+    public void setFilename(String filename) {
         this.filename = filename == null ? null : filename.trim();
+    }
+
+    public Integer getArchiveseqid() {
+        return archiveseqid;
+    }
+
+    public void setArchiveseqid(Integer archiveseqid) {
+        this.archiveseqid = archiveseqid;
+    }
+
+    public Integer getArchivesfcid() {
+        return archivesfcid;
+    }
+
+    public void setArchivesfcid(Integer archivesfcid) {
+        this.archivesfcid = archivesfcid;
+    }
+
+    public Integer getIsazxt() {
+        return isazxt;
+    }
+
+    public void setIsazxt(Integer isazxt) {
+        this.isazxt = isazxt;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author == null ? null : author.trim();
+    }
+
+    public Integer getAuthorid() {
+        return authorid;
+    }
+
+    public void setAuthorid(Integer authorid) {
+        this.authorid = authorid;
+    }
+
+    public String getFiletype_name() {
+        return filetype_name;
+    }
+
+    public void setFiletype_name(String filetype_name) {
+        this.filetype_name = filetype_name;
     }
 }

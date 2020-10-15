@@ -492,8 +492,16 @@ $(function () {
                 //完成整理按钮
                 $('#saveData').click(function () {
                     if (confirm('确定完成整理？')) {
-                        //加载整理动画
-                        lai.saveData();
+                        //加载进度条
+                        layer.open({
+                            type: 1,
+                            title: false,
+                            shade: [0.8, '#393D49'],
+                            closeBtn: 0,
+                            area: ['453px', '170px'],
+                            content: $('#progressBarDiv')
+                        });
+                        // lai.saveData();
                     }
                 })
             } else {

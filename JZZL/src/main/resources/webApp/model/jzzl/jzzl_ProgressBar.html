@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>案卷整理</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link href="../Framework/css/bootstrap.min.css" rel="stylesheet">
+    <script src="../Framework/js/jquery.min.js"></script>
+    <script src="../Framework/layer/layer.js"></script>
+    <link type="text/css" rel="stylesheet" href="../css/style.css">
+    <style type="text/css">
+        body {
+            background-color: #1e2420;
+            height: auto;
+        }
+
+        .graph {
+            width: 350px;
+            margin: 0 auto;
+            border: 5px solid #363c49;
+            border-radius: 25px;
+            height: 35px;
+        }
+
+        #bar {
+            display: block;
+            background: #124eb8;
+            background-image: linear-gradient(to right, #38e7f0, #2f5fef);
+            position: relative;
+            text-align: center;
+            font-family: Verdana;
+            border-radius: 25px;
+            line-height: 25px;
+            color: #FFF;
+        }
+
+        .load {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 50px auto 30px;
+        }
+    </style>
+    <script type="text/javascript">
+        /*function $(obj){
+            return document.getElementById(obj);
+        }
+        function go(){
+            $("bar").style.width = parseInt($("bar").style.width) + 1 + "%";
+            $("bar").innerHTML = $("bar").style.width;
+            if($("bar").style.width == "100%"){
+                window.clearInterval(bar);
+            }
+        }
+        var bar = window.setInterval("go()",50);
+        window.onload = function(){
+            // bar;
+        }*/
+    </script>
+</head>
+<body>
+<div class="load">loading......</div>
+<div class="graph">
+    <strong id="bar" style="width:50%;"></strong>
+</div>
+</body>
+</html>

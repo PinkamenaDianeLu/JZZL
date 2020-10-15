@@ -32,7 +32,9 @@ public class FunArchiveRecordsDTO {
     private  Integer isdelete;
     private  Integer archivesfcid;
     private Integer isazxt;
+    private String author;
 
+    private Integer authorid;
     public Integer getId() {
         return id;
     }
@@ -167,5 +169,21 @@ public class FunArchiveRecordsDTO {
 
     public void setArchivesfcid(Integer archivesfcid) {
         this.archivesfcid = archivesfcid;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public Integer getAuthorid() {
+        return authorid;
+    }
+
+    public void setAuthorid(Integer authorid) {
+        this.authorid = authorid;
     }
 }

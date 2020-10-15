@@ -1,125 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<title>案卷整理</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-	<link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
-	<script src="/Framework/js/jquery.min.js"></script>
-	<script src="/Framework/layer/layer.js"></script>
-	<link type="text/css" rel="stylesheet" href="/css/style.css">
+    <meta charset="utf-8">
+    <title>案卷整理</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/Framework/js/jquery.min.js"></script>
+    <script src="/Framework/layer/layer.js"></script>
+    <link type="text/css" rel="stylesheet" href="/css/style.css">
+    <style>
+        /** 进度条 **/
+        .graph {
+            width: 350px;
+            margin: 0 auto;
+            border: 5px solid #363c49;
+            border-radius: 25px;
+            height: 35px;
+        }
+
+        #progressBar {
+            display: block;
+            background: #124eb8;
+            background-image: linear-gradient(to right, #38e7f0, #2f5fef);
+            text-align: center;
+            font-family: Verdana;
+            border-radius: 25px;
+            line-height: 25px;height: 25px;
+            color: #FFF;
+        }
+        .load {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 50px auto 30px;
+        }
+        .layui-layer{background-color: rgba(0,0,0,0);}
+        .layui-layer-page .layui-layer-content{background-color: rgba(30,36,32,0.9);  border-radius: 10px;}
+#progressBarDiv{ padding: 0px 30px 30px}
+    </style>
 </head>
 <body>
-<div id="userHeart" ></div>
+<div id="userHeart"></div>
 
-<div class="index-main" style="position:fixed; display: inline-block; width:1360px; left:50%; margin-left:-680px; height:calc(100% - 115px); margin-top: 0px; overflow-y: hidden;">
+<div class="index-main"
+     style="position:fixed; display: inline-block; width:1360px; left:50%; margin-left:-680px; height:calc(100% - 115px); margin-top: 0px; overflow-y: hidden;">
 
-	<div class="c_left">
-		<div class="left_title"><a  class="a_done" id="saveData">完成整理</a><a href=""><i class="ico import"></i></a><a id="aded" title="回收站"><i class="ico delete"></i></a></div>
-		<div class="left_text">
-			<ul class="l_nav textt" id="archiveIndex">
-			</ul>
-			<ul class="l_nav delt" id="recycleBinArchiveIndex">
-				<li class="active">
-<!--					<dt><i class="u_up"></i><a><p>诉讼文书卷</p></a></dt>-->
-<!--					<dd><a><p>接处警登记表</p></a></dd>-->
-<!--					<dd><a><p>受案登记表</p></a></dd>-->
-<!--					<dd><a><p>受案回执</p></a></dd>-->
-<!--					<dd><a><p>立案决定书</p></a></dd>-->
-<!--					<dd><a><p>拘留证</p></a></dd>-->
-<!--					<dd class="active"><a><p>拘留通知书</p></a></dd>-->
-<!--					<dd><a><p>起诉意见书</p></a></dd>-->
-<!--					<dd><a><p>移送起诉告知书</p></a></dd>-->
-<!--					<dd><a><p>辩护律师意见</p></a></dd>-->
-<!--					<dd><a><p>备考表</p></a></dd>-->
-<!--					<dd><a><p>封底</p></a></dd>-->
-				</li>
-			</ul>
-		</div>
-	</div>
-	<div class="c_right">
-		<div class="right_title">
-			<a><i class="ico add"></i><span>新建标签</span></a>
-			<a><i class="ico download"></i><span>下载</span></a>
-			<a><i class="ico upload"></i><span>重新上传</span></a>
-			<a><i class="ico add-upload"></i><span>添加上传</span></a>
-			<a><i class="ico delete"></i><span>删除</span></a>
-			<a><i class="ico max"></i><span>放大</span></a>
-			<div class="a_count"><input type="text" value="100 %" /><a>+</a><a style="border: none;">-</a></div>
-			<a><i class="ico min"></i><span>缩小</span></a>
-			<div class="a_page"><span>跳至</span><input type="number" value="1" /><span> /8</span></div>
-			<div class="right">
-				<a id="aimg"><i class="ico cut"></i><span>切换</span></a>
-				<a><i class="ico refresh"></i><span>刷新</span></a>
-			</div>
-		</div>
-		<div class="img_p">
-			<div class="right_text">
-				<div class="a_title">标签注释说明，有啥问题！</div>
-				<div class="a_title red" style="top: 200px; left:100px">标签注释说明，有啥问题！</div>
-				<div class="a_title green" style="top: 400px; left:400px">标签注释说明，有啥问题！</div>
-				<img src="/images/未标题-1.jpg" class="img_text" id="img1" />
-				<img src="/images/未标题-1.jpg" class="img_text" id="img2" />
-				<img src="/images/未标题-1.jpg" class="img_text" id="img3" />
-				<img src="/images/未标题-1.jpg" class="img_text" id="img4" />
-				<img src="/images/未标题-1.jpg" class="img_text" id="img5" />
-			</div>
-			<div class="r_img_min">
-				<a href="#img1" class="active"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-				<a href="#img2"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-				<a href="#img3"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-				<a href="#img4"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-				<a href="#img5"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			</div>
-		</div>
-		<div class="img_t">
-			<a href="/images/未标题-1.jpg" class="active"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			<a href="#img2"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			<a href="#img3"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			<a href="#img4"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-			<a href="#img5"><img src="/images/未标题-1.jpg" class="img_text" /></a>
-		</div>
-	</div>
+    <div class="c_left">
+        <div class="left_title"><a class="a_done" id="saveData">完成整理</a><a href=""><i class="ico import"></i></a><a
+                id="aded" title="回收站"><i class="ico delete"></i></a></div>
+        <div class="left_text">
+            <ul class="l_nav textt" id="archiveIndex">
+            </ul>
+            <ul class="l_nav delt" id="recycleBinArchiveIndex">
+                <li class="active">
+                    <!--					<dt><i class="u_up"></i><a><p>诉讼文书卷</p></a></dt>-->
+                    <!--					<dd><a><p>接处警登记表</p></a></dd>-->
+                    <!--					<dd><a><p>受案登记表</p></a></dd>-->
+                    <!--					<dd><a><p>受案回执</p></a></dd>-->
+                    <!--					<dd><a><p>立案决定书</p></a></dd>-->
+                    <!--					<dd><a><p>拘留证</p></a></dd>-->
+                    <!--					<dd class="active"><a><p>拘留通知书</p></a></dd>-->
+                    <!--					<dd><a><p>起诉意见书</p></a></dd>-->
+                    <!--					<dd><a><p>移送起诉告知书</p></a></dd>-->
+                    <!--					<dd><a><p>辩护律师意见</p></a></dd>-->
+                    <!--					<dd><a><p>备考表</p></a></dd>-->
+                    <!--					<dd><a><p>封底</p></a></dd>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="c_right">
+        <div class="right_title">
+            <a><i class="ico add"></i><span>新建标签</span></a>
+            <a><i class="ico download"></i><span>下载</span></a>
+            <a><i class="ico upload"></i><span>重新上传</span></a>
+            <a><i class="ico add-upload"></i><span>添加上传</span></a>
+            <a><i class="ico delete"></i><span>删除</span></a>
+            <a><i class="ico max"></i><span>放大</span></a>
+            <div class="a_count"><input type="text" value="100 %"/><a>+</a><a style="border: none;">-</a></div>
+            <a><i class="ico min"></i><span>缩小</span></a>
+            <div class="a_page"><span>跳至</span><input type="number" value="1"/><span> /8</span></div>
+            <div class="right">
+                <a id="aimg"><i class="ico cut"></i><span>切换</span></a>
+                <a><i class="ico refresh"></i><span>刷新</span></a>
+            </div>
+        </div>
+        <div class="img_p">
+            <div class="right_text">
+                <div class="a_title">标签注释说明，有啥问题！</div>
+                <div class="a_title red" style="top: 200px; left:100px">标签注释说明，有啥问题！</div>
+                <div class="a_title green" style="top: 400px; left:400px">标签注释说明，有啥问题！</div>
+                <img src="/images/未标题-1.jpg" class="img_text" id="img1"/>
+                <img src="/images/未标题-1.jpg" class="img_text" id="img2"/>
+                <img src="/images/未标题-1.jpg" class="img_text" id="img3"/>
+                <img src="/images/未标题-1.jpg" class="img_text" id="img4"/>
+                <img src="/images/未标题-1.jpg" class="img_text" id="img5"/>
+            </div>
+            <div class="r_img_min">
+                <a href="#img1" class="active"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+                <a href="#img2"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+                <a href="#img3"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+                <a href="#img4"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+                <a href="#img5"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+            </div>
+        </div>
+        <div class="img_t">
+            <a href="/images/未标题-1.jpg" class="active"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+            <a href="#img2"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+            <a href="#img3"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+            <a href="#img4"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+            <a href="#img5"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+        </div>
+    </div>
 
 </div>
-<div class="bottom">
-	<p>Copyright © www.thkj.com, All Rights Reserved.        <span>Email : 99766850@qq.com  QQ: 99766850</span></p>
-</div>
+<!--<div class="bottom">-->
+<!--</div>-->
 
 <script>
-	$(function(){
-		$('#aded').click(function(){
+    $(function () {
+        $('#aded').click(function () {
 
-			if($('.textt').is(':hidden')){
+            if ($('.textt').is(':hidden')) {
 
-				$('.delt').hide();
-				$('.textt').show();
+                $('.delt').hide();
+                $('.textt').show();
 
-			}  else{
+            } else {
 
-				$('.textt').hide();
+                $('.textt').hide();
 
-				$('.delt').show();
+                $('.delt').show();
 
-			}
-		});
-		$('#aimg').click(function(){
+            }
+        });
+        $('#aimg').click(function () {
 
-			if($('.img_t').is(':hidden')){
+            if ($('.img_t').is(':hidden')) {
 
-				$('.img_p').hide();
-				$('.img_t').show();
+                $('.img_p').hide();
+                $('.img_t').show();
 
-			}  else{
+            } else {
 
-				$('.img_t').hide();
+                $('.img_t').hide();
 
-				$('.img_p').show();
+                $('.img_p').show();
 
-			}
-		});
-	});
+            }
+        });
+    });
 
 </script>
 <script src="/Framework/js/jquery.min.js"></script>
@@ -129,4 +160,10 @@
 <script src="/model/jzzl/js/jzzl_recycleBin.js"></script>
 <script src="/model/jzzl/js/jzzl.js"></script>
 </body>
+<div id="progressBarDiv">
+    <div class="load">正在保存中.............</div>
+    <div class="graph">
+        <p id="progressBar" style="width:50%;">50%</p>
+    </div>
+</div>
 </html>

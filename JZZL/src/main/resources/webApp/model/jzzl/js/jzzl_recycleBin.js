@@ -75,7 +75,7 @@ var recycleBin = (function () {
                         f: reV.value.length
                     };
                     utils.functional.forEach(reV.value, function (thisRecord) {
-                        $('#recycle' + liD).append(createRecordDD(thisRecord, indexing));
+                        $('#'+liD).append(createRecordDD(thisRecord, indexing));
                         indexing.i++; //此行必须在$('#' + liD).append的后边
                     });
                 } else {

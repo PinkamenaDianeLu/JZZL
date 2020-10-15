@@ -19,7 +19,7 @@ public class FunArchiveFilesDTO {
 
     private Integer thisorder;
 
-    private Integer archivetrecordid;
+    private Integer archiverecordid;
 
     private Integer archivetypeid;
 
@@ -32,6 +32,16 @@ public class FunArchiveFilesDTO {
     private Integer isdowland;
 
     private String filename;
+
+    private Integer archiveseqid;
+
+    private Integer archivesfcid;
+
+    private Integer isazxt;
+
+    private String author;
+
+    private Integer authorid;
 
     public Integer getId() {
         return id;
@@ -97,12 +107,12 @@ public class FunArchiveFilesDTO {
         this.thisorder = thisorder;
     }
 
-    public Integer getArchivetrecordid() {
-        return archivetrecordid;
+    public Integer getArchiverecordid() {
+        return archiverecordid;
     }
 
-    public void setArchivetrecordid(Integer archivetrecordid) {
-        this.archivetrecordid = archivetrecordid;
+    public void setArchiverecordid(Integer archiverecordid) {
+        this.archiverecordid = archiverecordid;
     }
 
     public Integer getArchivetypeid() {
@@ -151,5 +161,45 @@ public class FunArchiveFilesDTO {
 
     public void setFilename(String filename) {
         this.filename = filename == null ? null : filename.trim();
+    }
+
+    public Integer getArchiveseqid() {
+        return archiveseqid;
+    }
+
+    public void setArchiveseqid(Integer archiveseqid) {
+        this.archiveseqid = archiveseqid;
+    }
+
+    public Integer getArchivesfcid() {
+        return archivesfcid;
+    }
+
+    public void setArchivesfcid(Integer archivesfcid) {
+        this.archivesfcid = archivesfcid;
+    }
+
+    public Integer getIsazxt() {
+        return isazxt;
+    }
+
+    public void setIsazxt(Integer isazxt) {
+        this.isazxt = isazxt;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author == null ? null : author.trim();
+    }
+
+    public Integer getAuthorid() {
+        return authorid;
+    }
+
+    public void setAuthorid(Integer authorid) {
+        this.authorid = authorid;
     }
 }
