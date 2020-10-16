@@ -71,42 +71,33 @@
             <div class="a_count"><input type="text" value="100 %"/><a>+</a><a style="border: none;">-</a></div>
             <a><i class="ico min"></i><span>缩小</span></a>
             <div class="a_page"><span>跳至</span><input type="number" value="1"/><span> /8</span></div>
+            <a id="multipleBtn" style="display: none"><i class="ico max"></i><span>多选</span></a>
+            <a id="moveToBtn" ><i class="ico max"></i><span>移动至</span></a>
             <div class="right">
-                <a id="aimg"><i class="ico cut"></i><span>切换</span></a>
-                <a><i class="ico refresh"></i><span>刷新</span></a>
+                <a id="changeView"><i class="ico cut"></i><span>切换</span></a>
+<!--                <a><i class="ico refresh"></i><span>刷新?</span></a>-->
             </div>
         </div>
         <div class="img_p">
             <div class="right_text" id="ImgBigDiv">
-                <div class="a_title">标签注释说明，有啥问题！</div>
-                <div class="a_title red" style="top: 200px; left:100px">标签注释说明，有啥问题！</div>
-                <div class="a_title green" style="top: 400px; left:400px">标签注释说明，有啥问题！</div>
-                <img src="/images/未标题-1.jpg" class="img_text" id="img1"/>
-                <img src="/images/未标题-1.jpg" class="img_text" id="img2"/>
-                <img src="/images/未标题-1.jpg" class="img_text" id="img3"/>
-                <img src="/images/未标题-1.jpg" class="img_text" id="img4"/>
-                <img src="/images/未标题-1.jpg" class="img_text" id="img5"/>
+<!--                <div class="a_title">标签注释说明，有啥问题！</div>-->
+<!--                <div class="a_title red" style="top: 200px; left:100px">标签注释说明，有啥问题！</div>-->
+<!--                <div class="a_title green" style="top: 400px; left:400px">标签注释说明，有啥问题！</div>-->
+
             </div>
-            <div class="r_img_min">
-                <a href="#img1" class="active"><img src="/images/未标题-1.jpg" class="img_text"/></a>
-                <a href="#img2"><img src="/images/未标题-1.jpg" class="img_text"/></a>
-                <a href="#img3"><img src="/images/未标题-1.jpg" class="img_text"/></a>
-                <a href="#img4"><img src="/images/未标题-1.jpg" class="img_text"/></a>
-                <a href="#img5"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+            <div class="r_img_min" id="thumbnailDiv">
             </div>
         </div>
-        <div class="img_t">
+        <div class="img_t" id="frontImg">
             <a href="/images/未标题-1.jpg" class="active"><img src="/images/未标题-1.jpg" class="img_text"/></a>
             <a href="#img2"><img src="/images/未标题-1.jpg" class="img_text"/></a>
-            <a href="#img3"><img src="/images/未标题-1.jpg" class="img_text"/></a>
-            <a href="#img4"><img src="/images/未标题-1.jpg" class="img_text"/></a>
-            <a href="#img5"><img src="/images/未标题-1.jpg" class="img_text"/></a>
+
         </div>
     </div>
 
 </div>
-<!--<div class="bottom">-->
-<!--</div>-->
+<div class="bottom">
+</div>
 
 <script>
     $(function () {
@@ -122,21 +113,6 @@
                 $('.textt').hide();
 
                 $('.delt').show();
-
-            }
-        });
-        $('#aimg').click(function () {
-
-            if ($('.img_t').is(':hidden')) {
-
-                $('.img_p').hide();
-                $('.img_t').show();
-
-            } else {
-
-                $('.img_t').hide();
-
-                $('.img_p').show();
 
             }
         });

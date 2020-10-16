@@ -223,6 +223,7 @@ var recycleBin = (function () {
         if (!lai) {
             throw '未传入loadArchiveIndex实例，回收站功能无法加载！';
         }
+        console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=开始回收站-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
         archiveIndex = lai;
     }
     _recycleBin.prototype = {
