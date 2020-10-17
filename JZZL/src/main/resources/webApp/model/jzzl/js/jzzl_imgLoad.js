@@ -1,7 +1,7 @@
 /**
  * @author Mrlu
  * @createTime 2020/10/15
- * @dependence jquery.min.js,layer.js,utils.js
+ * @dependence jquery.min.js,layer.js,utils.js,jquery-ui.js
  * @describe  文书图片加载
  *
  */
@@ -40,7 +40,7 @@ var recordImgLoad = (function () {
                     //切换视图按钮
                     viewModel = false;//下拉显示
                     changeViewModel($('#changeView'));//加载一下下拉展示
-
+                    FrontImgSortTable();//加载平铺图的拖拽效果
                     //为移动至按钮添加方法
                     $('#moveToBtn').unbind().click(function () {
                         console.log('移动至方法')
@@ -56,6 +56,17 @@ var recordImgLoad = (function () {
         });
     }
 
+     /**
+     * 平铺图的拖拽控件加载
+     * @author MrLu
+     * @param 
+     * @createTime  2020/10/17 11:51
+     * @return    |  
+      */
+    function FrontImgSortTable() {
+
+     $('#frontImg').sortable().disableSelection();
+    }
     /**
      * 多选按钮
      * @author MrLu
@@ -129,7 +140,7 @@ var recordImgLoad = (function () {
         //切换视图按钮
         $(thisBtn).unbind().click(function () {
             changeViewModel(thisBtn);
-        })
+        });
         cancelMultiple($('#multipleBtn'));//初始化多选按钮
         if (viewModel) {
             //下拉图
@@ -160,7 +171,7 @@ var recordImgLoad = (function () {
         });
         bigImg.addEventListener('click', function () {
             //绑定按钮
-        })
+        });
         return bigImg;
     }
 
@@ -190,7 +201,7 @@ var recordImgLoad = (function () {
                 scrollTop: ((+index * 920) + 50)
             }, 300);
             $(this).addClass('active');
-        })
+        });
         let bigImg = loadImgs(file);
         a.append(thumbnail);
         $('#thumbnailDiv').append(a);
@@ -206,7 +217,8 @@ var recordImgLoad = (function () {
      * @return    |
      */
     function loadFrontImg(file) {
-        let a = document.createElement('a');
+        //TODO MrLu 2020/10/17  平铺图的包裹标签必须改为div
+        let a = document.createElement('div');
         a.id = 'front' + file.id;
         let front = utils.createElement.createElement({
             tag: 'img', attrs: {

@@ -1,7 +1,7 @@
 /**
  * @author Mrlu
  * @createTime 2020/10/8
- * @dependence jquery.min.js,layer.js,utils.js,jzzl_imgLoad.js,jzzl_recycleBin.js
+ * @dependence jquery.min.js,layer.js,utils.js,jzzl_imgLoad.js,jzzl_recycleBin.js,jquery-ui.js
  * @describe 卷宗整理
  *
  */
@@ -26,6 +26,7 @@ var loadArchiveIndex = (function () {
                 if ('success' === reV.message) {
                     recordsMap = new Map();
                     utils.functional.forEach(reV.value, function (thisType) {
+
                         loadArchiveType(thisType);
                     });
                 } else {
@@ -60,6 +61,23 @@ var loadArchiveIndex = (function () {
         loadRecords(thisType.id, li.id)
 
     }
+    
+    function sortList(sortDiv) {
+            console.log(sortDiv)
+      /*      new Sortable(sortDiv, {
+                invertSwap: true,
+                group: {
+                    string: 'liId',
+                }
+            })*/
+
+
+     console.log('加载拖拽')
+        $( ".sortZone" ).sortable({
+            // connectWith: ".sortZone"//开启后允许跨卷拖拽
+        }).disableSelection();
+    }
+
 
     /**
      * 加载具体文书目录
@@ -81,10 +99,24 @@ var loadArchiveIndex = (function () {
                         i: 0,
                         f: reV.value.length
                     };
+                    let sortDiv=utils.createElement.createElement({
+                        tag: 'div', attrs: {
+                            class:'sortZone',
+                        }
+                    });
                     utils.functional.forEach(reV.value, function (thisRecord) {
-                        $('#' + liD).append(createRecordDD(thisRecord, indexing));
+                        const thisDD=createRecordDD(thisRecord, indexing);
+                        if ('ZL001'===thisDD.class){
+                            $('#' + liD).append(thisDD);
+                        }else if ('ZL002'===thisDD.class){
+                            $('#' + liD).append(sortDiv).append(thisDD);
+                        }else {
+                            sortDiv.append(thisDD);
+
+                        }
                         indexing.i++; //此行必须在$('#' + liD).append的后边
                     });
+                    sortList(sortDiv)
                 } else {
                     throw  '该卷文书加载失败：' + typeId;
                 }
@@ -107,9 +139,11 @@ var loadArchiveIndex = (function () {
         let key = 'dd' + thisRecord.id;
         let dd = utils.createElement.createElement({
             tag: 'dd', attrs: {
-                id: key
+                id: key,
+                class:thisRecord.recordscode,
             }, arg: '<a><p class="recordname">' + thisRecord.recordname + '</p></a>'
         });
+        dd.class=thisRecord.recordscode;
         //文书缓存至recordsMap
         recordsMap.set(key,
             {
@@ -122,7 +156,7 @@ var loadArchiveIndex = (function () {
         dd.addEventListener('click', function () {
             //加载文书图片
             let ril=new recordImgLoad(thisRecord.id);
-        })
+        });
         return dd;
     }
 
