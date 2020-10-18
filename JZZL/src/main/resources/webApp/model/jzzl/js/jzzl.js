@@ -61,19 +61,21 @@ var loadArchiveIndex = (function () {
         loadRecords(thisType.id, li.id)
 
     }
-    
-    function sortList(sortDiv) {
-            console.log(sortDiv)
-      /*      new Sortable(sortDiv, {
-                invertSwap: true,
-                group: {
-                    string: 'liId',
-                }
-            })*/
 
-
-     console.log('加载拖拽')
-        $( ".sortZone" ).sortable({
+    /**
+     * 加载拖拽控件
+     * @author MrLu
+     * @createTime  2020/10/17 18:38
+     */
+    function sortList() {
+        $(".sortZone").sortable({
+            revert: true,//整个动画
+            update: function (event, ui) {//拖拽后位置变化
+                let PDiv = ui.item.siblings();
+                reloadButton(PDiv.first());
+                reloadButton(PDiv.last());
+                reloadButton(ui.item);
+            }
             // connectWith: ".sortZone"//开启后允许跨卷拖拽
         }).disableSelection();
     }
@@ -99,20 +101,23 @@ var loadArchiveIndex = (function () {
                         i: 0,
                         f: reV.value.length
                     };
-                    let sortDiv=utils.createElement.createElement({
+                    let sortDiv = utils.createElement.createElement({
                         tag: 'div', attrs: {
-                            class:'sortZone',
+                            class: 'sortZone',
                         }
                     });
                     utils.functional.forEach(reV.value, function (thisRecord) {
-                        const thisDD=createRecordDD(thisRecord, indexing);
-                        if ('ZL001'===thisDD.class){
+                        const thisDD = createRecordDD(thisRecord, indexing);
+                        //判断划分拖拽域
+                        if ('ZL001' === thisDD.class) {
+                            //卷首正常加载
                             $('#' + liD).append(thisDD);
-                        }else if ('ZL002'===thisDD.class){
+                        } else if ('ZL002' === thisDD.class) {
+                            //卷尾加载 普通卷+卷尾
                             $('#' + liD).append(sortDiv).append(thisDD);
-                        }else {
+                        } else {
+                            //普通卷放入可拖拽域
                             sortDiv.append(thisDD);
-
                         }
                         indexing.i++; //此行必须在$('#' + liD).append的后边
                     });
@@ -140,10 +145,10 @@ var loadArchiveIndex = (function () {
         let dd = utils.createElement.createElement({
             tag: 'dd', attrs: {
                 id: key,
-                class:thisRecord.recordscode,
+                class: thisRecord.recordscode,
             }, arg: '<a><p class="recordname">' + thisRecord.recordname + '</p></a>'
         });
-        dd.class=thisRecord.recordscode;
+        dd.class = thisRecord.recordscode;
         //文书缓存至recordsMap
         recordsMap.set(key,
             {
@@ -155,7 +160,7 @@ var loadArchiveIndex = (function () {
         dd.append(createButtons(key, indexing));
         dd.addEventListener('click', function () {
             //加载文书图片
-            let ril=new recordImgLoad(thisRecord.id);
+            let ril = new recordImgLoad(thisRecord.id);
         });
         return dd;
     }
@@ -205,8 +210,8 @@ var loadArchiveIndex = (function () {
             //当元素已经加载时判断
             //不是封皮封底
             let prevOne = $('#' + ddId).prevAll('dd');//获取上一个元素
-            //当前面只有一个元素（封皮时） 无法上移
-            if (prevOne.length < 2) {
+            //因为拖拽域的关系 上一个是检测不到同类元素的
+            if (prevOne.length < 1) {
                 haveFun = false;
             }
         }
@@ -244,7 +249,8 @@ var loadArchiveIndex = (function () {
             //此时已经移动完了  重新加载按钮
             let nextOne = $('#' + ddId).nextAll('dd');//获取下位元素
             //当后面只有一个元素（封底时） 无法下移
-            if (nextOne.length < 2) {
+            //因为拖拽域的关系 下一个是检测不到同类元素的
+            if (nextOne.length < 1) {
                 haveFun = false;
             }
         }
@@ -498,7 +504,6 @@ var loadArchiveIndex = (function () {
         })
     }
 
-
     function _loadArchiveIndex() {
         console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=开始加载-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
     }
@@ -508,9 +513,6 @@ var loadArchiveIndex = (function () {
     }
     return _loadArchiveIndex;
 })();
-
-
-
 
 
 $(function () {
