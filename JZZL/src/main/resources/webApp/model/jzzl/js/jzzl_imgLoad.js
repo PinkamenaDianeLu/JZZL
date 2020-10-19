@@ -9,7 +9,7 @@
 var recordImgLoad = (function () {
     let recordId;//文书id
     let viewModel;//显示状态 true 下拉图 false平铺图
-    let checkFile=new Set();//被选中的文件数组
+    let checkFile = new Set();//被选中的文件的filecode数组
 
     /**
      * 查询文书的图片数据
@@ -56,17 +56,18 @@ var recordImgLoad = (function () {
         });
     }
 
-     /**
+    /**
      * 平铺图的拖拽控件加载
      * @author MrLu
-     * @param 
+     * @param
      * @createTime  2020/10/17 11:51
-     * @return    |  
-      */
+     * @return    |
+     */
     function FrontImgSortTable() {
 
-     $('#frontImg').sortable().disableSelection();
+        $('#frontImg').sortable().disableSelection();
     }
+
     /**
      * 多选按钮
      * @author MrLu
@@ -84,15 +85,15 @@ var recordImgLoad = (function () {
         //所有图片添加事件
         checkFile = new Set();//被选中值set
 
-        $('#frontImg a').click(function () {
+        $('#frontImg div').click(function () {
             //TODO MrLu 2020/10/16 找美工要个选择样式
             const fileId = $(this).attr('id')
             //判断是否被选中
-            if ($(this).hasClass('active')){
+            if ($(this).hasClass('active')) {
                 //被选中 -> 取消选中
                 $(this).removeClass('active');
                 checkFile.delete(fileId);
-            }else {
+            } else {
                 //未被选中 选
                 $(this).addClass('active');
                 checkFile.add(fileId);//记录被选的文件id
@@ -102,27 +103,44 @@ var recordImgLoad = (function () {
         })
     }
 
-     /**
+    /**
      * 移动至方法
      * @author MrLu
      * @param
      * @createTime  2020/10/16 16:24
      * @return    |
-      */
+     */
     function moveToFn() {
-        console.log(checkFile);
+        //被移动的文书filecode set
+        if (!checkFile||checkFile.size===0){
+            alert('请选择要移动的文书！');return false;}
+        const pString = JSON.stringify(Array.from(checkFile).join(','));
+
+        let url='/model/jzzl/jzYdTable.html?fileCodes='+pString;
+        console.log(url);
+        layer.open({
+            icon: 1,
+            type: 2,
+            title: '新建卷',
+            skin: 'layui-layer-lan',
+            maxmin: false,
+            shadeClose: true, //点击遮罩关闭层
+            area: ['1111px', '600px'],
+            content: url
+        });
 
     }
-     /**
+
+    /**
      * 初始化多选按钮
      * @author MrLu
      * @param thisBtn 多选按钮element
      * @createTime  2020/10/16 15:52
-      */
+     */
     function cancelMultiple(thisBtn) {
         $(thisBtn).find('span').html('多选');
         checkFile.clear();//清空被选中的set
-        $('#frontImg a').unbind().removeClass('active');//全部取消被选中的样式
+        $('#frontImg div').unbind().removeClass('active');//全部取消被选中的样式
         $(thisBtn).unbind().click(function () {
             multipleFun(this);//再点再来
         })
@@ -161,18 +179,20 @@ var recordImgLoad = (function () {
      * @return    |
      */
     function loadImgs(file) {
+        let div = document.createElement('div');
+        div.setAttribute('class', 'div_a');
         let bigImg = utils.createElement.createElement({
             tag: 'img', attrs: {
                 id: 'bigImg' + file.id,
                 src: file.fileurl,
-                class: 'img_text',
-                width: '700px', height: '900px'
+                class: 'img_text'
             }
         });
         bigImg.addEventListener('click', function () {
             //绑定按钮
         });
-        return bigImg;
+        div.append(bigImg)
+        return div;
     }
 
     /**
@@ -198,7 +218,7 @@ var recordImgLoad = (function () {
         a.addEventListener('click', function () {
             $('#thumbnailDiv .active').removeClass('active');
             $('#ImgBigDiv').animate({
-                scrollTop: ((+index * 920) + 50)
+                scrollTop: ((+index * 940) + 50)
             }, 300);
             $(this).addClass('active');
         });
@@ -218,8 +238,9 @@ var recordImgLoad = (function () {
      */
     function loadFrontImg(file) {
         //TODO MrLu 2020/10/17  平铺图的包裹标签必须改为div
-        let a = document.createElement('div');
-        a.id = 'front' + file.id;
+        let div = document.createElement('div');
+        div.id = file.filecode;
+        div.setAttribute('class', 'div_a');
         let front = utils.createElement.createElement({
             tag: 'img', attrs: {
                 src: file.fileurl,
@@ -228,8 +249,8 @@ var recordImgLoad = (function () {
             }
         });
 
-        a.append(front)
-        $('#frontImg').append(a);
+        div.append(front)
+        $('#frontImg').append(div);
     }
 
     let _recordImgLoad = function (recordIdP) {
