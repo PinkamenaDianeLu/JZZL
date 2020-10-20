@@ -156,12 +156,12 @@ var recycleBin = (function () {
         let typeFd = $('#P' + thisRecord.archivetypeid + ' dd').last();//该类型文书的封底
         let lastRecord = typeFd.prev('dd');//该类型文书的最后一个文书
         //重返阳间
-        //通过传递一个假的indexing  使createRecordDD方法不需要再查找dom元素 降低损耗
+        //通过传递一个假的indexing  使createRecordDiv方法不需要再查找dom元素 降低损耗
         let indexing = {
             i: 0,
             f: 0
         };
-        let reArchive = archiveIndex.createRecordDD(thisRecord, indexing);//重塑肉身
+        let reArchive = archiveIndex.createRecordDiv(thisRecord, indexing);//重塑肉身
         typeFd.before(reArchive);//返回人界
         console.log(reArchive)
         archiveIndex.reloadButton($(reArchive));//重新加载按钮

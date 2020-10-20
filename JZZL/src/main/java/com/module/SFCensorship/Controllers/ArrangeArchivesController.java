@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
@@ -111,7 +112,15 @@ public class ArrangeArchivesController extends BaseFactory {
             if (StringUtils.isEmpty(id)) {
                 throw new Exception("你传nm呢？");
             }
-            reValue.put("value", arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), Integer.parseInt(isDelete)));
+            JSONArray records=new JSONArray();
+            for (FunArchiveRecords thisRecord:
+            arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), Integer.parseInt(isDelete))) {
+                JSONObject record=new JSONObject();
+                record.put("record",thisRecord);
+                record.put("files",arrangeArchivesService.selectRecordFilesByRecordId(thisRecord.getId()));
+                records.add(record);
+            }
+            reValue.put("value", records);
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

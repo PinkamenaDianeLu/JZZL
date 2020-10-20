@@ -4,6 +4,8 @@
  * @dependence jquery.min.js,layer.js,utils.js,jzzl_imgLoad.js,jzzl_recycleBin.js,jquery-ui.js
  * @describe 卷宗整理
  *
+ * 恭喜您接手此部分代码 GGHF！ 👏
+ *
  */
 
 var loadArchiveIndex = (function () {
@@ -13,6 +15,8 @@ var loadArchiveIndex = (function () {
     *key:dd+文书id value:{recordname(文书名),recordscode(文书代码),archivetypeid(文书类别id)}
     * */
     let recordsMap;//
+
+    let filesMap;//同样的文书图片map
 
     let recycleBinObj;//回收站对象
 
@@ -25,6 +29,7 @@ var loadArchiveIndex = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     recordsMap = new Map();
+                    filesMap=new Map();
                     utils.functional.forEach(reV.value, function (thisType) {
 
                         loadArchiveType(thisType);
@@ -38,27 +43,28 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 加载二级菜单
+     * 加载二级菜单 （****卷）
      * @author MrLu
      * @param thisType
      * @createTime  2020/10/9 11:28
      * @return    |
      */
     function loadArchiveType(thisType) {
-        let li = document.createElement('li');
-        li.id = 'P' + thisType.id;
+        let div = document.createElement('div');
+        div.id = 'P' + thisType.id;
+        div.setAttribute('class', 'v1');
         let thisTypeEle = utils.createElement.createElement({
-            tag: 'dt', attrs: {
+            tag: 'p', attrs: {
                 id: 'typeTitle' + thisType.id
-            }, arg: '<i class="u_up"></i><a><p>' + thisType.archivetypecn + '</p>'
+            }, arg: '<i class="u_up"></i><a>' + thisType.archivetypecn + '</a>'
         });
         thisTypeEle.addEventListener('click', function () {
-            console.log('点一下收缩或展示' + thisType.archivetypecn)
+            console.log('点一下收缩或展示' + thisType.archivetypecn);
         });
-        li.append(thisTypeEle);
-        $('#archiveIndex').append(li);
+        div.append(thisTypeEle);
+        $('#archiveIndex').append(div);
         //加载文书
-        loadRecords(thisType.id, li.id)
+        loadRecords(thisType.id, div.id)
 
     }
 
@@ -67,16 +73,16 @@ var loadArchiveIndex = (function () {
      * @author MrLu
      * @createTime  2020/10/17 18:38
      */
-    function sortList() {
-        $(".sortZone").sortable({
-            revert: true,//整个动画
+    function sortList(zoneClass) {
+        $("."+zoneClass).sortable({
+            // revert: true,//整个动画
             update: function (event, ui) {//拖拽后位置变化
                 let PDiv = ui.item.siblings();
                 reloadButton(PDiv.first());
                 reloadButton(PDiv.last());
                 reloadButton(ui.item);
             }
-            // connectWith: ".sortZone"//开启后允许跨卷拖拽
+            // connectWith: "."+zoneClass//开启后允许跨卷拖拽
         }).disableSelection();
     }
 
@@ -95,19 +101,20 @@ var loadArchiveIndex = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
-
                     //索引信息
                     let indexing = {
                         i: 0,
                         f: reV.value.length
                     };
+                    //拖拽域
                     let sortDiv = utils.createElement.createElement({
                         tag: 'div', attrs: {
-                            class: 'sortZone',
+                            class: 'recordSortZone',
                         }
                     });
+                    //循环文书
                     utils.functional.forEach(reV.value, function (thisRecord) {
-                        const thisDD = createRecordDD(thisRecord, indexing);
+                        const thisDD = createRecordDiv(thisRecord, indexing);
                         //判断划分拖拽域
                         if ('ZL001' === thisDD.class) {
                             //卷首正常加载
@@ -121,7 +128,7 @@ var loadArchiveIndex = (function () {
                         }
                         indexing.i++; //此行必须在$('#' + liD).append的后边
                     });
-                    sortList(sortDiv)
+                    sortList('recordSortZone')
                 } else {
                     throw  '该卷文书加载失败：' + typeId;
                 }
@@ -130,39 +137,96 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 创建文书的dd element
+     * 创建文书的div element
      * @author MrLu
      * @param thisRecord 文书对象 数据库
      * @param indexing {i 数组下标,f 数组长度} 可为空
      * @createTime  2020/10/12 9:37
      * @return  HTMLDivElement  |
      */
-    function createRecordDD(thisRecord, indexing) {
-        if (!thisRecord.id) {
+    function createRecordDiv(thisRecord, indexing) {
+        if (!thisRecord.record.id) {
             throw  '文书id未获取，无法加载该文书！！';
         }
-        let key = 'dd' + thisRecord.id;
-        let dd = utils.createElement.createElement({
-            tag: 'dd', attrs: {
+        let record=thisRecord.record;
+        let key = 'dd' + record.id;
+        let div = utils.createElement.createElement({
+            tag: 'div', attrs: {
                 id: key,
-                class: thisRecord.recordscode,
-            }, arg: '<a><p class="recordname">' + thisRecord.recordname + '</p></a>'
+                class: 'v2',
+            }
         });
-        dd.class = thisRecord.recordscode;
-        //文书缓存至recordsMap
-        recordsMap.set(key,
-            {
-                recordname: thisRecord.recordname,
-                recordscode: thisRecord.recordscode,
-                archivetypeid: thisRecord.archivetypeid
-            });//缓存信息
-        //加载文书
-        dd.append(createButtons(key, indexing));
-        dd.addEventListener('click', function () {
+        div.class = record.recordscode;
+        let p = utils.createElement.createElement({
+            tag: 'p', attrs: {}, arg: '<a class="recordname">' + record.recordname + '</a>'
+        });
+
+        //文书缓存至recordsMap  此行必须在createButtons()方法上
+        recordsMap.set(key,{
+            recordname: record.recordname,
+            recordscode: record.recordscode,
+            archivetypeid: record.archivetypeid
+        });//缓存信息
+        //加载按钮 -> 文书的
+        p.append(createButtons(key, indexing));
+        div.append(p);
+        //加载文书目录
+        div.append(createFileIndex(thisRecord.files));
+       //点击显示对应图片
+        p.addEventListener('click', function () {
             //加载文书图片
-            let ril = new recordImgLoad(thisRecord.id);
+            let ril = new recordImgLoad(record.id);
         });
-        return dd;
+        return div;
+    }
+
+    function createFileIndex(files) {
+        let div = utils.createElement.createElement({
+            tag: 'div', attrs: {
+                class: 'fileSortZone',
+            }
+        });
+        //索引信息
+        let fileIndexing = {
+            i: 1,
+            f: files.length+2
+        };
+        for (let thisFile of files){
+            //加载第三级别文书图片目录
+            div.append(createFilesDiv(thisFile, fileIndexing));
+            fileIndexing.i++;
+        }
+        sortList('fileSortZone');
+
+        return div;
+    }
+
+     /**
+     * 加载文书内图片目录
+     * @author MrLu
+     * @param thisFile
+     *  @param fileIndexing
+     * @createTime  2020/10/20 11:43
+     * @return  HTMLElement  |
+      */
+    function createFilesDiv(thisFile, fileIndexing) {
+        const  key='fileIndex'+thisFile.id;
+         filesMap.set(key,{
+             filename: thisFile.filename,
+             fileurl: thisFile.fileurl,
+         });//缓存信息
+        let div = utils.createElement.createElement({
+            tag: 'div', attrs: {
+                id:key,
+                class: 'v3',
+            }
+        });
+        let p = utils.createElement.createElement({
+            tag: 'p', attrs: {}, arg: '<a class="filename">' + thisFile.filename + '</a>'
+        });
+        p.append(createButtons(key, fileIndexing));
+        div.append(p);
+        return div;
     }
 
     /**
@@ -175,9 +239,9 @@ var loadArchiveIndex = (function () {
      */
     function createButtons(ddId, indexing) {
         const thisRecord = recordsMap.get(ddId);
-        let div = document.createElement('div');
+        let div = document.createElement('span');
         //判断卷类型
-        if (!('ZL001' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
+        if ((!thisRecord)||!('ZL001' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
             //封皮//封底  没有操作按钮
 
             div.setAttribute('class', 'tools');
@@ -209,7 +273,7 @@ var loadArchiveIndex = (function () {
         } else {
             //当元素已经加载时判断
             //不是封皮封底
-            let prevOne = $('#' + ddId).prevAll('dd');//获取上一个元素
+            let prevOne = $('#' + ddId).prevAll('div');//获取上一个元素
             //因为拖拽域的关系 上一个是检测不到同类元素的
             if (prevOne.length < 1) {
                 haveFun = false;
@@ -247,7 +311,7 @@ var loadArchiveIndex = (function () {
         } else {
             // 当元素已经加载时判断
             //此时已经移动完了  重新加载按钮
-            let nextOne = $('#' + ddId).nextAll('dd');//获取下位元素
+            let nextOne = $('#' + ddId).nextAll('div');//获取下位元素
             //当后面只有一个元素（封底时） 无法下移
             //因为拖拽域的关系 下一个是检测不到同类元素的
             if (nextOne.length < 1) {
@@ -324,7 +388,7 @@ var loadArchiveIndex = (function () {
             throw '未传入需要上传的id！cdd爬';
         }
         let dd = $('#' + ddId);
-        let prevDD = dd.prev('dd');//上一个
+        let prevDD = dd.prev('div');//上一个
         prevDD.before(dd);
         reloadButton(dd);//重新加载按钮
         reloadButton(prevDD);//重新加载按钮
@@ -341,7 +405,7 @@ var loadArchiveIndex = (function () {
             throw '未传入需要上传的id！cdd爬';
         }
         let dd = $('#' + ddId);//要移动的
-        let nextDD = dd.next('dd');//下一个
+        let nextDD = dd.next('div');//下一个
         nextDD.after(dd);//移动顺序
         reloadButton(dd);//重新加载按钮
         reloadButton(nextDD);//重新加载按钮
@@ -354,20 +418,38 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/10 14:12
      */
     function renameFun(ddId) {
-        let thisP = $('#' + ddId).find('.recordname');
+        let thisEle=$('#' + ddId);//获取当前element对象
+        let thisP,level;
+        //判断当前文书对象是文书还是文件
+        if (thisEle.hasClass('v2')){
+            //是2级 是文书
+            thisP= thisEle.find('.recordname');
+            level=2;
+        }else {
+            //是三级 是文书图片
+            thisP= thisEle.find('.filename');
+            level=3;
+        }
+
         thisP.attr('contenteditable', 'plaintext-only');//该p可编辑
         thisP.addClass('pinput');//更换class更换样式
         thisP.focus();//给予焦点
         //失去焦点事件
         thisP.blur(function () {
             $(this).removeAttr('contenteditable').unbind();//该p不可编辑 解除事件
-            let thisOne = recordsMap.get(ddId);
-            thisOne.recordname = $(this).html();
-            recordsMap.set(ddId, thisOne);//缓存信息
+            if (2===level){
+                let thisOne = recordsMap.get(ddId);
+                thisOne.recordname = $(this).html();
+                recordsMap.set(ddId, thisOne);//缓存信息
+                console.log(recordsMap.get(ddId));
+            }else {
+                let thisOne = filesMap.get(ddId);
+                thisOne.filename = $(this).html();
+                filesMap.set(ddId, thisOne);//缓存信息
+                console.log(filesMap.get(ddId));
+            }
             thisP.removeClass('pinput')
         });
-        console.log(recordsMap.get(ddId));
-        //
     }
 
     /**
@@ -377,18 +459,11 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/10 14:13
      */
     function delFun(ddId) {
-        // try {
         $('#' + ddId).remove();
         //回收站
         recycleBinObj.addRecycleBin(ddId, recordsMap.get(ddId));
         //从recordsMap中删除
         recordsMap.delete(ddId);
-        /*  } catch (e) {
-              console.log(e.message);
-              alert('该页面未加载回收站功能！')
-          }*/
-
-
     }
 
     /**
@@ -410,8 +485,8 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/11 12:42
      */
     function reloadButton(dd) {
-        dd.find('div').remove();
-        dd.append(createButtons(dd.attr('id')));
+        dd.find('span').remove();
+        dd.find('p').append(createButtons(dd.attr('id')));
     }
 
     //保存数据
@@ -509,7 +584,7 @@ var loadArchiveIndex = (function () {
     }
 
     _loadArchiveIndex.prototype = {
-        loadIndex, loadRecycleBin, createRecordDD, reloadButton, saveData
+        loadIndex, loadRecycleBin, createRecordDiv, reloadButton, saveData
     }
     return _loadArchiveIndex;
 })();
