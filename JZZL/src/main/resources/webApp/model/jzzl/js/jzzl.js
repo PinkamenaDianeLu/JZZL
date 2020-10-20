@@ -16,9 +16,15 @@ var loadArchiveIndex = (function () {
     * */
     let recordsMap;//
 
+    /*
+    * filename: 文件名
+      fileurl: 文件图片链接
+      archiverecordid: 文件所属文书id
+    * */
     let filesMap;//同样的文书图片map
 
     let recycleBinObj;//回收站对象
+    let recordImgLoadObj;//图片加载对象
 
     function loadIndex(id) {
         seqid = id;
@@ -29,14 +35,12 @@ var loadArchiveIndex = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     recordsMap = new Map();
-                    filesMap=new Map();
+                    filesMap = new Map();
                     utils.functional.forEach(reV.value, function (thisType) {
-
                         loadArchiveType(thisType);
                     });
                 } else {
                     alert('文书信息无法加载');
-                    // window.close();
                 }
             }
         });
@@ -74,15 +78,15 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/17 18:38
      */
     function sortList(zoneClass) {
-        $("."+zoneClass).sortable({
+        $("." + zoneClass).sortable({
             // revert: true,//整个动画
             update: function (event, ui) {//拖拽后位置变化
                 let PDiv = ui.item.siblings();
                 reloadButton(PDiv.first());
                 reloadButton(PDiv.last());
                 reloadButton(ui.item);
-            }
-            // connectWith: "."+zoneClass//开启后允许跨卷拖拽
+            },
+            connectWith: ".fileSortZone"//允许跨文书拖拽
         }).disableSelection();
     }
 
@@ -148,7 +152,7 @@ var loadArchiveIndex = (function () {
         if (!thisRecord.record.id) {
             throw  '文书id未获取，无法加载该文书！！';
         }
-        let record=thisRecord.record;
+        let record = thisRecord.record;
         let key = 'dd' + record.id;
         let div = utils.createElement.createElement({
             tag: 'div', attrs: {
@@ -162,7 +166,7 @@ var loadArchiveIndex = (function () {
         });
 
         //文书缓存至recordsMap  此行必须在createButtons()方法上
-        recordsMap.set(key,{
+        recordsMap.set(key, {
             recordname: record.recordname,
             recordscode: record.recordscode,
             archivetypeid: record.archivetypeid
@@ -172,14 +176,21 @@ var loadArchiveIndex = (function () {
         div.append(p);
         //加载文书目录
         div.append(createFileIndex(thisRecord.files));
-       //点击显示对应图片
+        //点击显示对应图片
         p.addEventListener('click', function () {
             //加载文书图片
-            let ril = new recordImgLoad(record.id);
+            recordImgLoadObj = new recordImgLoad(record.id);
         });
         return div;
     }
 
+    /**
+     * 创建文书内具体图片的目录
+     * @author MrLu
+     * @param files
+     * @createTime  2020/10/20 15:23
+     * @return  HTMLDivElement  |
+     */
     function createFileIndex(files) {
         let div = utils.createElement.createElement({
             tag: 'div', attrs: {
@@ -189,44 +200,73 @@ var loadArchiveIndex = (function () {
         //索引信息
         let fileIndexing = {
             i: 1,
-            f: files.length+2
+            f: files.length + 2
         };
-        for (let thisFile of files){
+        for (let thisFile of files) {
             //加载第三级别文书图片目录
             div.append(createFilesDiv(thisFile, fileIndexing));
             fileIndexing.i++;
         }
-        sortList('fileSortZone');
-
+        sortList('fileSortZone');//加载拖拽域
         return div;
     }
 
-     /**
+    /**
      * 加载文书内图片目录
      * @author MrLu
      * @param thisFile
      *  @param fileIndexing
      * @createTime  2020/10/20 11:43
      * @return  HTMLElement  |
-      */
+     */
     function createFilesDiv(thisFile, fileIndexing) {
-        const  key='fileIndex'+thisFile.id;
-         filesMap.set(key,{
-             filename: thisFile.filename,
-             fileurl: thisFile.fileurl,
-         });//缓存信息
+        const key = 'fileIndex' + thisFile.id;
+        filesMap.set(key, {
+            id: thisFile.id,
+            filename: thisFile.filename,
+            fileurl: thisFile.fileurl,
+            archiverecordid: thisFile.archiverecordid
+        });//缓存信息
         let div = utils.createElement.createElement({
             tag: 'div', attrs: {
-                id:key,
-                class: 'v3',
+                id: key,
+                class: 'v3'
             }
         });
         let p = utils.createElement.createElement({
             tag: 'p', attrs: {}, arg: '<a class="filename">' + thisFile.filename + '</a>'
         });
+        let index = fileIndexing.i;
+        div.addEventListener('click', function () {
+            //此时是列表第一次加载时、故图片位置为fileIndexing.i-1  当该元素被拖拽、上下移按钮后 要重新添加事件
+            loadFileImg(thisFile.id, thisFile.archiverecordid, (index - 1))
+        });
         p.append(createButtons(key, fileIndexing));
         div.append(p);
         return div;
+    }
+
+    /**
+     * 点击加载图片
+     * @author MrLu
+     * @param fileId 文件file id
+     * @param recordId 文件file对应的文书id
+     * @param index 文件在文书中的相对位置
+     * @createTime  2020/10/20 16:01
+     * @return    |
+     */
+    function loadFileImg(fileId, recordId, index) {
+        //判断是否还在原本的文文书内
+        if (recordId === +recordImgLoadObj.getRecordId()) {
+            //同文书点击
+            //获取文书order
+        } else {
+            //点击另一个文书的图片  加载另一个文书
+            recordImgLoadObj = new recordImgLoad(recordId, fileId);
+        }
+        //注意要获取图片缩略的图父标签 因为被选中的样式是附在父标签a上的
+        let thumbnail = document.getElementById('thumbnail' + fileId).parentNode;
+        recordImgLoadObj.jumpImg(thumbnail, index);
     }
 
     /**
@@ -241,9 +281,8 @@ var loadArchiveIndex = (function () {
         const thisRecord = recordsMap.get(ddId);
         let div = document.createElement('span');
         //判断卷类型
-        if ((!thisRecord)||!('ZL001' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
+        if ((!thisRecord) || !('ZL001' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
             //封皮//封底  没有操作按钮
-
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
             div.append(upButton(ddId, indexing));//加载上移按钮
@@ -384,6 +423,7 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/10 11:06
      */
     function upFun(ddId) {
+        event.stopPropagation()
         if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
@@ -395,20 +435,29 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 下移一位
+     * 下移一位方法
      * @author MrLu
      * @param ddId
      * @createTime  2020/10/10 14:11
      */
     function downFun(ddId) {
+        event.stopPropagation()
         if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
-        let dd = $('#' + ddId);//要移动的
-        let nextDD = dd.next('div');//下一个
-        nextDD.after(dd);//移动顺序
-        reloadButton(dd);//重新加载按钮
-        reloadButton(nextDD);//重新加载按钮
+        let div = $('#' + ddId);//要移动的
+        let nextDiv = div.next('div');//下一个
+        nextDiv.after(div);//移动顺序
+        if (div.hasClass('v3')) {
+            //判断为文书图片元素 重赋事件
+            //判断当前位置
+            let thisFile = filesMap.get(ddId);
+            div.unbind().click(function () {
+                loadFileImg(thisFile.id, thisFile.archiverecordid, div.index())
+            })
+        }
+        reloadButton(div);//重新加载按钮
+        reloadButton(nextDiv);//重新加载按钮
     }
 
     /**
@@ -418,17 +467,18 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/10 14:12
      */
     function renameFun(ddId) {
-        let thisEle=$('#' + ddId);//获取当前element对象
-        let thisP,level;
+        event.stopPropagation()
+        let thisEle = $('#' + ddId);//获取当前element对象
+        let thisP, level;
         //判断当前文书对象是文书还是文件
-        if (thisEle.hasClass('v2')){
+        if (thisEle.hasClass('v2')) {
             //是2级 是文书
-            thisP= thisEle.find('.recordname');
-            level=2;
-        }else {
+            thisP = thisEle.find('.recordname');
+            level = 2;
+        } else {
             //是三级 是文书图片
-            thisP= thisEle.find('.filename');
-            level=3;
+            thisP = thisEle.find('.filename');
+            level = 3;
         }
 
         thisP.attr('contenteditable', 'plaintext-only');//该p可编辑
@@ -437,12 +487,12 @@ var loadArchiveIndex = (function () {
         //失去焦点事件
         thisP.blur(function () {
             $(this).removeAttr('contenteditable').unbind();//该p不可编辑 解除事件
-            if (2===level){
+            if (2 === level) {
                 let thisOne = recordsMap.get(ddId);
                 thisOne.recordname = $(this).html();
                 recordsMap.set(ddId, thisOne);//缓存信息
                 console.log(recordsMap.get(ddId));
-            }else {
+            } else {
                 let thisOne = filesMap.get(ddId);
                 thisOne.filename = $(this).html();
                 filesMap.set(ddId, thisOne);//缓存信息
@@ -459,6 +509,7 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/10 14:13
      */
     function delFun(ddId) {
+        event.stopPropagation()
         $('#' + ddId).remove();
         //回收站
         recycleBinObj.addRecycleBin(ddId, recordsMap.get(ddId));

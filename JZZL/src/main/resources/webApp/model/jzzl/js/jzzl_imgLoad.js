@@ -15,10 +15,11 @@ var recordImgLoad = (function () {
      * 查询文书的图片数据
      * @author MrLu
      * @param recordId 文书id
+     * @param fileId  指定的文件id 该参数可为空
      * @createTime  2020/10/15 18:31
      * @return    |
      */
-    function loadFilesByRecord(recordId) {
+    function loadFilesByRecord(recordId,fileId=null) {
         $.post({
             url: '/ArrangeArchives/loadFilesByRecord',
             data: {recordId: recordId},
@@ -34,7 +35,7 @@ var recordImgLoad = (function () {
                     }
                     let i = 0;
                     utils.functional.forEach(files, function (thisFile) {
-                        loadThumbnail(thisFile, i++);//加载缩略图
+                        loadThumbnail(thisFile, i++,fileId);//加载缩略图
                         loadFrontImg(thisFile);//加载平铺图
                     });
                     //切换视图按钮
@@ -200,10 +201,11 @@ var recordImgLoad = (function () {
      * @author MrLu
      * @param file
      * @param index { i:当前图片的数组下标,f:数组长度}
+     * @param fileId 指定的文件id 可为null
      * @createTime  2020/10/16 9:39
      * @return    |
      */
-    function loadThumbnail(file, index) {
+    function loadThumbnail(file, index,fileId=null) {
         let a = document.createElement('a');
         //创建缩略图
         let thumbnail = utils.createElement.createElement({
@@ -216,17 +218,33 @@ var recordImgLoad = (function () {
         });
         //缩略图跳转图片
         a.addEventListener('click', function () {
-            $('#thumbnailDiv .active').removeClass('active');
-            $('#ImgBigDiv').animate({
-                scrollTop: ((+index * 940) + 50)
-            }, 300);
-            $(this).addClass('active');
+            jumpImg(this,index)
         });
         let bigImg = loadImgs(file);
         a.append(thumbnail);
         $('#thumbnailDiv').append(a);
         $('#ImgBigDiv').append(bigImg);
+        //如果有指定跳转的图片  跳转
+        if (fileId&&file.id===fileId){
+            jumpImg(a,index)
+        }
 
+    }
+
+     /**
+     * 大图区域跳转至指定图片 且缩略图增加被选择样式
+     * @author MrLu
+     * @param ele 缩略图ele（是个a标签）
+      * @param index 相对位置
+      * @createTime  2020/10/20 16:53
+     * @return    |
+      */
+    function jumpImg(ele,index) {
+        $('#thumbnailDiv .active').removeClass('active');
+        $('#ImgBigDiv').animate({
+            scrollTop: ((+index * 940) + 50)
+        }, 300);
+        $(ele).addClass('active');
     }
 
     /**
@@ -237,7 +255,6 @@ var recordImgLoad = (function () {
      * @return    |
      */
     function loadFrontImg(file) {
-        //TODO MrLu 2020/10/17  平铺图的包裹标签必须改为div
         let div = document.createElement('div');
         div.id = file.filecode;
         div.setAttribute('class', 'div_a');
@@ -253,12 +270,16 @@ var recordImgLoad = (function () {
         $('#frontImg').append(div);
     }
 
-    let _recordImgLoad = function (recordIdP) {
+    function getRecordId(){
+        return recordId;
+    }
+
+    let _recordImgLoad = function (recordIdP,fileId) {
         console.log('开始图片' + recordIdP);
         recordId = recordIdP;
-        loadFilesByRecord(recordId)
+        loadFilesByRecord(recordId,fileId)
     }
-    _recordImgLoad.prototype = {}
+    _recordImgLoad.prototype = {getRecordId,jumpImg}
     return _recordImgLoad;
 
 })()
