@@ -17,6 +17,8 @@ var loadArchiveIndex = (function () {
     let recordsMap;//
 
     /*
+    key: filecode
+       id: file的id,
     * filename: 文件名
       fileurl: 文件图片链接
       archiverecordid: 文件所属文书id
@@ -178,8 +180,13 @@ var loadArchiveIndex = (function () {
         div.append(createFileIndex(thisRecord.files));
         //点击显示对应图片
         p.addEventListener('click', function () {
-            //加载文书图片
-            recordImgLoadObj = new recordImgLoad(record.id);
+            //加载文书图片 按照子标签的顺序加载
+            let fileOrder = utils.functional.map($(div).find('.v3'), function (thisFileIndex) {
+                return $(thisFileIndex).attr('id').replace('fileIndex', '');
+            })
+            console.log(fileOrder);
+            recordImgLoadObj =  recordImgLoad({recordIdP:record.id,
+                filecode:null, fileOrder:fileOrder });
         });
         return div;
     }
@@ -220,9 +227,9 @@ var loadArchiveIndex = (function () {
      * @return  HTMLElement  |
      */
     function createFilesDiv(thisFile, fileIndexing) {
-        const key = 'fileIndex' + thisFile.id;
+        const key = 'fileIndex' + thisFile.filecode;
         filesMap.set(key, {
-            id: thisFile.id,
+            filecode: thisFile.filecode,
             filename: thisFile.filename,
             fileurl: thisFile.fileurl,
             archiverecordid: thisFile.archiverecordid
@@ -237,10 +244,11 @@ var loadArchiveIndex = (function () {
             tag: 'p', attrs: {}, arg: '<a class="filename">' + thisFile.filename + '</a>'
         });
         let index = fileIndexing.i;
-        div.addEventListener('click', function () {
+        // 这里不能使用addEventListener添加事件，否则jquey的unbind无法清除监听
+        $(div).click(function () {
             //此时是列表第一次加载时、故图片位置为fileIndexing.i-1  当该元素被拖拽、上下移按钮后 要重新添加事件
-            loadFileImg(thisFile.id, thisFile.archiverecordid, (index - 1))
-        });
+            loadFileImg(key, thisFile.archiverecordid, (index - 1));
+        })
         p.append(createButtons(key, fileIndexing));
         div.append(p);
         return div;
@@ -249,24 +257,41 @@ var loadArchiveIndex = (function () {
     /**
      * 点击加载图片
      * @author MrLu
-     * @param fileId 文件file id
+     * @param filecode 文件filecode
      * @param recordId 文件file对应的文书id
      * @param index 文件在文书中的相对位置
      * @createTime  2020/10/20 16:01
      * @return    |
      */
-    function loadFileImg(fileId, recordId, index) {
+    function loadFileImg(filecode, recordId, index) {
         //判断是否还在原本的文文书内
         if (recordId === +recordImgLoadObj.getRecordId()) {
             //同文书点击
             //获取文书order
         } else {
+            let fileOrder = utils.functional.map($('#dd'+recordId).find('.v3'), function (thisFileIndex) {
+                return $(thisFileIndex).attr('id').replace('fileIndex', '');
+            })
             //点击另一个文书的图片  加载另一个文书
-            recordImgLoadObj = new recordImgLoad(recordId, fileId);
+            recordImgLoadObj =  recordImgLoad({recordIdP:recordId,
+                filecode:filecode, fileOrder:fileOrder });
         }
-        //注意要获取图片缩略的图父标签 因为被选中的样式是附在父标签a上的
-        let thumbnail = document.getElementById('thumbnail' + fileId).parentNode;
+        //获取图片缩略
+        let thumbnail = document.getElementById('thumbnail' + filecode);
         recordImgLoadObj.jumpImg(thumbnail, index);
+    }
+
+    function imgOrderMove(recordId, eleA, eleB, operation) {
+        //判断是否还在原本的文文书内
+        if (recordId === +recordImgLoadObj.getRecordId()) {
+            let aid = eleA.attr('id').replace('fileIndex', '');
+            let bid = eleB.attr('id').replace('fileIndex', '');
+            console.log(aid);
+            console.log(bid);
+            recordImgLoadObj.orderMove(aid, bid, operation);
+        } else {
+            //其它目录的文书位置移动不管
+        }
     }
 
     /**
@@ -445,6 +470,7 @@ var loadArchiveIndex = (function () {
         if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
+
         let div = $('#' + ddId);//要移动的
         let nextDiv = div.next('div');//下一个
         nextDiv.after(div);//移动顺序
@@ -452,8 +478,14 @@ var loadArchiveIndex = (function () {
             //判断为文书图片元素 重赋事件
             //判断当前位置
             let thisFile = filesMap.get(ddId);
+            //右侧位置跟随变化
+            imgOrderMove(thisFile.archiverecordid, div, nextDiv, 'after');
             div.unbind().click(function () {
-                loadFileImg(thisFile.id, thisFile.archiverecordid, div.index())
+                //重赋事件
+                loadFileImg(thisFile.filecode, thisFile.archiverecordid, div.index())
+            })
+            nextDiv.unbind().click(function () {
+                loadFileImg(nextDiv.attr('id').replace('fileIndex', ''), thisFile.archiverecordid, nextDiv.index())
             })
         }
         reloadButton(div);//重新加载按钮
@@ -467,7 +499,7 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/10 14:12
      */
     function renameFun(ddId) {
-        event.stopPropagation()
+        event.stopPropagation();
         let thisEle = $('#' + ddId);//获取当前element对象
         let thisP, level;
         //判断当前文书对象是文书还是文件
@@ -536,8 +568,8 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/11 12:42
      */
     function reloadButton(dd) {
-        dd.find('span').remove();
-        dd.find('p').append(createButtons(dd.attr('id')));
+        dd.children('span').remove();
+        dd.children('p').append(createButtons(dd.attr('id')));
     }
 
     //保存数据

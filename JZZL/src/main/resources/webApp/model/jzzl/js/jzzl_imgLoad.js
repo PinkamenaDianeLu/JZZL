@@ -15,14 +15,15 @@ var recordImgLoad = (function () {
      * 查询文书的图片数据
      * @author MrLu
      * @param recordId 文书id
-     * @param fileId  指定的文件id 该参数可为空
+     * @param fileOrder 文书顺序数组
+     * @param filecode  指定的文件id 该参数可为空
      * @createTime  2020/10/15 18:31
      * @return    |
      */
-    function loadFilesByRecord(recordId,fileId=null) {
+    function loadFilesByRecord(recordId, fileOrder,filecode = null) {
         $.post({
             url: '/ArrangeArchives/loadFilesByRecord',
-            data: {recordId: recordId},
+            data: {fileOrder:fileOrder.join(',')},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -35,7 +36,7 @@ var recordImgLoad = (function () {
                     }
                     let i = 0;
                     utils.functional.forEach(files, function (thisFile) {
-                        loadThumbnail(thisFile, i++,fileId);//加载缩略图
+                        loadThumbnail(thisFile, i++, filecode);//加载缩略图
                         loadFrontImg(thisFile);//加载平铺图
                     });
                     //切换视图按钮
@@ -87,17 +88,16 @@ var recordImgLoad = (function () {
         checkFile = new Set();//被选中值set
 
         $('#frontImg div').click(function () {
-            //TODO MrLu 2020/10/16 找美工要个选择样式
-            const fileId = $(this).attr('id')
+            const filecode = $(this).attr('id')
             //判断是否被选中
             if ($(this).hasClass('active')) {
                 //被选中 -> 取消选中
                 $(this).removeClass('active');
-                checkFile.delete(fileId);
+                checkFile.delete(filecode);
             } else {
                 //未被选中 选
                 $(this).addClass('active');
-                checkFile.add(fileId);//记录被选的文件id
+                checkFile.add(filecode);//记录被选的文件id
             }
 
             console.log(checkFile);
@@ -113,11 +113,13 @@ var recordImgLoad = (function () {
      */
     function moveToFn() {
         //被移动的文书filecode set
-        if (!checkFile||checkFile.size===0){
-            alert('请选择要移动的文书！');return false;}
+        if (!checkFile || checkFile.size === 0) {
+            alert('请选择要移动的文书！');
+            return false;
+        }
         const pString = JSON.stringify(Array.from(checkFile).join(','));
 
-        let url='/model/jzzl/jzYdTable.html?fileCodes='+pString;
+        let url = '/model/jzzl/jzYdTable.html?fileCodes=' + pString;
         console.log(url);
         layer.open({
             icon: 1,
@@ -181,10 +183,10 @@ var recordImgLoad = (function () {
      */
     function loadImgs(file) {
         let div = document.createElement('div');
+        div.id='bigImg' + file.filecode;
         div.setAttribute('class', 'div_a');
         let bigImg = utils.createElement.createElement({
             tag: 'img', attrs: {
-                id: 'bigImg' + file.id,
                 src: file.fileurl,
                 class: 'img_text'
             }
@@ -201,16 +203,16 @@ var recordImgLoad = (function () {
      * @author MrLu
      * @param file
      * @param index { i:当前图片的数组下标,f:数组长度}
-     * @param fileId 指定的文件id 可为null
+     * @param filecode 指定的文件filecode 可为null
      * @createTime  2020/10/16 9:39
      * @return    |
      */
-    function loadThumbnail(file, index,fileId=null) {
+    function loadThumbnail(file, index, filecode = null) {
         let a = document.createElement('a');
+        a.id='thumbnail' + file.filecode;
         //创建缩略图
         let thumbnail = utils.createElement.createElement({
             tag: 'img', attrs: {
-                id: 'thumbnail' + file.id,
                 src: file.fileurl,
                 class: 'img_text',
                 width: '120px', height: '154px'
@@ -218,33 +220,65 @@ var recordImgLoad = (function () {
         });
         //缩略图跳转图片
         a.addEventListener('click', function () {
-            jumpImg(this,index)
+            jumpImg(this, index)
         });
         let bigImg = loadImgs(file);
         a.append(thumbnail);
         $('#thumbnailDiv').append(a);
         $('#ImgBigDiv').append(bigImg);
         //如果有指定跳转的图片  跳转
-        if (fileId&&file.id===fileId){
-            jumpImg(a,index)
+        if (filecode && file.filecode === filecode) {
+            jumpImg(a, index)
         }
 
     }
 
-     /**
+    /**
      * 大图区域跳转至指定图片 且缩略图增加被选择样式
      * @author MrLu
      * @param ele 缩略图ele（是个a标签）
-      * @param index 相对位置
-      * @createTime  2020/10/20 16:53
+     * @param index 相对位置
+     * @createTime  2020/10/20 16:53
      * @return    |
-      */
-    function jumpImg(ele,index) {
+     */
+    function jumpImg(ele, index) {
         $('#thumbnailDiv .active').removeClass('active');
         $('#ImgBigDiv').animate({
             scrollTop: ((+index * 940) + 50)
         }, 300);
         $(ele).addClass('active');
+    }
+
+    /**
+     * 移动两个元素的位置
+     * @author MrLu
+     * @param eleAid 元素A
+     * @param eleBid 元素B
+     * @param operation 操作  （before,after）
+     * @createTime  2020/10/21 9:34
+     * @return    |
+     */
+    function orderMove(eleAid, eleBid, operation) {
+        //要移动的元素有 thumbnail  bigImg front
+        //正常开发规范是不允许这么创建变量的，但是 😝
+        let thumbnailA=$('#thumbnail'+eleAid),
+            bigImgA=$('#bigImg'+eleAid),
+            frontA=$('#front'+eleAid);
+        let thumbnailB=$('#thumbnail'+eleBid),
+            bigImgB=$('#bigImg'+eleBid),
+            frontB=$('#front'+eleBid);
+        if ('after' === operation) {
+            thumbnailA.before(thumbnailB);
+            bigImgA.before(bigImgB);
+            frontA.before(frontB);
+        } else if ('before' === operation) {
+            thumbnailA.after(thumbnailB);
+            bigImgA.after(bigImgB);
+            frontA.after(frontB);
+        } else {
+            console.error('你想干啥啊？CDD')
+        }
+
     }
 
     /**
@@ -256,7 +290,7 @@ var recordImgLoad = (function () {
      */
     function loadFrontImg(file) {
         let div = document.createElement('div');
-        div.id = file.filecode;
+        div.id = 'front'+file.filecode;
         div.setAttribute('class', 'div_a');
         let front = utils.createElement.createElement({
             tag: 'img', attrs: {
@@ -270,16 +304,31 @@ var recordImgLoad = (function () {
         $('#frontImg').append(div);
     }
 
-    function getRecordId(){
+    function getRecordId() {
         return recordId;
     }
-
-    let _recordImgLoad = function (recordIdP,fileId) {
+    let _recordImgLoad = function ({recordIdP, filecode, fileOrder = []}) {
         console.log('开始图片' + recordIdP);
-        recordId = recordIdP;
-        loadFilesByRecord(recordId,fileId)
+        if (this instanceof _recordImgLoad) {
+            recordId = recordIdP;
+            loadFilesByRecord(recordId, fileOrder,filecode)
+        } else {
+
+            return new _recordImgLoad({
+                recordIdP: recordIdP,
+                filecode: filecode,
+                fileOrder: fileOrder,
+            })
+        }
+
+
+
+
+
+
+
     }
-    _recordImgLoad.prototype = {getRecordId,jumpImg}
+    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove}
     return _recordImgLoad;
 
 })()

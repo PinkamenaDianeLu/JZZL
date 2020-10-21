@@ -252,7 +252,21 @@
     AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
     AND ISSHOW=0 ORDER BY THISORDER ASC
   </select>
-
+<select id="selectRecordFilesByFileCodes"  resultMap="BaseResultMap">
+  SELECT
+  <include refid="Base_Column_List" />
+  FROM FUN_ARCHIVE_FILES
+  WHERE SCBJ=0 AND ISSHOW=0 AND FILECODE IN
+  <foreach collection="array" item="item" separator=","
+           open="(" close=")">
+    #{item,jdbcType=VARCHAR}
+  </foreach>
+  ORDER BY DECODE(filecode,
+  <foreach collection="array" item="item" index="index" separator=",">
+    #{item,jdbcType=VARCHAR},#{index,jdbcType=DECIMAL}
+  </foreach>
+  )
+</select>
   <select id="selectFilesHistory" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
     FROM FUN_ARCHIVE_FILES

@@ -23,6 +23,8 @@ public interface FunArchiveFilesDTOMapper {
       */
      List<FunArchiveFilesDTO>  selectRecordFilesByRecordId(int archiverecordid);
 
+
+    List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String []filesCode);
      /**
      * 根据文件代码查询该文件的历史版本
      * @author MrLu

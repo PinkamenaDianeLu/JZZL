@@ -273,10 +273,15 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "保存卷整理顺序中被删除的文书", operType = OperLog.type.INSERT)
-    public String loadFilesByRecord(Integer recordId ) {
+    public String loadFilesByRecord(String fileOrder) {
         JSONObject reValue = new JSONObject();
         try {
-            reValue.put("value",arrangeArchivesService.selectRecordFilesByRecordId(recordId));
+            if (!StringUtils.isEmpty(fileOrder)){
+                String [] fileOrders=fileOrder.split(",");
+                //该文书没有图片了
+                reValue.put("value",arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders));
+            }
+
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

@@ -353,7 +353,6 @@ var utils = {
             for (const a of arrary){
                 //这么写比push快
                 results[results.length]=fn(a);
-                console.log(results)
             }
             return results;
         }

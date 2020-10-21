@@ -103,6 +103,14 @@ public interface ArrangeArchivesService {
      * @return  FunArchiveFilesDTO  |
      */
     List<FunArchiveFilesDTO>  selectRecordFilesByRecordId(int archiverecordid);
+     /**
+     * 根据文件代码查找文件列表
+     * @author MrLu
+     * @param
+     * @createTime  2020/10/21 11:24
+     * @return    |
+      */
+    List<FunArchiveFilesDTO>  selectRecordFilesByFileCodes(String[] filesCode);
 
     /**
      * 根据文件代码查询该文件的历史版本
