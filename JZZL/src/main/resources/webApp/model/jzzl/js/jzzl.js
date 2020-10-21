@@ -83,12 +83,31 @@ var loadArchiveIndex = (function () {
         $("." + zoneClass).sortable({
             // revert: true,//整个动画
             update: function (event, ui) {//拖拽后位置变化
+                //重新加载四个按钮
                 let PDiv = ui.item.siblings();
                 reloadButton(PDiv.first());
                 reloadButton(PDiv.last());
                 reloadButton(ui.item);
+                //判断被拖拽的文件类型
+                if ('fileSortZone' === zoneClass) {
+                    //如果是文件图片  被拖拽后重新加载点击事件
+                    $(ui.item).unbind().click(function () {
+                        loadFileImg(this, $(this).parent().parent().attr('id').replace('dd', ''));
+                    })
+                }
+
+            },receive:function(event, ui){
+                //跨文书移动
+                //判断是其他文书移动至正在看的文书还是正在看的文书移动至其他文书
+                let recordId=$(this).parent().parent().attr('id').replace('dd', '');
+                if (+recordId === +recordImgLoadObj.getRecordId()) {
+                    //其他文书移动至正在看 时
+                }else {
+                    //正在看的文书移动至其他文书
+                }
             },
-            connectWith: ".fileSortZone"//允许跨文书拖拽
+            connectWith: ".fileSortZone",//允许跨文书拖拽
+
         }).disableSelection();
     }
 
@@ -184,9 +203,10 @@ var loadArchiveIndex = (function () {
             let fileOrder = utils.functional.map($(div).find('.v3'), function (thisFileIndex) {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
             })
-            console.log(fileOrder);
-            recordImgLoadObj =  recordImgLoad({recordIdP:record.id,
-                filecode:null, fileOrder:fileOrder });
+            recordImgLoadObj = recordImgLoad({
+                recordIdP: record.id,
+                 fileOrder: fileOrder
+            });
         });
         return div;
     }
@@ -243,11 +263,10 @@ var loadArchiveIndex = (function () {
         let p = utils.createElement.createElement({
             tag: 'p', attrs: {}, arg: '<a class="filename">' + thisFile.filename + '</a>'
         });
-        let index = fileIndexing.i;
         // 这里不能使用addEventListener添加事件，否则jquey的unbind无法清除监听
         $(div).click(function () {
             //此时是列表第一次加载时、故图片位置为fileIndexing.i-1  当该元素被拖拽、上下移按钮后 要重新添加事件
-            loadFileImg(key, thisFile.archiverecordid, (index - 1));
+            loadFileImg(div, thisFile.archiverecordid);
         })
         p.append(createButtons(key, fileIndexing));
         div.append(p);
@@ -257,24 +276,29 @@ var loadArchiveIndex = (function () {
     /**
      * 点击加载图片
      * @author MrLu
-     * @param filecode 文件filecode
+     * @param indexDiv 文件目录的div对象
      * @param recordId 文件file对应的文书id
      * @param index 文件在文书中的相对位置
      * @createTime  2020/10/20 16:01
      * @return    |
      */
-    function loadFileImg(filecode, recordId, index) {
+    function loadFileImg(indexDiv, recordId) {
+
+        let filecode = $(indexDiv).attr('id').replace('fileIndex', '');//文件代码
+        let index = $(indexDiv).index();
         //判断是否还在原本的文文书内
-        if (recordId === +recordImgLoadObj.getRecordId()) {
+        if (+recordId === +recordImgLoadObj.getRecordId()) {
             //同文书点击
             //获取文书order
         } else {
-            let fileOrder = utils.functional.map($('#dd'+recordId).find('.v3'), function (thisFileIndex) {
+            let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'), function (thisFileIndex) {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
             })
             //点击另一个文书的图片  加载另一个文书
-            recordImgLoadObj =  recordImgLoad({recordIdP:recordId,
-                filecode:filecode, fileOrder:fileOrder });
+            recordImgLoadObj = recordImgLoad({
+                recordIdP: recordId,
+                 fileOrder: fileOrder
+            });
         }
         //获取图片缩略
         let thumbnail = document.getElementById('thumbnail' + filecode);
@@ -286,8 +310,6 @@ var loadArchiveIndex = (function () {
         if (recordId === +recordImgLoadObj.getRecordId()) {
             let aid = eleA.attr('id').replace('fileIndex', '');
             let bid = eleB.attr('id').replace('fileIndex', '');
-            console.log(aid);
-            console.log(bid);
             recordImgLoadObj.orderMove(aid, bid, operation);
         } else {
             //其它目录的文书位置移动不管
@@ -452,10 +474,24 @@ var loadArchiveIndex = (function () {
         if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
-        let dd = $('#' + ddId);
-        let prevDD = dd.prev('div');//上一个
-        prevDD.before(dd);
-        reloadButton(dd);//重新加载按钮
+        let div = $('#' + ddId);
+        let prevDD = div.prev('div');//上一个
+        prevDD.before(div);
+        if (div.hasClass('v3')) {
+            //判断为文书图片元素 重赋事件
+            //判断当前位置
+            let thisFile = filesMap.get(ddId);
+            //右侧位置跟随变化
+            imgOrderMove(thisFile.archiverecordid, div, prevDD, 'before');
+            div.unbind().click(function () {
+                //重赋事件
+                loadFileImg(div, thisFile.archiverecordid)
+            })
+            prevDD.unbind().click(function () {
+                loadFileImg(prevDD, thisFile.archiverecordid)
+            })
+        }
+        reloadButton(div);//重新加载按钮
         reloadButton(prevDD);//重新加载按钮
     }
 
@@ -482,10 +518,10 @@ var loadArchiveIndex = (function () {
             imgOrderMove(thisFile.archiverecordid, div, nextDiv, 'after');
             div.unbind().click(function () {
                 //重赋事件
-                loadFileImg(thisFile.filecode, thisFile.archiverecordid, div.index())
+                loadFileImg(div, thisFile.archiverecordid)
             })
             nextDiv.unbind().click(function () {
-                loadFileImg(nextDiv.attr('id').replace('fileIndex', ''), thisFile.archiverecordid, nextDiv.index())
+                loadFileImg(nextDiv, thisFile.archiverecordid)
             })
         }
         reloadButton(div);//重新加载按钮

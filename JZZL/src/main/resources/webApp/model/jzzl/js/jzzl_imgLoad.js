@@ -20,10 +20,10 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/15 18:31
      * @return    |
      */
-    function loadFilesByRecord(recordId, fileOrder,filecode = null) {
+    function loadFilesByRecord(recordId, fileOrder) {
         $.post({
             url: '/ArrangeArchives/loadFilesByRecord',
-            data: {fileOrder:fileOrder.join(',')},
+            data: {fileOrder: fileOrder.join(',')},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -36,8 +36,12 @@ var recordImgLoad = (function () {
                     }
                     let i = 0;
                     utils.functional.forEach(files, function (thisFile) {
-                        loadThumbnail(thisFile, i++, filecode);//加载缩略图
-                        loadFrontImg(thisFile);//加载平铺图
+                        // loadThumbnail(thisFile, i++, filecode);//加载缩略图
+                        let a=loadThumbnail(thisFile, i++);
+                        $('#thumbnailDiv').append(a);
+                        $('#ImgBigDiv').append(loadImgs(thisFile));
+                        $('#frontImg').append(loadFrontImg(thisFile));//加载平铺图
+
                     });
                     //切换视图按钮
                     viewModel = false;//下拉显示
@@ -61,7 +65,6 @@ var recordImgLoad = (function () {
     /**
      * 平铺图的拖拽控件加载
      * @author MrLu
-     * @param
      * @createTime  2020/10/17 11:51
      * @return    |
      */
@@ -183,7 +186,7 @@ var recordImgLoad = (function () {
      */
     function loadImgs(file) {
         let div = document.createElement('div');
-        div.id='bigImg' + file.filecode;
+        div.id = 'bigImg' + file.filecode;
         div.setAttribute('class', 'div_a');
         let bigImg = utils.createElement.createElement({
             tag: 'img', attrs: {
@@ -207,9 +210,9 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/16 9:39
      * @return    |
      */
-    function loadThumbnail(file, index, filecode = null) {
+    function loadThumbnail(file, index) {
         let a = document.createElement('a');
-        a.id='thumbnail' + file.filecode;
+        a.id = 'thumbnail' + file.filecode;
         //创建缩略图
         let thumbnail = utils.createElement.createElement({
             tag: 'img', attrs: {
@@ -222,14 +225,10 @@ var recordImgLoad = (function () {
         a.addEventListener('click', function () {
             jumpImg(this, index)
         });
-        let bigImg = loadImgs(file);
+
         a.append(thumbnail);
-        $('#thumbnailDiv').append(a);
-        $('#ImgBigDiv').append(bigImg);
-        //如果有指定跳转的图片  跳转
-        if (filecode && file.filecode === filecode) {
-            jumpImg(a, index)
-        }
+
+       return a;
 
     }
 
@@ -261,12 +260,12 @@ var recordImgLoad = (function () {
     function orderMove(eleAid, eleBid, operation) {
         //要移动的元素有 thumbnail  bigImg front
         //正常开发规范是不允许这么创建变量的，但是 😝
-        let thumbnailA=$('#thumbnail'+eleAid),
-            bigImgA=$('#bigImg'+eleAid),
-            frontA=$('#front'+eleAid);
-        let thumbnailB=$('#thumbnail'+eleBid),
-            bigImgB=$('#bigImg'+eleBid),
-            frontB=$('#front'+eleBid);
+        let thumbnailA = $('#thumbnail' + eleAid),
+            bigImgA = $('#bigImg' + eleAid),
+            frontA = $('#front' + eleAid);
+        let thumbnailB = $('#thumbnail' + eleBid),
+            bigImgB = $('#bigImg' + eleBid),
+            frontB = $('#front' + eleBid);
         if ('after' === operation) {
             thumbnailA.before(thumbnailB);
             bigImgA.before(bigImgB);
@@ -282,6 +281,40 @@ var recordImgLoad = (function () {
     }
 
     /**
+     * 移除
+     * @author MrLu
+     * @param fileCode
+     * @createTime  2020/10/21 15:59
+     * @return    |
+     */
+    function fileMoveOut(fileCode) {
+        $('#thumbnail' + fileCode).remove();
+        $('#bigImg' + fileCode).remove();
+        $('#front' + fileCode).remove();
+    }
+
+    /**
+     * 移入
+     * @author MrLu
+     * @param fileCode
+     * @createTime  2020/10/21 16:00
+     * @return    |
+     */
+    function fileMoveIn(fileCode,index) {
+        $.post({
+            url: '',
+            data: {fileCode},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                } else {
+                    console.error('没有找到对应的实体文件');
+                }
+            }
+        });
+    }
+
+    /**
      * 加载文书的平铺图
      * @author MrLu
      * @param file
@@ -290,7 +323,7 @@ var recordImgLoad = (function () {
      */
     function loadFrontImg(file) {
         let div = document.createElement('div');
-        div.id = 'front'+file.filecode;
+        div.id = 'front' + file.filecode;
         div.setAttribute('class', 'div_a');
         let front = utils.createElement.createElement({
             tag: 'img', attrs: {
@@ -301,34 +334,35 @@ var recordImgLoad = (function () {
         });
 
         div.append(front)
-        $('#frontImg').append(div);
+        return div;
     }
 
+    /**
+     * 得到文书的id
+     * @author MrLu
+     * @createTime  2020/10/21 15:57
+     */
     function getRecordId() {
         return recordId;
     }
-    let _recordImgLoad = function ({recordIdP, filecode, fileOrder = []}) {
-        console.log('开始图片' + recordIdP);
+
+    let _recordImgLoad = function ({recordIdP,  fileOrder = []}) {
+
         if (this instanceof _recordImgLoad) {
+            console.log('开始图片' + recordIdP);
             recordId = recordIdP;
-            loadFilesByRecord(recordId, fileOrder,filecode)
+            loadFilesByRecord(recordId, fileOrder)
         } else {
 
             return new _recordImgLoad({
                 recordIdP: recordIdP,
-                filecode: filecode,
                 fileOrder: fileOrder,
             })
         }
 
 
-
-
-
-
-
     }
-    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove}
+    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut}
     return _recordImgLoad;
 
 })()
