@@ -23,25 +23,27 @@ public class FunArchiveCoverDTO {
 
     private String ajbh;
 
-    private Integer archivetypeid;
+    private Integer archivesfcid;
 
     private Integer archiveseqid;
 
-    private String archivecode;
+    private Integer archivetypeid;
+
+    private Integer archivefileid;
 
     private String filecode;
 
-    private Integer archivefileid;
+    private String qzname;
+
+    private String sfcname;
+
+    private String archivename;
 
     private String casename;
 
     private String suspectsid;
 
     private String suspectsxm;
-
-    private Integer archivetype;
-
-    private String archivetypecn;
 
     private String badwdwdm;
 
@@ -62,6 +64,9 @@ public class FunArchiveCoverDTO {
     private Integer recordcount;
 
     private Integer pagecount;
+
+    private String authorcorporation;
+    private String authorcorporationcode;
 
     public Integer getId() {
         return id;
@@ -143,12 +148,12 @@ public class FunArchiveCoverDTO {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public Integer getArchivetypeid() {
-        return archivetypeid;
+    public Integer getArchivesfcid() {
+        return archivesfcid;
     }
 
-    public void setArchivetypeid(Integer archivetypeid) {
-        this.archivetypeid = archivetypeid;
+    public void setArchivesfcid(Integer archivesfcid) {
+        this.archivesfcid = archivesfcid;
     }
 
     public Integer getArchiveseqid() {
@@ -159,12 +164,20 @@ public class FunArchiveCoverDTO {
         this.archiveseqid = archiveseqid;
     }
 
-    public String getArchivecode() {
-        return archivecode;
+    public Integer getArchivetypeid() {
+        return archivetypeid;
     }
 
-    public void setArchivecode(String archivecode) {
-        this.archivecode = archivecode == null ? null : archivecode.trim();
+    public void setArchivetypeid(Integer archivetypeid) {
+        this.archivetypeid = archivetypeid;
+    }
+
+    public Integer getArchivefileid() {
+        return archivefileid;
+    }
+
+    public void setArchivefileid(Integer archivefileid) {
+        this.archivefileid = archivefileid;
     }
 
     public String getFilecode() {
@@ -175,12 +188,28 @@ public class FunArchiveCoverDTO {
         this.filecode = filecode == null ? null : filecode.trim();
     }
 
-    public Integer getArchivefileid() {
-        return archivefileid;
+    public String getQzname() {
+        return qzname;
     }
 
-    public void setArchivefileid(Integer archivefileid) {
-        this.archivefileid = archivefileid;
+    public void setQzname(String qzname) {
+        this.qzname = qzname == null ? null : qzname.trim();
+    }
+
+    public String getSfcname() {
+        return sfcname;
+    }
+
+    public void setSfcname(String sfcname) {
+        this.sfcname = sfcname == null ? null : sfcname.trim();
+    }
+
+    public String getArchivename() {
+        return archivename;
+    }
+
+    public void setArchivename(String archivename) {
+        this.archivename = archivename == null ? null : archivename.trim();
     }
 
     public String getCasename() {
@@ -205,22 +234,6 @@ public class FunArchiveCoverDTO {
 
     public void setSuspectsxm(String suspectsxm) {
         this.suspectsxm = suspectsxm == null ? null : suspectsxm.trim();
-    }
-
-    public Integer getArchivetype() {
-        return archivetype;
-    }
-
-    public void setArchivetype(Integer archivetype) {
-        this.archivetype = archivetype;
-    }
-
-    public String getArchivetypecn() {
-        return archivetypecn;
-    }
-
-    public void setArchivetypecn(String archivetypecn) {
-        this.archivetypecn = archivetypecn == null ? null : archivetypecn.trim();
     }
 
     public String getBadwdwdm() {
@@ -301,5 +314,21 @@ public class FunArchiveCoverDTO {
 
     public void setPagecount(Integer pagecount) {
         this.pagecount = pagecount;
+    }
+
+    public String getAuthorcorporation() {
+        return authorcorporation;
+    }
+
+    public void setAuthorcorporation(String authorcorporation) {
+        this.authorcorporation = authorcorporation;
+    }
+
+    public String getAuthorcorporationcode() {
+        return authorcorporationcode;
+    }
+
+    public void setAuthorcorporationcode(String authorcorporationcode) {
+        this.authorcorporationcode = authorcorporationcode;
     }
 }

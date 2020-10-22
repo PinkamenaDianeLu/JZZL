@@ -6,7 +6,6 @@ img {border:0;}
 ul, li{ list-style:none}
 i{font-style:normal;}
 a{text-decoration: none;outline: none;cursor:pointer;transition: .1s ease-in-out;-webkit-transition: .1s ease-in-out;-moz-transition: .1s ease-in-out; cursor: pointer; }
-ul,li{list-style:none}
 
 ::-webkit-scrollbar {width: 9px;height: 9px;}
 ::-webkit-scrollbar-thumb {border-radius: 6px;background: #a8aaaf;border-right: 1px solid #fff; }
@@ -172,6 +171,8 @@ ul.l_nav li dd:hover .hy_a a{ text-decoration: none; background: #fff; color: #1
 .right_title .a_page{display: inline-block; width: 170px; height: 40px; margin: 10px; padding: 0px 25px; border-left: 1px solid #636262;border-right: 1px solid #636262;}
 .right_title .a_page input{ height: 40px; width: 60px; float: left; color: #999;}
 .right_title .a_page span{ float: left;display: inline-block; line-height: 40px; color: #d3d3d3; font-size: 12px; margin: 0px 5px;}
+
+.roll{ position:absolute; width: 1030px; height:100%;background: #dfe0e3; overflow-y: auto; margin-bottom: 100px; text-align: center;}
 
 .right_text{ background: #dfe0e3; text-align: center; position:fixed; top:140px; height:calc(100% - 170px); width:880px;}
 .right_text .div_a{float: left; position: relative;margin: 20px 65px; width: 750px;}

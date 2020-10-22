@@ -23,12 +23,13 @@
         <result column="BADWDWMC" jdbcType="VARCHAR" property="badwdwmc"/>
         <result column="LARQ" jdbcType="TIMESTAMP" property="larq"/>
         <result column="JARQ" jdbcType="TIMESTAMP" property="jarq"/>
-
+        <result column="GAJGDM" jdbcType="VARCHAR" property="gajgdm"/>
+        <result column="GAJGMC" jdbcType="VARCHAR" property="gajgmc"/>
     </resultMap>
 
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE,CASENAME,SFCNUMBER,CASESTATE,CASETYPE,CASESTAGE,CASECLASS,CASECLASSCN,BADWDWDM
-    ,BADWDWMC,LARQ,JARQ
+    ,BADWDWMC,LARQ,JARQ,GAJGDM,GAJGMC
   </sql>
     <select id="selectAll" resultMap="BaseResultMap">
     select * from FUN_PEOPELCASE

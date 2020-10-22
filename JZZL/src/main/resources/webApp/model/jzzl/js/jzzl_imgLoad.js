@@ -32,18 +32,13 @@ var recordImgLoad = (function () {
                         //一页文书都没有还显示个p
                         return;
                     }
-                    if (1===files[0].filetype){
+                    if (0!==files[0].filetype){
                         //是卷宗封皮
-                        $('#changeView,#moveToBtn').unbind().hide();
-                        $('#ImgBigDiv').load('/model/jzzl/jzfp.html?id=1');
-                    }else if (3===files.filetype){
-                        //是封底
-                        $('#changeView,#moveToBtn').unbind().hide();
-                    }else if (2===files.filetype){
-                        $('#changeView,#moveToBtn').unbind().hide();
-
+                        $('#changeView,#moveToBtn,#commonimgDiv').unbind().hide();
+                        $('#htmlDiv').show().load('/model/jzzl/jzfp.html?id=1');
                     }else {
-                        $('#changeView,#moveToBtn').show();
+                        $('#htmlDiv').hide();
+                        $('#changeView,#moveToBtn,#commonimgDiv').show();
                         let i = 0;
                         utils.functional.forEach(files, function (thisFile) {
                             // loadThumbnail(thisFile, i++, filecode);//加载缩略图

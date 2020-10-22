@@ -250,7 +250,8 @@ var loadArchiveIndex = (function () {
         };
         for (let thisFile of files) {
             //加载第三级别文书图片目录
-            div.append(createFilesDiv(thisFile, fileIndexing));
+                //只有文书图片需要加载内容、文书封皮封底目录不需要子目录
+                div.append(createFilesDiv(thisFile, fileIndexing));
             fileIndexing.i++;
         }
         sortList('fileSortZone');//加载拖拽域
@@ -276,7 +277,8 @@ var loadArchiveIndex = (function () {
         let div = utils.createElement.createElement({
             tag: 'div', attrs: {
                 id: key,
-                class: 'v3'
+                class: 'v3',
+                style:0===thisFile.filetype?'':'display:none'
             }
         });
         let p = utils.createElement.createElement({

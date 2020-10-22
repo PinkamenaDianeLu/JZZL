@@ -42,7 +42,8 @@ public class FunPeopelCase {
     private String badwdwmc;
     private Date larq;
     private Date jarq;
-
+    private String gajgmc;
+    private String gajgdm;
     public Integer getSubmitcount() {
         return submitcount;
     }
@@ -218,5 +219,21 @@ public class FunPeopelCase {
 
     public void setJarq(Date jarq) {
         this.jarq = jarq;
+    }
+
+    public String getGajgmc() {
+        return gajgmc;
+    }
+
+    public void setGajgmc(String gajgmc) {
+        this.gajgmc = gajgmc;
+    }
+
+    public String getGajgdm() {
+        return gajgdm;
+    }
+
+    public void setGajgdm(String gajgdm) {
+        this.gajgdm = gajgdm;
     }
 }

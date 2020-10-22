@@ -39,7 +39,8 @@ public class FunPeopelCaseDTO {
     private String badwdwmc;
     private Date larq;
     private Date jarq;
-
+    private String gajgmc;
+    private String gajgdm;
 
     public String getCasename() {
         return casename;
@@ -207,5 +208,21 @@ public class FunPeopelCaseDTO {
 
     public void setJarq(Date jarq) {
         this.jarq = jarq;
+    }
+
+    public String getGajgmc() {
+        return gajgmc;
+    }
+
+    public void setGajgmc(String gajgmc) {
+        this.gajgmc = gajgmc;
+    }
+
+    public String getGajgdm() {
+        return gajgdm;
+    }
+
+    public void setGajgdm(String gajgdm) {
+        this.gajgdm = gajgdm;
     }
 }
