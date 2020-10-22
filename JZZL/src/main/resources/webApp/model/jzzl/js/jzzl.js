@@ -90,7 +90,20 @@ var loadArchiveIndex = (function () {
                 reloadButton(ui.item);
                 //判断被拖拽的文件类型
                 if ('fileSortZone' === zoneClass) {
-                    //如果是文件图片  被拖拽后重新加载点击事件
+                    //如果是文件图片
+                    let recordId=$(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
+                    let eleB;//文件代码
+                    let operation=($(ui.item).index()>0);//判断是否是第一个
+                    if (operation){
+                        eleB=$(ui.item).prev('.v3');
+                        operation='after';
+                    }else{
+                        eleB=$(ui.item).next('.v3');
+                        operation='before';
+                    }
+                    //对应的图片也移动位置
+                    imgOrderMove(recordId, $(ui.item), eleB, operation)
+                    // 被拖拽后重新加载点击事件
                     $(ui.item).unbind().click(function () {
                         loadFileImg(this, $(this).parent().parent().attr('id').replace('dd', ''));
                     })
@@ -99,19 +112,25 @@ var loadArchiveIndex = (function () {
             },receive:function(event, ui){
                 //跨文书移动
                 //判断是其他文书移动至正在看的文书还是正在看的文书移动至其他文书
-                let recordId=$(this).parent().parent().attr('id').replace('dd', '');
+                let recordId=$(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
+                let fileCode=$(ui.item).attr('id').replace('fileIndex','');//文件代码
                 if (+recordId === +recordImgLoadObj.getRecordId()) {
                     //其他文书移动至正在看 时
+                    let operation=($(ui.item).index()>0);//判断是否是第一个
+                    let prevFileCode=null;
+                    if (operation) {
+                        prevFileCode=$(ui.item).prev('.v3').attr('id').replace('fileIndex','')
+                    }
+                    recordImgLoadObj.fileMoveIn(fileCode,prevFileCode,operation);
                 }else {
                     //正在看的文书移动至其他文书
+                    recordImgLoadObj.fileMoveOut(fileCode)
                 }
             },
             connectWith: ".fileSortZone",//允许跨文书拖拽
 
         }).disableSelection();
     }
-
-
     /**
      * 加载具体文书目录
      * @author MrLu
@@ -278,18 +297,16 @@ var loadArchiveIndex = (function () {
      * @author MrLu
      * @param indexDiv 文件目录的div对象
      * @param recordId 文件file对应的文书id
-     * @param index 文件在文书中的相对位置
      * @createTime  2020/10/20 16:01
-     * @return    |
      */
     function loadFileImg(indexDiv, recordId) {
-
         let filecode = $(indexDiv).attr('id').replace('fileIndex', '');//文件代码
-        let index = $(indexDiv).index();
         //判断是否还在原本的文文书内
         if (+recordId === +recordImgLoadObj.getRecordId()) {
             //同文书点击
             //获取文书order
+            let thumbnail = document.getElementById('thumbnail' + filecode);
+            recordImgLoadObj.jumpImg(thumbnail);
         } else {
             let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'), function (thisFileIndex) {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
@@ -297,17 +314,20 @@ var loadArchiveIndex = (function () {
             //点击另一个文书的图片  加载另一个文书
             recordImgLoadObj = recordImgLoad({
                 recordIdP: recordId,
-                 fileOrder: fileOrder
+                 fileOrder: fileOrder,
+                callback:function () {
+                    //获取图片缩略
+                    let thumbnail = document.getElementById('thumbnail' + filecode);
+                    recordImgLoadObj.jumpImg(thumbnail);
+                }
             });
         }
-        //获取图片缩略
-        let thumbnail = document.getElementById('thumbnail' + filecode);
-        recordImgLoadObj.jumpImg(thumbnail, index);
+
     }
 
     function imgOrderMove(recordId, eleA, eleB, operation) {
         //判断是否还在原本的文文书内
-        if (recordId === +recordImgLoadObj.getRecordId()) {
+        if (+recordId === +recordImgLoadObj.getRecordId()) {
             let aid = eleA.attr('id').replace('fileIndex', '');
             let bid = eleB.attr('id').replace('fileIndex', '');
             recordImgLoadObj.orderMove(aid, bid, operation);

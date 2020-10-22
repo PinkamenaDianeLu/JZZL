@@ -3,9 +3,7 @@
  * @createTime 2020/10/15
  * @dependence jquery.min.js,layer.js,utils.js,jquery-ui.js
  * @describe  文书图片加载
- *
  */
-
 var recordImgLoad = (function () {
     let recordId;//文书id
     let viewModel;//显示状态 true 下拉图 false平铺图
@@ -16,13 +14,12 @@ var recordImgLoad = (function () {
      * @author MrLu
      * @param recordId 文书id
      * @param fileOrder 文书顺序数组
-     * @param filecode  指定的文件id 该参数可为空
+     * @param callback  加载完文书图片后的回调函数
      * @createTime  2020/10/15 18:31
-     * @return    |
      */
-    function loadFilesByRecord(recordId, fileOrder) {
+    function loadFilesByRecord(recordId, fileOrder, callback) {
         $.post({
-            url: '/ArrangeArchives/loadFilesByRecord',
+            url: '/ArrangeArchives/loadFilesByFileCodes',
             data: {fileOrder: fileOrder.join(',')},
             success: (re) => {
                 const reV = JSON.parse(re);
@@ -30,32 +27,46 @@ var recordImgLoad = (function () {
                     $('#ImgBigDiv,#thumbnailDiv').empty().scrollTop(0);
                     $('#frontImg').empty();
                     const files = reV.value;
+                    console.log(files)
                     if (!(files && files.length > 0)) {
                         //一页文书都没有还显示个p
                         return;
                     }
-                    let i = 0;
-                    utils.functional.forEach(files, function (thisFile) {
-                        // loadThumbnail(thisFile, i++, filecode);//加载缩略图
-                        let a=loadThumbnail(thisFile, i++);
-                        $('#thumbnailDiv').append(a);
-                        $('#ImgBigDiv').append(loadImgs(thisFile));
-                        $('#frontImg').append(loadFrontImg(thisFile));//加载平铺图
+                    if (1===files[0].filetype){
+                        //是卷宗封皮
+                        $('#changeView,#moveToBtn').unbind().hide();
+                        $('#ImgBigDiv').load('/model/jzzl/jzfp.html?id=1');
+                    }else if (3===files.filetype){
+                        //是封底
+                        $('#changeView,#moveToBtn').unbind().hide();
+                    }else if (2===files.filetype){
+                        $('#changeView,#moveToBtn').unbind().hide();
 
-                    });
-                    //切换视图按钮
-                    viewModel = false;//下拉显示
-                    changeViewModel($('#changeView'));//加载一下下拉展示
-                    FrontImgSortTable();//加载平铺图的拖拽效果
-                    //为移动至按钮添加方法
-                    $('#moveToBtn').unbind().click(function () {
-                        console.log('移动至方法')
-                        moveToFn();
-                    })
-                    //为切换按钮添加方法
-                    $('#changeView').unbind().click(function () {
-                        changeViewModel(this);
-                    });
+                    }else {
+                        $('#changeView,#moveToBtn').show();
+                        let i = 0;
+                        utils.functional.forEach(files, function (thisFile) {
+                            // loadThumbnail(thisFile, i++, filecode);//加载缩略图
+                            $('#thumbnailDiv').append(loadThumbnail(thisFile, i++));
+                            $('#ImgBigDiv').append(loadImgs(thisFile));
+                            $('#frontImg').append(loadFrontImg(thisFile));//加载平铺图
+
+                        });
+                        //切换视图按钮
+                        viewModel = false;//下拉显示
+                        changeViewModel($('#changeView'));//加载一下下拉展示
+                        FrontImgSortTable();//加载平铺图的拖拽效果
+                        //为移动至按钮添加方法
+                        $('#moveToBtn').unbind().click(function () {
+                            console.log('移动至方法')
+                            moveToFn();
+                        })
+                        //为切换按钮添加方法
+                        $('#changeView').unbind().click(function () {
+                            changeViewModel(this);
+                        });
+                    }
+                    callback();//回调方法
                 } else {
                 }
             }
@@ -66,7 +77,6 @@ var recordImgLoad = (function () {
      * 平铺图的拖拽控件加载
      * @author MrLu
      * @createTime  2020/10/17 11:51
-     * @return    |
      */
     function FrontImgSortTable() {
 
@@ -77,7 +87,6 @@ var recordImgLoad = (function () {
      * 多选按钮
      * @author MrLu
      * @createTime  2020/10/16 14:08
-     * @return    |
      */
     function multipleFun(thisBtn) {
         $(thisBtn).find('span').html('取消多选');
@@ -205,8 +214,7 @@ var recordImgLoad = (function () {
      * 加载文书图片的缩略图
      * @author MrLu
      * @param file
-     * @param index { i:当前图片的数组下标,f:数组长度}
-     * @param filecode 指定的文件filecode 可为null
+     * @param index {i:当前图片的数组下标,f:数组长度}
      * @createTime  2020/10/16 9:39
      * @return    |
      */
@@ -223,12 +231,12 @@ var recordImgLoad = (function () {
         });
         //缩略图跳转图片
         a.addEventListener('click', function () {
-            jumpImg(this, index)
+            jumpImg(this)
         });
 
         a.append(thumbnail);
 
-       return a;
+        return a;
 
     }
 
@@ -236,14 +244,13 @@ var recordImgLoad = (function () {
      * 大图区域跳转至指定图片 且缩略图增加被选择样式
      * @author MrLu
      * @param ele 缩略图ele（是个a标签）
-     * @param index 相对位置
      * @createTime  2020/10/20 16:53
      * @return    |
      */
-    function jumpImg(ele, index) {
+    function jumpImg(ele) {
         $('#thumbnailDiv .active').removeClass('active');
         $('#ImgBigDiv').animate({
-            scrollTop: ((+index * 940) + 50)
+            scrollTop: ((+($(ele).index()) * 940) + 50)
         }, 300);
         $(ele).addClass('active');
     }
@@ -251,9 +258,9 @@ var recordImgLoad = (function () {
     /**
      * 移动两个元素的位置
      * @author MrLu
-     * @param eleAid 元素A
-     * @param eleBid 元素B
-     * @param operation 操作  （before,after）
+     * @param eleAid 元素A 被移动的
+     * @param eleBid 元素B 参照位置
+     * @param operation 操作  [before|after]
      * @createTime  2020/10/21 9:34
      * @return    |
      */
@@ -263,17 +270,23 @@ var recordImgLoad = (function () {
         let thumbnailA = $('#thumbnail' + eleAid),
             bigImgA = $('#bigImg' + eleAid),
             frontA = $('#front' + eleAid);
-        let thumbnailB = $('#thumbnail' + eleBid),
+      /*  let thumbnailB = $('#thumbnail' + eleBid),
             bigImgB = $('#bigImg' + eleBid),
-            frontB = $('#front' + eleBid);
+            frontB = $('#front' + eleBid);*/
         if ('after' === operation) {
-            thumbnailA.before(thumbnailB);
+            $('#thumbnail' + eleBid).after(thumbnailA);
+            $('#bigImg' + eleBid).after(bigImgA);
+            $('#front' + eleBid).after(frontA);
+          /*  thumbnailA.before(thumbnailB);
             bigImgA.before(bigImgB);
-            frontA.before(frontB);
+            frontA.before(frontB);*/
         } else if ('before' === operation) {
-            thumbnailA.after(thumbnailB);
+            $('#thumbnail' + eleBid).before(thumbnailA);
+            $('#bigImg' + eleBid).before(bigImgA);
+            $('#front' + eleBid).before(frontA);
+           /* thumbnailA.after(thumbnailB);
             bigImgA.after(bigImgB);
-            frontA.after(frontB);
+            frontA.after(frontB);*/
         } else {
             console.error('你想干啥啊？CDD')
         }
@@ -281,32 +294,47 @@ var recordImgLoad = (function () {
     }
 
     /**
-     * 移除
+     * 移出
      * @author MrLu
      * @param fileCode
      * @createTime  2020/10/21 15:59
-     * @return    |
      */
     function fileMoveOut(fileCode) {
         $('#thumbnail' + fileCode).remove();
         $('#bigImg' + fileCode).remove();
         $('#front' + fileCode).remove();
+        checkFile.delete(fileCode);
     }
 
     /**
      * 移入
      * @author MrLu
-     * @param fileCode
+     * @param filecode
+     * @param prevFileCode 上一个文书代码 当operation为false时候 值为null
+     * @param operation boolean
      * @createTime  2020/10/21 16:00
-     * @return    |
      */
-    function fileMoveIn(fileCode,index) {
+    function fileMoveIn(filecode, prevFileCode, operation) {
         $.post({
-            url: '',
-            data: {fileCode},
+            url: '/ArrangeArchives/loadFilesByFileCode',
+            data: {filecode},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
+                    const thisFile = reV.value;
+                    let thumbnail = loadThumbnail(thisFile);
+                    let ImgBig = loadThumbnail(thisFile);
+                    let front = loadThumbnail(thisFile);
+                    //如果不是放第一个 调整顺序
+                    if (operation) {
+                       $('#thumbnail' + prevFileCode).after(thumbnail);
+                        $('#bigImg' + prevFileCode).after(ImgBig);
+                         $('#front' + prevFileCode).after(front);
+                    } else {
+                        $('#thumbnailDiv').prepend(thumbnail);
+                        $('#ImgBigDiv').prepend(loadImgs(ImgBig));
+                        $('#frontImg').prepend(loadFrontImg(front));//加载平铺图
+                    }
                 } else {
                     console.error('没有找到对应的实体文件');
                 }
@@ -346,23 +374,25 @@ var recordImgLoad = (function () {
         return recordId;
     }
 
-    let _recordImgLoad = function ({recordIdP,  fileOrder = []}) {
-
+    let _recordImgLoad = function ({
+                                       recordIdP, fileOrder = [], callback = function () {
+        }
+                                   }) {
         if (this instanceof _recordImgLoad) {
             console.log('开始图片' + recordIdP);
             recordId = recordIdP;
-            loadFilesByRecord(recordId, fileOrder)
+            loadFilesByRecord(recordId, fileOrder, callback)
         } else {
 
             return new _recordImgLoad({
                 recordIdP: recordIdP,
                 fileOrder: fileOrder,
+                callback: callback,
             })
         }
 
-
     }
-    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut}
+    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn}
     return _recordImgLoad;
 
 })()

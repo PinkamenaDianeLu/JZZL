@@ -34,4 +34,13 @@ public interface FunArchiveFilesDTOMapper {
       */
     List<FunArchiveFilesDTO> selectFilesHistory(String filecode);
 
+     /**
+     * 根据文书代码找到正在显示的文书
+     * @author MrLu
+     * @param filecode 文书代码
+     * @createTime  2020/10/22 9:32
+     * @return  FunArchiveFilesDTO  |
+      */
+    FunArchiveFilesDTO selectFilesByFileCode(String filecode);
+
 }

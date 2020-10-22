@@ -103,4 +103,9 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     public List<FunArchiveFilesDTO> selectFilesHistory(String filecode) {
         return funArchiveFilesDTOMapper.selectFilesHistory(filecode);
     }
+
+    @Override
+    public FunArchiveFilesDTO selectFilesByFileCode(String filecode) {
+        return funArchiveFilesDTOMapper.selectFilesByFileCode(filecode);
+    }
 }

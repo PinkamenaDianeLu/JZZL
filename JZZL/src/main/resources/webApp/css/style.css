@@ -150,7 +150,7 @@ table th,table td{text-align: center; font-size: 14px;}
 ul.l_nav li dd:hover .hy_a a{ text-decoration: none; background: #fff; color: #124eb8;}
 
 .c_right{position:absolute; right:0px; top:0; width:1030px;height:calc(100% - 70px); margin-top: 60px;}
-.right_title a{display: inline-block; width: 60px; height: 50px; background:rgba(0,0,0,0.3); border-radius: 3px; border: 1px solid rgba(72,71,71,0.6); margin: 5px 0px 5px 3px; color: #d3d3d3; font-size: 12px; text-align: center;}
+.right_title a{display: inline-block; width: 58px; height: 52px; background:rgba(0,0,0,0.3); border-radius: 3px; border: 1px solid rgba(72,71,71,0.6); margin: 5px 0px 5px 1px; color: #d3d3d3; font-size: 12px; text-align: center;}
 .right_title a:hover{background:#56555e;border: 1px solid #56555e; text-decoration: none;}
 .right_title a i{float: left; width: 40px; height: 30px; margin: 0px 10px;}
 .right_title a span{display: block; float: left; width: 100%;}
@@ -163,6 +163,9 @@ ul.l_nav li dd:hover .hy_a a{ text-decoration: none; background: #fff; color: #1
 .right_title a i.min{ background-position:-280px -54px;}
 .right_title a i.cut{ background-position:-320px -54px;}
 .right_title a i.refresh{ background-position:-360px -54px;}
+.right_title a i.multiple{ background-position:-562px -54px;}
+.right_title a i.move{ background-position:-604px -53px;}
+.right_title a i.history{ background-position:-644px -53px;}
 .a_count{ display: inline-block; width: 115px; padding: 10px 0px 10px 5px;}
 .a_count input{ height: 40px; width: 70px; float: left; color: #999;}
 .a_count a{ display: inline-block; width: 35px; height: 20px; margin: 0 0px 0 5px; float: left;border: none;border-bottom: 1px solid #636262; background: none;}

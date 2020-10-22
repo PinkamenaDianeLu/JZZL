@@ -1,38 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>案卷整理</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<meta charset="utf-8">
+	<title>案卷整理</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 </head>
 <style type="text/css">
-	*{ padding: 0; margin: 0;list-style: none;box-sizing: border-box;-moz-user-select:none;/*火狐*/-webkit-user-select:none;/*webkit浏览器*/-ms-user-select:none;/*IE10*/-khtml-user-select:none;/*早期浏览器*/user-select:none;}
-	body{color:#363636;text-align: center; font-family: "Microsoft YaHei"; font-size: 14px;margin:0;padding: 0; text-decoration: none; height: 100%; background: #fff;}
-	h2{ font-size: 40px; padding: 10px 0;}
-	h3{ font-size: 24px;}
-	p{ font-size: 18px;padding: 10px 0;}
-	.content{ position: relative; width: 650px; margin: 30px auto 10px; padding: 20px 10px; border-bottom: 1px solid #333;}
-	.content p{ text-align: left;}
-	.content p span{display: inline-block; width: 100px;}
-	input{ display: inline-block; width: 500px; height: 40px; font-size: 18px; border: none;  border-bottom: 1px solid #333; padding: 0px 10px;}
-	.bottom {position: relative;padding: 0px 10px;width:650px; margin: 0px auto; text-align: left;}
-	.bottom input{ width: 60px; text-align: center; font-size: 16px; }
+
+	.juan{color:#363636;text-align: center; margin: 0 auto; width: 880px; font-size: 14px;margin:0;padding: 0; text-decoration: none; background: #fff;}
+	.juan h2{ font-size: 40px; padding: 10px 0;}
+	.juan h3{ font-size: 24px;}
+	.juan p{ font-size: 18px;padding: 10px 0;}
+	.juan .content{ position: relative; width: 650px; margin: 30px auto 10px; padding: 20px 10px; border-bottom: 1px solid #333;}
+	.juan .content p{ text-align: left;}
+	.juan .content p span{display: inline-block; width: 100px;}
+	.juan input{ display: inline-block; width: 500px; height: 40px; font-size: 18px; border: none;  border-bottom: 1px solid #333; padding: 0px 10px;}
+	.juan .bottom {position: relative;padding: 0px 10px;width:650px; margin: 0px auto; text-align: left; background: #fff;}
+	.juan .bottom input{ width: 60px; text-align: center; font-size: 16px; }
 </style>
 <body>
-<h2 style="margin-top: 2rem;">**市公安局（**分局）</h2>
-<h3>刑事侦查卷</h3>
-<p><b>（诉讼文书卷）</b></p>
-<div class="content">
-	<p><span>案件名称：</span><input type="text" /></p>
-	<p><span>案件编号：</span><input type="text" /></p>
-	<p><span style="width: 150px;">犯罪嫌疑人姓名：</span><input type="text" style="width: 450px;" /></p>
-	<p><span>立案时间：</span><input type="text" /></p>
-	<p><span>结案时间：</span><input type="text" /></p>
-	<p><span>立卷单位：</span><input type="text" /></p>
-	<p><span>立卷人：</span><input type="text" /></p>
-	<p><span>审核人：</span><input type="text" /></p>
+<div class="juan">
+	<h2 style="margin-top: 2rem;">**市公安局（**分局）</h2>
+	<h3>刑事侦查卷</h3>
+	<p><b>（诉讼文书卷）</b></p>
+	<div class="content">
+		<p><span>案件名称：</span><input type="text" /></p>
+		<p><span>案件编号：</span><input type="text" /></p>
+		<p><span style="width: 150px;">犯罪嫌疑人姓名：</span><input type="text" style="width: 450px;" /></p>
+		<p><span>立案时间：</span><input type="text" /></p>
+		<p><span>结案时间：</span><input type="text" /></p>
+		<p><span>立卷单位：</span><input type="text" /></p>
+		<p><span>立卷人：</span><input type="text" /></p>
+		<p><span>审核人：</span><input type="text" /></p>
+	</div>
+	<div class="bottom">本案共<input type="number" />卷 第<input type="number" />卷 共<input type="number" />页</div>
 </div>
-<div class="bottom">本案共<input type="number" />卷 第<input type="number" />卷 共<input type="number" />页</div>
 </body>
 </html>

@@ -273,4 +273,10 @@
     AND SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
     ORDER BY ISSHOW DESC
   </select>
+
+  <select id="selectFilesByFileCode"  parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM FUN_ARCHIVE_FILES
+    WHERE SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}  AND ISSHOW=0
+  </select>
 </mapper>

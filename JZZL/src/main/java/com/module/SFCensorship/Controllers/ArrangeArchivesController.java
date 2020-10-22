@@ -112,12 +112,12 @@ public class ArrangeArchivesController extends BaseFactory {
             if (StringUtils.isEmpty(id)) {
                 throw new Exception("你传nm呢？");
             }
-            JSONArray records=new JSONArray();
-            for (FunArchiveRecords thisRecord:
-            arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), Integer.parseInt(isDelete))) {
-                JSONObject record=new JSONObject();
-                record.put("record",thisRecord);
-                record.put("files",arrangeArchivesService.selectRecordFilesByRecordId(thisRecord.getId()));
+            JSONArray records = new JSONArray();
+            for (FunArchiveRecords thisRecord :
+                    arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), Integer.parseInt(isDelete))) {
+                JSONObject record = new JSONObject();
+                record.put("record", thisRecord);
+                record.put("files", arrangeArchivesService.selectRecordFilesByRecordId(thisRecord.getId()));
                 records.add(record);
             }
             reValue.put("value", records);
@@ -262,27 +262,56 @@ public class ArrangeArchivesController extends BaseFactory {
         return reValue.toJSONString();
     }
 
-     /**
-     * 查询一个文书下的文书图片
+    /**
+     * 按照文书代码的顺序查询可看的文件
+     *
+     * @param fileOrder 文件代码数组
+     * @return String  |
      * @author MrLu
-     * @param
-     * @createTime  2020/10/15 18:17
-     * @return    |
-      */
-    @RequestMapping(value = "/loadFilesByRecord", method = {RequestMethod.GET,
+     * @createTime 2020/10/15 18:17
+     */
+    @RequestMapping(value = "/loadFilesByFileCodes", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
-    @OperLog(operModul = operModul, operDesc = "保存卷整理顺序中被删除的文书", operType = OperLog.type.INSERT)
-    public String loadFilesByRecord(String fileOrder) {
+    @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.INSERT)
+    public String loadFilesByFileCodes(String fileOrder) {
         JSONObject reValue = new JSONObject();
         try {
-            if (!StringUtils.isEmpty(fileOrder)){
-                String [] fileOrders=fileOrder.split(",");
+            if (!StringUtils.isEmpty(fileOrder)) {
+                String[] fileOrders = fileOrder.split(",");
                 //该文书没有图片了
-                reValue.put("value",arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders));
+                reValue.put("value", arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders));
             }
 
             reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
+    /**
+     * 通过文书代码查询文书
+     * @param filecode 文书代码
+     * @return String |
+     * @author MrLu
+     * @createTime 2020/10/22 9:29
+     */
+    @RequestMapping(value = "/loadFilesByFileCode", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "通过文书代码查询文书", operType = OperLog.type.INSERT)
+    public String loadFilesByFileCode(String filecode) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isNotEmpty(filecode)){
+                reValue.put("value", arrangeArchivesService.selectFilesByFileCode(filecode));
+                reValue.put("message", "success");
+            }else {
+                throw new  Exception("你传n\uD83D\uDC34呢？文书代码呢？");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             reValue.put("message", "error");

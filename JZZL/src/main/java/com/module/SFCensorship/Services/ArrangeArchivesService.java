@@ -120,4 +120,6 @@ public interface ArrangeArchivesService {
      * @return    |
      */
     List<FunArchiveFilesDTO> selectFilesHistory(String filecode);
+
+    FunArchiveFilesDTO  selectFilesByFileCode(String filecode);
 }
