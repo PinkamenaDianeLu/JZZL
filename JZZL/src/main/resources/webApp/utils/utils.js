@@ -239,6 +239,25 @@ var utils = {
         }), 1);
         return arr;
     },
+     /**
+     * 将json对象中的值赋予对应名id的标签
+     * @author MrLu
+     * @param values json对象
+     * @createTime  2020/10/23 16:41
+     * @return    |
+      */
+    setValue: function (values) {
+        for (let thisCol in values) {
+            let thisNode = document.getElementById(thisCol);
+            if (thisNode) {
+                if ('INPUT' === thisNode.tagName) {
+                    thisNode.value = values[thisCol];
+                } else {
+                    thisNode.innerHTML = values[thisCol];
+                }
+            }
+        }
+    },
 
     /**
      *  判断element中手否含有某个属性
@@ -304,7 +323,7 @@ var utils = {
         script.src = url;
         document.getElementsByTagName("head")[0].appendChild(script);
 
-    },functional:{
+    }, functional: {
         /**
          * 传递的参数只能运行一次
          * @author MrLu
@@ -348,16 +367,15 @@ var utils = {
         forEach: function (arrary, fn) {
             for (const a of arrary)
                 fn(a);
-        },map:function (arrary,fn) {
-            let results=[];
-            for (const a of arrary){
+        }, map: function (arrary, fn) {
+            let results = [];
+            for (const a of arrary) {
                 //这么写比push快
-                results[results.length]=fn(a);
+                results[results.length] = fn(a);
             }
             return results;
         }
     }
-
 
 
 }

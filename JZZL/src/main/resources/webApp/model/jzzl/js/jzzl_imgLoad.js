@@ -27,21 +27,33 @@ var recordImgLoad = (function () {
                     $('#ImgBigDiv,#thumbnailDiv').empty().scrollTop(0);
                     $('#frontImg').empty();
                     const files = reV.value;
-                    console.log(files)
                     if (!(files && files.length > 0)) {
                         //一页文书都没有还显示个p
                         return;
                     }
                     if (0!==files[0].filetype){
-                        //是卷宗封皮
+                        //是卷宗封皮、封底、目录
                         $('#changeView,#moveToBtn,#commonimgDiv').unbind().hide();
-                        $('#htmlDiv').show().load('/model/jzzl/jzfp.html?id=1');
+                        const  thisFile=files[0];//对象拿出
+                        let url='';
+                        switch (thisFile.filetype) {
+                            case 1://卷封皮
+                                url='/model/jzzl/jzfp.html';
+                                break;
+                            case 2://卷目录
+                                url='/model/jzzl/jzfp.html';
+                                break;
+                            case 3://卷尾
+                                url='/model/jzzl/jzfp.html';
+                                break;
+                        }
+                        recordImgLoad.pValue=thisFile;//把id加上
+                        $('#htmlDiv').show().load(url);
                     }else {
                         $('#htmlDiv').hide();
                         $('#changeView,#moveToBtn,#commonimgDiv').show();
                         let i = 0;
                         utils.functional.forEach(files, function (thisFile) {
-                            // loadThumbnail(thisFile, i++, filecode);//加载缩略图
                             $('#thumbnailDiv').append(loadThumbnail(thisFile, i++));
                             $('#ImgBigDiv').append(loadImgs(thisFile));
                             $('#frontImg').append(loadFrontImg(thisFile));//加载平铺图

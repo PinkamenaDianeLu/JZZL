@@ -48,7 +48,12 @@
         from FUN_ARCHIVE_COVER
         where ID = #{id,jdbcType=DECIMAL}
     </select>
-
+<select id="selectFunArchiveCoverDTOByFileId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from FUN_ARCHIVE_COVER
+    WHERE SCBJ=0 AND ARCHIVEFILEID=#{archivefileid,jdbcType=DECIMAL}
+</select>
     <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveCoverDTO">
         <selectKey resultType="INTEGER" order="BEFORE"
                    keyProperty="id">

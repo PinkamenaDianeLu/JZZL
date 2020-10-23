@@ -7,5 +7,5 @@
  */
 
 $(function () {
-    console.log(utils.getUrlPar('fileCodes'))
+    console.log(parent.recordImgLoad.pValue)
 })
