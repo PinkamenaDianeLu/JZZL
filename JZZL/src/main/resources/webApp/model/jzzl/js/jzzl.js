@@ -160,8 +160,8 @@ var loadArchiveIndex = (function () {
                     utils.functional.forEach(reV.value, function (thisRecord) {
                         const thisDD = createRecordDiv(thisRecord, indexing);
                         //判断划分拖拽域
-                        if ('ZL001' === thisDD.class) {
-                            //卷首正常加载
+                        if ('ZL001' === thisDD.class||'ZL003' === thisDD.class) {
+                            //卷首、文书目录 正常加载
                             $('#' + liD).append(thisDD);
                         } else if ('ZL002' === thisDD.class) {
                             //卷尾加载 普通卷+卷尾
@@ -350,7 +350,7 @@ var loadArchiveIndex = (function () {
         const thisRecord = recordsMap.get(ddId);
         let div = document.createElement('span');
         //判断卷类型
-        if ((!thisRecord) || !('ZL001' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
+        if ((!thisRecord) || !('ZL001' === thisRecord.recordscode ||'ZL003' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
             //封皮//封底  没有操作按钮
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
@@ -374,8 +374,8 @@ var loadArchiveIndex = (function () {
         let haveFun = true;//是否激活方法
         if (indexing.i) {
             //此参数有值说明为首次加载
-            if (1 === indexing.i) {
-                //未除了封皮以外第一个文书
+            if (2 >= indexing.i) {
+                //未除了封皮和卷目录以外第一个文书
                 haveFun = false;
             }
         } else {
@@ -692,9 +692,11 @@ var loadArchiveIndex = (function () {
                 let thisDDid = $(v).attr('id');//获取文书的id  该id也是recordsMap中的key
                 let thisRecord = recordsMap.get(thisDDid);//通过key获取该文书的value
                 if ('ZL001' === thisRecord.recordscode) {
-                    i = -1;//卷宗封皮顺序永远是-1
+                    i = -9999;//卷宗封皮顺序永远是-1
+                }else if ('ZL003' === thisRecord.recordscode){
+                    i = -9900;
                 } else if ('ZL002' === thisRecord.recordscode) {
-                    i = 99999;//封底顺序永远是99999  最后一个
+                    i = 9999;//封底顺序永远是99999  最后一个
                 }
                 saveData[saveData.length] = new saveD(thisDDid.replace('dd', ''), thisRecord.recordname, thisRecord.archivetypeid, i);
 

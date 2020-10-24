@@ -2,6 +2,7 @@ package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bean.jzgl.DTO.FunArchiveFilesDTO;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.*;
@@ -127,7 +128,7 @@ public class SFCensorshipController extends BaseFactory {
 
             //创建新建卷
             //TODO MrLu 2020/10/8   未对应人筛选文书
-            cloneRecords(thisFunPeopelCase.getJqbh(), newSeq);
+             cloneRecords(thisFunPeopelCase.getJqbh(), newSeq);
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -171,22 +172,33 @@ public class SFCensorshipController extends BaseFactory {
             cover.setRecordname(EnumSoft.fplx.COVER.getName());
             cover.setArchivetypeid(newTypeId);
             cover.setArchivecode(thisOriAt.getArchivecode());
+            cover.setArchivesfcid(newSeq.getArchivesfcid());
             cover.setRecordstyle(0);
+            cover.setAuthor(newSeq.getAuthor());//整理人姓名
+            cover.setAuthorid(newSeq.getAuthorid());//整理人id
+            cover.setIsazxt(1);//封皮、目录、封底 都不是安综原有的东西
             cover.setArchiveseqid(newSeq.getId());
             cover.setRecordscode(EnumSoft.fplx.COVER.getValue());//文件代码
-            sFCensorshipService.insertFunArchiveRecords(cover);
-
+            sFCensorshipService.insertFunArchiveRecords(cover,thisOriAt);
+            //文书目录
+            cover.setThisorder(EnumSoft.fplx.INDEX.getOrder());
+            cover.setRecordname(EnumSoft.fplx.INDEX.getName());
+            cover.setRecordscode(EnumSoft.fplx.INDEX.getValue());//文件代码
+            sFCensorshipService.insertFunArchiveRecords(cover,thisOriAt);
             //封底
             cover.setThisorder(EnumSoft.fplx.BACKCOVER.getOrder());
             cover.setRecordname(EnumSoft.fplx.BACKCOVER.getName());
             cover.setRecordscode(EnumSoft.fplx.BACKCOVER.getValue());//文件代码
-            sFCensorshipService.insertFunArchiveRecords(cover);
-            //插入文书
+            sFCensorshipService.insertFunArchiveRecords(cover,thisOriAt);
+
+
             for (FunArchiveRecordsDTO thisRecord :
                     cloneRecords) {
-                thisRecord.setArchiveseqid(newSeq.getId());//送检次序id
+                thisRecord.setArchivesfcid(newSeq.getArchivesfcid());//送检次序id
+                thisRecord.setArchiveseqid(newSeq.getId());//整理次序id
                 thisRecord.setArchivetypeid(newTypeId);//对应了新的archiveType表id
-                sFCensorshipService.insertFunArchiveRecords(thisRecord);
+                //这里不要改变它的所属人和id 应为这是他们还是安综抽过来的 文件没有任何变化
+                sFCensorshipService.insertFunArchiveRecords(thisRecord,thisOriAt);
             }
         }
     }

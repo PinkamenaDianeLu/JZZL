@@ -25,7 +25,7 @@ var recordImgLoad = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     $('#ImgBigDiv,#thumbnailDiv').empty().scrollTop(0);
-                    $('#frontImg').empty();
+                    $('#frontImg,#htmlDiv').empty();
                     const files = reV.value;
                     if (!(files && files.length > 0)) {
                         //一页文书都没有还显示个p
@@ -41,7 +41,7 @@ var recordImgLoad = (function () {
                                 url='/model/jzzl/jzfp.html';
                                 break;
                             case 2://卷目录
-                                url='/model/jzzl/jzfp.html';
+                                url='/model/jzzl/jzml.html';
                                 break;
                             case 3://卷尾
                                 url='/model/jzzl/jzfp.html';

@@ -38,6 +38,10 @@
     where ID = #{id,jdbcType=DECIMAL}
   </select>
   <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARCHIVE_FILES_ID.nextval from dual
+    </selectKey>
     insert into FUN_ARCHIVE_FILES (ID, SCBJ, STATE, 
       CREATETIME, UPDATETIME, JQBH, 
       AJBH, THISORDER, ARCHIVERECORDID, 
@@ -45,8 +49,7 @@
       ORIGINURL, ISDOWLAND, FILENAME, 
       ARCHIVESEQID, ARCHIVESFCID, ISAZXT, 
       AUTHOR, AUTHORID)
-    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=DECIMAL},0,0,SYSDATE,SYSDATE, #{jqbh,jdbcType=VARCHAR},
       #{ajbh,jdbcType=VARCHAR}, #{thisorder,jdbcType=DECIMAL}, #{archiverecordid,jdbcType=DECIMAL}, 
       #{archivetypeid,jdbcType=DECIMAL}, #{filetype,jdbcType=DECIMAL}, #{fileurl,jdbcType=VARCHAR}, 
       #{originurl,jdbcType=VARCHAR}, #{isdowland,jdbcType=DECIMAL}, #{filename,jdbcType=VARCHAR}, 
@@ -54,26 +57,18 @@
       #{author,jdbcType=VARCHAR}, #{authorid,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARCHIVE_FILES_ID.nextval from dual
+    </selectKey>
     insert into FUN_ARCHIVE_FILES
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         ID,
-      </if>
-      <if test="scbj != null">
         SCBJ,
-      </if>
-      <if test="state != null">
         STATE,
-      </if>
-      <if test="createtime != null">
         CREATETIME,
-      </if>
-      <if test="updatetime != null">
         UPDATETIME,
-      </if>
-      <if test="jqbh != null">
         JQBH,
-      </if>
       <if test="ajbh != null">
         AJBH,
       </if>
@@ -118,24 +113,12 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="scbj != null">
-        #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jqbh != null">
+        0,
+        0,
+        SYSDATE,
+      SYSDATE,
         #{jqbh,jdbcType=VARCHAR},
-      </if>
       <if test="ajbh != null">
         #{ajbh,jdbcType=VARCHAR},
       </if>

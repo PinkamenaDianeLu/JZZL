@@ -1,14 +1,12 @@
 package com.module.SFCensorship.Services.Impl;
 
 import com.bean.jzgl.Converter.*;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveSFCDTO;
-import com.bean.jzgl.DTO.FunArchiveSeqDTO;
-import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.FunPeopelCase;
+import com.factory.BaseFactory;
 import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.SFCensorshipService;
 import org.springframework.stereotype.Service;
@@ -24,7 +22,7 @@ import java.util.Map;
  * @describe 送检相关
  */
 @Service
-public class SFCensorshipImpl implements SFCensorshipService {
+public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService {
     @Resource
     FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
     @Resource
@@ -35,6 +33,8 @@ public class SFCensorshipImpl implements SFCensorshipService {
     FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
     @Resource
     FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
+    @Resource
+    FunArchiveFilesDTOMapper funArchiveFilesDTOMapper;
 
     @Override
     public List<FunArchiveSFC> selectArchiveSFCPage(Map<String, Object> map) {
@@ -96,9 +96,46 @@ public class SFCensorshipImpl implements SFCensorshipService {
     }
 
     @Override
-    public void insertFunArchiveRecords(FunArchiveRecordsDTO record) {
+    public void insertFunArchiveRecords(FunArchiveRecordsDTO record,FunArchiveTypeDTO type) {
         funArchiveRecordsDTOMapper.insertSelective(record);
+        if (record.getRecordscode().startsWith("ZL")){
+            //是文书封皮、目录、封底
+            FunArchiveFilesDTO r=new FunArchiveFilesDTO();
+            r.setJqbh(record.getJqbh());
+            r.setAjbh(record.getAjbh());
+            r.setThisorder(0);//封皮、目录、封底 他们只有一页，在文书中永远是第一页
+            r.setArchiverecordid(record.getId());
+            r.setArchivetypeid(record.getArchivetypeid());
+            switch (record.getRecordscode()){
+                case "ZL001":
+                    r.setFiletype(1);
+                    break;
+                case "ZL002":
+                    r.setFiletype(3);
+                    break;
+                case "ZL003":
+                    r.setFiletype(2);
+                    break;
+            }
+            r.setFileurl("/");
+            r.setOriginurl("/");
+            r.setIsdowland(1);
+            r.setFilename(type.getArchivetypecn());
+            r.setArchiveseqid(record.getArchiveseqid());
+            r.setArchivesfcid(record.getArchivesfcid());
+            r.setIsazxt(1);
+            r.setAuthor(record.getAuthor());
+            r.setAuthorid(record.getAuthorid());
+            r.setIsshow(0);
+            r.setFilecode("F"+record.getRecordscode()+"R"+record.getId()+"T"+type.getId());
+            insertFunArchiveFilesDTO(r);
+        }else {
+            //查询复制
+        }
     }
-
+    @Override
+    public void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) {
+        funArchiveFilesDTOMapper.insert(record);
+    }
 
 }

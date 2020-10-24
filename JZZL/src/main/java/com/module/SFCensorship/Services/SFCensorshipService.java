@@ -1,5 +1,6 @@
 package com.module.SFCensorship.Services;
 
+import com.bean.jzgl.DTO.FunArchiveFilesDTO;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.*;
@@ -78,13 +79,21 @@ public interface SFCensorshipService {
 
 
      /**
-     * 新建送检卷
+     * 新建文书 并对应的复制文书中的文书图片
      * @author MrLu
      * @param record
+      *@param  type
      * @createTime  2020/10/8 11:38
      * @return  void  |
       */
-   void insertFunArchiveRecords(FunArchiveRecordsDTO record);
-
+   void insertFunArchiveRecords(FunArchiveRecordsDTO record,FunArchiveTypeDTO type);
+    /**
+    * 新建文书图片
+    * @author MrLu
+    * @param record
+    * @createTime  2020/10/24 11:57
+    * @return   void |
+     */
+     void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) ;
 
 }

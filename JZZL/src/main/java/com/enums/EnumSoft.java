@@ -46,8 +46,9 @@ public class EnumSoft {
     }
 
     public enum fplx{
-        COVER("ZL001","封皮",-1),
-        BACKCOVER("ZL002","封底",99999);
+        COVER("ZL001","封皮",-9999),
+        INDEX("ZL003","文书目录",-9900),
+        BACKCOVER("ZL002","封底",9999);
 
         fplx(String value,String name,int order) {
             this.value=value;
