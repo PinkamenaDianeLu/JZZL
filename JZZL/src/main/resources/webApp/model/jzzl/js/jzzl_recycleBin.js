@@ -9,6 +9,7 @@ var recycleBin = (function () {
     let seqid;//送检次序id
     let recycleRecordsMap;//
     let archiveIndex;//loadArchiveIndex实例
+    let recordImgLoadObj;//图片加载对象
     function loadIndex(id) {
         seqid = id;
         $.post({
@@ -23,7 +24,6 @@ var recycleBin = (function () {
                     });
                 } else {
                     alert('文书信息无法加载');
-                    // window.close();
                 }
             }
         });
@@ -37,20 +37,20 @@ var recycleBin = (function () {
      * @return    |
      */
     function loadArchiveType(thisType) {
-        let li = document.createElement('li');
-        li.id = 'recycleP' + thisType.id;
+        let div = document.createElement('div');
+        div.id = 'recycleP' + thisType.id;
         let thisTypeEle = utils.createElement.createElement({
-            tag: 'dt', attrs: {
+            tag: 'p', attrs: {
                 id: 'recycleTypeTitle' + thisType.id
             }, arg: '<i class="u_up"></i><a><p>' + thisType.archivetypecn + '</p>'
         });
         thisTypeEle.addEventListener('click', function () {
             console.log('点一下收缩或展示' + thisType.archivetypecn)
         });
-        li.append(thisTypeEle);
-        $('#recycleBinArchiveIndex').append(li);
+        div.append(thisTypeEle);
+        $('#recycleBinArchiveIndex').append(div);
         //加载文书
-        loadRecords(thisType.id, li.id)
+        loadRecords(thisType.id, div.id)
 
     }
 
@@ -69,14 +69,8 @@ var recycleBin = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
 
-                    //索引信息
-                    let indexing = {
-                        i: 0,
-                        f: reV.value.length
-                    };
                     utils.functional.forEach(reV.value, function (thisRecord) {
-                        $('#'+liD).append(createRecordDD(thisRecord, indexing));
-                        indexing.i++; //此行必须在$('#' + liD).append的后边
+                        $('#'+liD).append(createRecordDiv(thisRecord));
                     });
                 } else {
                     throw  '(回收站)该卷文书加载失败：' + typeId;
@@ -85,28 +79,107 @@ var recycleBin = (function () {
         });
     }
 
-    function createRecordDD(thisRecord) {
-        if (!thisRecord.id) {
-            throw  '(回收站)文书id未获取，无法加载该文书！！';
+    function createRecordDiv(thisRecord) {
+        let record = thisRecord.record;
+        if (!record) {
+            throw  '(回收站)无文书信息，无法加载该文书！！';
         }
-        let key = 'recycleDd' + thisRecord.id;
-        let dd = utils.createElement.createElement({
-            tag: 'dd', attrs: {
+        let key = 'recycleDd' + record.id;
+        let div = utils.createElement.createElement({
+            tag: 'div', attrs: {
                 id: key
-            }, arg: '<a><p class="recordname">' + thisRecord.recordname + '</p></a>'
+            }
+        });
+        let p = utils.createElement.createElement({
+            tag: 'p', attrs: {}, arg: '<a class="recordname">' + record.recordname + '</a>'
         });
         //文书缓存至recordsMap
         recycleRecordsMap.set(key, {
-            id: thisRecord.id,
-            archivetypeid: thisRecord.archivetypeid,
-            recordname: thisRecord.recordname,
-            recordscode: thisRecord.recordscode
+            id: record.id,
+            archivetypeid: record.archivetypeid,
+            recordname: record.recordname,
+            recordscode: record.recordscode
         });//缓存信息
+        p.append(createButtons(key));//加载按钮
+        //加载文书目录
+        createFileIndex(thisRecord.files,p);
+        //点击显示对应图片
+        p.addEventListener('click', function () {
+            //加载文书图片 按照子标签的顺序加载
+            let fileOrder = utils.functional.map($(div).find('.v3'), function (thisFileIndex) {
+                return $(thisFileIndex).attr('id').replace('fileIndex', '');
+            });
+            //点击显示对应图片
+            recordImgLoadObj = recordImgLoad({
+                recordIdP: record.id,
+                fileOrder: fileOrder
+            });
+
+        });
         //加载文书
-        dd.append(createButtons(key));
-        return dd;
+        div.append(p);
+        return div;
+    }
+    function createFileIndex(files,div) {
+      /*  let a=   utils.functional.map(files,createFilesDiv);
+        console.log(Array.from(a))
+        return Array.from(a);*/
+        for (let thisFile of files) {
+            div.append(createFilesDiv(thisFile));
+        }
     }
 
+    function createFilesDiv(thisFile) {
+        const key = 'fileIndex' + thisFile.filecode;
+        recycleRecordsMap.set(key, {
+            filecode: thisFile.filecode,
+            filename: thisFile.filename,
+            fileurl: thisFile.fileurl,
+            archiverecordid: thisFile.archiverecordid
+        });//缓存信息
+        let div = utils.createElement.createElement({
+            tag: 'div', attrs: {
+                id: key,
+                class: 'v3',
+            }
+        });
+        let p = utils.createElement.createElement({
+            tag: 'p', attrs: {}, arg: '<a class="filename">' + thisFile.filename + '</a>'
+        });
+        // 这里不能使用addEventListener添加事件，否则jquey的unbind无法清除监听
+        $(div).click(function () {
+            //此时是列表第一次加载时、故图片位置为fileIndexing.i-1  当该元素被拖拽、上下移按钮后 要重新添加事件
+            loadFileImg(div, thisFile.archiverecordid);
+        })
+        p.append(createButtons(key));
+        div.append(p);
+        console.log(div)
+        return div;
+    }
+    function loadFileImg(indexDiv, recordId) {
+        let filecode = $(indexDiv).attr('id').replace('fileIndex', '');//文件代码
+        //判断是否还在原本的文文书内
+        if (+recordId === +recordImgLoadObj.getRecordId()) {
+            //同文书点击
+            //获取文书order
+            let thumbnail = document.getElementById('thumbnail' + filecode);
+            recordImgLoadObj.jumpImg(thumbnail);
+        } else {
+            let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'), function (thisFileIndex) {
+                return $(thisFileIndex).attr('id').replace('fileIndex', '');
+            })
+            //点击另一个文书的图片  加载另一个文书
+            recordImgLoadObj = recordImgLoad({
+                recordIdP: recordId,
+                fileOrder: fileOrder,
+                callback:function () {
+                    //获取图片缩略
+                    let thumbnail = document.getElementById('thumbnail' + filecode);
+                    recordImgLoadObj.jumpImg(thumbnail);
+                }
+            });
+        }
+    }
     /**
      * 创建还原按钮
      * @author MrLu
@@ -139,7 +212,7 @@ var recycleBin = (function () {
     function addRecycleBin(ddId, delObj) {
         console.log(delObj)
         delObj.id = ddId.replace('dd', '');
-        let li = createRecordDD(delObj)
+        let li = createRecordDiv(delObj)
         $('#recycleP' + delObj.archivetypeid).append(li);
     }
 

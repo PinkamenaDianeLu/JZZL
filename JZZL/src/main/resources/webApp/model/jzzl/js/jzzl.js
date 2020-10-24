@@ -15,7 +15,6 @@ var loadArchiveIndex = (function () {
     *key:dd+文书id value:{recordname(文书名),recordscode(文书代码),archivetypeid(文书类别id)}
     * */
     let recordsMap;//
-
     /*
     key: filecode
        id: file的id,
@@ -24,7 +23,6 @@ var loadArchiveIndex = (function () {
       archiverecordid: 文件所属文书id
     * */
     let filesMap;//同样的文书图片map
-
     let recycleBinObj;//回收站对象
     let recordImgLoadObj;//图片加载对象
 
@@ -53,7 +51,6 @@ var loadArchiveIndex = (function () {
      * @author MrLu
      * @param thisType
      * @createTime  2020/10/9 11:28
-     * @return    |
      */
     function loadArchiveType(thisType) {
         let div = document.createElement('div');
@@ -71,7 +68,6 @@ var loadArchiveIndex = (function () {
         $('#archiveIndex').append(div);
         //加载文书
         loadRecords(thisType.id, div.id)
-
     }
 
     /**
@@ -102,13 +98,12 @@ var loadArchiveIndex = (function () {
                         operation='before';
                     }
                     //对应的图片也移动位置
-                    imgOrderMove(recordId, $(ui.item), eleB, operation)
+                    imgOrderMove(recordId, $(ui.item), eleB, operation);
                     // 被拖拽后重新加载点击事件
                     $(ui.item).unbind().click(function () {
                         loadFileImg(this, $(this).parent().parent().attr('id').replace('dd', ''));
                     })
                 }
-
             },receive:function(event, ui){
                 //跨文书移动
                 //判断是其他文书移动至正在看的文书还是正在看的文书移动至其他文书
@@ -221,7 +216,7 @@ var loadArchiveIndex = (function () {
             //加载文书图片 按照子标签的顺序加载
             let fileOrder = utils.functional.map($(div).find('.v3'), function (thisFileIndex) {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
-            })
+            });
             recordImgLoadObj = recordImgLoad({
                 recordIdP: record.id,
                  fileOrder: fileOrder
@@ -289,8 +284,8 @@ var loadArchiveIndex = (function () {
             //此时是列表第一次加载时、故图片位置为fileIndexing.i-1  当该元素被拖拽、上下移按钮后 要重新添加事件
             loadFileImg(div, thisFile.archiverecordid);
         })
-        p.append(createButtons(key, fileIndexing));
         div.append(p);
+        p.append(createButtons(key, fileIndexing));
         return div;
     }
 
@@ -310,7 +305,7 @@ var loadArchiveIndex = (function () {
             let thumbnail = document.getElementById('thumbnail' + filecode);
             recordImgLoadObj.jumpImg(thumbnail);
         } else {
-            let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'), function (thisFileIndex) {
+            let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'),  (thisFileIndex)=> {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
             })
             //点击另一个文书的图片  加载另一个文书
@@ -324,9 +319,17 @@ var loadArchiveIndex = (function () {
                 }
             });
         }
-
     }
 
+     /**
+     * 移动右侧显示中的图片位置
+     * @author MrLu
+     * @param recordId 文书id
+      * @param  eleA 左侧列表中的元素A
+      * @param  eleB 左侧列表中的元素B
+      * @param operation 操作  [before|after]
+     * @createTime  2020/10/24 17:14
+      */
     function imgOrderMove(recordId, eleA, eleB, operation) {
         //判断是否还在原本的文文书内
         if (+recordId === +recordImgLoadObj.getRecordId()) {
@@ -363,7 +366,7 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 上一位按钮
+     * 判断并加载上一位按钮
      * @author MrLu
      * @param ddId
      * @param indexing {i 数组下标,f 数组长度} 可为空
@@ -401,7 +404,7 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 下一位按钮
+     * 判断并加载下一位按钮
      * @author MrLu
      * @param ddId
      * @param indexing {i 数组下标,f 数组长度} 可为空
@@ -440,7 +443,7 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 重命名按钮
+     * 判断并加载重命名按钮
      * @author MrLu
      * @param ddId
      * @createTime  2020/10/10 15:13
@@ -463,7 +466,7 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 删除按钮
+     * 判断并加载删除按钮
      * @author MrLu
      * @param ddId
      * @createTime  2020/10/10 15:13
@@ -486,13 +489,13 @@ var loadArchiveIndex = (function () {
 
 
     /**
-     * 上移一位
+     * 上移一位方法
      * @author MrLu
      * @param ddId
      * @createTime  2020/10/10 11:06
      */
     function upFun(ddId) {
-        event.stopPropagation()
+        event.stopPropagation();
         if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
@@ -524,7 +527,7 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/10 14:11
      */
     function downFun(ddId) {
-        event.stopPropagation()
+        event.stopPropagation();
         if (!ddId) {
             throw '未传入需要上传的id！cdd爬';
         }
@@ -551,7 +554,7 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 重命名
+     * 重命名方法
      * @author MrLu
      * @param ddId
      * @createTime  2020/10/10 14:12
@@ -593,13 +596,13 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 删除
+     * 删除方法
      * @author MrLu
      * @param ddId
      * @createTime  2020/10/10 14:13
      */
     function delFun(ddId) {
-        event.stopPropagation()
+        event.stopPropagation();
         $('#' + ddId).remove();
         //回收站
         recycleBinObj.addRecycleBin(ddId, recordsMap.get(ddId));
@@ -637,7 +640,6 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/13 15:44
      */
     function saveData() {
-
         const archiveTypeList = $('#archiveIndex').find('li');
         if (archiveTypeList.length < 1) {
             alert('未正确加载文书目录，无法保存！');
@@ -700,7 +702,7 @@ var loadArchiveIndex = (function () {
                 }
                 saveData[saveData.length] = new saveD(thisDDid.replace('dd', ''), thisRecord.recordname, thisRecord.archivetypeid, i);
 
-            })
+            });
             //数据保存到后台
             $.post({
                 url: '/ArrangeArchives/saveArchiveIndexSortByType',
@@ -728,7 +730,7 @@ var loadArchiveIndex = (function () {
 
     _loadArchiveIndex.prototype = {
         loadIndex, loadRecycleBin, createRecordDiv, reloadButton, saveData
-    }
+    };
     return _loadArchiveIndex;
 })();
 
@@ -769,6 +771,4 @@ $(function () {
             }
         }
     });
-
-
-})
+});

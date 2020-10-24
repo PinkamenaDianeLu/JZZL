@@ -28,28 +28,28 @@ var recordImgLoad = (function () {
                     $('#frontImg,#htmlDiv').empty();
                     const files = reV.value;
                     if (!(files && files.length > 0)) {
-                        //一页文书都没有还显示个p
+                        console.error('该文书下没有任何文件可供显示！'); //一页文书都没有还显示个p
                         return;
                     }
-                    if (0!==files[0].filetype){
+                    if (0 !== files[0].filetype) {
                         //是卷宗封皮、封底、目录
                         $('#changeView,#moveToBtn,#commonimgDiv').unbind().hide();
-                        const  thisFile=files[0];//对象拿出
-                        let url='';
+                        const thisFile = files[0];//对象拿出
+                        let url = '';
                         switch (thisFile.filetype) {
                             case 1://卷封皮
-                                url='/model/jzzl/jzfp.html';
+                                url = '/model/jzzl/jzfp.html';
                                 break;
                             case 2://卷目录
-                                url='/model/jzzl/jzml.html';
+                                url = '/model/jzzl/jzml.html';
                                 break;
                             case 3://卷尾
-                                url='/model/jzzl/jzfp.html';
+                                url = '/model/jzzl/jzfp.html';
                                 break;
                         }
-                        recordImgLoad.pValue=thisFile;//把id加上
+                        recordImgLoad.pValue = thisFile;//把id加上
                         $('#htmlDiv').show().load(url);
-                    }else {
+                    } else {
                         $('#htmlDiv').hide();
                         $('#changeView,#moveToBtn,#commonimgDiv').show();
                         let i = 0;
@@ -101,7 +101,7 @@ var recordImgLoad = (function () {
         //原有按钮添加取消选中方法
         $(thisBtn).unbind().click(function () {
             cancelMultiple(this)
-        })
+        });
 
         //所有图片添加事件
         checkFile = new Set();//被选中值set
@@ -118,7 +118,6 @@ var recordImgLoad = (function () {
                 $(this).addClass('active');
                 checkFile.add(filecode);//记录被选的文件id
             }
-
             console.log(checkFile);
         })
     }
@@ -126,7 +125,6 @@ var recordImgLoad = (function () {
     /**
      * 移动至方法
      * @author MrLu
-     * @param
      * @createTime  2020/10/16 16:24
      * @return    |
      */
@@ -137,7 +135,6 @@ var recordImgLoad = (function () {
             return false;
         }
         const pString = JSON.stringify(Array.from(checkFile).join(','));
-
         let url = '/model/jzzl/jzYdTable.html?fileCodes=' + pString;
         console.log(url);
         layer.open({
@@ -173,7 +170,6 @@ var recordImgLoad = (function () {
      * @author MrLu
      * @param thisBtn 切换按钮
      * @createTime  2020/10/16 14:18
-     * @return    |
      */
     function changeViewModel(thisBtn) {
         viewModel = !viewModel;
@@ -198,7 +194,7 @@ var recordImgLoad = (function () {
      * @author MrLu
      * @param file
      * @createTime  2020/10/16 10:57
-     * @return    |
+     * @return HTMLElement   |
      */
     function loadImgs(file) {
         let div = document.createElement('div');
@@ -213,7 +209,7 @@ var recordImgLoad = (function () {
         bigImg.addEventListener('click', function () {
             //绑定按钮
         });
-        div.append(bigImg)
+        div.append(bigImg);
         return div;
     }
 
@@ -223,7 +219,7 @@ var recordImgLoad = (function () {
      * @param file
      * @param index {i:当前图片的数组下标,f:数组长度}
      * @createTime  2020/10/16 9:39
-     * @return    |
+     * @return HTMLElement   |
      */
     function loadThumbnail(file, index) {
         let a = document.createElement('a');
@@ -240,11 +236,8 @@ var recordImgLoad = (function () {
         a.addEventListener('click', function () {
             jumpImg(this)
         });
-
         a.append(thumbnail);
-
         return a;
-
     }
 
     /**
@@ -277,23 +270,14 @@ var recordImgLoad = (function () {
         let thumbnailA = $('#thumbnail' + eleAid),
             bigImgA = $('#bigImg' + eleAid),
             frontA = $('#front' + eleAid);
-      /*  let thumbnailB = $('#thumbnail' + eleBid),
-            bigImgB = $('#bigImg' + eleBid),
-            frontB = $('#front' + eleBid);*/
         if ('after' === operation) {
             $('#thumbnail' + eleBid).after(thumbnailA);
             $('#bigImg' + eleBid).after(bigImgA);
             $('#front' + eleBid).after(frontA);
-          /*  thumbnailA.before(thumbnailB);
-            bigImgA.before(bigImgB);
-            frontA.before(frontB);*/
         } else if ('before' === operation) {
             $('#thumbnail' + eleBid).before(thumbnailA);
             $('#bigImg' + eleBid).before(bigImgA);
             $('#front' + eleBid).before(frontA);
-           /* thumbnailA.after(thumbnailB);
-            bigImgA.after(bigImgB);
-            frontA.after(frontB);*/
         } else {
             console.error('你想干啥啊？CDD')
         }
@@ -334,9 +318,9 @@ var recordImgLoad = (function () {
                     let front = loadThumbnail(thisFile);
                     //如果不是放第一个 调整顺序
                     if (operation) {
-                       $('#thumbnail' + prevFileCode).after(thumbnail);
+                        $('#thumbnail' + prevFileCode).after(thumbnail);
                         $('#bigImg' + prevFileCode).after(ImgBig);
-                         $('#front' + prevFileCode).after(front);
+                        $('#front' + prevFileCode).after(front);
                     } else {
                         $('#thumbnailDiv').prepend(thumbnail);
                         $('#ImgBigDiv').prepend(loadImgs(ImgBig));
@@ -386,7 +370,6 @@ var recordImgLoad = (function () {
         }
                                    }) {
         if (this instanceof _recordImgLoad) {
-            console.log('开始图片' + recordIdP);
             recordId = recordIdP;
             loadFilesByRecord(recordId, fileOrder, callback)
         } else {
@@ -398,8 +381,8 @@ var recordImgLoad = (function () {
             })
         }
 
-    }
+    };
     _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn}
     return _recordImgLoad;
 
-})()
+})();
