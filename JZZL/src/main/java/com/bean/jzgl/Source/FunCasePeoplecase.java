@@ -4,7 +4,7 @@ import com.enums.Enums;
 
 import java.util.Date;
 
-public class FunCaseInfo {
+public class FunCasePeoplecase {
     private Integer id;
 
     private Integer scbj;
@@ -15,23 +15,23 @@ public class FunCaseInfo {
 
     private Date updatetime;
 
+    private String idcard;
+
+    private String name;
+
     private String jqbh;
 
     private String ajbh;
 
-    private String casename;
+    private Enums.PersonType persontype;
 
     private String sfcnumber;
 
-    private Enums.CaseState casestate;
+    private String casename;
 
-    private Enums.CaseType casetype;
+    private Integer caseinfoid;
 
-    private Integer casestage;
-
-    private String caseclass;
-
-    private String caseclasscn;
+    private Integer sysuserid;
 
     private String barxm;
 
@@ -42,14 +42,6 @@ public class FunCaseInfo {
     private String badwdwdm;
 
     private String badwdwmc;
-
-    private String gajgmc;
-
-    private String gajgdm;
-
-    private Date larq;
-
-    private Date jarq;
 
     public Integer getId() {
         return id;
@@ -91,6 +83,22 @@ public class FunCaseInfo {
         this.updatetime = updatetime;
     }
 
+    public String getIdcard() {
+        return idcard;
+    }
+
+    public void setIdcard(String idcard) {
+        this.idcard = idcard == null ? null : idcard.trim();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
     public String getJqbh() {
         return jqbh;
     }
@@ -107,12 +115,12 @@ public class FunCaseInfo {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public String getCasename() {
-        return casename;
+    public String getPersontype() {
+        return persontype.getName();
     }
 
-    public void setCasename(String casename) {
-        this.casename = casename == null ? null : casename.trim();
+    public void setPersontype(Enums.PersonType persontype) {
+        this.persontype = persontype;
     }
 
     public String getSfcnumber() {
@@ -123,44 +131,28 @@ public class FunCaseInfo {
         this.sfcnumber = sfcnumber == null ? null : sfcnumber.trim();
     }
 
-    public String getCasestate() {
-        return casestate.getName();
+    public String getCasename() {
+        return casename;
     }
 
-    public void setCasestate(Enums.CaseState casestate) {
-        this.casestate = casestate;
+    public void setCasename(String casename) {
+        this.casename = casename == null ? null : casename.trim();
     }
 
-    public String getCasetype() {
-        return casetype.getName();
+    public Integer getCaseinfoid() {
+        return caseinfoid;
     }
 
-    public void setCasetype(Enums.CaseType casetype) {
-        this.casetype = casetype;
+    public void setCaseinfoid(Integer caseinfoid) {
+        this.caseinfoid = caseinfoid;
     }
 
-    public Integer getCasestage() {
-        return casestage;
+    public Integer getSysuserid() {
+        return sysuserid;
     }
 
-    public void setCasestage(Integer casestage) {
-        this.casestage = casestage;
-    }
-
-    public String getCaseclass() {
-        return caseclass;
-    }
-
-    public void setCaseclass(String caseclass) {
-        this.caseclass = caseclass == null ? null : caseclass.trim();
-    }
-
-    public String getCaseclasscn() {
-        return caseclasscn;
-    }
-
-    public void setCaseclasscn(String caseclasscn) {
-        this.caseclasscn = caseclasscn == null ? null : caseclasscn.trim();
+    public void setSysuserid(Integer sysuserid) {
+        this.sysuserid = sysuserid;
     }
 
     public String getBarxm() {
@@ -201,37 +193,5 @@ public class FunCaseInfo {
 
     public void setBadwdwmc(String badwdwmc) {
         this.badwdwmc = badwdwmc == null ? null : badwdwmc.trim();
-    }
-
-    public String getGajgmc() {
-        return gajgmc;
-    }
-
-    public void setGajgmc(String gajgmc) {
-        this.gajgmc = gajgmc == null ? null : gajgmc.trim();
-    }
-
-    public String getGajgdm() {
-        return gajgdm;
-    }
-
-    public void setGajgdm(String gajgdm) {
-        this.gajgdm = gajgdm == null ? null : gajgdm.trim();
-    }
-
-    public Date getLarq() {
-        return larq;
-    }
-
-    public void setLarq(Date larq) {
-        this.larq = larq;
-    }
-
-    public Date getJarq() {
-        return jarq;
-    }
-
-    public void setJarq(Date jarq) {
-        this.jarq = jarq;
     }
 }

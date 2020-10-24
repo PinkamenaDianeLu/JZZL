@@ -1,10 +1,14 @@
 package com.bean.jzgl.Source;
 
 import com.enums.Enums;
+import com.sun.org.glassfish.gmbal.Description;
 
 import java.util.Date;
 
-//TODO MrLu 2020/10/4    FunPeopelCase表已经改名为FunPeopleCase
+/**
+ * @Description
+ * @log  2020/10/24 11:10  MrLu  已拆分为fun_case_info和fun_case_peoplecase两张表
+ **/
 public class FunPeopelCase {
     private Integer id;
 

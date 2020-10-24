@@ -1,7 +1,7 @@
 package com.bean.jzgl.Converter;
 
-import com.bean.jzgl.DTO.FunPeopelCaseDTO;
-import com.bean.jzgl.Source.FunPeopelCase;
+import com.bean.jzgl.DTO.FunCaseInfoDTO;
+import com.bean.jzgl.Source.FunCaseInfo;
 import com.enums.Enums;
 import com.util.EnumsUtil;
 import org.mapstruct.Mapper;
@@ -12,36 +12,29 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @Description
- * @log  2020/10/24 11:10  MrLu  已拆分为fun_case_info和fun_case_peoplecase两张表
- **/
+ * @author Mrlu
+ * @createTime 2020/10/24
+ * @describe
+ */
 @Mapper
-public interface FunPeopelCaseMapper {
+public interface FunCaseInfoMapper {
 
-    FunPeopelCaseMapper INSTANCE = Mappers.getMapper(FunPeopelCaseMapper.class);
+    FunCaseInfoMapper INSTANCE = Mappers.getMapper(FunCaseInfoMapper.class);
 
-    @Mapping(target = "persontype", expression = "java(personTypeToInt(fpc.getPersontype()))")
     @Mapping(target = "casestate", expression = "java(casestateToInt(fpc.getCasestate()))")
     @Mapping(target = "casetype", expression = "java(casestypeToInt(fpc.getCasetype()))")
-    FunPeopelCaseDTO pcToPcDTO(FunPeopelCase fpc);
+    FunCaseInfoDTO pcToPcDTO(FunCaseInfo fpc);
 
-    default int personTypeToInt(String personType) {
-        return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.PersonType.class, personType)).getValue();
-    }
     default int casestateToInt(String CaseState) {
         return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.CaseState.class, CaseState)).getValue();
     }
     default int casestypeToInt(String CaseType) {
         return Objects.requireNonNull(EnumsUtil.getEnumByName(Enums.CaseType.class, CaseType)).getValue();
     }
-    @Mapping(target = "persontype", expression = "java(personTypeToEnum(fpc.getPersontype()))")
     @Mapping(target = "casestate", expression = "java(casestateToEnum(fpc.getCasestate()))")
     @Mapping(target = "casetype", expression = "java(casetypeToEnum(fpc.getCasetype()))")
-    FunPeopelCase pcDTOToPc(FunPeopelCaseDTO fpc);
+    FunCaseInfo pcDTOToPc(FunCaseInfoDTO fpc);
 
-    default Enums.PersonType personTypeToEnum(int personType) {
-        return EnumsUtil.getEnumByValue(Enums.PersonType.class, personType);
-    }
 
     default Enums.CaseState casestateToEnum(int casestate) {
         return EnumsUtil.getEnumByValue(Enums.CaseState.class, casestate);
@@ -50,8 +43,6 @@ public interface FunPeopelCaseMapper {
         return EnumsUtil.getEnumByValue(Enums.CaseType.class, casetype);
     }
 
-    List<FunPeopelCase> pcDTOToPcs(List<FunPeopelCaseDTO> fpc);
-
-
+    List<FunCaseInfo> pcDTOToPcs(List<FunCaseInfoDTO> fpc);
 
 }

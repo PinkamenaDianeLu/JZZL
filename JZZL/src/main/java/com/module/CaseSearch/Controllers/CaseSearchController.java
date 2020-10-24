@@ -2,9 +2,12 @@ package com.module.CaseSearch.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.module.CaseSearch.Services.CaseSearchService;
+import com.module.SystemManagement.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,14 +26,17 @@ import java.util.Map;
 @RequestMapping("/CaseSearch")
 public class CaseSearchController {
     private final String operModul = "CaseSearch";
-
+    private final UserService userServiceByRedis;
     private final
     CaseSearchService caseSearchService;
-
     @Autowired
-    public CaseSearchController(CaseSearchService caseSearchService) {
+    public CaseSearchController(@Qualifier("UserServiceByRedis") UserService userServiceByRedis, CaseSearchService caseSearchService) {
+        this.userServiceByRedis = userServiceByRedis;
         this.caseSearchService = caseSearchService;
     }
+
+
+
 
 
     /**
@@ -52,6 +58,8 @@ public class CaseSearchController {
             JSONObject pJsonObj = JSON.parseObject(params);
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
+            SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+            pJsonObj.put("sysuserid",userNow.getId());
             reMap.put("rows", caseSearchService.selectPeopleCasePage(pJsonObj));
             reMap.put("total", caseSearchService.selectPeopleCasePageCount(pJsonObj));
         } catch (Exception e) {

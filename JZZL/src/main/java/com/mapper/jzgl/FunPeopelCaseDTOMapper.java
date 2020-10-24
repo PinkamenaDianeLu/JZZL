@@ -5,6 +5,10 @@ import com.bean.jzgl.DTO.FunPeopelCaseDTO;
 import java.util.List;
 import java.util.Map;
 
+/**
+* @description
+* @log  2020/10/24 10:46  MrLu  已拆分为fun_case_info和fun_case_peoplecase两张表
+**/
 public interface FunPeopelCaseDTOMapper {
 
 

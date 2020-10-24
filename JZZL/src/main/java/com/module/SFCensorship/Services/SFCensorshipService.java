@@ -2,10 +2,7 @@ package com.module.SFCensorship.Services;
 
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
-import com.bean.jzgl.Source.FunArchiveRecords;
-import com.bean.jzgl.Source.FunArchiveSFC;
-import com.bean.jzgl.Source.FunArchiveSeq;
-import com.bean.jzgl.Source.FunPeopelCase;
+import com.bean.jzgl.Source.*;
 
 import java.util.List;
 import java.util.Map;
@@ -37,9 +34,9 @@ public interface SFCensorshipService {
      * @author MrLu
      * @param id 表id
      * @createTime  2020/10/4 16:19
-     * @return  FunPeopelCase  |
+     * @return  FunCaseInfo  |
       */
-    FunPeopelCase getFunPeopelCaseById(Integer id);
+     FunCaseInfo getFunCaseInfoById(Integer id);
 
     /**
      * 得到某个案件最后的送检次序

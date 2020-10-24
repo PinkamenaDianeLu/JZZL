@@ -12,11 +12,6 @@ import java.util.Map;
  */
 public interface CaseSearchService {
 
-    void testInsert();
-
-    List<FunPeopelCase> testSearchList();
-
-    FunPeopelCase testSearch() throws Exception;
     /**
      * 分页查询人员案件表
      * @author MrLu

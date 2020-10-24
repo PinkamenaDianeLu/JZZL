@@ -1,14 +1,13 @@
 package com.module.SFCensorship.Services.Impl;
 
-import com.bean.jzgl.Converter.FunArchiveSFCMapper;
-import com.bean.jzgl.Converter.FunArchiveSeqMapper;
-import com.bean.jzgl.Converter.FunPeopelCaseMapper;
+import com.bean.jzgl.Converter.*;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveSFCDTO;
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
+import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.SFCensorshipService;
@@ -29,7 +28,7 @@ public class SFCensorshipImpl implements SFCensorshipService {
     @Resource
     FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
     @Resource
-    FunPeopelCaseDTOMapper funPeopelCaseDTOMapper;
+    FunCaseInfoDTOMapper funCaseInfoDTOMapper;
     @Resource
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
     @Resource
@@ -69,8 +68,8 @@ public class SFCensorshipImpl implements SFCensorshipService {
     }
 
     @Override
-    public FunPeopelCase getFunPeopelCaseById(Integer id) {
-        return FunPeopelCaseMapper.INSTANCE.pcDTOToPc(funPeopelCaseDTOMapper.selectByPrimaryKey(id));
+    public FunCaseInfo getFunCaseInfoById(Integer id) {
+        return FunCaseInfoMapper.INSTANCE.pcDTOToPc(funCaseInfoDTOMapper.selectByPrimaryKey(id));
     }
 
     @Override

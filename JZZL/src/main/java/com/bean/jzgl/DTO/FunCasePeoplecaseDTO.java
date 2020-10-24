@@ -2,11 +2,7 @@ package com.bean.jzgl.DTO;
 
 import java.util.Date;
 
-/**
-* @description
-* @log  2020/10/24 11:10  MrLu  已拆分为fun_case_info和fun_case_peoplecase两张表
-**/
-public class FunPeopelCaseDTO {
+public class FunCasePeoplecaseDTO {
     private Integer id;
 
     private Integer scbj;
@@ -27,32 +23,23 @@ public class FunPeopelCaseDTO {
 
     private Integer persontype;
 
-    private String casename;
-
     private String sfcnumber;
 
-    private Integer casestate;
+    private String casename;
 
-    private Integer casetype;
+    private Integer caseinfoid;
 
-    private Integer casestage;
-    private String caseclass;
-    private String caseclasscn;
+    private Integer sysuserid;
+
+    private String barxm;
+
+    private Integer barsysuserid;
+
+    private String baridcard;
 
     private String badwdwdm;
+
     private String badwdwmc;
-    private Date larq;
-    private Date jarq;
-    private String gajgmc;
-    private String gajgdm;
-
-    public String getCasename() {
-        return casename;
-    }
-
-    public void setCasename(String casename) {
-        this.casename = casename;
-    }
 
     public Integer getId() {
         return id;
@@ -139,47 +126,55 @@ public class FunPeopelCaseDTO {
     }
 
     public void setSfcnumber(String sfcnumber) {
-        this.sfcnumber = sfcnumber;
+        this.sfcnumber = sfcnumber == null ? null : sfcnumber.trim();
     }
 
-    public Integer getCasestate() {
-        return casestate;
+    public String getCasename() {
+        return casename;
     }
 
-    public void setCasestate(Integer casestate) {
-        this.casestate = casestate;
+    public void setCasename(String casename) {
+        this.casename = casename == null ? null : casename.trim();
     }
 
-    public Integer getCasetype() {
-        return casetype;
+    public Integer getCaseinfoid() {
+        return caseinfoid;
     }
 
-    public void setCasetype(Integer casetype) {
-        this.casetype = casetype;
+    public void setCaseinfoid(Integer caseinfoid) {
+        this.caseinfoid = caseinfoid;
     }
 
-    public Integer getCasestage() {
-        return casestage;
+    public Integer getSysuserid() {
+        return sysuserid;
     }
 
-    public void setCasestage(Integer casestage) {
-        this.casestage = casestage;
+    public void setSysuserid(Integer sysuserid) {
+        this.sysuserid = sysuserid;
     }
 
-    public String getCaseclass() {
-        return caseclass;
+    public String getBarxm() {
+        return barxm;
     }
 
-    public void setCaseclass(String caseclass) {
-        this.caseclass = caseclass;
+    public void setBarxm(String barxm) {
+        this.barxm = barxm == null ? null : barxm.trim();
     }
 
-    public String getCaseclasscn() {
-        return caseclasscn;
+    public Integer getBarsysuserid() {
+        return barsysuserid;
     }
 
-    public void setCaseclasscn(String caseclasscn) {
-        this.caseclasscn = caseclasscn;
+    public void setBarsysuserid(Integer barsysuserid) {
+        this.barsysuserid = barsysuserid;
+    }
+
+    public String getBaridcard() {
+        return baridcard;
+    }
+
+    public void setBaridcard(String baridcard) {
+        this.baridcard = baridcard == null ? null : baridcard.trim();
     }
 
     public String getBadwdwdm() {
@@ -187,7 +182,7 @@ public class FunPeopelCaseDTO {
     }
 
     public void setBadwdwdm(String badwdwdm) {
-        this.badwdwdm = badwdwdm;
+        this.badwdwdm = badwdwdm == null ? null : badwdwdm.trim();
     }
 
     public String getBadwdwmc() {
@@ -195,38 +190,6 @@ public class FunPeopelCaseDTO {
     }
 
     public void setBadwdwmc(String badwdwmc) {
-        this.badwdwmc = badwdwmc;
-    }
-
-    public Date getLarq() {
-        return larq;
-    }
-
-    public void setLarq(Date larq) {
-        this.larq = larq;
-    }
-
-    public Date getJarq() {
-        return jarq;
-    }
-
-    public void setJarq(Date jarq) {
-        this.jarq = jarq;
-    }
-
-    public String getGajgmc() {
-        return gajgmc;
-    }
-
-    public void setGajgmc(String gajgmc) {
-        this.gajgmc = gajgmc;
-    }
-
-    public String getGajgdm() {
-        return gajgdm;
-    }
-
-    public void setGajgdm(String gajgdm) {
-        this.gajgdm = gajgdm;
+        this.badwdwmc = badwdwmc == null ? null : badwdwmc.trim();
     }
 }

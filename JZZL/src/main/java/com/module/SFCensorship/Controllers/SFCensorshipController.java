@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
-import com.bean.jzgl.Source.FunArchiveSFC;
-import com.bean.jzgl.Source.FunArchiveSeq;
-import com.bean.jzgl.Source.FunPeopelCase;
-import com.bean.jzgl.Source.SysUser;
+import com.bean.jzgl.Source.*;
 import com.config.annotations.OperLog;
 import com.enums.EnumSoft;
 import com.enums.Enums;
@@ -90,7 +87,7 @@ public class SFCensorshipController extends BaseFactory {
                 throw new Exception("关键参数：peopelcaseid 未传递");
             }
             int peopelcaseid = Integer.parseInt(DecodeUrlP(id));//得到解密后的案件表id
-            FunPeopelCase thisFunPeopelCase = sFCensorshipService.getFunPeopelCaseById(peopelcaseid);
+            FunCaseInfo thisFunPeopelCase = sFCensorshipService.getFunCaseInfoById(peopelcaseid);
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
             //新建送检记录
             FunArchiveSFC newSfc=new FunArchiveSFC();

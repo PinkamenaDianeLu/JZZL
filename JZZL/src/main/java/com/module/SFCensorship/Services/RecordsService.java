@@ -1,6 +1,7 @@
 package com.module.SFCensorship.Services;
 
 import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.FunPeopelCase;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public interface RecordsService {
      * @createTime  2020/10/4 17:48
      * @return  FunPeopelCase  |
       */
-    FunPeopelCase getFunPeopleCaseById(Integer id);
+     FunCaseInfo getFunCaseInfoById(Integer id);
 
 
 }

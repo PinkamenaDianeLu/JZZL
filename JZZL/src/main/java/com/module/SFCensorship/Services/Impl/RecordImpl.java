@@ -1,11 +1,11 @@
 package com.module.SFCensorship.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
-import com.bean.jzgl.Converter.FunPeopelCaseMapper;
+import com.bean.jzgl.Converter.FunCaseInfoMapper;
 import com.bean.jzgl.Source.FunArchiveRecords;
-import com.bean.jzgl.Source.FunPeopelCase;
+import com.bean.jzgl.Source.FunCaseInfo;
 import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
-import com.mapper.jzgl.FunPeopelCaseDTOMapper;
+import com.mapper.jzgl.FunCaseInfoDTOMapper;
 import com.module.SFCensorship.Services.RecordsService;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,7 @@ public class RecordImpl implements RecordsService {
     @Resource
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
     @Resource
-    FunPeopelCaseDTOMapper funPeopleCaseDTOMapper;
+    FunCaseInfoDTOMapper funCaseInfoDTOMapper;
 
     @Override
     public FunArchiveRecords getFunArchiveRecordsById(Integer id) {
@@ -42,7 +42,7 @@ public class RecordImpl implements RecordsService {
     }
 
     @Override
-    public FunPeopelCase getFunPeopleCaseById(Integer id) {
-        return FunPeopelCaseMapper.INSTANCE.pcDTOToPc(funPeopleCaseDTOMapper.selectByPrimaryKey(id));
+    public FunCaseInfo getFunCaseInfoById(Integer id) {
+        return FunCaseInfoMapper.INSTANCE.pcDTOToPc(funCaseInfoDTOMapper.selectByPrimaryKey(id));
     }
 }
