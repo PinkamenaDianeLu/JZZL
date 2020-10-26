@@ -112,12 +112,13 @@ public class ArrangeArchivesController extends BaseFactory {
             if (StringUtils.isEmpty(id)) {
                 throw new Exception("你传nm呢？");
             }
+            int isdelete = Integer.parseInt(isDelete);
             JSONArray records = new JSONArray();
             for (FunArchiveRecords thisRecord :
-                    arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), Integer.parseInt(isDelete))) {
+                    arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), isdelete)) {
                 JSONObject record = new JSONObject();
                 record.put("record", thisRecord);
-                record.put("files", arrangeArchivesService.selectRecordFilesByRecordId(thisRecord.getId()));
+                record.put("files", arrangeArchivesService.selectRecordFilesByRecordId(thisRecord.getId(), isdelete));
                 records.add(record);
             }
             reValue.put("value", records);
@@ -273,7 +274,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/loadFilesByFileCodes", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
-    @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.INSERT)
+    @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.SELECT)
     public String loadFilesByFileCodes(String fileOrder) {
         JSONObject reValue = new JSONObject();
         try {
@@ -293,8 +294,9 @@ public class ArrangeArchivesController extends BaseFactory {
 
 
     /**
-     * 通过文书代码查询文书
-     * @param filecode 文书代码
+     * 通过文件代码查询文件
+     *
+     * @param filecode 文件代码
      * @return String |
      * @author MrLu
      * @createTime 2020/10/22 9:29
@@ -302,16 +304,46 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/loadFilesByFileCode", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
-    @OperLog(operModul = operModul, operDesc = "通过文书代码查询文书", operType = OperLog.type.INSERT)
+    @OperLog(operModul = operModul, operDesc = "通过文件代码查询文件", operType = OperLog.type.SELECT)
     public String loadFilesByFileCode(String filecode) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isNotEmpty(filecode)){
+            if (StringUtils.isNotEmpty(filecode)) {
                 reValue.put("value", arrangeArchivesService.selectFilesByFileCode(filecode));
                 reValue.put("message", "success");
-            }else {
-                throw new  Exception("你传n\uD83D\uDC34呢？文书代码呢？");
+            } else {
+                throw new Exception("你传n\uD83D\uDC34呢？文书代码呢？");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+     /**
+     * 根据文书id生成文书并加载全部文件
+     * @author MrLu
+     * @param recordid 文书id
+     * @createTime  2020/10/26 14:58
+     * @return    |
+      */
+    @RequestMapping(value = "/createRecordByRecordId", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "根据文书id生成文书并加载全部文件", operType = OperLog.type.SELECT)
+    public String createRecordByRecordId(String recordid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(recordid)){
+                throw  new  Exception("你传nm呢？");
+            }
+            JSONObject record = new JSONObject();
+            int recordId  =Integer.parseInt(recordid);
+            record.put("record", arrangeArchivesService.selectFunArchiveRecordsById(recordId));//加载文书
+            record.put("files", arrangeArchivesService.selectRecordFilesByRecordId(recordId, null));
+            reValue.put("value", record);
+            reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
             reValue.put("message", "error");

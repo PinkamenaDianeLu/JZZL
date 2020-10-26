@@ -70,7 +70,7 @@ var recycleBin = (function () {
                 if ('success' === reV.message) {
 
                     utils.functional.forEach(reV.value, function (thisRecord) {
-                        $('#'+liD).append(createRecordDiv(thisRecord));
+                        $('#' + liD).append(createRecordDiv(thisRecord));
                     });
                 } else {
                     throw  '(回收站)该卷文书加载失败：' + typeId;
@@ -87,7 +87,8 @@ var recycleBin = (function () {
         let key = 'recycleDd' + record.id;
         let div = utils.createElement.createElement({
             tag: 'div', attrs: {
-                id: key
+                id: key,
+                class: 'v2'
             }
         });
         let p = utils.createElement.createElement({
@@ -102,7 +103,7 @@ var recycleBin = (function () {
         });//缓存信息
         p.append(createButtons(key));//加载按钮
         //加载文书目录
-        createFileIndex(thisRecord.files,p);
+        createFileIndex(thisRecord.files, p);
         //点击显示对应图片
         p.addEventListener('click', function () {
             //加载文书图片 按照子标签的顺序加载
@@ -120,10 +121,8 @@ var recycleBin = (function () {
         div.append(p);
         return div;
     }
-    function createFileIndex(files,div) {
-      /*  let a=   utils.functional.map(files,createFilesDiv);
-        console.log(Array.from(a))
-        return Array.from(a);*/
+
+    function createFileIndex(files, div) {
         for (let thisFile of files) {
             div.append(createFilesDiv(thisFile));
         }
@@ -153,9 +152,9 @@ var recycleBin = (function () {
         })
         p.append(createButtons(key));
         div.append(p);
-        console.log(div)
         return div;
     }
+
     function loadFileImg(indexDiv, recordId) {
         let filecode = $(indexDiv).attr('id').replace('fileIndex', '');//文件代码
         //判断是否还在原本的文文书内
@@ -172,7 +171,7 @@ var recycleBin = (function () {
             recordImgLoadObj = recordImgLoad({
                 recordIdP: recordId,
                 fileOrder: fileOrder,
-                callback:function () {
+                callback: function () {
                     //获取图片缩略
                     let thumbnail = document.getElementById('thumbnail' + filecode);
                     recordImgLoadObj.jumpImg(thumbnail);
@@ -180,6 +179,7 @@ var recycleBin = (function () {
             });
         }
     }
+
     /**
      * 创建还原按钮
      * @author MrLu
@@ -194,8 +194,8 @@ var recycleBin = (function () {
         let a = document.createElement('a');
         a.innerHTML = '还原';
         a.addEventListener('click', function () {
-            restored(ddId)
-            $(this).remove();
+            restored(ddId);//调用还原方法
+            $(this).remove();//删除该对象
         })
         div.append(a);
         return div;
@@ -204,16 +204,70 @@ var recycleBin = (function () {
     /**
      * 添加进回收站
      * @author MrLu
-     * @param ddId 被删除的文书的ddid也是recordsMap的key
-     * @param delObj loadArchiveIndex中的recordsMap中对应ddid的value
+     * @param recordId 被删除的文书的id 是纯的id
+     * @param fileCodes[]  被删除的文件的filecode 是纯的filecode 是个数组 方便与批量删除，当fileCodes为undefined时将删除整个文书
      * @createTime  2020/10/12 10:17
-     * @return    |
      */
-    function addRecycleBin(ddId, delObj) {
-        console.log(delObj)
-        delObj.id = ddId.replace('dd', '');
-        let li = createRecordDiv(delObj)
-        $('#recycleP' + delObj.archivetypeid).append(li);
+    function addRecycleBin(recordId, fileCodes) {
+        //判断是删除整个文书还是删除单个文件
+        if ('undefined' === typeof fileCodes) {
+            //删除整个文书
+            $.post({
+                url: '/ArrangeArchives/createRecordByRecordId',
+                data: {recordid: recordId},
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        let thisRecord = reV.value;
+                        $('#recycleDd' + thisRecord.record.id).remove();//如果有原有的把原有的删除
+                        $('#recycleP' + thisRecord.record.archivetypeid).append(createRecordDiv(thisRecord));//整个文书全部挪入回收站
+                    } else {
+                        throw '文书添加回收站失败';
+                    }
+                }
+            });
+        } else {
+            //删除文件
+            //是否已经拥有此文书了
+            if (recycleRecordsMap.has('recycleDd' + recordId)) {
+                //有此文书啦
+                $.post({
+                    url: '/ArrangeArchives/loadFilesByFileCodes',
+                    data: {filecode: fileCodes},
+                    success: (re) => {
+                        const reV = JSON.parse(re);
+                        if ('success' === reV.message) {
+                            for (let i of reV.value) {
+                                let fileDiv = createFilesDiv(i);//生成对应文书
+                                $('#recycleDd' + recordId).find('p').append(fileDiv);
+                            }
+                        } else {
+                            throw '文件添加回收站失败';
+                        }
+                    }
+                });
+            } else {
+                //没有文书 新建文书目录再append
+                $.post({
+                    url: '/FileManipulation/createRecycleRecordByFiles',
+                    data: {filecodes: fileCodes},
+                    success: (re) => {
+                        const reV = JSON.parse(re);
+                        if ('success' === reV.message) {
+                            let thisRecord = reV.value;
+                            $('#recycleP' + thisRecord.record.archivetypeid).append(createRecordDiv(thisRecord));
+                        } else {
+                            throw '文件添加回收站失败';
+                        }
+                    }
+                });
+            }
+
+
+        }
+
+        /*  let li = createRecordDiv(delObj)
+          $('#recycleP' + delObj.archivetypeid).append(li);*/
     }
 
     /**
@@ -225,24 +279,34 @@ var recycleBin = (function () {
      */
     function restored(ddId) {
         //获取保存的文书对象
-        const thisRecord = recycleRecordsMap.get(ddId);
-        let typeFd = $('#P' + thisRecord.archivetypeid + ' dd').last();//该类型文书的封底
-        let lastRecord = typeFd.prev('dd');//该类型文书的最后一个文书
-        //重返阳间
-        //通过传递一个假的indexing  使createRecordDiv方法不需要再查找dom元素 降低损耗
-        let indexing = {
-            i: 0,
-            f: 0
-        };
-        let reArchive = archiveIndex.createRecordDiv(thisRecord, indexing);//重塑肉身
-        typeFd.before(reArchive);//返回人界
-        console.log(reArchive)
-        archiveIndex.reloadButton($(reArchive));//重新加载按钮
-        archiveIndex.reloadButton(lastRecord);//重新加载按钮
-        //把回收站的删除
-        $('#' + ddId).remove();
-        recycleRecordsMap.delete(ddId);
-        //重新加载被还原文书的上一个文书的按钮
+        let thisRecord = $('#' + ddId);
+        let isRecord = thisRecord.hasClass('v2');
+        if (isRecord) {
+            //查找该文书下的已删除文件
+            let fileCodes = utils.functional.map(thisRecord.find('.v3'), function (thisFile) {
+
+                return $(thisFile).attr('id').replace('fileIndex', '');
+            })
+            //还原整个文书
+            archiveIndex.restored(ddId.replace('recycleDd', ''), fileCodes.toString());
+            //删除自己
+            thisRecord.remove();
+            recycleRecordsMap.delete(ddId);
+        } else {
+            //还原单个文件
+            thisRecord = thisRecord.parent().parent('.v2');//变成文书
+            console.log(thisRecord);
+            //判断是否是最后一张图片 如果是的话也删除文书
+            if (thisRecord.find('.v3').length === 1) {
+                restored(thisRecord.attr('id'));
+            } else {
+                //单个文件
+                archiveIndex.restored(thisRecord.attr('id').replace('recycleDd', ''), ddId.replace('fileIndex', ''));
+                $('#' + ddId).remove();
+                recycleRecordsMap.delete(ddId);
+            }
+        }
+
     }
 
     /**

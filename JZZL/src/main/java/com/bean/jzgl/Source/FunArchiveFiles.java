@@ -54,6 +54,7 @@ public class FunArchiveFiles {
 
     private Integer isshow;
     private  String filecode;
+    private Integer isdelete;
     public Integer getId() {
         return id;
     }
@@ -236,5 +237,13 @@ public class FunArchiveFiles {
 
     public void setFilecode(String filecode) {
         this.filecode = filecode;
+    }
+
+    public Integer getIsdelete() {
+        return isdelete;
+    }
+
+    public void setIsdelete(Integer isdelete) {
+        this.isdelete = isdelete;
     }
 }

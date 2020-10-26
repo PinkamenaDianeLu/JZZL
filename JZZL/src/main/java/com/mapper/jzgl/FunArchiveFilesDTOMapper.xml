@@ -24,12 +24,12 @@
     <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
     <result column="ISSHOW" jdbcType="DECIMAL" property="isshow" />
     <result column="FILECODE" jdbcType="VARCHAR" property="filecode" />
-
+    <result column="ISDELETE" jdbcType="DECIMAL" property="isdelete" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, ARCHIVERECORDID, 
     ARCHIVETYPEID, FILETYPE, FILEURL, ORIGINURL, ISDOWLAND, FILENAME, ARCHIVESEQID, ARCHIVESFCID, 
-    ISAZXT, AUTHOR, AUTHORID,ISSHOW,FILECODE
+    ISAZXT, AUTHOR, AUTHORID,ISSHOW,FILECODE,ISDELETE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -42,19 +42,20 @@
                keyProperty="id">
       select SEQ_FUN_ARCHIVE_FILES_ID.nextval from dual
     </selectKey>
-    insert into FUN_ARCHIVE_FILES (ID, SCBJ, STATE, 
-      CREATETIME, UPDATETIME, JQBH, 
-      AJBH, THISORDER, ARCHIVERECORDID, 
-      ARCHIVETYPEID, FILETYPE, FILEURL, 
-      ORIGINURL, ISDOWLAND, FILENAME, 
-      ARCHIVESEQID, ARCHIVESFCID, ISAZXT, 
-      AUTHOR, AUTHORID)
+    insert into FUN_ARCHIVE_FILES (ID, SCBJ, STATE,
+      CREATETIME, UPDATETIME, JQBH,
+      AJBH, THISORDER, ARCHIVERECORDID,
+      ARCHIVETYPEID, FILETYPE, FILEURL,
+      ORIGINURL, ISDOWLAND, FILENAME,
+      ARCHIVESEQID, ARCHIVESFCID, ISAZXT,
+      AUTHOR, AUTHORID,ISSHOW,FILECODE,ISDELETE)
     values (#{id,jdbcType=DECIMAL},0,0,SYSDATE,SYSDATE, #{jqbh,jdbcType=VARCHAR},
-      #{ajbh,jdbcType=VARCHAR}, #{thisorder,jdbcType=DECIMAL}, #{archiverecordid,jdbcType=DECIMAL}, 
-      #{archivetypeid,jdbcType=DECIMAL}, #{filetype,jdbcType=DECIMAL}, #{fileurl,jdbcType=VARCHAR}, 
-      #{originurl,jdbcType=VARCHAR}, #{isdowland,jdbcType=DECIMAL}, #{filename,jdbcType=VARCHAR}, 
-      #{archiveseqid,jdbcType=DECIMAL}, #{archivesfcid,jdbcType=DECIMAL}, #{isazxt,jdbcType=DECIMAL}, 
-      #{author,jdbcType=VARCHAR}, #{authorid,jdbcType=DECIMAL})
+      #{ajbh,jdbcType=VARCHAR}, #{thisorder,jdbcType=DECIMAL}, #{archiverecordid,jdbcType=DECIMAL},
+      #{archivetypeid,jdbcType=DECIMAL}, #{filetype,jdbcType=DECIMAL}, #{fileurl,jdbcType=VARCHAR},
+      #{originurl,jdbcType=VARCHAR}, #{isdowland,jdbcType=DECIMAL}, #{filename,jdbcType=VARCHAR},
+      #{archiveseqid,jdbcType=DECIMAL}, #{archivesfcid,jdbcType=DECIMAL}, #{isazxt,jdbcType=DECIMAL},
+      #{author,jdbcType=VARCHAR}, #{authorid,jdbcType=DECIMAL}, #{isshow,jdbcType=DECIMAL},
+      #{filecode,jdbcType=VARCHAR},#{isdelete,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
     <selectKey resultType="INTEGER" order="BEFORE"
@@ -233,6 +234,9 @@
     FROM FUN_ARCHIVE_FILES
     WHERE SCBJ=0
     AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+    <if test="isdelete != null">
+    AND ISDELETE = #{isdelete,jdbcType=DECIMAL}
+    </if>
     AND ISSHOW=0 ORDER BY THISORDER ASC
   </select>
 <select id="selectRecordFilesByFileCodes"  resultMap="BaseResultMap">

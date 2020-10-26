@@ -1,9 +1,8 @@
 package com.module.SFCensorship.Services;
 
-import com.bean.jzgl.DTO.FunArchiveCoverDTO;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveSFCDTO;
-import com.bean.jzgl.DTO.FunCaseInfoDTO;
+import com.bean.jzgl.DTO.*;
+
+import java.util.List;
 
 /**
  * @author MrLu
@@ -46,4 +45,13 @@ public interface FileManipulationService {
      * @return    |
       */
     FunArchiveRecordsDTO selectFunArchiveRecordsDTOById (Integer recordId);
+
+    /**
+     * 根据文件代码查找文件列表
+     * @author MrLu
+     * @param
+     * @createTime  2020/10/21 11:24
+     * @return    |
+     */
+    List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode);
 }

@@ -1,6 +1,7 @@
 package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bean.jzgl.DTO.FunArchiveFilesDTO;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveSFCDTO;
 import com.bean.jzgl.DTO.FunCaseInfoDTO;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * @author MrLu
@@ -79,13 +82,12 @@ public class FileManipulationController extends BaseFactory {
     public String initializationCoverMessage(String sfcId, String recordId) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(sfcId) ||  StringUtils.isEmpty(recordId)) {
+            if (StringUtils.isEmpty(sfcId) || StringUtils.isEmpty(recordId)) {
                 throw new Exception("你传nm呢？");
             }
             JSONObject re = new JSONObject();
             FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(Integer.parseInt(recordId));
             FunArchiveSFCDTO thisSfc = fileManipulationService.selectFunArchiveSFCDTOById(Integer.parseInt(sfcId));
-            // TODO: 2020/10/23 改为caseinfoId 
             FunCaseInfoDTO thisCase = fileManipulationService.selectFunCaseInfoDTOById(thisSfc.getPeoplecaseid());
             re.put("archivename", thisRecord.getRecordname());//文书名称
             re.put("recordstyle", thisRecord.getRecordstyle());//文书类型
@@ -98,6 +100,37 @@ public class FileManipulationController extends BaseFactory {
             re.put("badwmc", thisCase.getBadwdwmc());//案件编号
             re.put("badwdm", thisCase.getBadwdwdm());//案件编号
             reValue.put("value", re);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+     /**
+     * 按照文件创建回收站文书
+     * @author MrLu
+     * @param filecodes [] filecode数组，要保证他们都是一个文书下的，否则只加载第一个文书
+     * @createTime  2020/10/26 14:31
+     * @return  String  |
+      */
+    @RequestMapping(value = "/createRecycleRecordByFiles", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "按照文件创建回收站文书", operType = OperLog.type.SELECT)
+    public String createRecycleRecordByFiles(String filecodes) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(filecodes)) {
+                throw new Exception("你传nm呢？");
+            }
+            JSONObject record = new JSONObject();
+            String[] fileCodes = filecodes.split(",");
+            List<FunArchiveFilesDTO> files = fileManipulationService.selectRecordFilesByFileCodes(fileCodes);
+            record.put("files", files);//加载被删除的文书
+            record.put("record", fileManipulationService.selectFunArchiveRecordsDTOById(files.get(0).getArchiverecordid()));//加载文书
+            reValue.put("value", record);
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

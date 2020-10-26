@@ -190,7 +190,12 @@
             AND ARCHIVETYPEID =  #{archivetypeid,jdbcType=DECIMAL}
         </if>
         <if test="isdelete != null">
-           AND ISDELETE =  #{isdelete,jdbcType=DECIMAL}
+            <if test="isdelete == 0">
+                AND ISDELETE &lt;=  1
+            </if>
+            <if test="isdelete != 0">
+                AND ISDELETE &gt;= 1
+            </if>
         </if>
         ORDER BY THISORDER ASC
     </select>

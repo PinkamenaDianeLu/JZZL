@@ -1,6 +1,7 @@
 package com.mapper.jzgl;
 
 import com.bean.jzgl.DTO.FunArchiveFilesDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface FunArchiveFilesDTOMapper {
      * @createTime  2020/10/15 17:58
      * @return  FunArchiveFilesDTO  |
       */
-     List<FunArchiveFilesDTO>  selectRecordFilesByRecordId(int archiverecordid);
+     List<FunArchiveFilesDTO>  selectRecordFilesByRecordId(@Param("archiverecordid") int archiverecordid,@Param("isdelete") Integer isdelete);
 
 
     List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String []filesCode);

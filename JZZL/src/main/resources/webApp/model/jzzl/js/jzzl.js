@@ -67,7 +67,7 @@ var loadArchiveIndex = (function () {
         div.append(thisTypeEle);
         $('#archiveIndex').append(div);
         //加载文书
-        loadRecords(thisType.id, div.id)
+        loadRecords(thisType.id)
     }
 
     /**
@@ -87,15 +87,15 @@ var loadArchiveIndex = (function () {
                 //判断被拖拽的文件类型
                 if ('fileSortZone' === zoneClass) {
                     //如果是文件图片
-                    let recordId=$(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
+                    let recordId = $(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
                     let eleB;//文件代码
-                    let operation=($(ui.item).index()>0);//判断是否是第一个
-                    if (operation){
-                        eleB=$(ui.item).prev('.v3');
-                        operation='after';
-                    }else{
-                        eleB=$(ui.item).next('.v3');
-                        operation='before';
+                    let operation = ($(ui.item).index() > 0);//判断是否是第一个
+                    if (operation) {
+                        eleB = $(ui.item).prev('.v3');
+                        operation = 'after';
+                    } else {
+                        eleB = $(ui.item).next('.v3');
+                        operation = 'before';
                     }
                     //对应的图片也移动位置
                     imgOrderMove(recordId, $(ui.item), eleB, operation);
@@ -104,20 +104,20 @@ var loadArchiveIndex = (function () {
                         loadFileImg(this, $(this).parent().parent().attr('id').replace('dd', ''));
                     })
                 }
-            },receive:function(event, ui){
+            }, receive: function (event, ui) {
                 //跨文书移动
                 //判断是其他文书移动至正在看的文书还是正在看的文书移动至其他文书
-                let recordId=$(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
-                let fileCode=$(ui.item).attr('id').replace('fileIndex','');//文件代码
+                let recordId = $(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
+                let fileCode = $(ui.item).attr('id').replace('fileIndex', '');//文件代码
                 if (+recordId === +recordImgLoadObj.getRecordId()) {
                     //其他文书移动至正在看 时
-                    let operation=($(ui.item).index()>0);//判断是否是第一个
-                    let prevFileCode=null;
+                    let operation = ($(ui.item).index() > 0);//判断是否是第一个
+                    let prevFileCode = null;
                     if (operation) {
-                        prevFileCode=$(ui.item).prev('.v3').attr('id').replace('fileIndex','')
+                        prevFileCode = $(ui.item).prev('.v3').attr('id').replace('fileIndex', '')
                     }
-                    recordImgLoadObj.fileMoveIn(fileCode,prevFileCode,operation);
-                }else {
+                    recordImgLoadObj.fileMoveIn(fileCode, prevFileCode, operation);
+                } else {
                     //正在看的文书移动至其他文书
                     recordImgLoadObj.fileMoveOut(fileCode)
                 }
@@ -126,24 +126,25 @@ var loadArchiveIndex = (function () {
 
         }).disableSelection();
     }
+
     /**
      * 加载具体文书目录
      * @author MrLu
      * @param typeId
-     * @param liD 所属的li的Id
      * @createTime  2020/10/9 11:28
      */
-    function loadRecords(typeId, liD) {
+    function loadRecords(typeId) {
         $.post({
             url: '/ArrangeArchives/getRecordsIndex',
             data: {id: typeId, isDelete: 0},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
+                    const liD = 'P' + typeId;
                     //索引信息
                     let indexing = {
                         i: 0,
-                        f: reV.value.length
+                        f: reV.value.length,
                     };
                     //拖拽域
                     let sortDiv = utils.createElement.createElement({
@@ -152,10 +153,11 @@ var loadArchiveIndex = (function () {
                         }
                     });
                     //循环文书
+
                     utils.functional.forEach(reV.value, function (thisRecord) {
                         const thisDD = createRecordDiv(thisRecord, indexing);
                         //判断划分拖拽域
-                        if ('ZL001' === thisDD.class||'ZL003' === thisDD.class) {
+                        if ('ZL001' === thisDD.class || 'ZL003' === thisDD.class) {
                             //卷首、文书目录 正常加载
                             $('#' + liD).append(thisDD);
                         } else if ('ZL002' === thisDD.class) {
@@ -166,8 +168,10 @@ var loadArchiveIndex = (function () {
                             sortDiv.append(thisDD);
                         }
                         indexing.i++; //此行必须在$('#' + liD).append的后边
+
+
                     });
-                    sortList('recordSortZone')
+                    sortList('recordSortZone');
                 } else {
                     throw  '该卷文书加载失败：' + typeId;
                 }
@@ -176,9 +180,22 @@ var loadArchiveIndex = (function () {
     }
 
     /**
+     * 创建文书目录
+     * @author MrLu
+     * @param typeId 文书所属的typeid
+     * @param records 文书数组 [{files,record}]
+     * @createTime  2020/10/26 16:00
+     * @return    |
+     */
+    function createRecordIndex(typeId, records) {
+
+
+    }
+
+    /**
      * 创建文书的div element
      * @author MrLu
-     * @param thisRecord 文书对象 数据库
+     * @param thisRecord 文书对象{files,record}
      * @param indexing {i 数组下标,f 数组长度} 可为空
      * @createTime  2020/10/12 9:37
      * @return  HTMLDivElement  |
@@ -219,7 +236,7 @@ var loadArchiveIndex = (function () {
             });
             recordImgLoadObj = recordImgLoad({
                 recordIdP: record.id,
-                 fileOrder: fileOrder
+                fileOrder: fileOrder
             });
         });
         return div;
@@ -238,15 +255,15 @@ var loadArchiveIndex = (function () {
                 class: 'fileSortZone',
             }
         });
-        //索引信息
+        //索引信息 不从0开始是为了在上下按钮计算时能与文书通用 i:n f:files.length + (n+1)
         let fileIndexing = {
-            i: 1,
-            f: files.length + 2
+            i: 2,
+            f: files.length + 3,
         };
         for (let thisFile of files) {
             //加载第三级别文书图片目录
-                //只有文书图片需要加载内容、文书封皮封底目录不需要子目录
-                div.append(createFilesDiv(thisFile, fileIndexing));
+            //只有文书图片需要加载内容、文书封皮封底目录不需要子目录
+            div.append(createFilesDiv(thisFile, fileIndexing));
             fileIndexing.i++;
         }
         sortList('fileSortZone');//加载拖拽域
@@ -273,7 +290,7 @@ var loadArchiveIndex = (function () {
             tag: 'div', attrs: {
                 id: key,
                 class: 'v3',
-                style:0===thisFile.filetype?'':'display:none'
+                style: 0 === thisFile.filetype ? '' : 'display:none'
             }
         });
         let p = utils.createElement.createElement({
@@ -305,14 +322,14 @@ var loadArchiveIndex = (function () {
             let thumbnail = document.getElementById('thumbnail' + filecode);
             recordImgLoadObj.jumpImg(thumbnail);
         } else {
-            let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'),  (thisFileIndex)=> {
+            let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'), (thisFileIndex) => {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
             })
             //点击另一个文书的图片  加载另一个文书
             recordImgLoadObj = recordImgLoad({
                 recordIdP: recordId,
-                 fileOrder: fileOrder,
-                callback:function () {
+                fileOrder: fileOrder,
+                callback: function () {
                     //获取图片缩略
                     let thumbnail = document.getElementById('thumbnail' + filecode);
                     recordImgLoadObj.jumpImg(thumbnail);
@@ -321,15 +338,15 @@ var loadArchiveIndex = (function () {
         }
     }
 
-     /**
+    /**
      * 移动右侧显示中的图片位置
      * @author MrLu
      * @param recordId 文书id
-      * @param  eleA 左侧列表中的元素A
-      * @param  eleB 左侧列表中的元素B
-      * @param operation 操作  [before|after]
+     * @param  eleA 左侧列表中的元素A
+     * @param  eleB 左侧列表中的元素B
+     * @param operation 操作  [before|after]
      * @createTime  2020/10/24 17:14
-      */
+     */
     function imgOrderMove(recordId, eleA, eleB, operation) {
         //判断是否还在原本的文文书内
         if (+recordId === +recordImgLoadObj.getRecordId()) {
@@ -353,7 +370,7 @@ var loadArchiveIndex = (function () {
         const thisRecord = recordsMap.get(ddId);
         let div = document.createElement('span');
         //判断卷类型
-        if ((!thisRecord) || !('ZL001' === thisRecord.recordscode ||'ZL003' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
+        if ((!thisRecord) || !('ZL001' === thisRecord.recordscode || 'ZL003' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
             //封皮//封底  没有操作按钮
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
@@ -603,11 +620,31 @@ var loadArchiveIndex = (function () {
      */
     function delFun(ddId) {
         event.stopPropagation();
-        $('#' + ddId).remove();
-        //回收站
-        recycleBinObj.addRecycleBin(ddId, recordsMap.get(ddId));
-        //从recordsMap中删除
-        recordsMap.delete(ddId);
+        //判断级别 v2为文书 v3为图片
+        let thisRecord = $('#' + ddId);
+        let isRecord = thisRecord.hasClass('v2');
+        if (isRecord) {
+            //是文书
+            //直接全部删除整个文书
+            recycleBinObj.addRecycleBin(ddId.replace('dd', ''), undefined);
+            thisRecord.remove();
+            recordsMap.delete(ddId);
+        } else {
+            //是图片
+            thisRecord = thisRecord.parent().parent('.v2');//变成文书
+            //判断是否是最后一张图片 如果是的话也删除文书
+            if (thisRecord.find('.v3').length === 1) {
+                if (confirm('这是该文书的最后一张图片！删除后该文书也会一起删除，是否继续？')) {
+                    delFun(thisRecord.attr('id'));
+                    filesMap.delete(ddId);
+                }
+            } else {
+                //删除单个文件
+                recycleBinObj.addRecycleBin(thisRecord.attr('id').replace('dd', ''), ddId.replace('fileIndex', ''));
+                $('#' + ddId).remove();
+                filesMap.delete(ddId);
+            }
+        }
     }
 
     /**
@@ -621,6 +658,67 @@ var loadArchiveIndex = (function () {
         recycleBinObj = recycleBin;
     }
 
+
+    /**
+     * 从回收站还原
+     * @author MrLu
+     @param recordId 被删除的文书的id 是纯的id
+     * @param fileCodes  被删除的文件的filecode 是纯的filecode 是个数组 方便与批量删除，当fileCodes为undefined时将删除整个文书
+     * @createTime  2020/10/26 15:33
+     * @return    |
+     */
+    function restored(recordId, fileCodes) {
+        console.log(fileCodes.toString())
+        //通过传递一个假的indexing  使createFilesDiv方法不需要再查找dom元素 降低损耗
+        let fileIndexing = {
+            i: 999,
+            f: 999
+        };
+        //判断未删除的列表中是否有这个文书
+        if (recordsMap.has('dd' + recordId)) {
+            //阳间还有这个文书
+            $.post({
+                url: '/ArrangeArchives/loadFilesByFileCodes',
+                data: {fileOrder: fileCodes},
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        console.log(reV.value);
+
+                        let lastFile = $('#dd' + recordId).find('.v3').last()
+                        utils.functional.forEach(reV.value, function (thisFile) {
+                            $('#dd' + recordId).find('fileSortZone').append(createFilesDiv(thisFile, fileIndexing));
+                        })
+                        reloadButton(lastFile);//重新加载最后一个文件的按钮
+                        reloadButton($('#dd' + recordId).find('.v3').last());
+                    } else {
+                        throw '文书还原失败';
+                    }
+                }
+            });
+        } else {
+            //阳间没有这个文书了
+            //还原文件
+            $.post({
+                url: '/FileManipulation/createRecycleRecordByFiles',
+                data: {filecodes: fileCodes},
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        let thisRecord = reV.value;
+                        const typeId = thisRecord.record.archivetypeid;
+                        let lastRecord = $('#P' + typeId).find('.recordSortZone').find('.v2').last()
+                        let thisRecordDiv = createRecordDiv(thisRecord, fileIndexing)//createRecordIndex方法接受数组 所以要把该文书对象放入一个数组中
+                        lastRecord.after(thisRecordDiv)
+                        reloadButton(lastRecord);//重新加载最后一个文书的按钮
+                        reloadButton($(thisRecordDiv));
+                    } else {
+                        throw '文件还原失败';
+                    }
+                }
+            });
+        }
+    }
 
     /**
      * 重新加载一个文书的按钮列表
@@ -695,7 +793,7 @@ var loadArchiveIndex = (function () {
                 let thisRecord = recordsMap.get(thisDDid);//通过key获取该文书的value
                 if ('ZL001' === thisRecord.recordscode) {
                     i = -9999;//卷宗封皮顺序永远是-1
-                }else if ('ZL003' === thisRecord.recordscode){
+                } else if ('ZL003' === thisRecord.recordscode) {
                     i = -9900;
                 } else if ('ZL002' === thisRecord.recordscode) {
                     i = 9999;//封底顺序永远是99999  最后一个
@@ -729,7 +827,7 @@ var loadArchiveIndex = (function () {
     }
 
     _loadArchiveIndex.prototype = {
-        loadIndex, loadRecycleBin, createRecordDiv, reloadButton, saveData
+        loadIndex, loadRecycleBin, createRecordDiv, reloadButton, saveData, restored
     };
     return _loadArchiveIndex;
 })();

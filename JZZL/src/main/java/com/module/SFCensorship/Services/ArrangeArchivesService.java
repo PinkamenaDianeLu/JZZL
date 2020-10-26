@@ -102,7 +102,7 @@ public interface ArrangeArchivesService {
      * @createTime  2020/10/15 17:58
      * @return  FunArchiveFilesDTO  |
      */
-    List<FunArchiveFilesDTO>  selectRecordFilesByRecordId(int archiverecordid);
+    List<FunArchiveFilesDTO>  selectRecordFilesByRecordId(int archiverecordid,Integer isdelete);
      /**
      * 根据文件代码查找文件列表
      * @author MrLu

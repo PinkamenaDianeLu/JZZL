@@ -90,8 +90,8 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid) {
-        return funArchiveFilesDTOMapper.selectRecordFilesByRecordId(archiverecordid);
+    public List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid,Integer isdelete) {
+        return funArchiveFilesDTOMapper.selectRecordFilesByRecordId(archiverecordid,isdelete);
     }
 
     @Override

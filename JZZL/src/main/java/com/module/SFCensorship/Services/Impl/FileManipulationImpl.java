@@ -1,14 +1,12 @@
 package com.module.SFCensorship.Services.Impl;
 
-import com.bean.jzgl.DTO.FunArchiveCoverDTO;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveSFCDTO;
-import com.bean.jzgl.DTO.FunCaseInfoDTO;
+import com.bean.jzgl.DTO.*;
 import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.FileManipulationService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author MrLu
@@ -43,4 +41,9 @@ public class FileManipulationImpl implements FileManipulationService {
     public FunArchiveRecordsDTO selectFunArchiveRecordsDTOById (Integer recordId){
         return  funArchiveRecordsDTOMapper.selectByPrimaryKey(recordId);
     }
+    @Override
+    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode) {
+        return funArchiveFilesDTOMapper.selectRecordFilesByFileCodes(filesCode);
+    }
+
 }
