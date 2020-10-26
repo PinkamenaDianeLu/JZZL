@@ -46,7 +46,7 @@ input[type=checkbox]{ margin: 0;}
 .r_hover p{ float: left; width: 100%; height: 35px; line-height: 35px; color: #909090; padding: 0px 20px;}
 .r_hover p:nth-child(1){ border-bottom: 1px solid #e1e1e1; margin-bottom: 15px; line-height: 50px; height: 50px;}
 
-.index-main{position:fixed; display: inline-block; width:100%; left:0; height:calc(100% - 115px); margin-top: 80px; padding: 0 0px 15px; overflow-y: auto; }
+.index-main{position:fixed; display: inline-block; width:100%; left:0; height:calc(100% - 115px); padding: 0 0px 15px; overflow-y: auto; }
 .index-main1{display: inline-block; width:1360px; background:#fff; margin: 0px auto; position: relative;}
 /********tab切换************/
 .in_tab .nav-tabs{ float:inherit; width: 100%; margin-top: 10px; padding: 0px 10px 0px 30px;}
@@ -131,8 +131,10 @@ table th,table td{text-align: center; font-size: 14px;}
 .l_nav li dt:hover .u_up,.l_nav li dd:hover .u_up,.l_nav li.active dt .u_up{border-color:#fff transparent transparent ;}
 
 .l_nav li.v1 dt:hover .tools,.l_nav li.v1 dd:hover .tools{ display: block;}*/
-.l_nav li .v3 p{ padding-left:90px;}
-.l_nav.delt li p{text-decoration:line-through; color:#C0C0C0;}
+.delt .v3 p{ padding-left:50px;}
+.delt .recordname,.delt .v3 p a{text-decoration:line-through; color:#C0C0C0;}
+.delt .recordname{padding-left:10px;}
+
 
 .tools{ position: absolute; left:0px; top:32px; z-index: 99; width: 100%; height: 40px; padding: 0px 15px; background: #124eb8;}
 .tools a{ background: #0c3e95; border: 1px solid #0b3786; display:inline-block; width: 30px; height: 30px; float: left; margin: 5px 0;}
@@ -144,9 +146,9 @@ table th,table td{text-align: center; font-size: 14px;}
 .tools a i.Down{background-position:-485px -58px;}
 .tools a i.aedit{background-position:-526px -58px;}
 .tools a i.delete{background-position:-46px -56px;}
-.hy_a{ position: absolute; left:-3px; top:-2px; z-index: 99;}
-.hy_a a{ display: inline-block;background: #124eb8 ; padding: 0px 5px; margin: 0px 8px; line-height: 20px; height: 20px; font-size: 12px; border-radius: 3px; color:#fff;}
-ul.l_nav li dd:hover .hy_a a{ text-decoration: none; background: #fff; color: #124eb8;}
+.delt .hy_a{ position: absolute; left:-3px; top:-2px; z-index: 99;}
+.delt .hy_a a{ display: inline-block;background: #124eb8 ; padding: 0px 5px; margin: 0px 8px; line-height: 20px; height: 20px; font-size: 12px; border-radius: 3px; color:#fff;}
+.delt .v3 .hy_a a{ text-decoration: none; background: #124eb8; color: #fff;}
 
 .c_right{position:absolute; right:0px; top:0; width:1030px;height:calc(100% - 70px); margin-top: 60px;}
 .right_title a{display: inline-block; width: 58px; height: 52px; background:rgba(0,0,0,0.3); border-radius: 3px; border: 1px solid rgba(72,71,71,0.6); margin: 5px 0px 5px 1px; color: #d3d3d3; font-size: 12px; text-align: center;}

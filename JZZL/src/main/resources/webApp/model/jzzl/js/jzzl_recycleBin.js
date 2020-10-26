@@ -40,7 +40,7 @@ var recycleBin = (function () {
         let div = document.createElement('div');
         div.id = 'recycleP' + thisType.id;
         let thisTypeEle = utils.createElement.createElement({
-            tag: 'p', attrs: {
+            tag: 'div', attrs: {
                 id: 'recycleTypeTitle' + thisType.id
             }, arg: '<i class="u_up"></i><a><p>' + thisType.archivetypecn + '</p>'
         });
