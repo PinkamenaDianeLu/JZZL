@@ -10,21 +10,15 @@
 
 var loadArchiveIndex = (function () {
     let seqid;//送检次序id
-    /*
-    *文书map,因为文书是多卷异步加载的，所以该map中的顺序并不可靠
-    *key:dd+文书id value:{recordname(文书名),recordscode(文书代码),archivetypeid(文书类别id)}
-    * */
-    let recordsMap;//
-    /*
-    key: filecode
-       id: file的id,
-    * filename: 文件名
-      fileurl: 文件图片链接
-      archiverecordid: 文件所属文书id
-    * */
+    /*文书map,因为文书是多卷异步加载的，所以该map中的顺序并不可靠
+    *key:dd+文书id value:{id(文书id),recordname(文书名),recordscode(文书代码),archivetypeid(文书类别id)}* */
+    let recordsMap;
+    /*key: filecode,value:{id: file的id,filename: 文件名,fileurl: 文件图片链接,archiverecordid: 文件所属文书id}*/
     let filesMap;//同样的文书图片map
     let recycleBinObj;//回收站对象
     let recordImgLoadObj;//图片加载对象
+
+    let progressLength=0;
 
     function loadIndex(id) {
         seqid = id;
@@ -180,19 +174,6 @@ var loadArchiveIndex = (function () {
     }
 
     /**
-     * 创建文书目录
-     * @author MrLu
-     * @param typeId 文书所属的typeid
-     * @param records 文书数组 [{files,record}]
-     * @createTime  2020/10/26 16:00
-     * @return    |
-     */
-    function createRecordIndex(typeId, records) {
-
-
-    }
-
-    /**
      * 创建文书的div element
      * @author MrLu
      * @param thisRecord 文书对象{files,record}
@@ -219,6 +200,7 @@ var loadArchiveIndex = (function () {
 
         //文书缓存至recordsMap  此行必须在createButtons()方法上
         recordsMap.set(key, {
+            id: record.id,
             recordname: record.recordname,
             recordscode: record.recordscode,
             archivetypeid: record.archivetypeid
@@ -662,13 +644,12 @@ var loadArchiveIndex = (function () {
     /**
      * 从回收站还原
      * @author MrLu
-     @param recordId 被删除的文书的id 是纯的id
-     * @param fileCodes  被删除的文件的filecode 是纯的filecode 是个数组 方便与批量删除，当fileCodes为undefined时将删除整个文书
+     @param recordId 要还原的文书的id 是纯的id
+     * @param fileCodes  要还原的文件的filecode 是纯的filecode 是个数组 方便批量还原
      * @createTime  2020/10/26 15:33
      * @return    |
      */
     function restored(recordId, fileCodes) {
-        console.log(fileCodes.toString())
         //通过传递一个假的indexing  使createFilesDiv方法不需要再查找dom元素 降低损耗
         let fileIndexing = {
             i: 999,
@@ -687,7 +668,7 @@ var loadArchiveIndex = (function () {
 
                         let lastFile = $('#dd' + recordId).find('.v3').last()
                         utils.functional.forEach(reV.value, function (thisFile) {
-                            $('#dd' + recordId).find('fileSortZone').append(createFilesDiv(thisFile, fileIndexing));
+                            $('#dd' + recordId).find('.fileSortZone').append(createFilesDiv(thisFile, fileIndexing));
                         })
                         reloadButton(lastFile);//重新加载最后一个文件的按钮
                         reloadButton($('#dd' + recordId).find('.v3').last());
@@ -738,25 +719,26 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/13 15:44
      */
     function saveData() {
-        const archiveTypeList = $('#archiveIndex').find('li');
+        const archiveTypeList = $('#archiveIndex').find('.v1');
         if (archiveTypeList.length < 1) {
             alert('未正确加载文书目录，无法保存！');
             throw  '未正确加载文书目录，无法保存！';
         }
-
-        $.post({
+        saveArchiveIndexSortByType(archiveTypeList, 'newSeqId');
+//创建新的整理次序
+      /*  $.post({
             url: '/ArrangeArchives/createNewSeq',
             data: {seqid},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     const newSeqId = reV.value;
-                    saveArchiveIndexSortByType(archiveTypeList, newSeqId);
+
                 } else {
                     throw  '未能创建新的整理记录';
                 }
             }
-        });
+        });*/
 
 
     }
@@ -764,45 +746,23 @@ var loadArchiveIndex = (function () {
     /**
      * 以文书类型保存整理顺序
      * @author MrLu
-     * @param archiveTypeList li的list
+     * @param archiveTypeList 文书类型的list
      * @param newSeqId 新建的整理次序id
      * @createTime  2020/10/13 17:45
      * @return    |
      */
     function saveArchiveIndexSortByType(archiveTypeList, newSeqId) {
-        /**
-         *
-         * @author MrLu
-         * @param id 文书id
-         * @param name 文书名
-         * @param typeid typeId
-         * @param order 文书顺序
-         * @createTime  2020/10/13 16:12
-         */
-        const saveD = function (id, name, typeid, order) {
-            this.id = id;
-            this.name = name;
-            this.typeid = typeid;
-            this.order = order;
-        };
-        utils.functional.forEach(archiveTypeList, function (thisType) {
-            let saveData = [];//用以存储saveD的对象数组
-            const oriTypeId = $(thisType).attr('id').replace('P', '');
-            $.each($(thisType).find('dd'), function (i, v) {
-                let thisDDid = $(v).attr('id');//获取文书的id  该id也是recordsMap中的key
-                let thisRecord = recordsMap.get(thisDDid);//通过key获取该文书的value
-                if ('ZL001' === thisRecord.recordscode) {
-                    i = -9999;//卷宗封皮顺序永远是-1
-                } else if ('ZL003' === thisRecord.recordscode) {
-                    i = -9900;
-                } else if ('ZL002' === thisRecord.recordscode) {
-                    i = 9999;//封底顺序永远是99999  最后一个
-                }
-                saveData[saveData.length] = new saveD(thisDDid.replace('dd', ''), thisRecord.recordname, thisRecord.archivetypeid, i);
 
-            });
+        utils.functional.forEach(archiveTypeList, function (thisType) {
+
+            let saveData= getRecordIndexSort(thisType);
+            console.log(saveData);
+            progressBar();
+            const oriTypeId = $(thisType).attr('id').replace('P', '');
+
+            recycleBinObj.saveRecycleIndexSortByType(oriTypeId, oriTypeId);
             //数据保存到后台
-            $.post({
+           /* $.post({
                 url: '/ArrangeArchives/saveArchiveIndexSortByType',
                 data: {
                     saveData: JSON.stringify(saveData),
@@ -818,8 +778,68 @@ var loadArchiveIndex = (function () {
                     } else {
                     }
                 }
-            });
+            });*/
         })
+    }
+    /**
+     * @author MrLu
+     * @param id 文书id
+     * @param name 文书名
+     * @param typeid typeId
+     * @param filecodes 文书内的文件
+     * @param order 文书顺序
+     * @createTime  2020/10/13 16:12
+     */
+    const saveD = function (id, name, typeid, filecodes, order) {
+        this.id = id;
+        this.name = name;
+        this.typeid = typeid;
+        this.filecodes = filecodes.toString();
+        this.order = order;
+
+    };
+     /**
+     * 通过文书类型的ele获取该文书类型中所有文书的顺序数据
+     * @author MrLu
+     * @param thisType ($('#archiveIndex').find('.v1'))
+     * @createTime  2020/10/27 10:07
+     * @return  [saveD]  |
+      */
+    function getRecordIndexSort(thisType) {
+        let saveData = [];//用以存储saveD的对象数组
+        $.each($(thisType).find('.v2'), function (i, v) {
+            let thisDDid = $(v).attr('id');//获取文书的id  该id也是recordsMap中的key
+            let thisRecord = recordsMap.get(thisDDid);//通过key获取该文书的value
+            if ('ZL001' === thisRecord.recordscode) {
+                i = -9999;//卷宗封皮顺序永远是第一个
+            } else if ('ZL003' === thisRecord.recordscode) {
+                i = -9900;//文书目录是第二个
+            } else if ('ZL002' === thisRecord.recordscode) {
+                i = 9999;//封底顺序永远是99999  最后一个
+            }
+            //获取文书内文件的顺序
+            let fileCodes = utils.functional.map($('#' + thisDDid).find('.v3'), function (thisFileEle) {
+                return $(thisFileEle).attr('id').replace('fileIndex','');
+            });
+            saveData[saveData.length] = new saveD(thisRecord.id, thisRecord.recordname, thisRecord.archivetypeid,fileCodes, i);
+        });
+        return saveData;
+    }
+
+     /**
+     * 涨进度条
+     * @author MrLu
+     * @createTime  2020/10/27 11:34
+      */
+    function progressBar() {
+        progressLength=progressLength+8.4;
+        $('#progressBar').css('width',progressLength+'%').html(progressLength+'%');
+        if (progressLength > 100) {
+            layer.closeAll()
+            //初始化进度条
+            progressLength=0;
+            $('#progressBar').css('width',0+'%').html(0+'%');
+        }
     }
 
     function _loadArchiveIndex() {
@@ -827,7 +847,7 @@ var loadArchiveIndex = (function () {
     }
 
     _loadArchiveIndex.prototype = {
-        loadIndex, loadRecycleBin, createRecordDiv, reloadButton, saveData, restored
+        loadIndex, loadRecycleBin, reloadButton, saveData, restored,getRecordIndexSort,progressBar
     };
     return _loadArchiveIndex;
 })();
@@ -852,9 +872,11 @@ $(function () {
 
                 //完成整理按钮
                 $('#saveData').click(function () {
+
                     if (confirm('确定完成整理？')) {
                         //加载进度条
                         layer.open({
+                            id:10086,
                             type: 1,
                             title: false,
                             shade: [0.8, '#393D49'],
@@ -862,7 +884,7 @@ $(function () {
                             area: ['453px', '170px'],
                             content: $('#progressBarDiv')
                         });
-                        // lai.saveData();
+                        lai.saveData();
                     }
                 })
             } else {

@@ -44,7 +44,7 @@ var recordImgLoad = (function () {
                                 url = '/model/jzzl/jzml.html';
                                 break;
                             case 3://卷尾
-                                url = '/model/jzzl/jzfp.html';
+                                url = '/model/jzzl/jzfd.html';
                                 break;
                         }
                         recordImgLoad.pValue = thisFile;//把id加上

@@ -278,11 +278,12 @@ public class ArrangeArchivesController extends BaseFactory {
     public String loadFilesByFileCodes(String fileOrder) {
         JSONObject reValue = new JSONObject();
         try {
-            if (!StringUtils.isEmpty(fileOrder)) {
-                String[] fileOrders = fileOrder.split(",");
-                //该文书没有图片了
-                reValue.put("value", arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders));
-            }
+            if (StringUtils.isEmpty(fileOrder)) {
+                throw new  Exception("给一个? 自己体会");
+              }
+            String[] fileOrders = fileOrder.split(",");
+            //该文书没有图片了
+            reValue.put("value", arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders));
 
             reValue.put("message", "success");
         } catch (Exception e) {
