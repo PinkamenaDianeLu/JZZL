@@ -4,6 +4,7 @@ import com.bean.jzgl.DTO.FunArchiveFilesDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FunArchiveFilesDTOMapper {
 
@@ -25,7 +26,7 @@ public interface FunArchiveFilesDTOMapper {
      List<FunArchiveFilesDTO>  selectRecordFilesByRecordId(@Param("archiverecordid") int archiverecordid,@Param("isdelete") Integer isdelete);
 
 
-    List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String []filesCode);
+    List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(Map<String,Object> map);
      /**
      * 根据文件代码查询该文件的历史版本
      * @author MrLu
@@ -38,10 +39,10 @@ public interface FunArchiveFilesDTOMapper {
      /**
      * 根据文书代码找到正在显示的文书
      * @author MrLu
-     * @param filecode 文书代码
+     * @param map {filecode:文件代码,archiverecordid:文书id}
      * @createTime  2020/10/22 9:32
      * @return  FunArchiveFilesDTO  |
       */
-    FunArchiveFilesDTO selectFilesByFileCode(String filecode);
+    FunArchiveFilesDTO selectFilesByFileCode(Map<String,Object> map);
 
 }

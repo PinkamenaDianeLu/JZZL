@@ -106,11 +106,12 @@ public interface ArrangeArchivesService {
      /**
      * 根据文件代码查找文件列表
      * @author MrLu
-     * @param
+      * @param  filesCode  文件代码
+      * @param archiverecordid  文书id
      * @createTime  2020/10/21 11:24
      * @return    |
       */
-    List<FunArchiveFilesDTO>  selectRecordFilesByFileCodes(String[] filesCode);
+    List<FunArchiveFilesDTO>  selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid);
 
     /**
      * 根据文件代码查询该文件的历史版本
@@ -121,5 +122,39 @@ public interface ArrangeArchivesService {
      */
     List<FunArchiveFilesDTO> selectFilesHistory(String filecode);
 
-    FunArchiveFilesDTO  selectFilesByFileCode(String filecode);
+     /**
+     * 根据文书代码查询显示的文书
+     * @author MrLu
+     * @param  filecode  文件代码
+      * @param archiverecordid  文书id
+     * @createTime  2020/10/27 14:52
+     * @return  FunArchiveFilesDTO  |
+      */
+    FunArchiveFilesDTO  selectFilesByFileCode(String filecode,int archiverecordid);
+     /**
+     * 新建文件
+     * @author MrLu
+     * @param record
+     * @createTime  2020/10/27 14:27
+     * @return  void  |
+      */
+    void insertFunArchiveFilesDTO(FunArchiveFilesDTO record);
+
+    /**
+     * 查询该文书的下一个版本
+     * @author MrLu
+     * @param id 文书od
+     * @createTime  2020/10/27 14:51
+     * @return  FunArchiveRecordsDTO  |
+     */
+    FunArchiveRecordsDTO selectNextRecord(Integer id);
+
+     /**
+     * 更新文书
+     * @author MrLu
+     * @param record
+     * @createTime  2020/10/27 14:57
+     * @return void   |
+      */
+    void updateFunArchiveRecordsById(FunArchiveRecordsDTO record);
 }

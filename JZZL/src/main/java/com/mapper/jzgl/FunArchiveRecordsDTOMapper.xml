@@ -19,17 +19,26 @@
         <result column="ISDELETE" jdbcType="DECIMAL" property="isdelete"/>
         <result column="ISAZXT" jdbcType="DECIMAL" property="isazxt"/>
         <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid"/>
-        <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
-        <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
+        <result column="AUTHOR" jdbcType="VARCHAR" property="author"/>
+        <result column="AUTHORID" jdbcType="DECIMAL" property="authorid"/>
+        <result column="JCYRECORDCODE" jdbcType="VARCHAR" property="jcyrecordcode"/>
+        <result column="PREVID" jdbcType="DECIMAL" property="previd"/>
     </resultMap>
     <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,
+     THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
+    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from FUN_ARCHIVE_RECORDS
         where ID = #{id,jdbcType=DECIMAL}
+    </select>
+    <select id="selectNextRecord"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_RECORDS
+        WHERE SCBJ=0 AND PREVID=#{id,jdbcType=DECIMAL}
     </select>
     <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
         <selectKey resultType="INTEGER" order="BEFORE"
@@ -52,21 +61,14 @@
             ARCHIVESFCID,
             AUTHOR,
             AUTHORID,
-            <if test="ajbh != null">
-                AJBH,
-            </if>
-            <if test="thisorder != null">
-                THISORDER,
-            </if>
-            <if test="recordname != null">
-                RECORDNAME,
-            </if>
-
+            AJBH,
+            THISORDER,
+            RECORDNAME,
+            ISDELETE,
+            JCYRECORDCODE,
+            PREVID,
             <if test="recordstyle != null">
                 RECORDSTYLE,
-            </if>
-            <if test="isdelete != null">
-                ISDELETE,
             </if>
 
         </trim>
@@ -82,25 +84,19 @@
             #{archiveseqid,jdbcType=DECIMAL},
             #{recordscode,jdbcType=VARCHAR},
             #{isazxt,jdbcType=DECIMAL},
-                #{archivesfcid,jdbcType=DECIMAL},
+            #{archivesfcid,jdbcType=DECIMAL},
             #{author,jdbcType=VARCHAR},
             #{authorid,jdbcType=DECIMAL},
-            <if test="ajbh != null">
-                #{ajbh,jdbcType=VARCHAR},
-            </if>
-            <if test="thisorder != null">
-                #{thisorder,jdbcType=DECIMAL},
-            </if>
-            <if test="recordname != null">
-                #{recordname,jdbcType=VARCHAR},
-            </if>
-
+            #{ajbh,jdbcType=VARCHAR},
+            #{thisorder,jdbcType=DECIMAL},
+            #{recordname,jdbcType=VARCHAR},
+            #{isdelete,jdbcType=DECIMAL},
+            #{jcyrecordcode,jdbcType=VARCHAR},
+            #{previd,jdbcType=DECIMAL},
             <if test="recordstyle != null">
                 #{recordstyle,jdbcType=VARCHAR},
             </if>
-            <if test="isdelete != null">
-                #{isdelete,jdbcType=DECIMAL},
-            </if>
+
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
@@ -134,7 +130,7 @@
                 ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
             </if>
             <if test="isdelete != null">
-                ISDELETE =  #{isdelete,jdbcType=DECIMAL},
+                ISDELETE = #{isdelete,jdbcType=DECIMAL},
             </if>
         </set>
         where ID = #{id,jdbcType=DECIMAL}
@@ -187,11 +183,11 @@
         from FUN_ARCHIVE_RECORDS
         where SCBJ=0
         <if test="archivetypeid != null">
-            AND ARCHIVETYPEID =  #{archivetypeid,jdbcType=DECIMAL}
+            AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
         </if>
         <if test="isdelete != null">
             <if test="isdelete == 0">
-                AND ISDELETE &lt;=  1
+                AND ISDELETE &lt;= 1
             </if>
             <if test="isdelete != 0">
                 AND ISDELETE &gt;= 1

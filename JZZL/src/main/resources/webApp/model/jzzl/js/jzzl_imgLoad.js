@@ -20,7 +20,7 @@ var recordImgLoad = (function () {
     function loadFilesByRecord(recordId, fileOrder, callback) {
         $.post({
             url: '/ArrangeArchives/loadFilesByFileCodes',
-            data: {fileOrder: fileOrder.join(',')},
+            data: {fileOrder: fileOrder.join(','),recordid:recordId},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -300,15 +300,16 @@ var recordImgLoad = (function () {
     /**
      * 移入
      * @author MrLu
+     * @param recordid 文书id
      * @param filecode
      * @param prevFileCode 上一个文书代码 当operation为false时候 值为null
      * @param operation boolean
      * @createTime  2020/10/21 16:00
      */
-    function fileMoveIn(filecode, prevFileCode, operation) {
+    function fileMoveIn(recordid,filecode, prevFileCode, operation) {
         $.post({
             url: '/ArrangeArchives/loadFilesByFileCode',
-            data: {filecode},
+            data: {filecode,recordid},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {

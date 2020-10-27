@@ -95,8 +95,11 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode) {
-        return funArchiveFilesDTOMapper.selectRecordFilesByFileCodes(filesCode);
+    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("filecode",filesCode);
+        map.put("archiverecordid",archiverecordid);
+        return funArchiveFilesDTOMapper.selectRecordFilesByFileCodes(map);
     }
 
     @Override
@@ -105,7 +108,24 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public FunArchiveFilesDTO selectFilesByFileCode(String filecode) {
-        return funArchiveFilesDTOMapper.selectFilesByFileCode(filecode);
+    public FunArchiveFilesDTO selectFilesByFileCode(String filecode,int archiverecordid) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("filecode",filecode);
+        map.put("archiverecordid",archiverecordid);
+        return funArchiveFilesDTOMapper.selectFilesByFileCode(map);
     }
+
+    @Override
+    public void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) {
+        funArchiveFilesDTOMapper.insert(record);
+    }
+
+    @Override
+    public FunArchiveRecordsDTO selectNextRecord(Integer id) {
+        return funArchiveRecordsDTOMapper.selectNextRecord(id);
+    }
+    @Override
+    public void updateFunArchiveRecordsById(FunArchiveRecordsDTO record){
+        funArchiveRecordsDTOMapper.updateByPrimaryKeySelective(record);
+    };
 }

@@ -19,6 +19,15 @@ public interface FunArchiveRecordsDTOMapper {
 
     FunArchiveRecordsDTO selectByPrimaryKey(Integer id);
 
+     /**
+     * 查询该文书的下一个版本
+     * @author MrLu
+     * @param id 文书od
+     * @createTime  2020/10/27 14:51
+     * @return  FunArchiveRecordsDTO  |
+      */
+    FunArchiveRecordsDTO selectNextRecord(Integer id);
+
     int updateByPrimaryKeySelective(FunArchiveRecordsDTO record);
 
      /**

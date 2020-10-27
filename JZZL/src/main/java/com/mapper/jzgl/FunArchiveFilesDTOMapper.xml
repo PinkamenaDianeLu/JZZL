@@ -239,17 +239,18 @@
     </if>
     AND ISSHOW=0 ORDER BY THISORDER ASC
   </select>
-<select id="selectRecordFilesByFileCodes"  resultMap="BaseResultMap">
+<select id="selectRecordFilesByFileCodes" parameterType="map" resultMap="BaseResultMap">
   SELECT
   <include refid="Base_Column_List" />
   FROM FUN_ARCHIVE_FILES
-  WHERE SCBJ=0 AND ISSHOW=0 AND FILECODE IN
-  <foreach collection="array" item="item" separator=","
+  WHERE SCBJ=0 AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+   AND FILECODE IN
+  <foreach collection="filecode" item="item" separator=","
            open="(" close=")">
     #{item,jdbcType=VARCHAR}
   </foreach>
   ORDER BY DECODE(filecode,
-  <foreach collection="array" item="item" index="index" separator=",">
+  <foreach collection="filecode" item="item" index="index" separator=",">
     #{item,jdbcType=VARCHAR},#{index,jdbcType=DECIMAL}
   </foreach>
   )
@@ -261,9 +262,10 @@
     ORDER BY ISSHOW DESC
   </select>
 
-  <select id="selectFilesByFileCode"  parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectFilesByFileCode"  parameterType="map" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
     FROM FUN_ARCHIVE_FILES
-    WHERE SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}  AND ISSHOW=0
+    WHERE SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
+     AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
   </select>
 </mapper>

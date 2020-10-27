@@ -9,6 +9,7 @@ import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
 import com.module.SFCensorship.Services.FileManipulationService;
 import com.module.SystemManagement.Services.UserService;
+import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -119,15 +120,15 @@ public class FileManipulationController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "按照文件创建回收站文书", operType = OperLog.type.SELECT)
-    public String createRecycleRecordByFiles(String filecodes) {
+    public String createRecycleRecordByFiles(String filecodes,String recordid) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(filecodes)) {
+            if (StringUtils.isEmpty(filecodes)||StringUtils.isEmpty(recordid)) {
                 throw new Exception("你传nm呢？");
             }
             JSONObject record = new JSONObject();
             String[] fileCodes = filecodes.split(",");
-            List<FunArchiveFilesDTO> files = fileManipulationService.selectRecordFilesByFileCodes(fileCodes);
+            List<FunArchiveFilesDTO> files = fileManipulationService.selectRecordFilesByFileCodes(fileCodes, StringUtil.StringToInteger(recordid));
             record.put("files", files);//加载被删除的文书
             record.put("record", fileManipulationService.selectFunArchiveRecordsDTOById(files.get(0).getArchiverecordid()));//加载文书
             reValue.put("value", record);

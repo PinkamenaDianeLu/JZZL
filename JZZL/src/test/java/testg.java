@@ -5,14 +5,15 @@ import com.config.annotations.CodeTableMapper;
 import com.util.EnumsUtil;
 import org.junit.Test;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author MrLu
@@ -114,5 +115,26 @@ public class testg {
             map.put(field.toString().replace("class com.enums.Enums$","").toLowerCase(),field);
         }
         System.out.println(map.size());
+    }
+    @Test
+    public void StringsInt(){
+        String str = "asdsadasdgfefqf5151612345";
+
+        //方法一：使用toCharArray()方法进行字符串拆分，循环遍历输出数字
+        char[] demo = str.toCharArray();
+        Stream<Character> cStream = IntStream.range(0, demo.length).mapToObj(i -> demo[i]);
+        String collect = cStream
+                .filter(Character::isDigit)
+                .map(String::valueOf)
+                .collect(Collectors.joining());
+        System.out.println(collect);
+        char[] cs = str.toCharArray();
+        StringBuffer a=new StringBuffer();
+        for (char c : cs) {
+            if (Character.isDigit(c)){
+                a.append(c);
+            }
+        }
+        System.out.println(a);
     }
 }

@@ -110,7 +110,7 @@ var loadArchiveIndex = (function () {
                     if (operation) {
                         prevFileCode = $(ui.item).prev('.v3').attr('id').replace('fileIndex', '')
                     }
-                    recordImgLoadObj.fileMoveIn(fileCode, prevFileCode, operation);
+                    recordImgLoadObj.fileMoveIn(recordId,fileCode, prevFileCode, operation);
                 } else {
                     //正在看的文书移动至其他文书
                     recordImgLoadObj.fileMoveOut(fileCode)
@@ -660,7 +660,7 @@ var loadArchiveIndex = (function () {
             //阳间还有这个文书
             $.post({
                 url: '/ArrangeArchives/loadFilesByFileCodes',
-                data: {fileOrder: fileCodes},
+                data: {fileOrder: fileCodes,recordid:recordId},
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
@@ -682,7 +682,7 @@ var loadArchiveIndex = (function () {
             //还原文件
             $.post({
                 url: '/FileManipulation/createRecycleRecordByFiles',
-                data: {filecodes: fileCodes},
+                data: {filecodes: fileCodes,recordid:recordId},
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
@@ -724,21 +724,23 @@ var loadArchiveIndex = (function () {
             alert('未正确加载文书目录，无法保存！');
             throw  '未正确加载文书目录，无法保存！';
         }
-        saveArchiveIndexSortByType(archiveTypeList, 'newSeqId');
+
 //创建新的整理次序
-      /*  $.post({
+        $.post({
             url: '/ArrangeArchives/createNewSeq',
             data: {seqid},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     const newSeqId = reV.value;
-
+                    saveArchiveIndexSortByType(archiveTypeList, newSeqId);
                 } else {
+                    layer.closeAll();
+                    layer.alert('未能成功验证您的身份信息，请重新登录！')
                     throw  '未能创建新的整理记录';
                 }
             }
-        });*/
+        });
 
 
     }
@@ -755,14 +757,12 @@ var loadArchiveIndex = (function () {
 
         utils.functional.forEach(archiveTypeList, function (thisType) {
 
-            let saveData= getRecordIndexSort(thisType);
+            let saveData= getRecordIndexSort(thisType);//获取数据
             console.log(saveData);
-            progressBar();
-            const oriTypeId = $(thisType).attr('id').replace('P', '');
 
-            recycleBinObj.saveRecycleIndexSortByType(oriTypeId, oriTypeId);
+            const oriTypeId = $(thisType).attr('id').replace('P', '');//文书类型id
             //数据保存到后台
-           /* $.post({
+            $.post({
                 url: '/ArrangeArchives/saveArchiveIndexSortByType',
                 data: {
                     saveData: JSON.stringify(saveData),
@@ -773,12 +773,13 @@ var loadArchiveIndex = (function () {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
                         const newTypeId = reV.value;
+                        progressBar();
                         recycleBinObj.saveRecycleIndexSortByType(oriTypeId, newTypeId);
                         console.log('   保存成功')
                     } else {
                     }
                 }
-            });*/
+            });
         })
     }
     /**

@@ -241,7 +241,7 @@ var recycleBin = (function () {
                 //有此文书啦
                 $.post({
                     url: '/ArrangeArchives/loadFilesByFileCodes',
-                    data: {fileOrder: fileCodes},
+                    data: {fileOrder: fileCodes,recordid:recordId},
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {
@@ -259,7 +259,7 @@ var recycleBin = (function () {
                 //没有文书 新建文书目录再append
                 $.post({
                     url: '/FileManipulation/createRecycleRecordByFiles',
-                    data: {filecodes: fileCodes},
+                    data: {filecodes: fileCodes,recordid:recordId},
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {
@@ -355,9 +355,8 @@ var recycleBin = (function () {
             })
             console.log('回收站：')
             console.log(saveData)
-            archiveIndex.progressBar();
 
-            /*   $.post({
+               $.post({
                    url: '/ArrangeArchives/saveRecycleIndexSortByType',
                    data: {
                        saveData: JSON.stringify(saveData),
@@ -366,11 +365,13 @@ var recycleBin = (function () {
                    success: (re) => {
                        const reV = JSON.parse(re);
                        if ('success' === reV.message) {
+                           archiveIndex.progressBar();//进度条前进
                            console.log('回收站保存成功')
                        } else {
+                           console.log('回收站保存失败：'+oriTypeId)
                        }
                    }
-               });*/
+               });
         } else {
 
             archiveIndex.progressBar();

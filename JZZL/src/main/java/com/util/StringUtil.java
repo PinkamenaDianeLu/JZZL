@@ -4,6 +4,10 @@ package com.util;/**
  * @describe
  */
 
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 /**
  * @author MrLu
  * @createTime 2020/10/3 13:49
@@ -27,6 +31,23 @@ public class StringUtil {
             throw new Exception("第一个字节非字母，无法转化！");
         }
         return String.valueOf(cs);
+    }
+
+     /**
+     * 提取字符串中的数字转换为数字  （12ww2->122）
+     * @author MrLu
+     * @param str 要提取的字符串
+     * @createTime  2020/10/27 16:41
+     * @return Integer   |
+      */
+    public static Integer StringToInteger(String str){
+        char[] demo = str.toCharArray();
+        Stream<Character> cStream = IntStream.range(0, demo.length).mapToObj(i -> demo[i]);
+        String collect = cStream
+                .filter(Character::isDigit)
+                .map(String::valueOf)
+                .collect(Collectors.joining());
+        return  Integer.parseInt(collect);
     }
 
 }

@@ -6,7 +6,9 @@ import com.module.SFCensorship.Services.FileManipulationService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author MrLu
@@ -42,8 +44,11 @@ public class FileManipulationImpl implements FileManipulationService {
         return  funArchiveRecordsDTOMapper.selectByPrimaryKey(recordId);
     }
     @Override
-    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode) {
-        return funArchiveFilesDTOMapper.selectRecordFilesByFileCodes(filesCode);
+    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("filecode",filesCode);
+        map.put("archiverecordid",archiverecordid);
+        return funArchiveFilesDTOMapper.selectRecordFilesByFileCodes(map);
     }
 
 }

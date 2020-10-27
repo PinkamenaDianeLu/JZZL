@@ -49,9 +49,10 @@ public interface FileManipulationService {
     /**
      * 根据文件代码查找文件列表
      * @author MrLu
-     * @param
+     * @param filesCode
+     * @param archiverecordid
      * @createTime  2020/10/21 11:24
      * @return    |
      */
-    List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode);
+    List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid);
 }
