@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.FunArchiveRecordindexDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveRecordindexDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
+    <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
+    <result column="AUTHORXM" jdbcType="VARCHAR" property="authorxm" />
+    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
+    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
+    <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid" />
+    <result column="ARCHIVESEQID" jdbcType="DECIMAL" property="archiveseqid" />
+    <result column="ARCHIVETYPEID" jdbcType="DECIMAL" property="archivetypeid" />
+    <result column="ARCHIVEFILEID" jdbcType="DECIMAL" property="archivefileid" />
+    <result column="FILECODE" jdbcType="VARCHAR" property="filecode" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.bean.jzgl.DTO.FunArchiveRecordindexDTO">
+    <result column="INDEXINFO" jdbcType="CLOB" property="indexinfo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, AUTHOR, AUTHORID, AUTHORXM, JQBH, AJBH, 
+    ARCHIVESFCID, ARCHIVESEQID, ARCHIVETYPEID, ARCHIVEFILEID, FILECODE
+  </sql>
+  <sql id="Blob_Column_List">
+    INDEXINFO
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from FUN_ARCHIVE_RECORDINDEX
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveRecordindexDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARCHIVE_RECORDINDEX_ID.nextval from dual
+    </selectKey>
+    insert into FUN_ARCHIVE_RECORDINDEX (ID, SCBJ, STATE,
+      CREATETIME, UPDATETIME, AUTHOR, 
+      AUTHORID, AUTHORXM, JQBH, 
+      AJBH, ARCHIVESFCID, ARCHIVESEQID, 
+      ARCHIVETYPEID, ARCHIVEFILEID, FILECODE, 
+      INDEXINFO)
+    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
+      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{author,jdbcType=VARCHAR}, 
+      #{authorid,jdbcType=DECIMAL}, #{authorxm,jdbcType=VARCHAR}, #{jqbh,jdbcType=VARCHAR}, 
+      #{ajbh,jdbcType=VARCHAR}, #{archivesfcid,jdbcType=DECIMAL}, #{archiveseqid,jdbcType=DECIMAL}, 
+      #{archivetypeid,jdbcType=DECIMAL}, #{archivefileid,jdbcType=DECIMAL}, #{filecode,jdbcType=VARCHAR}, 
+      #{indexinfo,jdbcType=CLOB})
+  </insert>
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordindexDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARCHIVE_RECORDINDEX_ID.nextval from dual
+    </selectKey>
+    insert into FUN_ARCHIVE_RECORDINDEX
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      ID, SCBJ, STATE,
+      CREATETIME, UPDATETIME, AUTHOR,
+      AUTHORID, AUTHORXM, JQBH,
+      AJBH, ARCHIVESFCID, ARCHIVESEQID,
+      ARCHIVETYPEID, ARCHIVEFILEID, FILECODE,
+      <if test="indexinfo != null">
+        INDEXINFO,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{id,jdbcType=DECIMAL},
+      0,
+      0,
+      SYSDATE,
+      SYSDATE,
+      #{author,jdbcType=VARCHAR},
+      #{authorid,jdbcType=DECIMAL}, #{authorxm,jdbcType=VARCHAR},
+      #{jqbh,jdbcType=VARCHAR},
+      #{ajbh,jdbcType=VARCHAR},
+      #{archivesfcid,jdbcType=DECIMAL},
+      #{archiveseqid,jdbcType=DECIMAL},
+      #{archivetypeid,jdbcType=DECIMAL},
+      #{archivefileid,jdbcType=DECIMAL},
+      #{filecode,jdbcType=VARCHAR},
+      <if test="indexinfo != null">
+        #{indexinfo,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordindexDTO">
+    update FUN_ARCHIVE_RECORDINDEX
+    <set>
+      <if test="scbj != null">
+        SCBJ = #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+        UPDATETIME = SYSDATE,
+      <if test="author != null">
+        AUTHOR = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="authorid != null">
+        AUTHORID = #{authorid,jdbcType=DECIMAL},
+      </if>
+      <if test="authorxm != null">
+        AUTHORXM = #{authorxm,jdbcType=VARCHAR},
+      </if>
+      <if test="jqbh != null">
+        JQBH = #{jqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ajbh != null">
+        AJBH = #{ajbh,jdbcType=VARCHAR},
+      </if>
+      <if test="archivesfcid != null">
+        ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+      </if>
+      <if test="archiveseqid != null">
+        ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+      </if>
+      <if test="archivetypeid != null">
+        ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+      </if>
+      <if test="archivefileid != null">
+        ARCHIVEFILEID = #{archivefileid,jdbcType=DECIMAL},
+      </if>
+      <if test="filecode != null">
+        FILECODE = #{filecode,jdbcType=VARCHAR},
+      </if>
+      <if test="indexinfo != null">
+        INDEXINFO = #{indexinfo,jdbcType=CLOB},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

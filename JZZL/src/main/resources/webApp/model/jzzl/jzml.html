@@ -12,17 +12,37 @@
     .save:hover{color: #fff;background-color: rgba(18,78,184,0.7); }
     .list_a{position: relative; width: 90%; margin: 0 auto; text-align: left; border-bottom: 1px solid #D3D3D3;}
     .list_table{position: relative; width: 90%; margin: 0 auto;}
+    .list_table table{border-left: 1px solid #ddd;}
+    .list_table table tr th{ line-height: 20px; padding:10px 10px; background: #eee;border-bottom: 1px solid #ddd;border-right: 1px solid #ddd;}
+    .list_table table tr td{line-height: 16px; padding:10px 10px;border-bottom: 1px solid #ddd;border-right: 1px solid #ddd;}
 </style>
 <body>
 <div class="list_r">
     <div class="list_a"><a class="save">自动生成</a><a class="save">保存</a></div>
     <div class="list_table">
-        <table>
+        <table id="indexTable">
             <tr>
-                <td></td>
+                <th>序号</th>
+                <th>文号</th>
+                <th>责任者</th>
+                <th>题名</th>
+                <th>日期</th>
+                <th>页号</th>
+                <th>备注</th>
             </tr>
+            <tr>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+                <td>4</td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+            </tr>
+
         </table>
     </div>
 </div>
 </body>
+<script src="/model/jzzl/js/jzml.js"></script>
 </html>

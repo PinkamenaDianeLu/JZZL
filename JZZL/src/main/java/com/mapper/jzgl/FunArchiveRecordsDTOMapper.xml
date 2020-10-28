@@ -23,11 +23,12 @@
         <result column="AUTHORID" jdbcType="DECIMAL" property="authorid"/>
         <result column="JCYRECORDCODE" jdbcType="VARCHAR" property="jcyrecordcode"/>
         <result column="PREVID" jdbcType="DECIMAL" property="previd"/>
+        <result column="RECORDWH" jdbcType="VARCHAR" property="recordwh"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,ARCHIVESEQID,
      THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
-    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID
+    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -70,6 +71,9 @@
             <if test="recordstyle != null">
                 RECORDSTYLE,
             </if>
+            <if test="recordwh != null">
+                RECORDWH,
+            </if>
 
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -96,7 +100,9 @@
             <if test="recordstyle != null">
                 #{recordstyle,jdbcType=VARCHAR},
             </if>
-
+            <if test="recordwh != null">
+                #{recordwh,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
@@ -131,6 +137,9 @@
             </if>
             <if test="isdelete != null">
                 ISDELETE = #{isdelete,jdbcType=DECIMAL},
+            </if>
+            <if test="recordwh != null">
+                RECORDWH = #{recordwh,jdbcType=VARCHAR},
             </if>
         </set>
         where ID = #{id,jdbcType=DECIMAL}

@@ -1,11 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <title>案卷整理</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 </head>
-<body>
+<style type="text/css">
 
+    .juan{color:#363636;text-align: center; margin: 0 auto; width: 880px; font-size: 14px; text-decoration: none; padding: 30px 0 50px; background: #fff;}
+    .juan h2{ font-size: 40px; padding: 10px 0;}
+    .juan h3{ font-size: 24px;}
+    .juan p{ font-size: 18px;padding:5px 0;}
+    .juan .content{ position: relative; width: 650px; margin: 10px auto 10px; padding: 20px 15px; border: 1px solid #000;}
+    .juan .content p{ text-align: left;}
+    .juan .content p span{display: inline-block;}
+    .juan input{ display: inline-block; width: 100px; height: 40px; font-size: 18px; border: none;  border-bottom: 1px solid #333; padding: 0px 10px;}
+    .juan .bottom {position: relative;padding: 0px 10px;width:650px; margin: 0px auto; text-align: left; background: #fff;}
+    .juan .bottom input{ width: 60px; text-align: center; font-size: 16px; }
+    .juan .save{ display: inline-block; width: 100px; height: 35px; line-height: 35px; margin: 50px auto; background: #114eb8; color: #fff;}
+    .juan .content p.text_r{ text-align: right; padding: 0;font-size: 16px;}
+    .juan .content p.text_r input{ border-bottom: none; width: 120px; }
+    .juan .content p textarea{ width: 100%; line-height: 30px; padding: 10px; margin-bottom: 50px; border: none;}
+</style>
+<body>
+<div class="roll" style="z-index: 9999;">
+    <div class="juan">
+        <h2 style="margin-top: 2rem;">卷内备考表</h2>
+        <div class="content">
+            <p style="text-indent: 1em;"><span>本案卷共有文件材料</span><input type="text" />页，其中：</p>
+            <p style="text-indent: 1em;"><span>文字材料</span><input type="text" />页，文字材料<input type="text" />页，照片<input type="text" />张。</p>
+            <p><span>说明：</span></p>
+            <p><textarea rows="10"></textarea></p>
+            <p class="text_r"><span>立卷人：</span><input type="text" /></p>
+            <p class="text_r"><input type="text" /><span>年</span><input type="number" style="width: 40px;" /><span>月</span><input type="number" style="width: 40px;" /><span>日</span></p>
+            <p class="text_r"><span>审核人：</span><input type="text" /></p>
+            <p class="text_r"><input type="text" /><span>年</span><input type="number" style="width: 40px;" /><span>月</span><input type="number" style="width: 40px;" /><span>日</span></p>
+        </div>
+        <a class="save">保存</a>
+    </div>
+</div>
 </body>
 <script src="/model/jzzl/js/jzfd.js"></script>
 </html>

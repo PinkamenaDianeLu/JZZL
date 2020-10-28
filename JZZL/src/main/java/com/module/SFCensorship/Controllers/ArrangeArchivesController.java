@@ -210,6 +210,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 thisRecord.setArchivetypeid(newArchiveTypeId);//类型id
                 thisRecord.setArchiveseqid(thisSeq.getId());//seqId
                 thisRecord.setPrevid(thisRecord.getId());//保存原有id
+                thisRecord.setIsdelete(0);//未删除
                 thisRecord.setArchivesfcid(thisSeq.getArchivesfcid());//送检（新建卷）次序id
                 arrangeArchivesService.insertFunArchiveRecords(thisRecord);//保存新建
                 //开始复制文书下的文件
@@ -327,7 +328,6 @@ public class ArrangeArchivesController extends BaseFactory {
             String[] fileOrders = fileOrder.split(",");
             //该文书没有图片了
             reValue.put("value", arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders,Integer.parseInt(recordid)));
-
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

@@ -205,6 +205,7 @@ var recycleBin = (function () {
         a.addEventListener('click', function () {
             restored(ddId);//调用还原方法
             $(this).remove();//删除该对象
+            event.stopPropagation();
         })
         div.append(a);
         return div;
@@ -283,7 +284,6 @@ var recycleBin = (function () {
      * @return    |
      */
     function restored(ddId) {
-        event.stopPropagation();
         //获取保存的文书对象
         let thisRecord = $('#' + ddId);
         let isRecord = thisRecord.hasClass('v2');

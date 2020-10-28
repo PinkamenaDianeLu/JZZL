@@ -853,7 +853,7 @@ var loadArchiveIndex = (function () {
     return _loadArchiveIndex;
 })();
 
-
+var lai = new loadArchiveIndex();
 $(function () {
     $('#userHeart').load('/userHeart.html');
     //送检的id
@@ -865,7 +865,6 @@ $(function () {
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
-                let lai = new loadArchiveIndex();
                 lai.loadIndex(reV.value.id);
                 let rcb = new recycleBin(lai);
                 rcb.loadIndex(reV.value.id);

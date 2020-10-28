@@ -37,7 +37,7 @@ public class FunArchiveRecordsDTO {
     private Integer authorid;
     private Integer  previd;
     private String   jcyrecordcode;
-
+    private String   recordwh;
 
     public Integer getId() {
         return id;
@@ -205,5 +205,13 @@ public class FunArchiveRecordsDTO {
 
     public void setJcyrecordcode(String jcyrecordcode) {
         this.jcyrecordcode = jcyrecordcode;
+    }
+
+    public String getRecordwh() {
+        return recordwh;
+    }
+
+    public void setRecordwh(String recordwh) {
+        this.recordwh = recordwh;
     }
 }

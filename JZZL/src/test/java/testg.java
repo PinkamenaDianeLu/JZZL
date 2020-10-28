@@ -3,6 +3,7 @@ import com.bean.jzgl.Source.FunPeopelCase;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.CodeTableMapper;
 import com.util.EnumsUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -106,18 +107,19 @@ public class testg {
 
     @Test
     public void fs() {
-        Class c =com.enums.Enums.class;
+        Class c = com.enums.Enums.class;
         Class<?>[] fields = c.getClasses();//取得所有类成员变
         System.out.println(fields.length);
-        Map<String,Class<?>> map=new HashMap<>();
+        Map<String, Class<?>> map = new HashMap<>();
         for (Class<?> field : fields) {
-            System.out.println(field.toString().replace("class com.enums.Enums$","").toLowerCase());
-            map.put(field.toString().replace("class com.enums.Enums$","").toLowerCase(),field);
+            System.out.println(field.toString().replace("class com.enums.Enums$", "").toLowerCase());
+            map.put(field.toString().replace("class com.enums.Enums$", "").toLowerCase(), field);
         }
         System.out.println(map.size());
     }
+
     @Test
-    public void StringsInt(){
+    public void StringsInt() {
         String str = "asdsadasdgfefqf5151612345";
 
         //方法一：使用toCharArray()方法进行字符串拆分，循环遍历输出数字
@@ -129,12 +131,18 @@ public class testg {
                 .collect(Collectors.joining());
         System.out.println(collect);
         char[] cs = str.toCharArray();
-        StringBuffer a=new StringBuffer();
+        StringBuffer a = new StringBuffer();
         for (char c : cs) {
-            if (Character.isDigit(c)){
+            if (Character.isDigit(c)) {
                 a.append(c);
             }
         }
         System.out.println(a);
+    }
+
+    @Test
+    public void md5() {
+        String encodeStr= DigestUtils.md5Hex("text + key");
+        System.out.println("MD5加密后的字符串为:encodeStr="+encodeStr);
     }
 }
