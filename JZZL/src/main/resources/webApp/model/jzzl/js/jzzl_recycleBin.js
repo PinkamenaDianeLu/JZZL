@@ -114,7 +114,7 @@ var recycleBin = (function () {
         //加载文书目录
         createFileIndex(thisRecord.files, p);
         //点击显示对应图片
-        p.addEventListener('click', function () {
+        $(p).unbind().click(function () {
             //加载文书图片 按照子标签的顺序加载
             let fileOrder = utils.functional.map($(div).find('.v3'), function (thisFileIndex) {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
@@ -155,9 +155,10 @@ var recycleBin = (function () {
             tag: 'p', attrs: {}, arg: '<a class="filename">' + thisFile.filename + '</a>'
         });
         // 这里不能使用addEventListener添加事件，否则jquey的unbind无法清除监听
-        $(div).click(function () {
+        $(div).unbind().click(function () {
             //此时是列表第一次加载时、故图片位置为fileIndexing.i-1  当该元素被拖拽、上下移按钮后 要重新添加事件
             loadFileImg(div, thisFile.archiverecordid);
+            event.stopPropagation();
         })
         p.append(createButtons(key));
         div.append(p);
@@ -173,7 +174,7 @@ var recycleBin = (function () {
             let thumbnail = document.getElementById('thumbnail' + filecode);
             recordImgLoadObj.jumpImg(thumbnail);
         } else {
-            let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'), function (thisFileIndex) {
+            let fileOrder = utils.functional.map($('#recycleDd' + recordId).find('.v3'), function (thisFileIndex) {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
             })
             //点击另一个文书的图片  加载另一个文书
@@ -282,6 +283,7 @@ var recycleBin = (function () {
      * @return    |
      */
     function restored(ddId) {
+        event.stopPropagation();
         //获取保存的文书对象
         let thisRecord = $('#' + ddId);
         let isRecord = thisRecord.hasClass('v2');
