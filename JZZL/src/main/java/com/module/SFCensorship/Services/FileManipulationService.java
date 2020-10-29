@@ -55,4 +55,40 @@ public interface FileManipulationService {
      * @return    |
      */
     List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid);
+
+     /**
+     * 新建文书目录
+     * @author MrLu
+     * @param record
+     * @createTime  2020/10/29 14:55
+     * @return  void  |
+      */
+    void insertFunArchiveRecordindexDTO(FunArchiveRecordindexDTO record);
+
+     /**
+     * 更新文书目录
+     * @author MrLu
+     * @param record
+     * @createTime  2020/10/29 15:05
+     * @return void   |
+      */
+    void updateFunArchiveRecordindexDTO(FunArchiveRecordindexDTO record);
+     /**
+     * 根据id查询archivefile表
+     * @author MrLu
+     * @param id 表id
+     * @createTime  2020/10/29 15:04
+     * @return FunArchiveFilesDTO   |
+      */
+    FunArchiveFilesDTO selectFunArchiveFilesDTOById(Integer id);
+
+    /**
+     * 根据送检次序id和文书类型id查询这个文书类型的文书目录信息
+     * @author MrLu
+     * @param archiveseqid
+     * @param archivetypeid
+     * @createTime  2020/10/29 15:18
+     * @return    |
+     */
+    FunArchiveRecordindexDTO selectRecordIndexByTypeId(Integer archiveseqid,Integer archivetypeid);
 }

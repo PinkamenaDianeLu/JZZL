@@ -27,6 +27,8 @@ public class FileManipulationImpl implements FileManipulationService {
     FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
     @Resource
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
+    @Resource
+    FunArchiveRecordindexDTOMapper funArchiveRecordindexDTOMapper;
     @Override
     public FunArchiveCoverDTO selectFunArchiveCoverDTOByFileId (Integer fileid){
         return  funArchiveCoverDTOMapper.selectFunArchiveCoverDTOByFileId(fileid);
@@ -49,6 +51,24 @@ public class FileManipulationImpl implements FileManipulationService {
         map.put("filecode",filesCode);
         map.put("archiverecordid",archiverecordid);
         return funArchiveFilesDTOMapper.selectRecordFilesByFileCodes(map);
+    }
+    @Override
+    public void insertFunArchiveRecordindexDTO(FunArchiveRecordindexDTO record){
+        funArchiveRecordindexDTOMapper.insertSelective(record);
+    };
+
+    @Override
+    public void updateFunArchiveRecordindexDTO(FunArchiveRecordindexDTO record){
+        funArchiveRecordindexDTOMapper.updateByPrimaryKeySelective(record);
+    };
+    @Override
+    public FunArchiveFilesDTO selectFunArchiveFilesDTOById(Integer id){
+        return funArchiveFilesDTOMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public FunArchiveRecordindexDTO selectRecordIndexByTypeId(Integer archiveseqid, Integer archivetypeid) {
+        return funArchiveRecordindexDTOMapper.selectRecordIndexByTypeId(archiveseqid,archivetypeid);
     }
 
 }

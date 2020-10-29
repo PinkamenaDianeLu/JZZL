@@ -1,10 +1,8 @@
 package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bean.jzgl.DTO.FunArchiveFilesDTO;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveSFCDTO;
-import com.bean.jzgl.DTO.FunCaseInfoDTO;
+import com.bean.jzgl.DTO.*;
+import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
 import com.module.SFCensorship.Services.FileManipulationService;
@@ -109,21 +107,22 @@ public class FileManipulationController extends BaseFactory {
         return reValue.toJSONString();
     }
 
-     /**
+    /**
      * 按照文件创建回收站文书
-     * @author MrLu
+     *
      * @param filecodes [] filecode数组，要保证他们都是一个文书下的，否则只加载第一个文书
-     * @createTime  2020/10/26 14:31
-     * @return  String  |
-      */
+     * @return String  |
+     * @author MrLu
+     * @createTime 2020/10/26 14:31
+     */
     @RequestMapping(value = "/createRecycleRecordByFiles", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "按照文件创建回收站文书", operType = OperLog.type.SELECT)
-    public String createRecycleRecordByFiles(String filecodes,String recordid) {
+    public String createRecycleRecordByFiles(String filecodes, String recordid) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(filecodes)||StringUtils.isEmpty(recordid)) {
+            if (StringUtils.isEmpty(filecodes) || StringUtils.isEmpty(recordid)) {
                 throw new Exception("你传nm呢？");
             }
             JSONObject record = new JSONObject();
@@ -138,5 +137,85 @@ public class FileManipulationController extends BaseFactory {
             reValue.put("message", "error");
         }
         return reValue.toJSONString();
+    }
+
+    /**
+     * 保存文书目录
+     *
+     * @param indexinfo 文书目录信息 一个json数组
+     * @param fileid    对应的fileid
+     * @param indexid   在recordindex表中的id 新建时传个<=0的数即可 不可为空
+     * @return String  |
+     * @author MrLu
+     * @createTime 2020/10/29 15:23
+     */
+    @RequestMapping(value = "/saveFunArchiveRecordindex", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "保存文书目录", operType = OperLog.type.INSERT)
+    public String saveFunArchiveRecordindex(String fileid, String indexinfo, String indexid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(fileid) || StringUtils.isEmpty(indexid)) {
+                throw new Exception("你传nm呢？");
+            }
+            int oriId = Integer.parseInt(indexid);
+            FunArchiveFilesDTO thisFile = fileManipulationService.selectFunArchiveFilesDTOById(Integer.parseInt(fileid));
+            FunArchiveRecordindexDTO Recordindex = new FunArchiveRecordindexDTO();
+//文书目录信息
+            Recordindex.setIndexinfo(indexinfo);
+            if (0 < oriId) {
+                //更新目录
+                Recordindex.setId(oriId);
+                fileManipulationService.updateFunArchiveRecordindexDTO(Recordindex);
+            } else {
+                //新建目录
+                SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+                Recordindex.setAuthor(userNow.getUsername());
+                Recordindex.setAuthorid(userNow.getId());
+                Recordindex.setAuthorxm(userNow.getXm());
+                Recordindex.setJqbh(thisFile.getJqbh());
+                Recordindex.setAjbh(thisFile.getAjbh());
+                Recordindex.setArchivesfcid(thisFile.getArchivesfcid());
+                Recordindex.setArchiveseqid(thisFile.getArchiveseqid());
+                Recordindex.setArchivetypeid(thisFile.getArchivetypeid());
+                Recordindex.setArchivefileid(thisFile.getId());
+                Recordindex.setFilecode(thisFile.getFilecode());
+                fileManipulationService.insertFunArchiveRecordindexDTO(Recordindex);
+            }
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+     /**
+     * 查找文书类型下的文书目录信息
+     * @author MrLu
+     * @param archiveseqid 整理次序id
+      * @param archivetypeid 卷类型id
+     * @createTime  2020/10/29 15:46
+     * @return    |
+      */
+    @RequestMapping(value = "/selectFunArchiveRecordindexByType", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "查找文书类型下的文书目录信息", operType = OperLog.type.SELECT)
+    public String selectFunArchiveRecordindexByType(String archiveseqid, String archivetypeid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(archiveseqid) || StringUtils.isEmpty(archivetypeid)) {
+                throw new Exception("你传nm呢？");
+            }
+            reValue.put("value", fileManipulationService.selectRecordIndexByTypeId(Integer.parseInt(archiveseqid),Integer.parseInt(archivetypeid)));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+
     }
 }

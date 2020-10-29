@@ -5,51 +5,237 @@
  * @describe 卷宗目录
  *
  */
-const recordObj = function (id, name, pagenumber, index, author,recorddate,comment) {
-    this.id = id;//文书id
-    this.name = name;//文书名
-    this.pagenumber = pagenumber;//页号
-    this.index = index;//序号
-    this.author = author;//责任人
-    this.recorddate=recorddate;//文书开局日期
-    this.comment=comment;//注释
-};
 
-$(function () {
-    const thisCover = parent.recordImgLoad.pValue;
-    //得到该文书类型对象
-    let PEle = document.getElementById('P' + thisCover.archivetypeid);
-    if (PEle){
-        const typeDate = parent.lai.getRecordIndexSort(PEle);
-        console.log(typeDate);
 
+
+var recordCover = (function () {
+    let PEle;
+    let file;
+    /**
+     * 此页面标准数据格式
+     * @author MrLu
+     * @createTime  2020/10/29 10:01
+     * @return    |
+     */
+    let recordObj = function (name, pagenumber, index, author, recorddate, wh, comment) {
+        this.name = name;//文书名
+        this.pagenumber = pagenumber;//页号
+        this.index = index;//序号
+        this.author = author;//责任人
+        this.recorddate = recorddate;//文书开局日期
+        this.wh = wh;//文书文号
+        this.comment = comment;//注释
+    };
+
+    /**
+     * 创建表格内的一行
+     * @author MrLu
+     * @createTime  2020/10/29 10:00
+     * @return    |
+     */
+    function createIndexTr({
+                               index, wh, zrz, tm, rq, pagenumber, comment
+                           }) {
+        let thisTr = document.createElement('tr');
+        thisTr.setAttribute('class', 'indexTr');
+        let thisIndexSpan = utils.createElement.createElement({
+            tag: 'td',
+            arg: '<input class="indexValue" name="index" value="' + index + '"/>'
+        })
+        let thisWhInput = utils.createElement.createElement({
+            tag: 'td',
+            arg: '<input  class="indexValue" name="wh" value="' + wh + '" />'
+        })
+        let thisZrzInput = utils.createElement.createElement({
+            tag: 'td',
+            arg: '<input class="indexValue" name="zrz"  value="' + zrz + '" />'
+        })
+        let thisTmInput = utils.createElement.createElement({
+            tag: 'td',
+            arg: '<input class="indexValue" name="tm"  value="' + tm + '" />'
+        })
+        let thisRqInput = utils.createElement.createElement({
+            tag: 'td',
+            arg: '<input class="indexValue" name="rq"  value="' + rq + '" />'
+        })
+        let thisPagenumberInput = utils.createElement.createElement({
+            tag: 'td',
+            arg: '<input class="indexValue" name="pagenumber"  value="' + pagenumber + '" />'
+        })
+        let thisCommentInput = utils.createElement.createElement({
+            tag: 'td',
+            arg: '<input class="indexValue" name="comment"  value="' + comment + '" />'
+        })
+        thisTr.append(thisIndexSpan);
+        thisTr.append(thisWhInput);
+        thisTr.append(thisZrzInput)
+        ;thisTr.append(thisTmInput);
+        thisTr.append(thisRqInput);
+        thisTr.append(thisPagenumberInput)
+        ;thisTr.append(thisCommentInput);
+        return thisTr;
+    }
+
+    /**
+     * 加载表格
+     * @author MrLu
+     * @param records 文书数组
+     * @createTime  2020/10/29 10:33
+     * @return    |
+     */
+    function loadTable(records) {
+        let trs = [];
+        for (let thisRecord of records) {
+            trs[trs.length] = createIndexTr({
+                index: thisRecord.index,
+                wh: thisRecord.wh,
+                zrz: thisRecord.author,
+                tm: thisRecord.name,
+                rq: thisRecord.recorddate,
+                pagenumber: thisRecord.pagenumber,
+                comment: thisRecord.comment || ''
+            })
+        }
+        $('.indexTr').remove();
+        $('#indexTable').append(trs);
+    }
+
+
+    /**
+     * 一键生成按钮
+     * @author MrLu
+     * @createTime  2020/10/29 9:48
+     * @return    |
+     */
+    let oneKeyGo = () => {
+        const typeDate = parent.lai.getRecordIndexSort(PEle, true);
         //循环生成
-        let i=1;//文书序号
-        let records=[];
-        for (let thisRecord of typeDate ){
-            records[records.length]=new recordObj(thisRecord.id,
+        let i = 1;//文书序号
+        let records = [];
+        for (let thisRecord of typeDate) {
+            records[records.length] = new recordObj(
                 thisRecord.name,
                 0,
                 i++,
-                '责任人',
-                'time'
-                );
+                thisRecord.recordObj.author,
+                utils.timeFormat.timestampToDate(thisRecord.recordObj.createtime),
+                thisRecord.recordObj.recordwh,
+                ''
+            );
         }
+        loadTable(records);
+    }
 
+    /**
+     * 保存文书目录信息
+     * @author MrLu
+     * @param
+     * @createTime  2020/10/29 10:55
+     * @return    |
+     */
+    function saveIndexInfo(indexId) {
+        let recordInfo = [];
+        utils.functional.forEach($('#indexTable').find('.indexTr'), function (thisTr) {
 
-        for (let thisRecord of records){
-            let thisTr=document.createElement('tr');
-            for (let thisCol in thisRecord){
-              let thisTd=  utils.createElement.createElement({
-                    tag:'td',
-                    arg:'<input value="'+thisRecord[thisCol]+'" />'
-                })
-                thisTr.append(thisTd);
-                $('#indexTable').append(thisTr);
+            let trValue = utils.functional.map($(thisTr).find('.indexValue'), function (thisIndex) {
+                return $(thisIndex).val();
+            })
+            //name, pagenumber, index, author, recorddate, wh, comment
+            console.log(trValue)
+            recordInfo[recordInfo.length] = new recordObj(
+                trValue[3],
+                trValue[5],
+                trValue[0],
+                trValue[2],
+                trValue[4], trValue[1], trValue[6]);
+        });
+        console.log(JSON.stringify(recordInfo));
+        console.log(file);
+        $.post({
+            url: '/FileManipulation/saveFunArchiveRecordindex',
+            data: {
+                fileid: file.id,
+                indexinfo: JSON.stringify(recordInfo),
+                indexid: indexId
+
+            },
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    getIndexInfo();
+                } else {
+                    alert('保存失败，请重新登录再试');
+                }
             }
-        }
+        });
+    }
 
-    }else {
+    /**
+     * 查询文书目录信息
+     * @author MrLu
+     * @param
+     * @createTime  2020/10/29 16:03
+     * @return    |
+     */
+    function getIndexInfo() {
+        $.post({
+            url: '/FileManipulation/selectFunArchiveRecordindexByType',
+            data: {
+                archiveseqid: file.archiveseqid,
+                archivetypeid: file.archivetypeid
+            },
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+
+                    console.log(JSON.parse(reV.value.indexinfo));
+                    //重新加载目录信息
+                    loadTable(JSON.parse(reV.value.indexinfo));
+//为保存按钮上方法
+                    $('#saveIndexInfo').unbind().click(function () {
+                        if (!reV.value) {
+                            saveIndexInfo(-1);
+                        } else {
+                            saveIndexInfo(reV.value.id);
+                        }
+                    })
+
+                } else {
+                }
+            }
+        });
+
+    }
+
+    function _recordCover(PEleP, fileP) {
+        PEle = PEleP;
+        file = fileP;
+    }
+
+    _recordCover.prototype = {getIndexInfo, oneKeyGo}
+
+    return _recordCover;
+})()
+
+
+$(function () {
+    const thisFile = parent.recordImgLoad.pValue;
+    //得到该文书类型对象
+    let PEle = document.getElementById('P' + thisFile.archivetypeid);
+    if (PEle) {
+        let rc = new recordCover(PEle, thisFile);
+        /**
+         * 一键生成按钮
+         * @author MrLu
+         * @createTime  2020/10/29 10:11
+         */
+        $('#oneKeyGo').click(function () {
+            rc.oneKeyGo();
+        });
+
+        rc.getIndexInfo();
+
+    } else {
         alert('该文书信息无法获取，请刷新页面重试！');
     }
 

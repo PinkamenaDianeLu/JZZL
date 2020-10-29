@@ -136,4 +136,13 @@
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
+  <select id="selectRecordIndexByTypeId" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    SELECT
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+     FROM
+    fun_archive_recordindex WHERE scbj=0
+    AND archiveseqid=#{archiveseqid,jdbcType=DECIMAL} AND archivetypeid=#{archivetypeid,jdbcType=DECIMAL}
+  </select>
 </mapper>

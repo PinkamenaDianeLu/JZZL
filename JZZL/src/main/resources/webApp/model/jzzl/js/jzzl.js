@@ -199,12 +199,12 @@ var loadArchiveIndex = (function () {
         });
 
         //文书缓存至recordsMap  此行必须在createButtons()方法上
-        recordsMap.set(key, {
-            id: record.id,
+        recordsMap.set(key, record
+         /*   id: record.id,
             recordname: record.recordname,
             recordscode: record.recordscode,
-            archivetypeid: record.archivetypeid
-        });//缓存信息
+            archivetypeid: record.archivetypeid*/
+        );//缓存信息
         //加载按钮 -> 文书的
         p.append(createButtons(key, indexing));
         div.append(p);
@@ -803,10 +803,11 @@ var loadArchiveIndex = (function () {
      * 通过文书类型的ele获取该文书类型中所有文书的顺序数据
      * @author MrLu
      * @param thisType ($('#archiveIndex').find('.v1'))
+      * @param  hasObj 是否要包含文书完全体对象信息 [true|false]
      * @createTime  2020/10/27 10:07
      * @return  [saveD]  |
       */
-    function getRecordIndexSort(thisType) {
+    function getRecordIndexSort(thisType,hasObj=false) {
         let saveData = [];//用以存储saveD的对象数组
         $.each($(thisType).find('.v2'), function (i, v) {
             let thisDDid = $(v).attr('id');//获取文书的id  该id也是recordsMap中的key
@@ -822,7 +823,11 @@ var loadArchiveIndex = (function () {
             let fileCodes = utils.functional.map($('#' + thisDDid).find('.v3'), function (thisFileEle) {
                 return $(thisFileEle).attr('id').replace('fileIndex','');
             });
-            saveData[saveData.length] = new saveD(thisRecord.id, thisRecord.recordname, thisRecord.archivetypeid,fileCodes, i);
+            let thisSaveData=new saveD(thisRecord.id, thisRecord.recordname, thisRecord.archivetypeid,fileCodes, i);
+            if (hasObj){
+                thisSaveData.recordObj=thisRecord;
+            }
+            saveData[saveData.length] = thisSaveData;
         });
         return saveData;
     }
