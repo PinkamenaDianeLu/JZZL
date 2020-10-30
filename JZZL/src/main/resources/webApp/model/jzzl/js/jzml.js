@@ -8,7 +8,7 @@
 
 
 
-var recordCover = (function () {
+var recordCoverIndex = (function () {
     let PEle;
     let file;
     /**
@@ -223,7 +223,7 @@ $(function () {
     //得到该文书类型对象
     let PEle = document.getElementById('P' + thisFile.archivetypeid);
     if (PEle) {
-        let rc = new recordCover(PEle, thisFile);
+        let rc = new recordCoverIndex(PEle, thisFile);
         /**
          * 一键生成按钮
          * @author MrLu
@@ -234,6 +234,7 @@ $(function () {
         });
 
         rc.getIndexInfo();
+
 
     } else {
         alert('该文书信息无法获取，请刷新页面重试！');

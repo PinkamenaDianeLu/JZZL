@@ -91,4 +91,21 @@ public interface FileManipulationService {
      * @return    |
      */
     FunArchiveRecordindexDTO selectRecordIndexByTypeId(Integer archiveseqid,Integer archivetypeid);
+
+     /**
+     * 更新卷宗封皮
+     * @author MrLu
+     * @param 
+     * @createTime  2020/10/30 15:44
+     * @return    |  
+      */
+    void  updateFunArchiveCoverById(FunArchiveCoverDTO record);
+     /**
+     * 新建卷宗封皮
+     * @author MrLu
+     * @param 
+     * @createTime  2020/10/30 15:57
+     * @return    |  
+      */
+    void  insertFunArchiveCover(FunArchiveCoverDTO record);
 }

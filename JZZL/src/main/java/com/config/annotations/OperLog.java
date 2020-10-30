@@ -19,7 +19,7 @@ import java.lang.annotation.*;
 @Documented
 public @interface OperLog {
     String operModul() default ""; // 操作模块
-    enum type{SELECT,INSERT,UPDATE} ;  // 操作类型
+    enum type{SELECT,INSERT,UPDATE,InsertOrUpdate} ;  // 操作类型
     String operDesc() default "";  // 操作说明
     type operType() default type.SELECT;
 

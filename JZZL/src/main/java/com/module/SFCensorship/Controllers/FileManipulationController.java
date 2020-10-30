@@ -1,5 +1,6 @@
 package com.module.SFCensorship.Controllers;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.SysUser;
@@ -107,6 +108,68 @@ public class FileManipulationController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+
+    /**
+     * 保存卷宗封皮
+     *
+     * @param
+     * @return |
+     * @author MrLu
+     * @createTime 2020/10/30 15:36
+     */
+    @RequestMapping(value = "/saveCover", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "保存卷宗封皮信息", operType = OperLog.type.InsertOrUpdate)
+    public String saveCover(String coverid, String fileid,String cover) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(fileid) ||StringUtils.isEmpty(coverid) || StringUtils.isEmpty(cover)) {
+                throw new Exception("你传nm呢？");
+            }
+            FunArchiveFilesDTO thisFile = fileManipulationService.selectFunArchiveFilesDTOById(Integer.parseInt(fileid));
+
+            FunArchiveCoverDTO coverDTO = JSON.parseObject(cover, FunArchiveCoverDTO.class);
+
+            int coverId=Integer.parseInt(coverid);
+            if (coverId>0){
+                //更新
+                coverDTO.setId(coverId);
+                fileManipulationService.updateFunArchiveCoverById(coverDTO);
+            }else {
+                //新建
+                SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+                coverDTO.setAuthor(userNow.getUsername());
+                coverDTO.setAuthorid(userNow.getId());
+                coverDTO.setAuthorxm(userNow.getXm());
+                coverDTO.setJqbh(thisFile.getJqbh());
+                coverDTO.setAjbh(thisFile.getAjbh());
+                coverDTO.setArchivesfcid(thisFile.getArchivesfcid());
+                coverDTO.setArchiveseqid(thisFile.getArchiveseqid());
+                coverDTO.setArchivetypeid(thisFile.getArchivetypeid());
+                coverDTO.setArchivefileid(thisFile.getId());
+                coverDTO.setFilecode(thisFile.getFilecode());
+
+                coverDTO.setBadwdwdm("Badwdwdm");
+                coverDTO.setBadwdwmc("Badwdwmc");
+            /*    coverDTO.setLarq();
+                coverDTO.setJarq();
+                coverDTO.setReview();
+                coverDTO.setReviewid();
+                coverDTO.setReviewxm();*/
+
+                coverDTO.setAuthorcorporation("Authorcorporation");
+                coverDTO.setAuthorcorporationcode("Authorcorporationcode");
+                fileManipulationService.insertFunArchiveCover(coverDTO);
+            }
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
     /**
      * 按照文件创建回收站文书
      *
@@ -152,7 +215,7 @@ public class FileManipulationController extends BaseFactory {
     @RequestMapping(value = "/saveFunArchiveRecordindex", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
-    @OperLog(operModul = operModul, operDesc = "保存文书目录", operType = OperLog.type.INSERT)
+    @OperLog(operModul = operModul, operDesc = "保存文书目录", operType = OperLog.type.InsertOrUpdate)
     public String saveFunArchiveRecordindex(String fileid, String indexinfo, String indexid) {
         JSONObject reValue = new JSONObject();
         try {
@@ -191,14 +254,15 @@ public class FileManipulationController extends BaseFactory {
         return reValue.toJSONString();
     }
 
-     /**
+    /**
      * 查找文书类型下的文书目录信息
+     *
+     * @param archiveseqid  整理次序id
+     * @param archivetypeid 卷类型id
+     * @return |
      * @author MrLu
-     * @param archiveseqid 整理次序id
-      * @param archivetypeid 卷类型id
-     * @createTime  2020/10/29 15:46
-     * @return    |
-      */
+     * @createTime 2020/10/29 15:46
+     */
     @RequestMapping(value = "/selectFunArchiveRecordindexByType", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -209,7 +273,7 @@ public class FileManipulationController extends BaseFactory {
             if (StringUtils.isEmpty(archiveseqid) || StringUtils.isEmpty(archivetypeid)) {
                 throw new Exception("你传nm呢？");
             }
-            reValue.put("value", fileManipulationService.selectRecordIndexByTypeId(Integer.parseInt(archiveseqid),Integer.parseInt(archivetypeid)));
+            reValue.put("value", fileManipulationService.selectRecordIndexByTypeId(Integer.parseInt(archiveseqid), Integer.parseInt(archivetypeid)));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

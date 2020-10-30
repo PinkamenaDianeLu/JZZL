@@ -12,9 +12,8 @@ var utils = {
      * @returns {boolean}
      */
     isEmpty: function (str) {
-        if (typeof (str) == 'undefined' || !str || str === "" || str === "empty")
-            return true;
-        return false;
+        return typeof (str) == 'undefined' || !str || str === "" || str === "empty";
+
     },
     /**
      * 判断非空
@@ -284,6 +283,36 @@ var utils = {
         if (this.isEmpty(title)) return '';
         return '<span>' + (title.substring(0, length) + (title.length > length ? "....." : "") + '</span>');
     },
+    convertToChinaNum:function(num){
+        const arr1 = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];
+        const arr2 = ['', '十', '百', '千', '万', '十', '百', '千', '亿', '十', '百', '千','万', '十', '百', '千','亿'];//可继续追加更高位转换值
+        if(!num || isNaN(num)){
+            return "零";
+        }
+        let english = num.toString().split("")
+        let result = "";
+        for (let i = 0; i < english.length; i++) {
+            let des_i = english.length - 1 - i;//倒序排列设值
+            result = arr2[i] + result;
+            let arr1_index = english[des_i];
+            result = arr1[arr1_index] + result;
+        }
+        //将【零千、零百】换成【零】 【十零】换成【十】
+        result = result.replace(/零([千百十])/g, '零').replace(/十零/g, '十');
+        //合并中间多个零为一个零
+        result = result.replace(/零+/g, '零');
+        //将【零亿】换成【亿】【零万】换成【万】
+        result = result.replace(/零亿/g, '亿').replace(/零万/g, '万');
+        //将【亿万】换成【亿】
+        result = result.replace(/亿万/g, '亿');
+        //移除末尾的零
+        result = result.replace(/零+$/, '')
+        //将【零一十】换成【零十】
+        //result = result.replace(/零一十/g, '零十');//貌似正规读法是零一十
+        //将【一十】换成【十】
+        result = result.replace(/^一十/g, '十');
+        return result;
+    },
     /**
      * 判断当前页面是移动版还是pc
      * @author MrLu
@@ -323,7 +352,8 @@ var utils = {
         script.src = url;
         document.getElementsByTagName("head")[0].appendChild(script);
 
-    }, functional: {
+    },
+    functional: {
         /**
          * 传递的参数只能运行一次
          * @author MrLu

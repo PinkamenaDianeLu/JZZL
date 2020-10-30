@@ -70,5 +70,13 @@ public class FileManipulationImpl implements FileManipulationService {
     public FunArchiveRecordindexDTO selectRecordIndexByTypeId(Integer archiveseqid, Integer archivetypeid) {
         return funArchiveRecordindexDTOMapper.selectRecordIndexByTypeId(archiveseqid,archivetypeid);
     }
+    @Override
+    public void  updateFunArchiveCoverById(FunArchiveCoverDTO record){
+        funArchiveCoverDTOMapper.updateByPrimaryKeySelective(record);
+    };
+    @Override
+    public void  insertFunArchiveCover(FunArchiveCoverDTO record){
+        funArchiveCoverDTOMapper.insertSelective(record);
+    };
 
 }
