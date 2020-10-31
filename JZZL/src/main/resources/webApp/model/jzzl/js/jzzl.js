@@ -218,7 +218,10 @@ var loadArchiveIndex = (function () {
             });
             recordImgLoadObj = recordImgLoad({
                 recordIdP: record.id,
-                fileOrder: fileOrder
+                fileOrder: fileOrder,
+                callback: function () {
+                    recordImgLoadObj.loadBtn();
+                }
             });
         });
         return div;
@@ -303,10 +306,11 @@ var loadArchiveIndex = (function () {
             //获取文书order
             let thumbnail = document.getElementById('thumbnail' + filecode);
             recordImgLoadObj.jumpImg(thumbnail);
+            recordImgLoadObj.loadBtn(filecode);
         } else {
             let fileOrder = utils.functional.map($('#dd' + recordId).find('.v3'), (thisFileIndex) => {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
-            })
+            });
             //点击另一个文书的图片  加载另一个文书
             recordImgLoadObj = recordImgLoad({
                 recordIdP: recordId,
@@ -315,6 +319,8 @@ var loadArchiveIndex = (function () {
                     //获取图片缩略
                     let thumbnail = document.getElementById('thumbnail' + filecode);
                     recordImgLoadObj.jumpImg(thumbnail);
+                    //
+                    recordImgLoadObj.loadBtn(filecode);
                 }
             });
         }

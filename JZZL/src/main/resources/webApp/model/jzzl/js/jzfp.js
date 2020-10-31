@@ -90,9 +90,9 @@ var recordCover = (function () {
                     if (reV.value) {
                         //更新封皮
                         //加载
+                        console.log(reV.value)
                         for (let thisCol in reV.value) {
-                            console.log(thisCol);
-                            console.log(reV.value[thisCol]);
+                           $('#'+thisCol).val(reV.value[thisCol]);
                         }
                         //保存卷宗封皮
                         $('#saveCover').unbind().click(function () {
@@ -138,7 +138,9 @@ var recordCover = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     loadCover();
+                    layer.msg('保存成功');
                 } else {
+                    layer.alert('卷封皮保存失败');
                 }
             }
         });
@@ -163,7 +165,10 @@ $(function () {
 
     //自动生成页码
     $('#getPageNum').click(function () {
-        rc.getColumnNum();
+       let ColumnNum= rc.getColumnNum();
+        $('#archivecount').val(ColumnNum[0]);//共几卷
+        $('#recordcount').val(ColumnNum[1]);//第几卷
+        $('#pagecount').val(+ColumnNum[2]);//总页数
     })
 
 })

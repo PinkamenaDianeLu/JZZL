@@ -8,6 +8,7 @@ import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
 import com.module.SFCensorship.Services.FileManipulationService;
 import com.module.SystemManagement.Services.UserService;
+import com.util.SftpUtil;
 import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author MrLu
@@ -149,17 +154,6 @@ public class FileManipulationController extends BaseFactory {
                 coverDTO.setArchivetypeid(thisFile.getArchivetypeid());
                 coverDTO.setArchivefileid(thisFile.getId());
                 coverDTO.setFilecode(thisFile.getFilecode());
-
-                coverDTO.setBadwdwdm("Badwdwdm");
-                coverDTO.setBadwdwmc("Badwdwmc");
-            /*    coverDTO.setLarq();
-                coverDTO.setJarq();
-                coverDTO.setReview();
-                coverDTO.setReviewid();
-                coverDTO.setReviewxm();*/
-
-                coverDTO.setAuthorcorporation("Authorcorporation");
-                coverDTO.setAuthorcorporationcode("Authorcorporationcode");
                 fileManipulationService.insertFunArchiveCover(coverDTO);
             }
             reValue.put("message", "success");
@@ -281,5 +275,34 @@ public class FileManipulationController extends BaseFactory {
         }
         return reValue.toJSONString();
 
+    }
+
+    @RequestMapping(value = "/upLoadRecordFiles", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "上传图片", operType = OperLog.type.INSERT)
+    public String upLoadRecordFiles(String reportTitle, String reportContent, @RequestParam("newFile") MultipartFile newFile) {
+        JSONObject reValue = new JSONObject();
+        try {
+            //如果有附件的 触发附件上传
+            if (null != newFile) {
+                //这里不判断文件后缀 因为vsftp中没有给x权限  所以即使有问题的文件也执行不了
+                String orgFileName = newFile.getOriginalFilename();
+                String orgFileSuffix = orgFileName.substring(orgFileName.lastIndexOf("."));
+                //上传的文件名
+                String fileName = UUID.randomUUID() + orgFileSuffix;
+                //上传路径 年与日
+                Calendar now = Calendar.getInstance();
+                String uploadFile = now.get(Calendar.YEAR) + "/" + (now.get(Calendar.MONTH) + 1) + now.get(Calendar.DAY_OF_MONTH);
+                String jdlj = SftpUtil.upLoad(fileName, uploadFile, "others", newFile.getInputStream());
+//                newReport.setAttachment(newFile.getOriginalFilename());//上传文件原名
+//                newReport.setAttachmenturl(jdlj);//文件在服务器上的位置
+            }
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
     }
 }

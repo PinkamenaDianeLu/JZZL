@@ -221,6 +221,19 @@ var utils = {
             o.innerHTML = str;
             return o.childNodes[0];
         },
+        downLoadImg:function (imgUrl) {
+            let x=new XMLHttpRequest();
+            x.open("GET", imgUrl, true);
+            x.responseType = 'blob';
+            x.onload=function(e){
+                let url = window.URL.createObjectURL(x.response)
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = '';
+                a.click()
+            };
+            x.send();
+        }
 
     },
     /**

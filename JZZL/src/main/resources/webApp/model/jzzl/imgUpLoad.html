@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="/Framework/imgUploader/styles.imageuploader.css" rel="stylesheet">
+</head>
+<body>
+<!--<form enctype="multipart/form-data" method="post" >-->
+<!--    文件：<input type="file" name="files" id="newFiles"/>-->
+<!--    <input type="button" id="submitFiles" value="上传"/>-->
+
+
+
+    <div class="uploader__box js-uploader__box l-center-box">
+        <form action="后台提交的地址" method="POST">
+            <div class="uploader__contents">
+                <label class="button button--secondary" for="fileinput">选择文件</label>
+                <input id="fileinput" class="uploader__file-input" type="file" multiple value="Select Files">
+            </div>
+            <input class="button button--big-bottom" id="submitFiles" type="button" value="Upload Selected Files">
+        </form>
+    </div>
+
+<!--</form>-->
+</body>
+<script src="/Framework/js/jquery.min.js"></script>
+<script src="/Framework/layer/layer.js"></script>
+<script src="/utils/utils.js"></script>
+<script src="/Framework/imgUploader/jquery.imageuploader.js"></script>
+<script src="/model/jzzl/js/imgUpload.js"></script>
+</html>

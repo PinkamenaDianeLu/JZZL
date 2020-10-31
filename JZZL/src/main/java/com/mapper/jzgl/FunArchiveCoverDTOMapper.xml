@@ -23,24 +23,22 @@
         <result column="CASENAME" jdbcType="VARCHAR" property="casename" />
         <result column="SUSPECTSID" jdbcType="VARCHAR" property="suspectsid" />
         <result column="SUSPECTSXM" jdbcType="VARCHAR" property="suspectsxm" />
-        <result column="BADWDWDM" jdbcType="VARCHAR" property="badwdwdm" />
-        <result column="BADWDWMC" jdbcType="VARCHAR" property="badwdwmc" />
-        <result column="LARQ" jdbcType="TIMESTAMP" property="larq" />
-        <result column="JARQ" jdbcType="TIMESTAMP" property="jarq" />
+        <result column="LARQ" jdbcType="VARCHAR" property="larq" />
+        <result column="JARQ" jdbcType="VARCHAR" property="jarq" />
+        <result column="LJDW" jdbcType="VARCHAR" property="ljdw" />
+        <result column="LJR" jdbcType="VARCHAR" property="ljr" />
         <result column="REVIEW" jdbcType="VARCHAR" property="review" />
         <result column="REVIEWID" jdbcType="DECIMAL" property="reviewid" />
         <result column="REVIEWXM" jdbcType="VARCHAR" property="reviewxm" />
         <result column="ARCHIVECOUNT" jdbcType="VARCHAR" property="archivecount" />
-        <result column="RECORDCOUNT" jdbcType="DECIMAL" property="recordcount" />
+        <result column="RECORDCOUNT" jdbcType="VARCHAR" property="recordcount" />
         <result column="PAGECOUNT" jdbcType="DECIMAL" property="pagecount" />
-        <result column="AUTHORCORPORATION" jdbcType="VARCHAR" property="authorcorporation" />
-        <result column="AUTHORCORPORATIONCODE" jdbcType="VARCHAR" property="authorcorporationcode" />
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, AUTHOR, AUTHORID, AUTHORXM, JQBH, AJBH,
     ARCHIVESFCID, ARCHIVESEQID, ARCHIVETYPEID, ARCHIVEFILEID, FILECODE, QZNAME, SFCNAME,
-    ARCHIVENAME, CASENAME, SUSPECTSID, SUSPECTSXM, BADWDWDM, BADWDWMC, LARQ, JARQ, REVIEW,
-    REVIEWID, REVIEWXM, ARCHIVECOUNT, RECORDCOUNT, PAGECOUNT,AUTHORCORPORATION,AUTHORCORPORATIONCODE
+    ARCHIVENAME, CASENAME, SUSPECTSID, SUSPECTSXM, LARQ, JARQ, LJDW,
+    LJR, REVIEW, REVIEWID, REVIEWXM, ARCHIVECOUNT, RECORDCOUNT, PAGECOUNT
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -54,6 +52,8 @@
     from FUN_ARCHIVE_COVER
     WHERE SCBJ=0 AND ARCHIVEFILEID=#{archivefileid,jdbcType=DECIMAL}
 </select>
+
+
     <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveCoverDTO">
         <selectKey resultType="INTEGER" order="BEFORE"
                    keyProperty="id">
@@ -76,29 +76,35 @@
                 ARCHIVETYPEID,
                 ARCHIVEFILEID,
                 FILECODE,
+            <if test="qzname != null">
                 QZNAME,
+            </if>
+            <if test="sfcname != null">
                 SFCNAME,
+            </if>
+            <if test="archivename != null">
                 ARCHIVENAME,
+            </if>
+            <if test="casename != null">
                 CASENAME,
-            AUTHORCORPORATION,
-            AUTHORCORPORATIONCODE,
+            </if>
             <if test="suspectsid != null">
                 SUSPECTSID,
             </if>
             <if test="suspectsxm != null">
                 SUSPECTSXM,
             </if>
-            <if test="badwdwdm != null">
-                BADWDWDM,
-            </if>
-            <if test="badwdwmc != null">
-                BADWDWMC,
-            </if>
             <if test="larq != null">
                 LARQ,
             </if>
             <if test="jarq != null">
                 JARQ,
+            </if>
+            <if test="ljdw != null">
+                LJDW,
+            </if>
+            <if test="ljr != null">
+                LJR,
             </if>
             <if test="review != null">
                 REVIEW,
@@ -121,10 +127,10 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 #{id,jdbcType=DECIMAL},
-                0,
-                0,
-                sysdate,
-                sysdate,
+               0,
+               0,
+                SYSDATE,
+            SYSDATE,
                 #{author,jdbcType=VARCHAR},
                 #{authorid,jdbcType=DECIMAL},
                 #{authorxm,jdbcType=VARCHAR},
@@ -135,29 +141,35 @@
                 #{archivetypeid,jdbcType=DECIMAL},
                 #{archivefileid,jdbcType=DECIMAL},
                 #{filecode,jdbcType=VARCHAR},
+            <if test="qzname != null">
                 #{qzname,jdbcType=VARCHAR},
+            </if>
+            <if test="sfcname != null">
                 #{sfcname,jdbcType=VARCHAR},
+            </if>
+            <if test="archivename != null">
                 #{archivename,jdbcType=VARCHAR},
+            </if>
+            <if test="casename != null">
                 #{casename,jdbcType=VARCHAR},
-            #{authorcorporation,jdbcType=VARCHAR},
-            #{authorcorporationcode,jdbcType=VARCHAR},
+            </if>
             <if test="suspectsid != null">
                 #{suspectsid,jdbcType=VARCHAR},
             </if>
             <if test="suspectsxm != null">
                 #{suspectsxm,jdbcType=VARCHAR},
             </if>
-            <if test="badwdwdm != null">
-                #{badwdwdm,jdbcType=VARCHAR},
-            </if>
-            <if test="badwdwmc != null">
-                #{badwdwmc,jdbcType=VARCHAR},
-            </if>
             <if test="larq != null">
-                #{larq,jdbcType=TIMESTAMP},
+                #{larq,jdbcType=VARCHAR},
             </if>
             <if test="jarq != null">
-                #{jarq,jdbcType=TIMESTAMP},
+                #{jarq,jdbcType=VARCHAR},
+            </if>
+            <if test="ljdw != null">
+                #{ljdw,jdbcType=VARCHAR},
+            </if>
+            <if test="ljr != null">
+                #{ljr,jdbcType=VARCHAR},
             </if>
             <if test="review != null">
                 #{review,jdbcType=VARCHAR},
@@ -172,13 +184,14 @@
                 #{archivecount,jdbcType=VARCHAR},
             </if>
             <if test="recordcount != null">
-                #{recordcount,jdbcType=DECIMAL},
+                #{recordcount,jdbcType=VARCHAR},
             </if>
             <if test="pagecount != null">
                 #{pagecount,jdbcType=DECIMAL},
             </if>
         </trim>
     </insert>
+
 
     <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveCoverDTO">
         update FUN_ARCHIVE_COVER
@@ -189,13 +202,7 @@
             <if test="state != null">
                 STATE = #{state,jdbcType=DECIMAL},
             </if>
-                UPDATETIME = sysdate,
-            <if test="authorcorporation != null">
-                AUTHORCORPORATION = #{authorcorporation,jdbcType=VARCHAR},
-            </if>
-            <if test="authorcorporationcode != null">
-                AUTHORCORPORATIONCODE = #{authorcorporationcode,jdbcType=VARCHAR},
-            </if>
+                UPDATETIME = SYSDATE,
             <if test="author != null">
                 AUTHOR = #{author,jdbcType=VARCHAR},
             </if>
@@ -244,17 +251,17 @@
             <if test="suspectsxm != null">
                 SUSPECTSXM = #{suspectsxm,jdbcType=VARCHAR},
             </if>
-            <if test="badwdwdm != null">
-                BADWDWDM = #{badwdwdm,jdbcType=VARCHAR},
-            </if>
-            <if test="badwdwmc != null">
-                BADWDWMC = #{badwdwmc,jdbcType=VARCHAR},
-            </if>
             <if test="larq != null">
-                LARQ = #{larq,jdbcType=TIMESTAMP},
+                LARQ = #{larq,jdbcType=VARCHAR},
             </if>
             <if test="jarq != null">
-                JARQ = #{jarq,jdbcType=TIMESTAMP},
+                JARQ = #{jarq,jdbcType=VARCHAR},
+            </if>
+            <if test="ljdw != null">
+                LJDW = #{ljdw,jdbcType=VARCHAR},
+            </if>
+            <if test="ljr != null">
+                LJR = #{ljr,jdbcType=VARCHAR},
             </if>
             <if test="review != null">
                 REVIEW = #{review,jdbcType=VARCHAR},
@@ -269,7 +276,7 @@
                 ARCHIVECOUNT = #{archivecount,jdbcType=VARCHAR},
             </if>
             <if test="recordcount != null">
-                RECORDCOUNT = #{recordcount,jdbcType=DECIMAL},
+                RECORDCOUNT = #{recordcount,jdbcType=VARCHAR},
             </if>
             <if test="pagecount != null">
                 PAGECOUNT = #{pagecount,jdbcType=DECIMAL},
@@ -277,5 +284,6 @@
         </set>
         where ID = #{id,jdbcType=DECIMAL}
     </update>
+
 
 </mapper>

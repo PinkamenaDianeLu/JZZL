@@ -2,8 +2,7 @@ package com.bean.jzgl.DTO;
 
 import java.util.Date;
 
-public class FunArchiveCoverDTO {
-    private Integer id;
+public class FunArchiveCoverDTO { private Integer id;
 
     private Integer scbj;
 
@@ -45,13 +44,14 @@ public class FunArchiveCoverDTO {
 
     private String suspectsxm;
 
-    private String badwdwdm;
 
-    private String badwdwmc;
+    private String larq;
 
-    private Date larq;
+    private String jarq;
 
-    private Date jarq;
+    private String ljdw;
+
+    private String ljr;
 
     private String review;
 
@@ -59,14 +59,11 @@ public class FunArchiveCoverDTO {
 
     private String reviewxm;
 
-    private Integer archivecount;
+    private String archivecount;
 
-    private Integer recordcount;
+    private String recordcount;
 
     private Integer pagecount;
-
-    private String authorcorporation;
-    private String authorcorporationcode;
 
     public Integer getId() {
         return id;
@@ -236,36 +233,37 @@ public class FunArchiveCoverDTO {
         this.suspectsxm = suspectsxm == null ? null : suspectsxm.trim();
     }
 
-    public String getBadwdwdm() {
-        return badwdwdm;
-    }
 
-    public void setBadwdwdm(String badwdwdm) {
-        this.badwdwdm = badwdwdm == null ? null : badwdwdm.trim();
-    }
-
-    public String getBadwdwmc() {
-        return badwdwmc;
-    }
-
-    public void setBadwdwmc(String badwdwmc) {
-        this.badwdwmc = badwdwmc == null ? null : badwdwmc.trim();
-    }
-
-    public Date getLarq() {
+    public String getLarq() {
         return larq;
     }
 
-    public void setLarq(Date larq) {
-        this.larq = larq;
+    public void setLarq(String larq) {
+        this.larq = larq == null ? null : larq.trim();
     }
 
-    public Date getJarq() {
+    public String getJarq() {
         return jarq;
     }
 
-    public void setJarq(Date jarq) {
-        this.jarq = jarq;
+    public void setJarq(String jarq) {
+        this.jarq = jarq == null ? null : jarq.trim();
+    }
+
+    public String getLjdw() {
+        return ljdw;
+    }
+
+    public void setLjdw(String ljdw) {
+        this.ljdw = ljdw == null ? null : ljdw.trim();
+    }
+
+    public String getLjr() {
+        return ljr;
+    }
+
+    public void setLjr(String ljr) {
+        this.ljr = ljr == null ? null : ljr.trim();
     }
 
     public String getReview() {
@@ -292,20 +290,20 @@ public class FunArchiveCoverDTO {
         this.reviewxm = reviewxm == null ? null : reviewxm.trim();
     }
 
-    public Integer getArchivecount() {
+    public String getArchivecount() {
         return archivecount;
     }
 
-    public void setArchivecount(Integer archivecount) {
-        this.archivecount = archivecount;
+    public void setArchivecount(String archivecount) {
+        this.archivecount = archivecount == null ? null : archivecount.trim();
     }
 
-    public Integer getRecordcount() {
+    public String getRecordcount() {
         return recordcount;
     }
 
-    public void setRecordcount(Integer recordcount) {
-        this.recordcount = recordcount;
+    public void setRecordcount(String recordcount) {
+        this.recordcount = recordcount == null ? null : recordcount.trim();
     }
 
     public Integer getPagecount() {
@@ -314,21 +312,4 @@ public class FunArchiveCoverDTO {
 
     public void setPagecount(Integer pagecount) {
         this.pagecount = pagecount;
-    }
-
-    public String getAuthorcorporation() {
-        return authorcorporation;
-    }
-
-    public void setAuthorcorporation(String authorcorporation) {
-        this.authorcorporation = authorcorporation;
-    }
-
-    public String getAuthorcorporationcode() {
-        return authorcorporationcode;
-    }
-
-    public void setAuthorcorporationcode(String authorcorporationcode) {
-        this.authorcorporationcode = authorcorporationcode;
-    }
-}
+    }}

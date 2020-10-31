@@ -7,7 +7,8 @@
 var recordImgLoad = (function () {
     let recordId;//文书id
     let viewModel;//显示状态 true 下拉图 false平铺图
-    let checkFile = new Set();//被选中的文件的filecode数组
+    let checkFile = new Set();//复选功能中被选中的文件的filecode数组
+    let imgMap = new Map();//文书图片
 
     /**
      * 查询文书的图片数据
@@ -33,7 +34,7 @@ var recordImgLoad = (function () {
                     }
                     if (0 !== files[0].filetype) {
                         //是卷宗封皮、封底、目录
-                        $('#changeView,#moveToBtn,#commonimgDiv').unbind().hide();
+                        $('.recordImgBtn').unbind().hide();//功能区按钮隐藏
                         const thisFile = files[0];//对象拿出
                         let url = '';
                         switch (thisFile.filetype) {
@@ -51,7 +52,7 @@ var recordImgLoad = (function () {
                         $('#htmlDiv').show().load(url);
                     } else {
                         $('#htmlDiv').hide();
-                        $('#changeView,#moveToBtn,#commonimgDiv').show();
+                        $('.recordImgBtn').show();
                         let i = 0;
                         utils.functional.forEach(files, function (thisFile) {
                             $('#thumbnailDiv').append(loadThumbnail(thisFile, i++));
@@ -59,25 +60,95 @@ var recordImgLoad = (function () {
                             $('#frontImg').append(loadFrontImg(thisFile));//加载平铺图
 
                         });
+                        /*********************为功能区按钮添加方法******************************/
                         //切换视图按钮
                         viewModel = false;//下拉显示
                         changeViewModel($('#changeView'));//加载一下下拉展示
                         FrontImgSortTable();//加载平铺图的拖拽效果
                         //为移动至按钮添加方法
                         $('#moveToBtn').unbind().click(function () {
-                            console.log('移动至方法')
+                            console.log('移动至方法');
                             moveToFn();
-                        })
+                        });
                         //为切换按钮添加方法
                         $('#changeView').unbind().click(function () {
                             changeViewModel(this);
                         });
+
                     }
                     callback();//回调方法
                 } else {
                 }
             }
         });
+    }
+
+
+     /**
+     * 加载按钮
+     * @author MrLu
+      * @param thisFileCode  传递想要操作的文书的thisFileCode,当！thisFileCode时候将视为直接操作整个文书
+     * @createTime  2020/10/31 12:55
+     * @return    |
+      */
+    function loadBtn(thisFileCode) {
+        console.log('操作对象为：'+(thisFileCode||'整个文书'))
+         //为下载按钮添加方法
+         $('#downLoadBtn').unbind().click(function () {
+             if (thisFileCode){
+                 utils.createElement.downLoadImg(imgMap.get(thisFileCode).fileurl);
+             }else {
+                 //当操作整个文书对象时  下载文书的所有图片
+                 const iterator1 = imgMap[Symbol.iterator]();
+                 for (const item of iterator1) {
+                     utils.createElement.downLoadImg(item[1].fileurl);
+                 }
+             }
+         });
+         //新建标签按钮
+         $('#newTagBtn').unbind().click(function () {
+             if (thisFileCode){
+                 //鼠标点击固定区域新建标签  弹开个页 鼠标点哪加哪  保存后刷新该文书的标签方法加载标签 新建个标签表
+             }else {
+                layer.alert('请选择一张具体的文书图片');
+             }
+         });
+         //重新上传按钮
+         $('#reUpLoadBtn').unbind().click(function () {
+             if (thisFileCode){
+                 //上传至该文书后面
+             }else {
+                 //上传至整个文书的最后
+                 layer.alert('请选择需要重新上传的图片');
+             }
+         });
+         //添加上传按钮
+         $('#addUploadBtn').unbind().click(function () {
+             if (thisFileCode){
+                 //上传至该文书后面
+             }else {
+                 //上传至整个文书的最后
+             }
+             recordImgLoad.pValue=recordId;
+             layer.open({
+                 icon: 1,
+                 type: 2,
+                 title: '新建卷',
+                 skin: 'layui-layer-lan',
+                 maxmin: false,
+                 shadeClose: true, //点击遮罩关闭层
+                 area: ['1111px', '600px'],
+                 content: '/model/jzzl/imgUpload.html?recordId='+recordId
+             });
+         });
+         //删除按钮
+         $('#deleteBtn').unbind().click(function () {
+
+         });
+         //图片详细按钮
+         $('#imgInfoBtn').unbind().click(function () {
+
+         });
     }
 
     /**
@@ -232,9 +303,12 @@ var recordImgLoad = (function () {
                 width: '120px', height: '154px'
             }
         });
+        imgMap.set(file.filecode,file);
         //缩略图跳转图片
         a.addEventListener('click', function () {
-            jumpImg(this)
+            jumpImg(this);
+            //缩略图点击更改按钮栏 文件级
+            loadBtn(file.filecode);
         });
         a.append(thumbnail);
         return a;
@@ -383,7 +457,7 @@ var recordImgLoad = (function () {
         }
 
     };
-    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn}
+    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn,loadBtn}
     return _recordImgLoad;
 
 })();
