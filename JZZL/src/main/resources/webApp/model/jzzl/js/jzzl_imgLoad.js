@@ -133,7 +133,7 @@ var recordImgLoad = (function () {
              layer.open({
                  icon: 1,
                  type: 2,
-                 title: '新建卷',
+                 title: '添加上传',
                  skin: 'layui-layer-lan',
                  maxmin: false,
                  shadeClose: true, //点击遮罩关闭层

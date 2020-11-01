@@ -589,12 +589,10 @@ var loadArchiveIndex = (function () {
                 let thisOne = recordsMap.get(ddId);
                 thisOne.recordname = $(this).html();
                 recordsMap.set(ddId, thisOne);//缓存信息
-                console.log(recordsMap.get(ddId));
             } else {
                 let thisOne = filesMap.get(ddId);
                 thisOne.filename = $(this).html();
                 filesMap.set(ddId, thisOne);//缓存信息
-                console.log(filesMap.get(ddId));
             }
             thisP.removeClass('pinput')
         });
