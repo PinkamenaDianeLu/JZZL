@@ -1,271 +1,389 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.jzgl.FunArchiveFilesDTOMapper">
-  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveFilesDTO">
-    <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
-    <result column="STATE" jdbcType="DECIMAL" property="state" />
-    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
-    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
-    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="THISORDER" jdbcType="DECIMAL" property="thisorder" />
-    <result column="ARCHIVERECORDID" jdbcType="DECIMAL" property="archiverecordid" />
-    <result column="ARCHIVETYPEID" jdbcType="DECIMAL" property="archivetypeid" />
-    <result column="FILETYPE" jdbcType="DECIMAL" property="filetype" />
-    <result column="FILEURL" jdbcType="VARCHAR" property="fileurl" />
-    <result column="ORIGINURL" jdbcType="VARCHAR" property="originurl" />
-    <result column="ISDOWLAND" jdbcType="DECIMAL" property="isdowland" />
-    <result column="FILENAME" jdbcType="VARCHAR" property="filename" />
-    <result column="ARCHIVESEQID" jdbcType="DECIMAL" property="archiveseqid" />
-    <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid" />
-    <result column="ISAZXT" jdbcType="DECIMAL" property="isazxt" />
-    <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
-    <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
-    <result column="ISSHOW" jdbcType="DECIMAL" property="isshow" />
-    <result column="FILECODE" jdbcType="VARCHAR" property="filecode" />
-    <result column="ISDELETE" jdbcType="DECIMAL" property="isdelete" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="SCBJ" jdbcType="DECIMAL" property="scbj"/>
+        <result column="STATE" jdbcType="DECIMAL" property="state"/>
+        <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
+        <result column="JQBH" jdbcType="VARCHAR" property="jqbh"/>
+        <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
+        <result column="THISORDER" jdbcType="DECIMAL" property="thisorder"/>
+        <result column="ARCHIVERECORDID" jdbcType="DECIMAL" property="archiverecordid"/>
+        <result column="ARCHIVETYPEID" jdbcType="DECIMAL" property="archivetypeid"/>
+        <result column="FILETYPE" jdbcType="DECIMAL" property="filetype"/>
+        <result column="FILEURL" jdbcType="VARCHAR" property="fileurl"/>
+        <result column="ORIGINURL" jdbcType="VARCHAR" property="originurl"/>
+        <result column="ISDOWLAND" jdbcType="DECIMAL" property="isdowland"/>
+        <result column="FILENAME" jdbcType="VARCHAR" property="filename"/>
+        <result column="ARCHIVESEQID" jdbcType="DECIMAL" property="archiveseqid"/>
+        <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid"/>
+        <result column="ISAZXT" jdbcType="DECIMAL" property="isazxt"/>
+        <result column="AUTHOR" jdbcType="VARCHAR" property="author"/>
+        <result column="AUTHORID" jdbcType="DECIMAL" property="authorid"/>
+        <result column="ISSHOW" jdbcType="DECIMAL" property="isshow"/>
+        <result column="FILECODE" jdbcType="VARCHAR" property="filecode"/>
+        <result column="ISDELETE" jdbcType="DECIMAL" property="isdelete"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, THISORDER, ARCHIVERECORDID, 
     ARCHIVETYPEID, FILETYPE, FILEURL, ORIGINURL, ISDOWLAND, FILENAME, ARCHIVESEQID, ARCHIVESFCID, 
     ISAZXT, AUTHOR, AUTHORID,ISSHOW,FILECODE,ISDELETE
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from FUN_ARCHIVE_FILES
-    where ID = #{id,jdbcType=DECIMAL}
-  </select>
-  <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
-    <selectKey resultType="INTEGER" order="BEFORE"
-               keyProperty="id">
-      select SEQ_FUN_ARCHIVE_FILES_ID.nextval from dual
-    </selectKey>
-    insert into FUN_ARCHIVE_FILES (ID, SCBJ, STATE,
-      CREATETIME, UPDATETIME, JQBH,
-      AJBH, THISORDER, ARCHIVERECORDID,
-      ARCHIVETYPEID, FILETYPE, FILEURL,
-      ORIGINURL, ISDOWLAND, FILENAME,
-      ARCHIVESEQID, ARCHIVESFCID, ISAZXT,
-      AUTHOR, AUTHORID,ISSHOW,FILECODE,ISDELETE)
-    values (#{id,jdbcType=DECIMAL},0,0,SYSDATE,SYSDATE, #{jqbh,jdbcType=VARCHAR},
-      #{ajbh,jdbcType=VARCHAR}, #{thisorder,jdbcType=DECIMAL}, #{archiverecordid,jdbcType=DECIMAL},
-      #{archivetypeid,jdbcType=DECIMAL}, #{filetype,jdbcType=DECIMAL}, #{fileurl,jdbcType=VARCHAR},
-      #{originurl,jdbcType=VARCHAR}, #{isdowland,jdbcType=DECIMAL}, #{filename,jdbcType=VARCHAR},
-      #{archiveseqid,jdbcType=DECIMAL}, #{archivesfcid,jdbcType=DECIMAL}, #{isazxt,jdbcType=DECIMAL},
-      #{author,jdbcType=VARCHAR}, #{authorid,jdbcType=DECIMAL}, #{isshow,jdbcType=DECIMAL},
-      #{filecode,jdbcType=VARCHAR},#{isdelete,jdbcType=DECIMAL})
-  </insert>
-  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
-    <selectKey resultType="INTEGER" order="BEFORE"
-               keyProperty="id">
-      select SEQ_FUN_ARCHIVE_FILES_ID.nextval from dual
-    </selectKey>
-    insert into FUN_ARCHIVE_FILES
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-        ID,
-        SCBJ,
-        STATE,
-        CREATETIME,
-        UPDATETIME,
-        JQBH,
-      <if test="ajbh != null">
-        AJBH,
-      </if>
-      <if test="thisorder != null">
-        THISORDER,
-      </if>
-      <if test="archiverecordid != null">
-        ARCHIVERECORDID,
-      </if>
-      <if test="archivetypeid != null">
-        ARCHIVETYPEID,
-      </if>
-      <if test="filetype != null">
-        FILETYPE,
-      </if>
-      <if test="fileurl != null">
-        FILEURL,
-      </if>
-      <if test="originurl != null">
-        ORIGINURL,
-      </if>
-      <if test="isdowland != null">
-        ISDOWLAND,
-      </if>
-      <if test="filename != null">
-        FILENAME,
-      </if>
-      <if test="archiveseqid != null">
-        ARCHIVESEQID,
-      </if>
-      <if test="archivesfcid != null">
-        ARCHIVESFCID,
-      </if>
-      <if test="isazxt != null">
-        ISAZXT,
-      </if>
-      <if test="author != null">
-        AUTHOR,
-      </if>
-      <if test="authorid != null">
-        AUTHORID,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-        #{id,jdbcType=DECIMAL},
-        0,
-        0,
-        SYSDATE,
-      SYSDATE,
-        #{jqbh,jdbcType=VARCHAR},
-      <if test="ajbh != null">
-        #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="thisorder != null">
-        #{thisorder,jdbcType=DECIMAL},
-      </if>
-      <if test="archiverecordid != null">
-        #{archiverecordid,jdbcType=DECIMAL},
-      </if>
-      <if test="archivetypeid != null">
-        #{archivetypeid,jdbcType=DECIMAL},
-      </if>
-      <if test="filetype != null">
-        #{filetype,jdbcType=DECIMAL},
-      </if>
-      <if test="fileurl != null">
-        #{fileurl,jdbcType=VARCHAR},
-      </if>
-      <if test="originurl != null">
-        #{originurl,jdbcType=VARCHAR},
-      </if>
-      <if test="isdowland != null">
-        #{isdowland,jdbcType=DECIMAL},
-      </if>
-      <if test="filename != null">
-        #{filename,jdbcType=VARCHAR},
-      </if>
-      <if test="archiveseqid != null">
-        #{archiveseqid,jdbcType=DECIMAL},
-      </if>
-      <if test="archivesfcid != null">
-        #{archivesfcid,jdbcType=DECIMAL},
-      </if>
-      <if test="isazxt != null">
-        #{isazxt,jdbcType=DECIMAL},
-      </if>
-      <if test="author != null">
-        #{author,jdbcType=VARCHAR},
-      </if>
-      <if test="authorid != null">
-        #{authorid,jdbcType=DECIMAL},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
-    update FUN_ARCHIVE_FILES
-    <set>
-      <if test="scbj != null">
-        SCBJ = #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        STATE = #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jqbh != null">
-        JQBH = #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
-        AJBH = #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="thisorder != null">
-        THISORDER = #{thisorder,jdbcType=DECIMAL},
-      </if>
-      <if test="archiverecordid != null">
-        ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL},
-      </if>
-      <if test="archivetypeid != null">
-        ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
-      </if>
-      <if test="filetype != null">
-        FILETYPE = #{filetype,jdbcType=DECIMAL},
-      </if>
-      <if test="fileurl != null">
-        FILEURL = #{fileurl,jdbcType=VARCHAR},
-      </if>
-      <if test="originurl != null">
-        ORIGINURL = #{originurl,jdbcType=VARCHAR},
-      </if>
-      <if test="isdowland != null">
-        ISDOWLAND = #{isdowland,jdbcType=DECIMAL},
-      </if>
-      <if test="filename != null">
-        FILENAME = #{filename,jdbcType=VARCHAR},
-      </if>
-      <if test="archiveseqid != null">
-        ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
-      </if>
-      <if test="archivesfcid != null">
-        ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
-      </if>
-      <if test="isazxt != null">
-        ISAZXT = #{isazxt,jdbcType=DECIMAL},
-      </if>
-      <if test="author != null">
-        AUTHOR = #{author,jdbcType=VARCHAR},
-      </if>
-      <if test="authorid != null">
-        AUTHORID = #{authorid,jdbcType=DECIMAL},
-      </if>
-    </set>
-    where ID = #{id,jdbcType=DECIMAL}
-  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_ARCHIVE_FILES
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
+    <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+        <selectKey resultType="INTEGER" order="BEFORE"
+                   keyProperty="id">
+            select SEQ_FUN_ARCHIVE_FILES_ID.nextval from dual
+        </selectKey>
+        insert into FUN_ARCHIVE_FILES (ID, SCBJ, STATE,
+        CREATETIME, UPDATETIME, JQBH,
+        AJBH, THISORDER, ARCHIVERECORDID,
+        ARCHIVETYPEID, FILETYPE, FILEURL,
+        ORIGINURL, ISDOWLAND, FILENAME,
+        ARCHIVESEQID, ARCHIVESFCID, ISAZXT,
+        AUTHOR, AUTHORID,ISSHOW,FILECODE,ISDELETE)
+        values (#{id,jdbcType=DECIMAL},0,0,SYSDATE,SYSDATE, #{jqbh,jdbcType=VARCHAR},
+        #{ajbh,jdbcType=VARCHAR}, #{thisorder,jdbcType=DECIMAL}, #{archiverecordid,jdbcType=DECIMAL},
+        #{archivetypeid,jdbcType=DECIMAL}, #{filetype,jdbcType=DECIMAL}, #{fileurl,jdbcType=VARCHAR},
+        #{originurl,jdbcType=VARCHAR}, #{isdowland,jdbcType=DECIMAL}, #{filename,jdbcType=VARCHAR},
+        #{archiveseqid,jdbcType=DECIMAL}, #{archivesfcid,jdbcType=DECIMAL}, #{isazxt,jdbcType=DECIMAL},
+        #{author,jdbcType=VARCHAR}, #{authorid,jdbcType=DECIMAL}, #{isshow,jdbcType=DECIMAL},
+        #{filecode,jdbcType=VARCHAR},#{isdelete,jdbcType=DECIMAL})
+    </insert>
+    <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+        <selectKey resultType="INTEGER" order="BEFORE"
+                   keyProperty="id">
+            select SEQ_FUN_ARCHIVE_FILES_ID.nextval from dual
+        </selectKey>
+        insert into FUN_ARCHIVE_FILES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            SCBJ,
+            STATE,
+            CREATETIME,
+            UPDATETIME,
+            JQBH,
+            <if test="ajbh != null">
+                AJBH,
+            </if>
+            <if test="thisorder != null">
+                THISORDER,
+            </if>
+            <if test="archiverecordid != null">
+                ARCHIVERECORDID,
+            </if>
+            <if test="archivetypeid != null">
+                ARCHIVETYPEID,
+            </if>
+            <if test="filetype != null">
+                FILETYPE,
+            </if>
+            <if test="fileurl != null">
+                FILEURL,
+            </if>
+            <if test="originurl != null">
+                ORIGINURL,
+            </if>
+            <if test="isdowland != null">
+                ISDOWLAND,
+            </if>
+            <if test="filename != null">
+                FILENAME,
+            </if>
+            <if test="archiveseqid != null">
+                ARCHIVESEQID,
+            </if>
+            <if test="archivesfcid != null">
+                ARCHIVESFCID,
+            </if>
+            <if test="isazxt != null">
+                ISAZXT,
+            </if>
+            <if test="author != null">
+                AUTHOR,
+            </if>
+            <if test="authorid != null">
+                AUTHORID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id,jdbcType=DECIMAL},
+            0,
+            0,
+            SYSDATE,
+            SYSDATE,
+            #{jqbh,jdbcType=VARCHAR},
+            <if test="ajbh != null">
+                #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="thisorder != null">
+                #{thisorder,jdbcType=DECIMAL},
+            </if>
+            <if test="archiverecordid != null">
+                #{archiverecordid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivetypeid != null">
+                #{archivetypeid,jdbcType=DECIMAL},
+            </if>
+            <if test="filetype != null">
+                #{filetype,jdbcType=DECIMAL},
+            </if>
+            <if test="fileurl != null">
+                #{fileurl,jdbcType=VARCHAR},
+            </if>
+            <if test="originurl != null">
+                #{originurl,jdbcType=VARCHAR},
+            </if>
+            <if test="isdowland != null">
+                #{isdowland,jdbcType=DECIMAL},
+            </if>
+            <if test="filename != null">
+                #{filename,jdbcType=VARCHAR},
+            </if>
+            <if test="archiveseqid != null">
+                #{archiveseqid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivesfcid != null">
+                #{archivesfcid,jdbcType=DECIMAL},
+            </if>
+            <if test="isazxt != null">
+                #{isazxt,jdbcType=DECIMAL},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="authorid != null">
+                #{authorid,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+        update FUN_ARCHIVE_FILES
+        <set>
+            <if test="scbj != null">
+                SCBJ = #{scbj,jdbcType=DECIMAL},
+            </if>
+            <if test="state != null">
+                STATE = #{state,jdbcType=DECIMAL},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            UPDATETIME = SYSDATE,
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="thisorder != null">
+                THISORDER = #{thisorder,jdbcType=DECIMAL},
+            </if>
+            <if test="archiverecordid != null">
+                ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivetypeid != null">
+                ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+            </if>
+            <if test="filetype != null">
+                FILETYPE = #{filetype,jdbcType=DECIMAL},
+            </if>
+            <if test="fileurl != null">
+                FILEURL = #{fileurl,jdbcType=VARCHAR},
+            </if>
+            <if test="originurl != null">
+                ORIGINURL = #{originurl,jdbcType=VARCHAR},
+            </if>
+            <if test="isdowland != null">
+                ISDOWLAND = #{isdowland,jdbcType=DECIMAL},
+            </if>
+            <if test="filename != null">
+                FILENAME = #{filename,jdbcType=VARCHAR},
+            </if>
+            <if test="archiveseqid != null">
+                ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivesfcid != null">
+                ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+            </if>
+            <if test="isazxt != null">
+                ISAZXT = #{isazxt,jdbcType=DECIMAL},
+            </if>
+            <if test="author != null">
+                AUTHOR = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="authorid != null">
+                AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
 
-  <select id="selectRecordFilesByRecordId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT
-    <include refid="Base_Column_List" />
-    FROM FUN_ARCHIVE_FILES
-    WHERE SCBJ=0
-    AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
-    <if test="isdelete != null">
-    AND ISDELETE = #{isdelete,jdbcType=DECIMAL}
-    </if>
-    AND ISSHOW=0 ORDER BY THISORDER ASC
-  </select>
-<select id="selectRecordFilesByFileCodes" parameterType="map" resultMap="BaseResultMap">
-  SELECT
-  <include refid="Base_Column_List" />
-  FROM FUN_ARCHIVE_FILES
-  WHERE SCBJ=0 AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
-   AND FILECODE IN
-  <foreach collection="filecode" item="item" separator=","
-           open="(" close=")">
-    #{item,jdbcType=VARCHAR}
-  </foreach>
-  ORDER BY DECODE(filecode,
-  <foreach collection="filecode" item="item" index="index" separator=",">
-    #{item,jdbcType=VARCHAR},#{index,jdbcType=DECIMAL}
-  </foreach>
-  )
-</select>
-  <select id="selectFilesHistory" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List" />
-    FROM FUN_ARCHIVE_FILES
-    AND SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
-    ORDER BY ISSHOW DESC
+    <select id="selectRecordFilesByRecordId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_FILES
+        WHERE SCBJ=0
+        AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+        <if test="isdelete != null">
+            AND ISDELETE = #{isdelete,jdbcType=DECIMAL}
+        </if>
+        AND ISSHOW=0 ORDER BY THISORDER ASC
+    </select>
+    <select id="selectRecordFilesByFileCodes" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_FILES
+        WHERE SCBJ=0 AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+        AND FILECODE IN
+        <foreach collection="filecode" item="item" separator=","
+                 open="(" close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+        ORDER BY DECODE(filecode,
+        <foreach collection="filecode" item="item" index="index" separator=",">
+            #{item,jdbcType=VARCHAR},#{index,jdbcType=DECIMAL}
+        </foreach>
+        )
+    </select>
+    <select id="selectFilesHistory" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_FILES
+        AND SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
+        ORDER BY ISSHOW DESC
+    </select>
+
+    <select id="selectFilesByFileCode" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_FILES
+        WHERE SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
+        AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+    </select>
+    <select id="updateOrderByRecordId" parameterType="java.lang.Integer">
+    UPDATE FUN_ARCHIVE_FILES  SET
+     THISORDER=THISORDER+1
+    ,UPDATETIME = SYSDATE
+     WHERE SCBJ=0
+     AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+     AND THISORDER &gt;  #{thisorder,jdbcType=DECIMAL}
   </select>
 
-  <select id="selectFilesByFileCode"  parameterType="map" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List" />
-    FROM FUN_ARCHIVE_FILES
-    WHERE SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
-     AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
-  </select>
+    <select id="updateFileByRecordId" parameterType="map">
+        UPDATE FUN_ARCHIVE_FILES
+        SET
+        <set>
+            UPDATETIME = SYSDATE,
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="thisorder != null">
+                THISORDER = #{thisorder,jdbcType=DECIMAL},
+            </if>
+            <if test="archiverecordid != null">
+                ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivetypeid != null">
+                ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+            </if>
+            <if test="filetype != null">
+                FILETYPE = #{filetype,jdbcType=DECIMAL},
+            </if>
+            <if test="fileurl != null">
+                FILEURL = #{fileurl,jdbcType=VARCHAR},
+            </if>
+            <if test="originurl != null">
+                ORIGINURL = #{originurl,jdbcType=VARCHAR},
+            </if>
+            <if test="isdowland != null">
+                ISDOWLAND = #{isdowland,jdbcType=DECIMAL},
+            </if>
+            <if test="filename != null">
+                FILENAME = #{filename,jdbcType=VARCHAR},
+            </if>
+            <if test="archiveseqid != null">
+                ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivesfcid != null">
+                ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+            </if>
+            <if test="isazxt != null">
+                ISAZXT = #{isazxt,jdbcType=DECIMAL},
+            </if>
+            <if test="author != null">
+                AUTHOR = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="authorid != null">
+                AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+        </set>
+        WHERE SCBJ=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+    </select>
+
+    <select id="updateFileByFileCode" parameterType="map">
+        UPDATE FUN_ARCHIVE_FILES
+        SET
+        <set>
+            UPDATETIME = SYSDATE,
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="thisorder != null">
+                THISORDER = #{thisorder,jdbcType=DECIMAL},
+            </if>
+            <if test="archiverecordid != null">
+                ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivetypeid != null">
+                ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+            </if>
+            <if test="filetype != null">
+                FILETYPE = #{filetype,jdbcType=DECIMAL},
+            </if>
+            <if test="fileurl != null">
+                FILEURL = #{fileurl,jdbcType=VARCHAR},
+            </if>
+            <if test="originurl != null">
+                ORIGINURL = #{originurl,jdbcType=VARCHAR},
+            </if>
+            <if test="isdowland != null">
+                ISDOWLAND = #{isdowland,jdbcType=DECIMAL},
+            </if>
+            <if test="filename != null">
+                FILENAME = #{filename,jdbcType=VARCHAR},
+            </if>
+            <if test="archiveseqid != null">
+                ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivesfcid != null">
+                ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+            </if>
+            <if test="isazxt != null">
+                ISAZXT = #{isazxt,jdbcType=DECIMAL},
+            </if>
+            <if test="author != null">
+                AUTHOR = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="authorid != null">
+                AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+        </set>
+        WHERE SCBJ=0 AND  FILECODE= #{filecode,jdbcType=VARCHAR}
+    </select>
+
+
 </mapper>

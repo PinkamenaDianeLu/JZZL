@@ -157,4 +157,42 @@ public interface ArrangeArchivesService {
      * @return void   |
       */
     void updateFunArchiveRecordsById(FunArchiveRecordsDTO record);
+
+    /**
+     * 根据文书id更新文件所属的文书类型
+     * @author MrLu
+     * @param record
+     * @createTime  2020/11/2 16:48
+     * @return  void  |
+     */
+    void updateFileByRecordId(FunArchiveFilesDTO record);
+
+    /**
+     * 根据文件代码更新文件所属的record
+     * @author MrLu
+     * @param record
+     * @createTime  2020/11/2 16:48
+     * @return  void  |
+     */
+    void updateFileByFileCode(FunArchiveFilesDTO record);
+
+    /**
+     * 将一个文书类型内顺序大于该值的文书顺序+1
+     * @author MrLu
+     * @param archivetypeid 文书类型id
+     *@param thisorder 起始顺序
+     * @createTime  2020/11/2 17:59
+     * @return    |
+     */
+    void updateRecordOrderByTypeId(int archivetypeid,int thisorder);
+
+    /**
+     * 将一个文书内顺序大于该值的文件顺序+1
+     * @author MrLu
+     * @param archiverecordid
+     * @param  thisorder
+     * @createTime  2020/11/2 16:47
+     * @return   void |
+     */
+    void updateOrderByRecordId(int archiverecordid,int thisorder);
 }

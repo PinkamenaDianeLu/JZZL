@@ -127,5 +127,27 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public void updateFunArchiveRecordsById(FunArchiveRecordsDTO record){
         funArchiveRecordsDTOMapper.updateByPrimaryKeySelective(record);
-    };
+    }
+
+    @Override
+    public void updateFileByRecordId(FunArchiveFilesDTO record) {
+        funArchiveFilesDTOMapper.updateFileByRecordId(record);
+    }
+
+    @Override
+    public void updateFileByFileCode(FunArchiveFilesDTO record) {
+        funArchiveFilesDTOMapper.updateFileByFileCode(record);
+    }
+
+    @Override
+    public void updateRecordOrderByTypeId(int archivetypeid, int thisorder) {
+        funArchiveRecordsDTOMapper.updateRecordOrderByTypeId(archivetypeid,thisorder);
+    }
+
+    @Override
+    public void updateOrderByRecordId(int archiverecordid, int thisorder) {
+        funArchiveFilesDTOMapper.updateOrderByRecordId(archiverecordid,thisorder);
+    }
+
+    ;
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
+        body{color:#363636;text-align: center; font-family: "Microsoft YaHei"; font-size: 14px;margin:0;padding: 0; text-decoration: none; }
         #dropZone {
             position: relative;
             width: 300px;
@@ -20,20 +21,26 @@
             font-size: 14px;
         }
         #thumbnailZone {
-            width: 80%;
-            border:1px dashed blue;
-            border-radius: 5px;
+            width: 100%;
+            border:1px dashed blue; text-align: left; position: relative;
+            border-radius: 5px; padding: 10px 0px; display: inline-block;
         }
-        #thumbnailZone img {
-            width: 300px;
-            margin-bottom: 5px;
+        .thumbnail,.redThumbnail{
+            width: 100px; height: 170px; padding: 8px; float: left; margin-left: 20px; text-align: center; background: #fafafa; border: 1px solid #c0c0c0; position: relative;
         }
-        .thumbnail{
-            width: 50px;height: 50px;
-        }
-        .redThumbnail{
-            width: 50px;height: 50px;border:3px dashed red ;
-        }
+        .cos01{ position: absolute; right:-10px; top:-10px; width: 20px; height: 20px; line-height: 20px; font-family: Arial; font-size: 12px; background: #333; color: #fff; display:inline-block; border-radius: 50%; border: 2px solid #ccc;}
+        .thumbnail img,.redThumbnail img{ width: 100px; height: 100px; margin-bottom: 5px;}
+        .redThumbnail img{ width: 50px;height: 50px;}
+        .thumbnailMsg{ display: inline-block; width: 100%; text-align: left; line-height: 24px;}
+        .redThumbnail{border:2px dashed red ;}
+        input,button,select{border:0;outline: none; /* -webkit-appearance: none; */ height: 35px;padding: 5px 10px;display: inline-block; border-radius: 3px;}
+        input,select{border: 1px solid #d6d5d5; vertical-align: middle;}
+        .thumbnail input,.redThumbnail input{ width: 75%; line-height: 24px; height: 24px; overflow: hidden;}
+        button{font-size: 15px; color: #fff; height: 35px; background: #124eb8; border: 1px solid #489ddc; display: inline-block; padding: 5px 10px; border-radius: 3px;}
+        button:hover,.b_but:hover,.btn-primary:hover,.btn-primary:focus,.btn-primary:active{background-color: #488ed8; color: #fff; text-decoration: none;outline: none;border-color: #fff;}
+        button.ok_but,.close_but{ padding: 0px 36px; display: inline-block; cursor: pointer;}
+        .close_but{ background: #e7e7e7; border: 1px solid #cfcfcf; color: #444444;}
+        .close_but:hover{background: #cfcfcf; border: 1px solid #C0C0C0; color: #444444;}
     </style>
 </head>
 <body>
@@ -41,14 +48,16 @@
 <!--    文件：<input type="file" name="files" id="newFiles"/>-->
 <!--    <input type="button" id="submitFiles" value="上传"/>-->
 
-<form enctype="multipart/form-data">
+<form enctype="multipart/form-data" style="padding: 10px;">
 <div id="dropZone">
     <div class="text"><span>+</span><span>将文件拖到此处，即可上传</span><input type="file" name="files" style="display: none" multiple id="newFiles"/></div>
 </div>
 <div id="thumbnailZone"></div>
 </form>
-<button id="submit-all">确认上传</button>
-<button id="removeAll">全部清除</button>
+<div style="position: absolute; text-align: right; bottom:0px; padding:15px 15px; border-top:1px solid #ccc;box-sizing: border-box; width: 100%;">
+    <button id="submit-all" class="ok_but">确认上传</button>&nbsp;&nbsp;&nbsp;&nbsp;
+    <button id="removeAll" class="close_but">全部清除</button></div>
+</div>
 <!--</form>-->
 </body>
 <script src="/Framework/js/jquery.min.js"></script>

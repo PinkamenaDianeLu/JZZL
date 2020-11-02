@@ -7,5 +7,9 @@
  */
 
 $(function () {
-    console.log(parent.recordImgLoad.pValue)
+    const moveObj=  parent.recordImgLoad.pValue;
+    const  moveType=utils.getUrlPar('moveState');
+    console.log(moveObj);
+    console.log(moveType);
+    //列表带搜索显示所有文书
 })

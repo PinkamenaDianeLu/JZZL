@@ -21,7 +21,7 @@ var recordImgLoad = (function () {
     function loadFilesByRecord(recordId, fileOrder, callback) {
         $.post({
             url: '/ArrangeArchives/loadFilesByFileCodes',
-            data: {fileOrder: fileOrder.join(','),recordid:recordId},
+            data: {fileOrder: fileOrder.join(','), recordid: recordId},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -65,11 +65,7 @@ var recordImgLoad = (function () {
                         viewModel = false;//下拉显示
                         changeViewModel($('#changeView'));//加载一下下拉展示
                         FrontImgSortTable();//加载平铺图的拖拽效果
-                        //为移动至按钮添加方法
-                        $('#moveToBtn').unbind().click(function () {
-                            console.log('移动至方法');
-                            moveToFn();
-                        });
+
                         //为切换按钮添加方法
                         $('#changeView').unbind().click(function () {
                             changeViewModel(this);
@@ -84,71 +80,100 @@ var recordImgLoad = (function () {
     }
 
 
-     /**
+    /**
      * 加载按钮
      * @author MrLu
-      * @param thisFileCode  传递想要操作的文书的thisFileCode,当！thisFileCode时候将视为直接操作整个文书
+     * @param thisFileCode  传递想要操作的文书的thisFileCode,当！thisFileCode时候将视为直接操作整个文书
      * @createTime  2020/10/31 12:55
      * @return    |
-      */
+     */
     function loadBtn(thisFileCode) {
-        console.log('操作对象为：'+(thisFileCode||'整个文书'))
-         //为下载按钮添加方法
-         $('#downLoadBtn').unbind().click(function () {
-             if (thisFileCode){
-                 utils.createElement.downLoadImg(imgMap.get(thisFileCode).fileurl);
-             }else {
-                 //当操作整个文书对象时  下载文书的所有图片
-                 const iterator1 = imgMap[Symbol.iterator]();
-                 for (const item of iterator1) {
-                     utils.createElement.downLoadImg(item[1].fileurl);
-                 }
-             }
-         });
-         //新建标签按钮
-         $('#newTagBtn').unbind().click(function () {
-             if (thisFileCode){
-                 //鼠标点击固定区域新建标签  弹开个页 鼠标点哪加哪  保存后刷新该文书的标签方法加载标签 新建个标签表
-             }else {
+        console.log('操作对象为：' + (thisFileCode || '整个文书'))
+        //为下载按钮添加方法
+        $('#downLoadBtn').unbind().click(function () {
+            if (thisFileCode) {
+                utils.createElement.downLoadImg(imgMap.get(thisFileCode).fileurl);
+            } else {
+                //当操作整个文书对象时  下载文书的所有图片
+                const iterator1 = imgMap[Symbol.iterator]();
+                for (const item of iterator1) {
+                    utils.createElement.downLoadImg(item[1].fileurl);
+                }
+            }
+        });
+        //新建标签按钮
+        $('#newTagBtn').unbind().click(function () {
+            if (thisFileCode) {
+                //鼠标点击固定区域新建标签  弹开个页 鼠标点哪加哪  保存后刷新该文书的标签方法加载标签 新建个标签表
+            } else {
                 layer.alert('请选择一张具体的文书图片');
-             }
-         });
-         //重新上传按钮
-         $('#reUpLoadBtn').unbind().click(function () {
-             if (thisFileCode){
-                 //上传至该文书后面
-             }else {
-                 //上传至整个文书的最后
-                 layer.alert('请选择需要重新上传的图片');
-             }
-         });
-         //添加上传按钮
-         $('#addUploadBtn').unbind().click(function () {
-             if (thisFileCode){
-                 //上传至该文书后面
-             }else {
-                 //上传至整个文书的最后
-             }
-             recordImgLoad.pValue=recordId;
-             layer.open({
-                 icon: 1,
-                 type: 2,
-                 title: '添加上传',
-                 skin: 'layui-layer-lan',
-                 maxmin: false,
-                 shadeClose: true, //点击遮罩关闭层
-                 area: ['1111px', '600px'],
-                 content: '/model/jzzl/imgUpload.html?recordId='+recordId
-             });
-         });
-         //删除按钮
-         $('#deleteBtn').unbind().click(function () {
+            }
+        });
+        //重新上传按钮
+        $('#reUpLoadBtn').unbind().click(function () {
+            if (thisFileCode) {
+                //上传至该文书后面
+            } else {
+                //上传至整个文书的最后
+                layer.alert('请选择需要重新上传的图片');
+            }
+        });
+        //添加上传按钮
+        $('#addUploadBtn').unbind().click(function () {
+            if (thisFileCode) {
+                //上传至该文书后面
+            } else {
+                //上传至整个文书的最后
+            }
+            recordImgLoad.pValue = recordId;
+            layer.open({
+                icon: 1,
+                type: 2,
+                title: '添加上传',
+                skin: 'layui-layer-lan',
+                maxmin: false,
+                shadeClose: true, //点击遮罩关闭层
+                area: ['1111px', '600px'],
+                content: '/model/jzzl/imgUpload.html?recordId=' + recordId
+            });
+        });
+        //删除按钮
+        $('#deleteBtn').unbind().click(function () {
+            if (confirm('确认删除？')){
+                if (thisFileCode) {
+                    //上传至该文书后面
+                    parent.lai.delFun('fileIndex'+thisFileCode);
+                } else {
+                    //上传至整个文书的最后
+                    parent.lai.delFun('dd'+recordId);
+                }
+            }
+        });
+        //图片详细按钮
+        $('#imgInfoBtn').unbind().click(function () {
+            layer.open({
+                icon: 1,
+                type: 2,
+                title: '图片详细',
+                skin: 'layui-layer-lan',
+                maxmin: false,
+                shadeClose: true, //点击遮罩关闭层
+                area: ['1111px', '600px'],
+                content: '/model/jzzl/imgInfo.html?recordId=' + recordId+'&fileCode'+thisFileCode
+            });
+        });
+        //为移动至按钮添加方法
+        $('#moveToBtn').unbind().click(function () {
+            console.log('移动至方法');
+            if (thisFileCode) {
+                //移动单个图片
+                moveToFn(thisFileCode, undefined);
+            } else {
+                //移动整个文书
+                moveToFn(undefined, thisFileCode);
+            }
 
-         });
-         //图片详细按钮
-         $('#imgInfoBtn').unbind().click(function () {
-
-         });
+        });
     }
 
     /**
@@ -157,7 +182,6 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/17 11:51
      */
     function FrontImgSortTable() {
-
         $('#frontImg').sortable().disableSelection();
     }
 
@@ -196,27 +220,45 @@ var recordImgLoad = (function () {
     /**
      * 移动至方法
      * @author MrLu
+     * @param fileCode 文件代码
+     * @param recordId 文书id
      * @createTime  2020/10/16 16:24
      * @return    |
      */
-    function moveToFn() {
-        //被移动的文书filecode set
-        if (!checkFile || checkFile.size === 0) {
-            alert('请选择要移动的文书！');
-            return false;
+    function moveToFn(fileCode, recordId) {
+        let moveState = 0;
+        let pString = '';
+        if (viewModel) {
+            //下拉图状态下
+            if (fileCode) {
+                //单页移动至
+                pString = fileCode;
+            } else if (recordId) {
+                //文书移动至
+                moveState = 1
+                pString = recordId;
+            }
+        } else {
+            //平面图状态
+            //多选移动至
+            //被移动的文书filecode set
+            if (!checkFile || checkFile.size === 0) {
+                alert('请选择要移动的文书！');
+                return false;
+            }
+            pString = JSON.stringify(Array.from(checkFile).join(','));
+            moveState = 2
         }
-        const pString = JSON.stringify(Array.from(checkFile).join(','));
-        let url = '/model/jzzl/jzYdTable.html?fileCodes=' + pString;
-        console.log(url);
+        recordImgLoad.pValue = pString;//要移动的对象
         layer.open({
             icon: 1,
             type: 2,
-            title: '新建卷',
+            title: '文书移动',
             skin: 'layui-layer-lan',
             maxmin: false,
             shadeClose: true, //点击遮罩关闭层
             area: ['1111px', '600px'],
-            content: url
+            content: '/model/jzzl/jzYdTable.html?moveState=' + moveState
         });
 
     }
@@ -303,7 +345,7 @@ var recordImgLoad = (function () {
                 width: '120px', height: '154px'
             }
         });
-        imgMap.set(file.filecode,file);
+        imgMap.set(file.filecode, file);
         //缩略图跳转图片
         a.addEventListener('click', function () {
             jumpImg(this);
@@ -380,10 +422,10 @@ var recordImgLoad = (function () {
      * @param operation boolean
      * @createTime  2020/10/21 16:00
      */
-    function fileMoveIn(recordid,filecode, prevFileCode, operation) {
+    function fileMoveIn(recordid, filecode, prevFileCode, operation) {
         $.post({
             url: '/ArrangeArchives/loadFilesByFileCode',
-            data: {filecode,recordid},
+            data: {filecode, recordid},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -457,7 +499,7 @@ var recordImgLoad = (function () {
         }
 
     };
-    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn,loadBtn}
+    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn, loadBtn}
     return _recordImgLoad;
 
 })();

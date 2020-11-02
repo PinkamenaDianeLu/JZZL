@@ -64,12 +64,11 @@ var dropUpload = (function () {
             for (let thisImg of thisImgs) {
                 let msg = '';//提示信息
                 let isCool = true;//该图片是否符合规范
+                let fileSize = +Math.round(thisImg.size * 100 / 1024) / 100;
                 if (!/\/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(thisImg.type)) {
                     msg += ' 不是可上传的类型！';
                     isCool = false;
-                }
-                let fileSize = +Math.round(thisImg.size * 100 / 1024) / 100;
-                if (fileSize > (5 * 1024)) {
+                }else  if (fileSize > (5 * 1024)) {
                     msg += '文件过大！请上传小于5M的图片';
                     isCool = false;
                 }
@@ -84,7 +83,7 @@ var dropUpload = (function () {
         let key = 'img' + Math.floor(Math.random() * 1000);
         //记录
         if (isCool) {
-            thisImg.keyForInput=key;
+            thisImg.keyForInput = key;
             files.set(key, thisImg);
         }
         let pDiv = utils.createElement.createElement({
@@ -96,7 +95,6 @@ var dropUpload = (function () {
         let imgDiv = utils.createElement.createElement({
             tag: 'img', attrs: {
                 src: window.URL.createObjectURL(thisImg),
-                style: 'width: 50px;height: 50px;',
                 title: thisImg.name
             }
         });
@@ -111,14 +109,14 @@ var dropUpload = (function () {
             }, arg: isCool ? '' : msg + ',请删除重传'
         });
         let delDiv = utils.createElement.createElement({
-            tag: 'span', attrs: {}, arg: isCool ? '' : 'X'
+            tag: 'span', attrs: {
+                class: 'cos01'
+            }, arg: 'X'
         });
-        if (!isCool) {
-            //添加删除方法
-            delDiv.addEventListener("click", function () {
-                removeOne(key);
-            })
-        }
+        //添加删除方法
+        delDiv.addEventListener("click", function () {
+            removeOne(key);
+        })
         pDiv.append(imgDiv);
         pDiv.append(inputDiv);
         pDiv.append(msgDiv);
@@ -171,7 +169,7 @@ var dropUpload = (function () {
                 pDiv.find('.thumbnailMsg').html('正在上传');
                 pDiv.find('.thumbnailMsg').html('上传成功');
                 files.delete(item[1].keyForInput);
-                if (files.size===0){
+                if (files.size === 0) {
                     layer.alert('上传完成');
                     const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     parent.layer.close(index);

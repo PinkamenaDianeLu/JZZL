@@ -97,6 +97,21 @@ var loadArchiveIndex = (function () {
                     $(ui.item).unbind().click(function () {
                         loadFileImg(this, $(this).parent().parent().attr('id').replace('dd', ''));
                     })
+
+                    let thisFile=filesMap.get( $(ui.item).attr('id'));
+                    //实时更新文件顺序
+                    saveDateOnTime(recordId
+                        ,recordsMap.get('dd' +thisFile.archiverecordid).archivetypeid
+                        ,$(ui.item).index()
+                        ,thisFile.filecode);
+                }else {
+                    console.log('更新文件');
+                    let thisRecord=recordsMap.get( $(ui.item).attr('id'));
+                    //实时更新文件顺序
+                    saveDateOnTime(thisRecord.id
+                        ,$(ui.item).parent('.v1').attr('id')
+                        ,$(ui.item).index()
+                        ,null);
                 }
             }, receive: function (event, ui) {
                 //跨文书移动
@@ -114,6 +129,16 @@ var loadArchiveIndex = (function () {
                 } else {
                     //正在看的文书移动至其他文书
                     recordImgLoadObj.fileMoveOut(fileCode)
+                }
+                if ('fileSortZone' === zoneClass) {
+                    let thisFile=filesMap.get( $(ui.item).attr('id'));
+                    //实时更新文件顺序
+                    saveDateOnTime(recordId
+                        ,recordsMap.get('dd' +thisFile.archiverecordid).archivetypeid
+                        ,$(ui.item).index()
+                        ,fileCode);
+                }else {
+
                 }
             },
             connectWith: ".fileSortZone",//允许跨文书拖拽
@@ -265,12 +290,7 @@ var loadArchiveIndex = (function () {
      */
     function createFilesDiv(thisFile, fileIndexing) {
         const key = 'fileIndex' + thisFile.filecode;
-        filesMap.set(key, {
-            filecode: thisFile.filecode,
-            filename: thisFile.filename,
-            fileurl: thisFile.fileurl,
-            archiverecordid: thisFile.archiverecordid
-        });//缓存信息
+        filesMap.set(key, thisFile);//缓存信息
         let div = utils.createElement.createElement({
             tag: 'div', attrs: {
                 id: key,
@@ -520,6 +540,14 @@ var loadArchiveIndex = (function () {
             prevDD.unbind().click(function () {
                 loadFileImg(prevDD, thisFile.archiverecordid)
             })
+            //实时更新文件顺序
+            saveDateOnTime(thisFile.archiverecordid
+                ,thisFile.archivetypeid,div.index(),thisFile.filecode);
+        }else {
+            let thisRecord=recordsMap.get(ddId);
+            //实时更新文书顺序
+            saveDateOnTime(thisRecord.id
+                ,thisRecord.archivetypeid,div.index(),null);
         }
         reloadButton(div);//重新加载按钮
         reloadButton(prevDD);//重新加载按钮
@@ -553,6 +581,14 @@ var loadArchiveIndex = (function () {
             nextDiv.unbind().click(function () {
                 loadFileImg(nextDiv, thisFile.archiverecordid)
             })
+            //实时更新文件顺序
+            saveDateOnTime(thisFile.archiverecordid
+                ,thisFile.archivetypeid,div.index(),thisFile.filecode);
+        }else {
+            let thisRecord=recordsMap.get(ddId);
+            //实时更新文书顺序
+            saveDateOnTime(thisRecord.id
+                ,thisRecord.archivetypeid,div.index(),null);
         }
         reloadButton(div);//重新加载按钮
         reloadButton(nextDiv);//重新加载按钮
@@ -705,6 +741,38 @@ var loadArchiveIndex = (function () {
         }
     }
 
+     /**
+     * 实时保存文书顺序
+     * @author MrLu
+     * @param
+     * @createTime  2020/11/2 18:31
+     * @return    |
+      */
+    function saveDateOnTime(recordId,typeId,Order,fileCode) {
+
+        const updateObj=function(){
+            this.recordid=recordId;//被移动的或被移动到的文书id
+            this.typeid=typeId;//被移动到的文书类型id
+            this.order=Order;//移动后的顺序
+            this.filecode=fileCode;//文件代码
+        }
+        //{recordid:文书id 必填,
+        // typeid:文书类型id 必填,
+        // order:文书移动后的顺序 必填 ,
+        // filecode:当移动的是文件时传入的文件代码}
+           $.post({
+                   url: '/ArrangeArchives/saveDateOnTime',
+                   data: {paramjson:JSON.stringify(updateObj)},
+                   success: (re) => {
+                       const reV = JSON.parse(re);
+                       if ('success' === reV.message) {
+                       } else {
+                       }
+                   }
+               });
+
+    }
+
     /**
      * 重新加载一个文书的按钮列表
      * @author MrLu
@@ -739,8 +807,8 @@ var loadArchiveIndex = (function () {
                     const newSeqId = reV.value;
                     saveArchiveIndexSortByType(archiveTypeList, newSeqId);
                 } else {
-                    layer.closeAll();
-                    layer.alert('未能成功验证您的身份信息，请重新登录！')
+                    // layer.closeAll();
+                    // layer.alert('未能成功验证您的身份信息，请重新登录！')
                     throw  '未能创建新的整理记录';
                 }
             }
@@ -845,7 +913,7 @@ var loadArchiveIndex = (function () {
         progressLength=progressLength+8.4;
         $('#progressBar').css('width',progressLength+'%').html(progressLength+'%');
         if (progressLength > 100) {
-            layer.closeAll()
+            // layer.closeAll()
             //初始化进度条
             progressLength=0;
             $('#progressBar').css('width',0+'%').html(0+'%');
@@ -857,7 +925,9 @@ var loadArchiveIndex = (function () {
     }
 
     _loadArchiveIndex.prototype = {
-        loadIndex, loadRecycleBin, reloadButton, saveData, restored,getRecordIndexSort,progressBar
+        loadIndex, loadRecycleBin, reloadButton,
+        saveData, restored,
+        getRecordIndexSort,progressBar,delFun
     };
     return _loadArchiveIndex;
 })();
@@ -893,6 +963,7 @@ $(function () {
                             area: ['453px', '170px'],
                             content: $('#progressBarDiv')
                         });
+                        $('#10086').parent().addClass('progressBarParent');
                         lai.saveData();
                     }
                 })

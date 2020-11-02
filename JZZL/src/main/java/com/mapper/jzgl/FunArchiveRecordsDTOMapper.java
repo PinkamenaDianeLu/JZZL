@@ -58,4 +58,14 @@ public interface FunArchiveRecordsDTOMapper {
       */
     List<FunArchiveRecordsDTO>  selectRecordsByTypeid(Map<String,Object> map);
 
+     /**
+     * 将一个文书类型内顺序大于该值的文书顺序+1
+     * @author MrLu
+     * @param archivetypeid 文书类型id
+      *@param thisorder 起始顺序
+     * @createTime  2020/11/2 17:59
+     * @return    |
+      */
+   void updateRecordOrderByTypeId(int archivetypeid,int thisorder);
+
 }

@@ -108,17 +108,12 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
         update FUN_ARCHIVE_RECORDS
         <set>
+            UPDATETIME = SYSDATE,
             <if test="scbj != null">
                 SCBJ = #{scbj,jdbcType=DECIMAL},
             </if>
             <if test="state != null">
                 STATE = #{state,jdbcType=DECIMAL},
-            </if>
-            <if test="createtime != null">
-                CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatetime != null">
-                UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
             </if>
             <if test="jqbh != null">
                 JQBH = #{jqbh,jdbcType=VARCHAR},
@@ -203,5 +198,11 @@
             </if>
         </if>
         ORDER BY THISORDER ASC
+    </select>
+
+    <select id="updateRecordOrderByTypeId" parameterType="java.lang.Integer">
+        UPDATE fun_archive_records SET thisorder=thisorder+1, UPDATETIME = SYSDATE
+        WHERE SCBJ=0 AND  ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        AND thisorder &gt;  #{thisorder,jdbcType=DECIMAL}
     </select>
 </mapper>

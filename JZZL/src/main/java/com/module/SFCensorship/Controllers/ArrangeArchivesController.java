@@ -214,13 +214,13 @@ public class ArrangeArchivesController extends BaseFactory {
                 thisRecord.setArchivesfcid(thisSeq.getArchivesfcid());//送检（新建卷）次序id
                 arrangeArchivesService.insertFunArchiveRecords(thisRecord);//保存新建
                 //开始复制文书下的文件
-                String fileCodes[]=thisJsonObj.getString("filecodes").split(",");//文书下的文件变为数组
-                for (String thisFileCode:
-                fileCodes) {
-                    if (StringUtils.isEmpty(thisFileCode)){
+                String fileCodes[] = thisJsonObj.getString("filecodes").split(",");//文书下的文件变为数组
+                for (String thisFileCode :
+                        fileCodes) {
+                    if (StringUtils.isEmpty(thisFileCode)) {
                         continue;
                     }
-                    FunArchiveFilesDTO oriFile=arrangeArchivesService.selectFilesByFileCode(thisFileCode,thisRecord.getPrevid());
+                    FunArchiveFilesDTO oriFile = arrangeArchivesService.selectFilesByFileCode(thisFileCode, thisRecord.getPrevid());
                     oriFile.setArchiverecordid(thisRecord.getId());//文书id
                     oriFile.setArchiveseqid(thisRecord.getArchiveseqid());//整理次序id
                     oriFile.setArchivesfcid(thisRecord.getArchivesfcid());//送检卷id
@@ -265,16 +265,16 @@ public class ArrangeArchivesController extends BaseFactory {
             for (Object thisP :
                     pDate) {
                 JSONObject thisJsonObj = (JSONObject) thisP;
-                int rId=thisJsonObj.getInteger("id");
+                int rId = thisJsonObj.getInteger("id");
                 //根据id获取文书
                 FunArchiveRecordsDTO thisRecord = arrangeArchivesService.selectNextRecord(rId);
-                if (1==thisJsonObj.getInteger("isdelete")){
+                if (1 == thisJsonObj.getInteger("isdelete")) {
                     //未完全删除  更新对应状态 此时更新的是在saveArchiveIndexSortByType中新建完的文书
                     thisRecord.setIsdelete(1);
                     arrangeArchivesService.updateFunArchiveRecordsById(thisRecord);
-                }else {
+                } else {
                     //完全删除 新建文书为删除
-                    thisRecord=arrangeArchivesService.selectFunArchiveRecordsById(rId);
+                    thisRecord = arrangeArchivesService.selectFunArchiveRecordsById(rId);
                     thisRecord.setIsdelete(2);//这是被删除的卷
                     thisRecord.setRecordname(thisJsonObj.getString("name"));//新的文书名
                     thisRecord.setThisorder(thisJsonObj.getInteger("order"));//新的顺序
@@ -285,10 +285,10 @@ public class ArrangeArchivesController extends BaseFactory {
                     arrangeArchivesService.insertFunArchiveRecords(thisRecord);//保存新建
                 }
                 //开始复制文书下的文件
-                String fileCodes[]=thisJsonObj.getString("filecodes").split(",");//文书下的文件变为数组
-                for (String thisFileCode:
+                String fileCodes[] = thisJsonObj.getString("filecodes").split(",");//文书下的文件变为数组
+                for (String thisFileCode :
                         fileCodes) {
-                    FunArchiveFilesDTO oriFile=arrangeArchivesService.selectFilesByFileCode(thisFileCode,thisRecord.getPrevid());
+                    FunArchiveFilesDTO oriFile = arrangeArchivesService.selectFilesByFileCode(thisFileCode, thisRecord.getPrevid());
                     oriFile.setArchiverecordid(thisRecord.getId());//文书id
                     oriFile.setArchiveseqid(thisRecord.getArchiveseqid());//整理次序id
                     oriFile.setArchivesfcid(thisRecord.getArchivesfcid());//送检卷id
@@ -319,15 +319,15 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.SELECT)
-    public String loadFilesByFileCodes(String fileOrder,String recordid) {
+    public String loadFilesByFileCodes(String fileOrder, String recordid) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(fileOrder)||StringUtils.isEmpty(recordid)) {
-                throw new  Exception("给一个? 自己体会");
-              }
+            if (StringUtils.isEmpty(fileOrder) || StringUtils.isEmpty(recordid)) {
+                throw new Exception("给一个? 自己体会");
+            }
             String[] fileOrders = fileOrder.split(",");
             //该文书没有图片了
-            reValue.put("value", arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders,Integer.parseInt(recordid)));
+            reValue.put("value", arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders, Integer.parseInt(recordid)));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -349,10 +349,10 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "通过文件代码查询文件", operType = OperLog.type.SELECT)
-    public String loadFilesByFileCode(String filecode,String recordid) {
+    public String loadFilesByFileCode(String filecode, String recordid) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isNotEmpty(filecode)||StringUtils.isNotEmpty(recordid)) {
+            if (StringUtils.isNotEmpty(filecode) || StringUtils.isNotEmpty(recordid)) {
                 reValue.put("value", arrangeArchivesService.selectFilesByFileCode(filecode, StringUtil.StringToInteger(recordid)));
                 reValue.put("message", "success");
             } else {
@@ -365,13 +365,14 @@ public class ArrangeArchivesController extends BaseFactory {
         return reValue.toJSONString();
     }
 
-     /**
+    /**
      * 根据文书id生成文书并加载全部文件
-     * @author MrLu
+     *
      * @param recordid 文书id
-     * @createTime  2020/10/26 14:58
-     * @return    |
-      */
+     * @return |
+     * @author MrLu
+     * @createTime 2020/10/26 14:58
+     */
     @RequestMapping(value = "/createRecordByRecordId", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -379,14 +380,69 @@ public class ArrangeArchivesController extends BaseFactory {
     public String createRecordByRecordId(String recordid) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(recordid)){
-                throw  new  Exception("你传nm呢？");
+            if (StringUtils.isEmpty(recordid)) {
+                throw new Exception("你传nm呢？");
             }
             JSONObject record = new JSONObject();
-            int recordId  =Integer.parseInt(recordid);
+            int recordId = Integer.parseInt(recordid);
             record.put("record", arrangeArchivesService.selectFunArchiveRecordsById(recordId));//加载文书
             record.put("files", arrangeArchivesService.selectRecordFilesByRecordId(recordId, null));
             reValue.put("value", record);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
+     /**
+     * 实时保存移动的顺序
+     * @author MrLu
+     * @param paramjson {recordid:文书id 必填,typeid:文书类型id 必填,order:文书移动后的顺序 必填 ,filecode:当移动的是文件时传入的文件代码}
+     * @createTime  2020/11/2 18:03
+     * @return    |
+      */
+    @RequestMapping(value = "/saveDateOnTime", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "实时保存移动的顺序", operType = OperLog.type.UPDATE)
+    public String saveDateOnTime(String paramjson) {
+        JSONObject reValue = new JSONObject();
+        try {
+            JSONObject paramObj = (JSONObject) JSONObject.parse(paramjson);
+            int recordId = paramObj.getInteger("recordid");
+            int typeId = StringUtil.StringToInteger(paramObj.getString("typeid"));
+            int order = paramObj.getInteger("order");
+            String fileCode = paramObj.getString("filecode");
+            if (StringUtils.isNotEmpty(fileCode)) {
+                //更新文件
+                FunArchiveFilesDTO  fileDto=new FunArchiveFilesDTO();
+                fileDto.setArchivetypeid(typeId);//文书类型id
+                fileDto.setArchiverecordid(recordId);//对应的文书id
+                fileDto.setThisorder(order);
+                fileDto.setFilecode(fileCode);
+                arrangeArchivesService.updateFileByFileCode(fileDto);
+                //更新后面的顺序
+                arrangeArchivesService.updateOrderByRecordId(recordId,order);
+            }else {
+                //更新文书
+                FunArchiveRecordsDTO recordsDTO=new FunArchiveRecordsDTO();
+                recordsDTO.setId(recordId);
+                recordsDTO.setArchivetypeid(typeId);
+                recordsDTO.setThisorder(order);
+                arrangeArchivesService.updateFunArchiveRecordsById(recordsDTO);
+                    //更新文书下的文件
+                    FunArchiveFilesDTO thisFileDto=new FunArchiveFilesDTO();
+                    thisFileDto.setArchivetypeid(typeId);
+                    thisFileDto.setArchiverecordid(recordId);
+                    //更新
+                    arrangeArchivesService.updateFileByRecordId(thisFileDto);
+                //将该文书后面的文书顺序+1
+                arrangeArchivesService.updateRecordOrderByTypeId(typeId,order);
+
+            }
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

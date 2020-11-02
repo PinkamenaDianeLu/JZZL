@@ -17,6 +17,32 @@ public interface FunArchiveFilesDTOMapper {
     int updateByPrimaryKeySelective(FunArchiveFilesDTO record);
 
      /**
+     * 将一个文书内顺序大于该值的文件顺序+1
+     * @author MrLu
+     * @param archiverecordid
+      * @param  thisorder
+     * @createTime  2020/11/2 16:47
+     * @return   void |
+      */
+    void updateOrderByRecordId(@Param("archiverecordid") int archiverecordid,@Param("thisorder") int thisorder);
+
+     /**
+     * 根据文书id更新文件
+     * @author MrLu
+     * @param record
+     * @createTime  2020/11/2 16:48
+     * @return  void  |
+      */
+    void updateFileByRecordId(FunArchiveFilesDTO record);
+     /**
+     * 根据文件代码更新文件
+     * @author MrLu
+     * @param
+     * @createTime  2020/11/2 18:20
+     * @return    |
+      */
+    void updateFileByFileCode(FunArchiveFilesDTO record);
+     /**
      * 通过文书id查找其文书图片（最新版本的）
      * @author MrLu
      * @param archiverecordid 文书id
