@@ -88,7 +88,7 @@ var recordImgLoad = (function () {
      * @return    |
      */
     function loadBtn(thisFileCode) {
-        console.log('操作对象为：' + (thisFileCode || '整个文书'))
+        // console.log('操作对象为：' + (thisFileCode || '整个文书'))
         //为下载按钮添加方法
         $('#downLoadBtn').unbind().click(function () {
             if (thisFileCode) {
@@ -164,7 +164,7 @@ var recordImgLoad = (function () {
         });
         //为移动至按钮添加方法
         $('#moveToBtn').unbind().click(function () {
-            console.log('移动至方法');
+            // console.log('移动至方法');
             if (thisFileCode) {
                 //移动单个图片
                 moveToFn(thisFileCode, undefined);
@@ -416,8 +416,8 @@ var recordImgLoad = (function () {
     /**
      * 移入
      * @author MrLu
-     * @param recordid 文书id
-     * @param filecode
+     * @param recordid 源文书id
+     * @param filecode  被移动的文件代码
      * @param prevFileCode 上一个文书代码 当operation为false时候 值为null
      * @param operation boolean
      * @createTime  2020/10/21 16:00
@@ -430,6 +430,7 @@ var recordImgLoad = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     const thisFile = reV.value;
+                    console.log(thisFile);
                     let thumbnail = loadThumbnail(thisFile);
                     let ImgBig = loadThumbnail(thisFile);
                     let front = loadThumbnail(thisFile);

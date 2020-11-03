@@ -90,7 +90,6 @@ var recordCover = (function () {
                     if (reV.value) {
                         //更新封皮
                         //加载
-                        console.log(reV.value)
                         for (let thisCol in reV.value) {
                            $('#'+thisCol).val(reV.value[thisCol]);
                         }
