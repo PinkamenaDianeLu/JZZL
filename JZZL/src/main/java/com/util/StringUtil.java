@@ -4,6 +4,8 @@ package com.util;/**
  * @describe
  */
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -41,6 +43,9 @@ public class StringUtil {
      * @return Integer   |
       */
     public static Integer StringToInteger(String str){
+        if (StringUtils.isEmpty(str)){
+            return  null;
+        }
         char[] demo = str.toCharArray();
         Stream<Character> cStream = IntStream.range(0, demo.length).mapToObj(i -> demo[i]);
         String collect = cStream

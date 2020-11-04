@@ -1,6 +1,7 @@
 package com.mapper.jzgl;
 
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,6 @@ public interface FunArchiveRecordsDTOMapper {
      * @createTime  2020/11/2 17:59
      * @return    |
       */
-   void updateRecordOrderByTypeId(int archivetypeid,int thisorder);
+   void updateRecordOrderByTypeId(@Param("archivetypeid") int archivetypeid, @Param("id") int id, @Param("thisorder") int thisorder);
 
 }

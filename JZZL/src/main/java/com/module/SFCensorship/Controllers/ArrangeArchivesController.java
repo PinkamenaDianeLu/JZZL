@@ -397,13 +397,14 @@ public class ArrangeArchivesController extends BaseFactory {
     }
 
 
-     /**
+    /**
      * 实时保存移动的顺序
-     * @author MrLu
+     *
      * @param paramjson {recordid:文书id 必填,typeid:文书类型id 必填,order:文书移动后的顺序 必填 ,filecode:当移动的是文件时传入的文件代码}
-     * @createTime  2020/11/2 18:03
-     * @return    |
-      */
+     * @return |
+     * @author MrLu
+     * @createTime 2020/11/2 18:03
+     */
     @RequestMapping(value = "/saveDateOnTime", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -412,36 +413,55 @@ public class ArrangeArchivesController extends BaseFactory {
         JSONObject reValue = new JSONObject();
         try {
             JSONObject paramObj = (JSONObject) JSONObject.parse(paramjson);
-            int recordId = paramObj.getInteger("recordid");
-            int typeId = StringUtil.StringToInteger(paramObj.getString("typeid"));
-            int order = paramObj.getInteger("order");
+            int recordId = paramObj.getInteger("recordid");//文书id
+            int seqId = paramObj.getInteger("seqId");//整理次序id
+            int order = 0;//被移动到的顺序
+            int typeId = StringUtil.StringToInteger(paramObj.getString("typeid"));//送检类型id
+
             String fileCode = paramObj.getString("filecode");
             if (StringUtils.isNotEmpty(fileCode)) {
+
+                String prevFileCode = paramObj.getString("prevId");//上一个文件的文书代码
+                if (StringUtils.isNotEmpty(prevFileCode)) {
+                    FunArchiveFilesDTO prevFile = arrangeArchivesService.selectFilesByFileCode(prevFileCode, recordId);
+                    order = prevFile.getThisorder() + 1;
+                }else {
+                    order=1;
+                }
                 //更新文件
-                FunArchiveFilesDTO  fileDto=new FunArchiveFilesDTO();
+                FunArchiveFilesDTO fileDto = new FunArchiveFilesDTO();
                 fileDto.setArchivetypeid(typeId);//文书类型id
                 fileDto.setArchiverecordid(recordId);//对应的文书id
                 fileDto.setThisorder(order);
+                //where 条件
                 fileDto.setFilecode(fileCode);
+                fileDto.setArchiveseqid(seqId);
                 arrangeArchivesService.updateFileByFileCode(fileDto);
                 //更新后面的顺序
-                arrangeArchivesService.updateOrderByRecordId(recordId,order);
-            }else {
+                arrangeArchivesService.updateFileOrder(recordId, order,fileCode);
+            } else {
                 //更新文书
-                FunArchiveRecordsDTO recordsDTO=new FunArchiveRecordsDTO();
+                Integer prevId = StringUtil.StringToInteger(paramObj.getString("prevId"));//上一个文书的id
+                FunArchiveRecordsDTO recordsDTO = new FunArchiveRecordsDTO();
+                if (null != prevId) {
+                    FunArchiveRecordsDTO prevRecord = arrangeArchivesService.selectFunArchiveRecordsById(prevId);//获取上一个文书以供定位
+                    order = prevRecord.getThisorder() + 1;
+                } else {
+                    order = 1;
+                }
+                recordsDTO.setThisorder(order);
                 recordsDTO.setId(recordId);
                 recordsDTO.setArchivetypeid(typeId);
-                recordsDTO.setThisorder(order);
+                //更改该文书的信息
                 arrangeArchivesService.updateFunArchiveRecordsById(recordsDTO);
-                    //更新文书下的文件
-                    FunArchiveFilesDTO thisFileDto=new FunArchiveFilesDTO();
-                    thisFileDto.setArchivetypeid(typeId);
-                    thisFileDto.setArchiverecordid(recordId);
-                    //更新
-                    arrangeArchivesService.updateFileByRecordId(thisFileDto);
-                //将该文书后面的文书顺序+1
-                arrangeArchivesService.updateRecordOrderByTypeId(typeId,order);
-
+                //更新文书下的文件
+                FunArchiveFilesDTO thisFileDto = new FunArchiveFilesDTO();
+                thisFileDto.setArchivetypeid(typeId);
+                thisFileDto.setArchiverecordid(recordId);
+                //更新
+                arrangeArchivesService.updateFileByRecordId(thisFileDto);
+                //更新对应文书类型的顺序
+                arrangeArchivesService.updateRecordOrderByTypeId(typeId, recordId, order);
             }
             reValue.put("message", "success");
         } catch (Exception e) {

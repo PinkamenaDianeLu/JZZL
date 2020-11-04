@@ -30,7 +30,7 @@ var loadArchiveIndex = (function () {
                 if ('success' === reV.message) {
                     recordsMap = new Map();
                     filesMap = new Map();
-                    loadProgress=reV.value.length;//共需要加载多少卷
+                    loadProgress = reV.value.length;//共需要加载多少卷
                     utils.functional.forEach(reV.value, function (thisType) {
                         loadArchiveType(thisType);
                     });
@@ -42,8 +42,9 @@ var loadArchiveIndex = (function () {
     }
 
     function getSeqId() {
-return seqid;
+        return seqid;
     }
+
     /**
      * 加载二级菜单 （****卷）
      * @author MrLu
@@ -114,25 +115,29 @@ return seqid;
                     })
 
                     let thisFile = filesMap.get($(ui.item).attr('id'));
+                    console.log(event.originalPosition)
                     //实时更新文件顺序
                     saveDateOnTime(recordId
                         , recordsMap.get('dd' + recordId).archivetypeid
-                        , $(ui.item).index()
-                        , thisFile.filecode);
+                        , thisFile.filecode
+                        , $(ui.item).prev().attr('id')
+                        );
                 } else {
                     console.log('更新文书');
                     let thisRecord = recordsMap.get($(ui.item).attr('id'));
                     //实时更新文书顺序
                     saveDateOnTime(thisRecord.id
                         , $(ui.item).parent().parent('.v1').attr('id')
-                        , $(ui.item).index()
-                        , null);
+                        , null , $(ui.item).prev().attr('id'));
                 }
             }, receive: function (event, ui) {
                 //跨文书移动
+                if ('fileSortZone' !== zoneClass) {
+                    return;
+                }
                 //判断是其他文书移动至正在看的文书还是正在看的文书移动至其他文书
                 let recordId = $(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
-                let fileObj=filesMap.get($(ui.item).attr('id'));
+                let fileObj = filesMap.get($(ui.item).attr('id'));
                 let fileCode = fileObj.filecode;//文件代码
                 if (+recordId === +recordImgLoadObj.getRecordId()) {
                     //其他文书移动至正在看 时
@@ -196,7 +201,7 @@ return seqid;
                         indexing.i++; //此行必须在$('#' + liD).append的后边
                     });
                     loadProgress--;
-                    if (0===loadProgress){
+                    if (0 === loadProgress) {
                         //打开加载第一个文书类型
                         let firstType = $('.v1').first();
                         firstType.slideDown();
@@ -253,7 +258,6 @@ return seqid;
             let fileOrder = utils.functional.map($(div).find('.v3'), function (thisFileIndex) {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
             });
-            console.log(fileOrder);
             recordImgLoadObj = recordImgLoad({
                 recordIdP: record.id,
                 fileOrder: fileOrder,
@@ -556,12 +560,12 @@ return seqid;
             })
             //实时更新文件顺序
             saveDateOnTime(thisFile.archiverecordid
-                , thisFile.archivetypeid, div.index(), thisFile.filecode);
+                , thisFile.archivetypeid, thisFile.filecode,$('#' + ddId).prev().attr('id') );
         } else {
             let thisRecord = recordsMap.get(ddId);
             //实时更新文书顺序
             saveDateOnTime(thisRecord.id
-                , thisRecord.archivetypeid, div.index(), null);
+                , thisRecord.archivetypeid, null,$('#' + ddId).prev().attr('id'));
         }
         reloadButton(div);//重新加载按钮
         reloadButton(prevDD);//重新加载按钮
@@ -582,6 +586,7 @@ return seqid;
         let div = $('#' + ddId);//要移动的
         let nextDiv = div.next('div');//下一个
         nextDiv.after(div);//移动顺序
+        let index=div.index();
         if (div.hasClass('v3')) {
             //判断为文书图片元素 重赋事件
             //判断当前位置
@@ -597,12 +602,12 @@ return seqid;
             })
             //实时更新文件顺序
             saveDateOnTime(thisFile.archiverecordid
-                , thisFile.archivetypeid, div.index(), thisFile.filecode);
+                , thisFile.archivetypeid,  thisFile.filecode,$('#' + ddId).prev().attr('id'));
         } else {
             let thisRecord = recordsMap.get(ddId);
             //实时更新文书顺序
             saveDateOnTime(thisRecord.id
-                , thisRecord.archivetypeid, div.index(), null);
+                , thisRecord.archivetypeid,  null,$('#' + ddId).prev().attr('id'));
         }
         reloadButton(div);//重新加载按钮
         reloadButton(nextDiv);//重新加载按钮
@@ -718,8 +723,6 @@ return seqid;
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
-                        console.log(reV.value);
-
                         let lastFile = $('#dd' + recordId).find('.v3').last()
                         utils.functional.forEach(reV.value, function (thisFile) {
                             $('#dd' + recordId).find('.fileSortZone').append(createFilesDiv(thisFile, fileIndexing));
@@ -762,30 +765,27 @@ return seqid;
      * @createTime  2020/11/2 18:31
      * @return    |
      */
-    function saveDateOnTime(recordId, typeId, Order, fileCode) {
+    function saveDateOnTime(recordId, typeId, fileCode, prevId) {
 
         const updateObj = function () {
             this.recordid = recordId;//被移动的或被移动到的文书id
             this.typeid = typeId;//被移动到的文书类型id
-            this.order = Order;//移动后的顺序
-            this.filecode = fileCode;//文件代码
+            this.filecode = fileCode;//文件代码 当移动的是文件时传入的文件代码
+            this.prevId=prevId?prevId.replace('fileIndex',''):null;
+            this.seqId=seqid;
         }
         let thisObj = new updateObj();
-        //{recordid:文书id 必填,
-        // typeid:文书类型id 必填,
-        // order:文书移动后的顺序 必填 ,
-        // filecode:当移动的是文件时传入的文件代码}
-        console.log(JSON.stringify(thisObj))
-        /*     $.post({
-                     url: '/ArrangeArchives/saveDateOnTime',
-                     data: {paramjson:JSON.stringify(updateObj)},
-                     success: (re) => {
-                         const reV = JSON.parse(re);
-                         if ('success' === reV.message) {
-                         } else {
-                         }
-                     }
-                 });*/
+       $.post({
+            url: '/ArrangeArchives/saveDateOnTime',
+            data: {paramjson: JSON.stringify(thisObj)},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    console.log('实时保存成功');
+                } else {
+                }
+            }
+        });
 
     }
 
@@ -944,7 +944,7 @@ return seqid;
 
     _loadArchiveIndex.prototype = {
         loadIndex, loadRecycleBin, reloadButton,
-        saveData, restored,getSeqId,
+        saveData, restored, getSeqId,
         getRecordIndexSort, progressBar, delFun
     };
     return _loadArchiveIndex;
@@ -962,9 +962,9 @@ $(function () {
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
-                lai.loadIndex(reV.value.id);
-                let rcb = new recycleBin(lai);
-                rcb.loadIndex(reV.value.id);
+                lai.loadIndex(reV.value.id);//开始加载目录
+                let rcb = new recycleBin(lai);//加载回收站部分
+                rcb.loadIndex(reV.value.id);//回收站目录加载
                 lai.loadRecycleBin(rcb);
 
                 //完成整理按钮
@@ -981,6 +981,7 @@ $(function () {
                             area: ['453px', '170px'],
                             content: $('#progressBarDiv')
                         });
+                        //为进度条的弹出框附加一个class 增加透明样式
                         $('#10086').parent().addClass('progressBarParent');
                         lai.saveData();
                     }

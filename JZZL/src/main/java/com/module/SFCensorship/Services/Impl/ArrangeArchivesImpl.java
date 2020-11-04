@@ -140,13 +140,19 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public void updateRecordOrderByTypeId(int archivetypeid, int thisorder) {
-        funArchiveRecordsDTOMapper.updateRecordOrderByTypeId(archivetypeid,thisorder);
+    public void updateRecordOrderByTypeId(int archivetypeid, int id,int thisorder) {
+        funArchiveRecordsDTOMapper.updateRecordOrderByTypeId(archivetypeid,id,thisorder);
     }
-
+/* * @param archiverecordid
+ * @param  thisorder
+ * @param  filecode*/
     @Override
-    public void updateOrderByRecordId(int archiverecordid, int thisorder) {
-        funArchiveFilesDTOMapper.updateOrderByRecordId(archiverecordid,thisorder);
+    public void updateFileOrder(int archiverecordid, int thisorder,String filecode) {
+        Map<String,Object> pMap=new HashMap<>();
+        pMap.put("archiverecordid",archiverecordid);
+        pMap.put("thisorder",thisorder);
+        pMap.put("filecode",filecode);
+        funArchiveFilesDTOMapper.updateOrderByRecordId(pMap);
     }
 
     ;

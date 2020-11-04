@@ -184,15 +184,16 @@ public interface ArrangeArchivesService {
      * @createTime  2020/11/2 17:59
      * @return    |
      */
-    void updateRecordOrderByTypeId(int archivetypeid,int thisorder);
+    void updateRecordOrderByTypeId(int archivetypeid,int id,int thisorder);
 
     /**
      * 将一个文书内顺序大于该值的文件顺序+1
      * @author MrLu
      * @param archiverecordid
      * @param  thisorder
+     * @param  filecode 文件代码
      * @createTime  2020/11/2 16:47
      * @return   void |
      */
-    void updateOrderByRecordId(int archiverecordid,int thisorder);
+    void updateFileOrder(int archiverecordid, int thisorder,String filecode);
 }

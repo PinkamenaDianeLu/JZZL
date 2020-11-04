@@ -201,8 +201,13 @@
     </select>
 
     <select id="updateRecordOrderByTypeId" parameterType="java.lang.Integer">
-        UPDATE fun_archive_records SET thisorder=thisorder+1, UPDATETIME = SYSDATE
-        WHERE SCBJ=0 AND  ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
-        AND thisorder &gt;  #{thisorder,jdbcType=DECIMAL}
+        UPDATE fun_archive_records
+        SET thisorder=thisorder+1,
+        UPDATETIME = SYSDATE
+        WHERE SCBJ=0
+        AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        AND thisorder &gt;=  #{thisorder,jdbcType=DECIMAL}
+        AND ID &lt;&gt; #{id,jdbcType=DECIMAL}
+        AND thisorder &lt; 10000
     </select>
 </mapper>

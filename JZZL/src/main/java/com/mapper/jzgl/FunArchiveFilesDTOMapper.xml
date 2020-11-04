@@ -274,18 +274,18 @@
         WHERE SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
         AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
     </select>
-    <select id="updateOrderByRecordId" parameterType="java.lang.Integer">
+    <select id="updateOrderByRecordId" parameterType="map">
     UPDATE FUN_ARCHIVE_FILES  SET
      THISORDER=THISORDER+1
     ,UPDATETIME = SYSDATE
      WHERE SCBJ=0
      AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
-     AND THISORDER &gt;  #{thisorder,jdbcType=DECIMAL}
+     AND THISORDER &gt;=  #{thisorder,jdbcType=DECIMAL}
+     AND FILECODE &lt;&gt; #{filecode,jdbcType=VARCHAR}
   </select>
 
     <select id="updateFileByRecordId" parameterType="map">
         UPDATE FUN_ARCHIVE_FILES
-        SET
         <set>
             UPDATETIME = SYSDATE,
             <if test="jqbh != null">
@@ -339,7 +339,6 @@
 
     <select id="updateFileByFileCode" parameterType="map">
         UPDATE FUN_ARCHIVE_FILES
-        SET
         <set>
             UPDATETIME = SYSDATE,
             <if test="jqbh != null">
@@ -388,7 +387,8 @@
                 AUTHORID = #{authorid,jdbcType=DECIMAL},
             </if>
         </set>
-        WHERE SCBJ=0 AND  FILECODE= #{filecode,jdbcType=VARCHAR}
+        WHERE SCBJ=0 AND
+         FILECODE= #{filecode,jdbcType=VARCHAR} AND  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
     </select>
 
 

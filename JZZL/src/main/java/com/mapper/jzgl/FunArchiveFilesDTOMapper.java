@@ -19,12 +19,11 @@ public interface FunArchiveFilesDTOMapper {
      /**
      * 将一个文书内顺序大于该值的文件顺序+1
      * @author MrLu
-     * @param archiverecordid
-      * @param  thisorder
+
      * @createTime  2020/11/2 16:47
      * @return   void |
       */
-    void updateOrderByRecordId(@Param("archiverecordid") int archiverecordid,@Param("thisorder") int thisorder);
+    void updateOrderByRecordId(Map<String,Object> map);
 
      /**
      * 根据文书id更新文件
