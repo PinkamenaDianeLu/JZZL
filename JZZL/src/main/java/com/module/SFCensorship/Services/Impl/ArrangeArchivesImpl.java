@@ -95,10 +95,10 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid) {
+    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int seqId) {
         Map<String,Object> map=new HashMap<>();
         map.put("filecode",filesCode);
-        map.put("archiverecordid",archiverecordid);
+        map.put("archiveseqid",seqId);
         return funArchiveFilesDTOMapper.selectRecordFilesByFileCodes(map);
     }
 

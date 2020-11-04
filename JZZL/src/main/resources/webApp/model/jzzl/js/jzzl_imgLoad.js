@@ -19,9 +19,12 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/15 18:31
      */
     function loadFilesByRecord(recordId, fileOrder, callback) {
+        console.log(parent.lai.getSeqId());
         $.post({
             url: '/ArrangeArchives/loadFilesByFileCodes',
-            data: {fileOrder: fileOrder.join(','), recordid: recordId},
+            data: {
+                fileOrder: fileOrder.join(','),
+                seqId: parent.lai.getSeqId()},
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -139,13 +142,13 @@ var recordImgLoad = (function () {
         });
         //删除按钮
         $('#deleteBtn').unbind().click(function () {
-            if (confirm('确认删除？')){
+            if (confirm('确认删除？')) {
                 if (thisFileCode) {
                     //上传至该文书后面
-                    parent.lai.delFun('fileIndex'+thisFileCode);
+                    parent.lai.delFun('fileIndex' + thisFileCode);
                 } else {
                     //上传至整个文书的最后
-                    parent.lai.delFun('dd'+recordId);
+                    parent.lai.delFun('dd' + recordId);
                 }
             }
         });
@@ -159,7 +162,7 @@ var recordImgLoad = (function () {
                 maxmin: false,
                 shadeClose: true, //点击遮罩关闭层
                 area: ['1111px', '600px'],
-                content: '/model/jzzl/imgInfo.html?recordId=' + recordId+'&fileCode'+thisFileCode
+                content: '/model/jzzl/imgInfo.html?recordId=' + recordId + '&fileCode' + thisFileCode
             });
         });
         //为移动至按钮添加方法

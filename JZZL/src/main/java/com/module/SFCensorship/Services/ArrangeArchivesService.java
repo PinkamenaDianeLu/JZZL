@@ -107,11 +107,11 @@ public interface ArrangeArchivesService {
      * 根据文件代码查找文件列表
      * @author MrLu
       * @param  filesCode  文件代码
-      * @param archiverecordid  文书id
+      * @param seqId  文书id
      * @createTime  2020/10/21 11:24
      * @return    |
       */
-    List<FunArchiveFilesDTO>  selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid);
+    List<FunArchiveFilesDTO>  selectRecordFilesByFileCodes(String[] filesCode,int seqId);
 
     /**
      * 根据文件代码查询该文件的历史版本

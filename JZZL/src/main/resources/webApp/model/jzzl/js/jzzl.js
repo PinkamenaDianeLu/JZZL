@@ -18,7 +18,6 @@ var loadArchiveIndex = (function () {
     let recycleBinObj;//回收站对象
     let recordImgLoadObj;//图片加载对象
     let loadProgress;//加载进度
-
     let progressLength = 0;//进度条进度
 
     function loadIndex(id) {
@@ -42,6 +41,9 @@ var loadArchiveIndex = (function () {
         });
     }
 
+    function getSeqId() {
+return seqid;
+    }
     /**
      * 加载二级菜单 （****卷）
      * @author MrLu
@@ -712,7 +714,7 @@ var loadArchiveIndex = (function () {
             //阳间还有这个文书
             $.post({
                 url: '/ArrangeArchives/loadFilesByFileCodes',
-                data: {fileOrder: fileCodes, recordid: recordId},
+                data: {fileOrder: fileCodes, seqId: seqid},
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
@@ -942,7 +944,7 @@ var loadArchiveIndex = (function () {
 
     _loadArchiveIndex.prototype = {
         loadIndex, loadRecycleBin, reloadButton,
-        saveData, restored,
+        saveData, restored,getSeqId,
         getRecordIndexSort, progressBar, delFun
     };
     return _loadArchiveIndex;

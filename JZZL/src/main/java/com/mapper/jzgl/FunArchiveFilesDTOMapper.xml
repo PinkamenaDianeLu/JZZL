@@ -241,7 +241,13 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM FUN_ARCHIVE_FILES
-        WHERE SCBJ=0 AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+        WHERE SCBJ=0 AND ISSHOW=0
+        <if test="archiverecordid != null">
+        AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+        </if>
+        <if test="archiveseqid != null">
+        AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        </if>
         AND FILECODE IN
         <foreach collection="filecode" item="item" separator=","
                  open="(" close=")">
