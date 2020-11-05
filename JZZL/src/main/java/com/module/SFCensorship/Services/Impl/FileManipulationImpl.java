@@ -3,6 +3,7 @@ package com.module.SFCensorship.Services.Impl;
 import com.bean.jzgl.DTO.*;
 import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.FileManipulationService;
+import com.util.MapFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -77,6 +78,18 @@ public class FileManipulationImpl implements FileManipulationService {
     @Override
     public void  insertFunArchiveCover(FunArchiveCoverDTO record){
         funArchiveCoverDTOMapper.insertSelective(record);
-    };
+    }
+
+    @Override
+    public List<Object> selectArchiveRecordPage(Map<String, Object> map) throws Exception {
+        return MapFactory.mapToListBean(funArchiveRecordsDTOMapper.selectArchiveRecordPage(map));
+    }
+
+    @Override
+    public int selectArchiveRecordPageCount(Map<String, Object> map) {
+        return funArchiveRecordsDTOMapper.selectArchiveRecordPageCount(map);
+    }
+
+    ;
 
 }

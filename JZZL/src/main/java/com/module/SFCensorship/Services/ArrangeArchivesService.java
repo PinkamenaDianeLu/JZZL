@@ -196,4 +196,27 @@ public interface ArrangeArchivesService {
      * @return   void |
      */
     void updateFileOrder(int archiverecordid, int thisorder,String filecode);
+
+    /**
+     * 查询一个文书中的最大顺序
+     * @author MrLu
+     * @param archiverecordid 文书id
+     * @createTime  2020/11/5 14:59
+     * @return   int |
+     */
+    int selectFileMaxOrder(int archiverecordid);
+
+    /**
+     * 查询一个文书类型中的最大顺序数
+     * @author MrLu
+     * @param id 文书id
+     * @createTime  2020/11/5 15:02
+     * @return int   |
+     */
+    int selectRecordMaxOrder(int id);
+
+
+
+
+
 }

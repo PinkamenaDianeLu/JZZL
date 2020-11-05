@@ -3,6 +3,9 @@ package com.mapper.jzgl;
 import com.bean.jzgl.DTO.FunArchiveRecordindexDTO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+import java.util.Map;
+
 public interface FunArchiveRecordindexDTOMapper {
 
     int insert(FunArchiveRecordindexDTO record);

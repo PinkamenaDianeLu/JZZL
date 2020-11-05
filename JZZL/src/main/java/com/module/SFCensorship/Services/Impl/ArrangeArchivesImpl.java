@@ -136,16 +136,14 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
 
     @Override
     public void updateFileByFileCode(FunArchiveFilesDTO record) {
-        funArchiveFilesDTOMapper.updateFileByFileCode(record);
+        funArchiveFilesDTOMapper.updateFileBySeqIdFileCode(record);
     }
 
     @Override
     public void updateRecordOrderByTypeId(int archivetypeid, int id,int thisorder) {
         funArchiveRecordsDTOMapper.updateRecordOrderByTypeId(archivetypeid,id,thisorder);
     }
-/* * @param archiverecordid
- * @param  thisorder
- * @param  filecode*/
+
     @Override
     public void updateFileOrder(int archiverecordid, int thisorder,String filecode) {
         Map<String,Object> pMap=new HashMap<>();
@@ -153,6 +151,16 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
         pMap.put("thisorder",thisorder);
         pMap.put("filecode",filecode);
         funArchiveFilesDTOMapper.updateOrderByRecordId(pMap);
+    }
+
+    @Override
+    public int selectFileMaxOrder(int archiverecordid) {
+        return funArchiveFilesDTOMapper.selectFileMaxOrder(archiverecordid);
+    }
+
+    @Override
+    public int selectRecordMaxOrder(int id) {
+        return funArchiveRecordsDTOMapper.selectRecordMaxOrder(id);
     }
 
     ;

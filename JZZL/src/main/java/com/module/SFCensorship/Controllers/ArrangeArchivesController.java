@@ -400,7 +400,7 @@ public class ArrangeArchivesController extends BaseFactory {
     /**
      * 实时保存移动的顺序
      *
-     * @param paramjson {recordid:文书id 必填,typeid:文书类型id 必填,order:文书移动后的顺序 必填 ,filecode:当移动的是文件时传入的文件代码}
+     * @param paramjson {recordid:文书id 必填,typeid:文书类型id 必填,seqId:整理次序id 必填 ,filecode:当移动的是文件时传入的文件代码}
      * @return |
      * @author MrLu
      * @createTime 2020/11/2 18:03
@@ -425,8 +425,8 @@ public class ArrangeArchivesController extends BaseFactory {
                 if (StringUtils.isNotEmpty(prevFileCode)) {
                     FunArchiveFilesDTO prevFile = arrangeArchivesService.selectFilesByFileCode(prevFileCode, recordId);
                     order = prevFile.getThisorder() + 1;
-                }else {
-                    order=1;
+                } else {
+                    order = 1;
                 }
                 //更新文件
                 FunArchiveFilesDTO fileDto = new FunArchiveFilesDTO();
@@ -438,7 +438,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 fileDto.setArchiveseqid(seqId);
                 arrangeArchivesService.updateFileByFileCode(fileDto);
                 //更新后面的顺序
-                arrangeArchivesService.updateFileOrder(recordId, order,fileCode);
+                arrangeArchivesService.updateFileOrder(recordId, order, fileCode);
             } else {
                 //更新文书
                 Integer prevId = StringUtil.StringToInteger(paramObj.getString("prevId"));//上一个文书的id
@@ -462,6 +462,173 @@ public class ArrangeArchivesController extends BaseFactory {
                 arrangeArchivesService.updateFileByRecordId(thisFileDto);
                 //更新对应文书类型的顺序
                 arrangeArchivesService.updateRecordOrderByTypeId(typeId, recordId, order);
+            }
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
+    /**
+     * 实时删除
+     *
+     * @param paramjson
+     * @return String  |
+     * @author MrLu
+     * @createTime 2020/11/5 10:35
+     */
+    @RequestMapping(value = "/saveDeleteDateOnTime", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "实时保存对文书文件的删除", operType = OperLog.type.UPDATE)
+    public String saveDeleteDateOnTime(String paramjson) {
+        JSONObject reValue = new JSONObject();
+        try {
+            JSONObject paramObj = (JSONObject) JSONObject.parse(paramjson);
+            Integer recordId = StringUtil.StringToInteger(paramObj.getString("recordid"));
+            if (null == recordId) {
+                throw new Exception("recordId没给传！！！");
+            }
+            int seqId = paramObj.getInteger("seqId");//整理次序id
+            String fileCode = paramObj.getString("filecode");
+            //要被操作的文书对象
+            FunArchiveRecordsDTO thisRecord = new FunArchiveRecordsDTO();
+            thisRecord.setId(recordId);
+            //要被操作的文件对象
+            FunArchiveFilesDTO thisFile = new FunArchiveFilesDTO();
+            if (StringUtils.isNotEmpty(fileCode)) {
+                //删除文件
+
+                thisFile.setIsdelete(1);
+                //where 条件
+                thisFile.setFilecode(fileCode);
+                thisFile.setArchiveseqid(seqId);
+                arrangeArchivesService.updateFileByFileCode(thisFile);
+                //更新对应文书的isdelet为1： 有文件删除
+                thisRecord.setIsdelete(1);
+
+            } else {
+                //删除文书
+                //文书isdelete为2 ：文书全部删除
+                thisRecord.setIsdelete(2);
+                //文书内的所有文件删除
+                thisFile.setArchiverecordid(recordId);
+                thisFile.setIsdelete(1);
+                arrangeArchivesService.updateFileByRecordId(thisFile);
+            }
+            //更新文书
+            arrangeArchivesService.updateFunArchiveRecordsById(thisRecord);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
+     /**
+     * 实时还原被删除的文书文件
+     * @author MrLu
+     * @param paramjson
+     * @createTime  2020/11/5 15:15
+     * @return   String |
+      */
+    @RequestMapping(value = "/saveRestoreDateOnTime", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "实时还原被删除的文书文件", operType = OperLog.type.UPDATE)
+    public String saveRestoreDateOnTime(String paramjson) {
+        JSONObject reValue = new JSONObject();
+        try {
+            JSONObject paramObj = (JSONObject) JSONObject.parse(paramjson);
+            Integer recordId = StringUtil.StringToInteger(paramObj.getString("recordid"));
+            if (null == recordId) {
+                throw new Exception("recordId没给传！！！");
+            }
+            int seqId = paramObj.getInteger("seqId");//整理次序id
+            String fileCode = paramObj.getString("filecode");
+            //要被操作的文书对象
+            FunArchiveRecordsDTO thisRecord = new FunArchiveRecordsDTO();
+            thisRecord.setId(recordId);
+            //还原后的位置
+            int maxOrder=1;
+            //要被操作的文件对象
+            FunArchiveFilesDTO thisFile = new FunArchiveFilesDTO();
+            if (StringUtils.isNotEmpty(fileCode)) {
+                //还原文件
+
+                thisFile.setIsdelete(0);
+                //where 条件
+                thisFile.setFilecode(fileCode);
+                thisFile.setArchiveseqid(seqId);
+
+                arrangeArchivesService.updateFileByFileCode(thisFile);
+                //更新对应文书的isdelet为1： 有文件删除
+                thisRecord.setIsdelete(1);
+                //还原至顺序的最后一位
+                maxOrder = arrangeArchivesService.selectFileMaxOrder(recordId)+1;
+                thisRecord.setArchiveseqid(maxOrder);
+            } else {
+                //还原文书
+                //文书isdelete为0 ：没有文件被删除
+                thisRecord.setIsdelete(0);
+                //文书内的所有文件还原
+                thisFile.setArchiverecordid(recordId);
+                thisFile.setIsdelete(0);
+                arrangeArchivesService.updateFileByRecordId(thisFile);
+                //还原后在文书中的最后一位
+                maxOrder = arrangeArchivesService.selectRecordMaxOrder(recordId)+1;
+                thisRecord.setThisorder(maxOrder);
+            }
+            //更新文书
+            arrangeArchivesService.updateFunArchiveRecordsById(thisRecord);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
+    /**
+     * 实时重命名
+     *
+     * @param paramjson
+     * @return |
+     * @author MrLu
+     * @createTime 2020/11/5 11:03
+     */
+    @RequestMapping(value = "/saveReNameDateOnTime", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "实时重命名文书文件", operType = OperLog.type.UPDATE)
+    public String saveReNameDateOnTime(String paramjson) {
+        JSONObject reValue = new JSONObject();
+        try {
+            JSONObject paramObj = (JSONObject) JSONObject.parse(paramjson);
+            int seqId = paramObj.getInteger("seqId");//整理次序id
+            String name = paramObj.getString("rename");//更新的名
+            String fileCode = paramObj.getString("filecode");
+
+            if (StringUtils.isEmpty(fileCode)) {
+                //更新文书
+                Integer recordId = StringUtil.StringToInteger(paramObj.getString("recordid"));
+                FunArchiveRecordsDTO thisRecord = new FunArchiveRecordsDTO();
+                thisRecord.setRecordname(name);
+                thisRecord.setId(recordId);
+                arrangeArchivesService.updateFunArchiveRecordsById(thisRecord);
+            } else {
+
+                FunArchiveFilesDTO thisFile = new FunArchiveFilesDTO();
+                thisFile.setFilecode(fileCode);
+                thisFile.setArchiveseqid(seqId);
+                thisFile.setFilename(name);
+                arrangeArchivesService.updateFileByFileCode(thisFile);
             }
             reValue.put("message", "success");
         } catch (Exception e) {

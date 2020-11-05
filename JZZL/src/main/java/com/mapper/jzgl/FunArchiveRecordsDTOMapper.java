@@ -69,4 +69,24 @@ public interface FunArchiveRecordsDTOMapper {
       */
    void updateRecordOrderByTypeId(@Param("archivetypeid") int archivetypeid, @Param("id") int id, @Param("thisorder") int thisorder);
 
+
+    /**
+    * 查询一个文书类型中的最大顺序数
+    * @author MrLu
+    * @param id 文书id
+    * @createTime  2020/11/5 15:02
+    * @return int   |
+     */
+    int selectRecordMaxOrder(int id);
+
+
+     /**
+     * 分页查询文书
+     * @author MrLu
+     * @param 
+     * @createTime  2020/11/5 17:55
+     * @return    |  
+      */
+     List<Map<String, Object>>selectArchiveRecordPage(Map<String,Object> map);
+    int selectArchiveRecordPageCount(Map<String,Object> map);
 }

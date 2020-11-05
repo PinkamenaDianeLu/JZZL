@@ -3,6 +3,7 @@ package com.module.SFCensorship.Services;
 import com.bean.jzgl.DTO.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author MrLu
@@ -108,4 +109,15 @@ public interface FileManipulationService {
      * @return    |  
       */
     void  insertFunArchiveCover(FunArchiveCoverDTO record);
+
+
+    /**
+     * 分页查询文书
+     * @author MrLu
+     * @param
+     * @createTime  2020/11/5 17:39
+     * @return    |
+     */
+    List<Object> selectArchiveRecordPage(Map<String,Object> map) throws Exception;
+    int selectArchiveRecordPageCount(Map<String,Object> map);
 }

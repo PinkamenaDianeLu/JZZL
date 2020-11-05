@@ -112,6 +112,15 @@
             <if test="authorid != null">
                 AUTHORID,
             </if>
+            <if test="isshow != null">
+                ISSHOW,
+            </if>
+            <if test="filecode != null">
+                FILECODE,
+            </if>
+            <if test="isdelete != null">
+                ISDELETE,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             #{id,jdbcType=DECIMAL},
@@ -161,6 +170,15 @@
             </if>
             <if test="authorid != null">
                 #{authorid,jdbcType=DECIMAL},
+            </if>
+            <if test="isshow != null">
+                #{isshow,jdbcType=DECIMAL},
+            </if>
+            <if test="filecode != null">
+                #{filecode,jdbcType=VARCHAR},
+            </if>
+            <if test="isdelete != null">
+                #{isdelete,jdbcType=DECIMAL},
             </if>
         </trim>
     </insert>
@@ -221,6 +239,15 @@
             </if>
             <if test="authorid != null">
                 AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+            <if test="isshow != null">
+                ISSHOW = #{isshow,jdbcType=DECIMAL},
+            </if>
+            <if test="filecode != null">
+                FILECODE = #{filecode,jdbcType=VARCHAR},
+            </if>
+            <if test="isdelete != null">
+                ISDELETE = #{isdelete,jdbcType=DECIMAL},
             </if>
         </set>
         where ID = #{id,jdbcType=DECIMAL}
@@ -284,7 +311,7 @@
      AND FILECODE &lt;&gt; #{filecode,jdbcType=VARCHAR}
   </select>
 
-    <select id="updateFileByRecordId" parameterType="map">
+    <select id="updateFileByRecordId" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
         UPDATE FUN_ARCHIVE_FILES
         <set>
             UPDATETIME = SYSDATE,
@@ -332,12 +359,21 @@
             </if>
             <if test="authorid != null">
                 AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+            <if test="isshow != null">
+                ISSHOW = #{isshow,jdbcType=DECIMAL},
+            </if>
+            <if test="filecode != null">
+                FILECODE = #{filecode,jdbcType=VARCHAR},
+            </if>
+            <if test="isdelete != null">
+                ISDELETE = #{isdelete,jdbcType=DECIMAL},
             </if>
         </set>
         WHERE SCBJ=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
     </select>
 
-    <select id="updateFileByFileCode" parameterType="map">
+    <select id="updateFileBySeqIdFileCode" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
         UPDATE FUN_ARCHIVE_FILES
         <set>
             UPDATETIME = SYSDATE,
@@ -385,11 +421,26 @@
             </if>
             <if test="authorid != null">
                 AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+            <if test="isshow != null">
+                ISSHOW = #{isshow,jdbcType=DECIMAL},
+            </if>
+            <if test="filecode != null">
+                FILECODE = #{filecode,jdbcType=VARCHAR},
+            </if>
+            <if test="isdelete != null">
+                ISDELETE = #{isdelete,jdbcType=DECIMAL},
             </if>
         </set>
         WHERE SCBJ=0 AND
          FILECODE= #{filecode,jdbcType=VARCHAR} AND  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
     </select>
 
-
+<select id="selectFileMaxOrder" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+    SELECT NVL(MAX(THISORDER),0) FROM FUN_ARCHIVE_FILES
+    WHERE SCBJ=0
+    AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+    AND ISDELETE=0
+    AND THISORDER &lt; 9999
+</select>
 </mapper>

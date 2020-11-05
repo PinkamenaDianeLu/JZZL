@@ -297,6 +297,7 @@ var recycleBin = (function () {
             //删除自己
             thisRecord.remove();
             recycleRecordsMap.delete(ddId);
+            saveRestoreDateOnTime(ddId,null);
         } else {
             //还原单个文件
             thisRecord = thisRecord.parent().parent('.v2');//变成文书
@@ -312,10 +313,40 @@ var recycleBin = (function () {
                 newR.isdelete = 1;//还原一个 该文书就不是全部删除而且部分删除了
                 recycleRecordsMap.set(recordId, newR);
                 recycleRecordsMap.delete(ddId);
+
+                saveRestoreDateOnTime(recordId, ddId.replace('fileIndex', ''));
             }
         }
 
     }
+     /**
+     * 实时还原
+     * @author MrLu
+     * @param recordId 文书id
+      * @param fileCode 文件代码
+     * @createTime  2020/11/5 15:41
+     * @return    |
+      */
+    function saveRestoreDateOnTime(recordId, fileCode) {
+        const restoreObj = function () {
+            this.recordid = recordId;//被移动的或被移动到的文书id
+            this.filecode = fileCode;//文件代码 当移动的是文件时传入的文件代码
+            this.seqId = seqid;
+        }
+        $.post({
+            url: '/ArrangeArchives/saveRestoreDateOnTime',
+            data: {paramjson: JSON.stringify(new restoreObj())},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    console.log('实时恢复成功');
+                } else {
+                }
+            }
+        });
+    }
+
+
 
     /**
      * 根据不同的文书类型保存回收站的文书信息

@@ -210,4 +210,44 @@
         AND ID &lt;&gt; #{id,jdbcType=DECIMAL}
         AND thisorder &lt; 10000
     </select>
+
+    <select id="selectRecordMaxOrder" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        SELECT NVL(MAX(THISORDER),0) FROM FUN_ARCHIVE_RECORDS
+        WHERE SCBJ=0
+        AND ARCHIVETYPEID = (SELECT ARCHIVETYPEID FROM FUN_ARCHIVE_RECORDS WHERE  ID = #{id,jdbcType=DECIMAL})
+        AND ISDELETE &lt; 2
+        AND THISORDER &lt; 9999
+    </select>
+
+    <select id="selectArchiveRecordPage" resultType="map" parameterType="map">
+        select * from ( SELECT A.*, ROWNUM RUM FROM (
+        select
+        <include refid="Base_Column_List"/>
+        ,(SELECT ARCHIVETYPECN FROM Fun_Archive_Type WHERE ID = r.archivetypeid )
+        from FUN_ARCHIVE_RECORDS r
+        where 1=1 and scbj=0
+        <if test="null != archivetypeid">
+            and r.ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        </if>
+        and r.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        <if test="null != recordname and recordname!=''">
+            AND r.RECORDNAME LIKE '%'||#{recordname,jdbcType=VARCHAR}||'%'
+        </if>
+        order by id desc
+        ) A )
+        WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
+        AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
+    </select>
+    <select id="selectArchiveRecordPageCount" resultType="java.lang.Integer" parameterType="map">
+        select count(0)
+        FROM FUN_ARCHIVE_RECORDS r
+        where 1=1 and scbj=0
+        <if test="null != archivetypeid">
+        and r.ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        </if>
+        and r.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        <if test="null != recordname and recordname!=''">
+            AND r.RECORDNAME LIKE '%'||#{recordname,jdbcType=VARCHAR}||'%'
+        </if>
+    </select>
 </mapper>

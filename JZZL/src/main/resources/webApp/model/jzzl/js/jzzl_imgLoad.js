@@ -19,7 +19,6 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/15 18:31
      */
     function loadFilesByRecord(recordId, fileOrder, callback) {
-        console.log(parent.lai.getSeqId());
         $.post({
             url: '/ArrangeArchives/loadFilesByFileCodes',
             data: {
@@ -173,7 +172,7 @@ var recordImgLoad = (function () {
                 moveToFn(thisFileCode, undefined);
             } else {
                 //移动整个文书
-                moveToFn(undefined, thisFileCode);
+                moveToFn(undefined, recordId);
             }
 
         });
@@ -261,7 +260,7 @@ var recordImgLoad = (function () {
             maxmin: false,
             shadeClose: true, //点击遮罩关闭层
             area: ['1111px', '600px'],
-            content: '/model/jzzl/jzYdTable.html?moveState=' + moveState
+            content: '/model/jzzl/jzYdTable.html?moveState=' + moveState+'&seqid='+parent.lai.getSeqId()
         });
 
     }

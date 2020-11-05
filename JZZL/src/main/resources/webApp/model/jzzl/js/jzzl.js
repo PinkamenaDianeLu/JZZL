@@ -121,14 +121,14 @@ var loadArchiveIndex = (function () {
                         , recordsMap.get('dd' + recordId).archivetypeid
                         , thisFile.filecode
                         , $(ui.item).prev().attr('id')
-                        );
+                    );
                 } else {
                     console.log('更新文书');
                     let thisRecord = recordsMap.get($(ui.item).attr('id'));
                     //实时更新文书顺序
                     saveDateOnTime(thisRecord.id
                         , $(ui.item).parent().parent('.v1').attr('id')
-                        , null , $(ui.item).prev().attr('id'));
+                        , null, $(ui.item).prev().attr('id'));
                 }
             }, receive: function (event, ui) {
                 //跨文书移动
@@ -560,12 +560,12 @@ var loadArchiveIndex = (function () {
             })
             //实时更新文件顺序
             saveDateOnTime(thisFile.archiverecordid
-                , thisFile.archivetypeid, thisFile.filecode,$('#' + ddId).prev().attr('id') );
+                , thisFile.archivetypeid, thisFile.filecode, $('#' + ddId).prev().attr('id'));
         } else {
             let thisRecord = recordsMap.get(ddId);
             //实时更新文书顺序
             saveDateOnTime(thisRecord.id
-                , thisRecord.archivetypeid, null,$('#' + ddId).prev().attr('id'));
+                , thisRecord.archivetypeid, null, $('#' + ddId).prev().attr('id'));
         }
         reloadButton(div);//重新加载按钮
         reloadButton(prevDD);//重新加载按钮
@@ -586,7 +586,7 @@ var loadArchiveIndex = (function () {
         let div = $('#' + ddId);//要移动的
         let nextDiv = div.next('div');//下一个
         nextDiv.after(div);//移动顺序
-        let index=div.index();
+        let index = div.index();
         if (div.hasClass('v3')) {
             //判断为文书图片元素 重赋事件
             //判断当前位置
@@ -602,12 +602,12 @@ var loadArchiveIndex = (function () {
             })
             //实时更新文件顺序
             saveDateOnTime(thisFile.archiverecordid
-                , thisFile.archivetypeid,  thisFile.filecode,$('#' + ddId).prev().attr('id'));
+                , thisFile.archivetypeid, thisFile.filecode, $('#' + ddId).prev().attr('id'));
         } else {
             let thisRecord = recordsMap.get(ddId);
             //实时更新文书顺序
             saveDateOnTime(thisRecord.id
-                , thisRecord.archivetypeid,  null,$('#' + ddId).prev().attr('id'));
+                , thisRecord.archivetypeid, null, $('#' + ddId).prev().attr('id'));
         }
         reloadButton(div);//重新加载按钮
         reloadButton(nextDiv);//重新加载按钮
@@ -644,12 +644,15 @@ var loadArchiveIndex = (function () {
                 let thisOne = recordsMap.get(ddId);
                 thisOne.recordname = $(this).html();
                 recordsMap.set(ddId, thisOne);//缓存信息
+                saveReNameDateOnTime(ddId,null,thisOne.recordname )
             } else {
                 let thisOne = filesMap.get(ddId);
                 thisOne.filename = $(this).html();
                 filesMap.set(ddId, thisOne);//缓存信息
+                saveReNameDateOnTime(thisOne.archiverecordid,thisOne.filecode,thisOne.filename )
             }
-            thisP.removeClass('pinput')
+            thisP.removeClass('pinput');
+
         });
     }
 
@@ -670,6 +673,7 @@ var loadArchiveIndex = (function () {
             recycleBinObj.addRecycleBin(ddId.replace('dd', ''), undefined);
             thisRecord.remove();
             recordsMap.delete(ddId);
+            saveDeleteDateOnTime(ddId,null);
         } else {
             //是图片
             thisRecord = thisRecord.parent().parent('.v2');//变成文书
@@ -681,9 +685,12 @@ var loadArchiveIndex = (function () {
                 }
             } else {
                 //删除单个文件
-                recycleBinObj.addRecycleBin(thisRecord.attr('id').replace('dd', ''), ddId.replace('fileIndex', ''));
+                let thisRecordId=thisRecord.attr('id').replace('dd', '');
+                let fileCode=ddId.replace('fileIndex', '');
+                recycleBinObj.addRecycleBin(thisRecordId, fileCode);
                 $('#' + ddId).remove();
                 filesMap.delete(ddId);
+                saveDeleteDateOnTime(thisRecordId,fileCode);
             }
         }
     }
@@ -729,6 +736,7 @@ var loadArchiveIndex = (function () {
                         })
                         reloadButton(lastFile);//重新加载最后一个文件的按钮
                         reloadButton($('#dd' + recordId).find('.v3').last());
+
                     } else {
                         throw '文书还原失败';
                     }
@@ -750,6 +758,7 @@ var loadArchiveIndex = (function () {
                         lastRecord.after(thisRecordDiv)
                         reloadButton(lastRecord);//重新加载最后一个文书的按钮
                         reloadButton($(thisRecordDiv));
+
                     } else {
                         throw '文件还原失败';
                     }
@@ -761,9 +770,11 @@ var loadArchiveIndex = (function () {
     /**
      * 实时保存文书顺序
      * @author MrLu
-     * @param
+     * @param recordId 被移动的或被移动到的文书id
+     * @param typeId 被移动到的文书类型id
+     * @param fileCode 文件代码 当移动的是文件时传入的文件代码
+     * @param prevId 上一个文件/文书的代码/id
      * @createTime  2020/11/2 18:31
-     * @return    |
      */
     function saveDateOnTime(recordId, typeId, fileCode, prevId) {
 
@@ -771,11 +782,11 @@ var loadArchiveIndex = (function () {
             this.recordid = recordId;//被移动的或被移动到的文书id
             this.typeid = typeId;//被移动到的文书类型id
             this.filecode = fileCode;//文件代码 当移动的是文件时传入的文件代码
-            this.prevId=prevId?prevId.replace('fileIndex',''):null;
-            this.seqId=seqid;
+            this.prevId = prevId ? prevId.replace('fileIndex', '') : null;
+            this.seqId = seqid;
         }
         let thisObj = new updateObj();
-       $.post({
+        $.post({
             url: '/ArrangeArchives/saveDateOnTime',
             data: {paramjson: JSON.stringify(thisObj)},
             success: (re) => {
@@ -783,10 +794,60 @@ var loadArchiveIndex = (function () {
                 if ('success' === reV.message) {
                     console.log('实时保存成功');
                 } else {
+                    layer.msg('实时保存失败');
                 }
             }
         });
 
+    }
+
+    /**
+     * 实时保存删除的文书/文件
+     * @author MrLu
+     * @param recordId
+     * @param fileCode
+     * @createTime  2020/11/5 9:27
+     */
+    function saveDeleteDateOnTime(recordId, fileCode) {
+        const deleteObj = function () {
+            this.recordid = recordId;//被移动的或被移动到的文书id
+            this.filecode = fileCode;//文件代码 当移动的是文件时传入的文件代码
+            this.seqId = seqid;
+        }
+        $.post({
+            url: '/ArrangeArchives/saveDeleteDateOnTime',
+            data: {paramjson: JSON.stringify(new deleteObj())},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    console.log('实时删除成功');
+                } else {
+                }
+            }
+        });
+    }
+
+
+
+
+    function saveReNameDateOnTime(recordId, fileCode,name) {
+        const renameObj = function () {
+            this.recordid = recordId;//被移动的或被移动到的文书id
+            this.filecode = fileCode;//文件代码 当移动的是文件时传入的文件代码
+            this.rename = name;
+            this.seqId = seqid;
+        }
+        $.post({
+            url: '/ArrangeArchives/saveReNameDateOnTime',
+            data: {paramjson: JSON.stringify(new renameObj())},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    console.log('实时重命名保存成功');
+                } else {
+                }
+            }
+        });
     }
 
     /**

@@ -40,7 +40,7 @@ public interface FunArchiveFilesDTOMapper {
      * @createTime  2020/11/2 18:20
      * @return    |
       */
-    void updateFileByFileCode(FunArchiveFilesDTO record);
+    void updateFileBySeqIdFileCode(FunArchiveFilesDTO record);
      /**
      * 通过文书id查找其文书图片（最新版本的）
      * @author MrLu
@@ -51,6 +51,13 @@ public interface FunArchiveFilesDTOMapper {
      List<FunArchiveFilesDTO>  selectRecordFilesByRecordId(@Param("archiverecordid") int archiverecordid,@Param("isdelete") Integer isdelete);
 
 
+      /**
+      * 根据filecode数组按顺序查询文件
+      * @author MrLu
+      * @param map
+      * @createTime  2020/11/5 10:16
+      * @return  List<FunArchiveFilesDTO>  |
+       */
     List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(Map<String,Object> map);
      /**
      * 根据文件代码查询该文件的历史版本
@@ -69,5 +76,14 @@ public interface FunArchiveFilesDTOMapper {
      * @return  FunArchiveFilesDTO  |
       */
     FunArchiveFilesDTO selectFilesByFileCode(Map<String,Object> map);
+
+     /**
+     * 查询一个文书中的最大顺序
+     * @author MrLu
+     * @param archiverecordid 文书id
+     * @createTime  2020/11/5 14:59
+     * @return   int |
+      */
+    int selectFileMaxOrder(int archiverecordid);
 
 }
