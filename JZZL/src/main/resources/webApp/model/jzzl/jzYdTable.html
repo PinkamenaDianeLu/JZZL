@@ -3,12 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Framework/bootstrapTable/bootstrap-table.min.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="/css/style.css">
+    <style>
+        .col-md-1{padding-left:5px; padding-right:5px;}
+    </style>
 </head>
-<body>
-<table  class="table table-striped table-hover text-nowrap" id="recordTable" colnum="13">
+<body style="background: #fff;">
+<div class="f_main" style="padding: 10px;">
+    <div class="t_search">
+        <div class="row">
+            <div class="col-md-1">文书名称：</div>
+            <div class="col-md-2">
+                <input type="text" placeholder=""  id="recordname"/>
+                <input type="hidden" id="archivetypeid"/>
+            </div>
+            <div class="col-md-2" style="padding-left: 5px;"><button class="ok_but" id="searchBtn">查询</button></div>
+        </div>
+    </div>
+    <div class="in_tab">
+        <ul id="archiveTypeTab" class="nav nav-tabs">
+            <li id="searchTab" class="active"><a data-toggle="tab">全部</a></li>
+        </ul>
+        <div id="myTabContent" class="tab-content">
+            <div class="tab-pane fade in" style="display: block">
+                <div class="table-responsive" style="min-height: 500px;"><!--table-striped//不产生横向滚动条，数据内容折行显示-->
+                    <table class="table table-striped table-hover text-nowrap"  id="recordTable" colnum="13">
 
-</table>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 </body>
+
 <script src="/Framework/js/jquery.min.js"></script>
 <script src="/Framework/layer/layer.js"></script>
 <script src="/utils/utils.js"></script>

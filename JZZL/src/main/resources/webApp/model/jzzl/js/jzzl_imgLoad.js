@@ -237,15 +237,16 @@ var recordImgLoad = (function () {
                 pString = fileCode;
             } else if (recordId) {
                 //文书移动至
-                moveState = 1
-                pString = recordId;
+               /* moveState = 1
+                pString = recordId;*/
+                layer.alert('请选择要移动的图片，您也可以在平铺模式中多选图片进行批量移动')
             }
         } else {
             //平面图状态
             //多选移动至
             //被移动的文书filecode set
             if (!checkFile || checkFile.size === 0) {
-                alert('请选择要移动的文书！');
+                alert('请选择要移动的图片！');
                 return false;
             }
             pString = JSON.stringify(Array.from(checkFile).join(','));

@@ -20,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author MrLu
@@ -305,4 +303,33 @@ public class FileManipulationController extends BaseFactory {
         }
         return reValue.toJSONString();
     }
+
+
+     /**
+     * 分页查询文书
+     * @author MrLu
+     * @createTime  2020/11/6 9:26
+      */
+    @RequestMapping(value = "/selectArchiveRecordPage", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "文书分页查询", operType = OperLog.type.SELECT)
+    public Map<String, Object> selectArchiveRecordPage(Integer offset, Integer limit, String params) {
+        Map<String, Object> reMap = new HashMap<>();
+        try {
+            //参数列表
+            JSONObject pJsonObj = JSON.parseObject(params);
+            pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
+            pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
+            pJsonObj.put("archiveseqid",pJsonObj.getInteger("seqid"));//整理次序id
+            reMap.put("rows", fileManipulationService.selectArchiveRecordPage(pJsonObj));
+            reMap.put("total", fileManipulationService.selectArchiveRecordPageCount(pJsonObj));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reMap;
+    }
+
+
+
 }
