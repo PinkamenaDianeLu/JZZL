@@ -132,6 +132,33 @@ public class ArrangeArchivesController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+
+
+     /**
+     * 查询文书下的所有文件
+     * @author MrLu
+     * @param recordid 文书id
+     * @createTime  2020/11/7 21:45
+     * @return    |
+      */
+     @RequestMapping(value = "/selectFilesByRecordId", method = {RequestMethod.GET,
+             RequestMethod.POST})
+     @ResponseBody
+     @OperLog(operModul = operModul, operDesc = "查询文书下的所有文件", operType = OperLog.type.SELECT)
+     public  String selectFilesByRecordId(String recordid){
+        JSONObject reValue = new JSONObject();
+                try {
+                    if (StringUtils.isEmpty(recordid)) {
+                        throw new Exception("你传nm呢？");
+                    }
+                    reValue.put("value",arrangeArchivesService.selectRecordFilesByRecordId(Integer.parseInt(recordid), 0));
+                    reValue.put("message", "success");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    reValue.put("message", "error");
+                }
+                return reValue.toJSONString();
+    }
     /**
      * 新建整理记录
      *

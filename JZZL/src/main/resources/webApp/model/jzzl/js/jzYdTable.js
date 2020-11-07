@@ -105,7 +105,7 @@ var recordsTable = (function () {
                 title: '操作',
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return '<a class="b_but edit" onclick="moveIn(' + row.id + ')" >移入</a>';
+                    return oriRecordId!==row.id?'<a class="b_but edit" onclick="moveIn(' + row.id + ')" >移入</a>':'<a class="b_but editGreen"  >原文书</a>';
                 }
             }], param: function () {
                 return getSearchParam();
