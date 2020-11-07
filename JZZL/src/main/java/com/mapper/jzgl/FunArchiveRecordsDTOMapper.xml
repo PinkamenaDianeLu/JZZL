@@ -234,7 +234,7 @@
             AND r.RECORDNAME LIKE '%'||#{recordname,jdbcType=VARCHAR}||'%'
         </if>
         AND RECORDSTYLE &lt;&gt; 0
-        order by UPDATETIME desc
+        order by thisorder asc
         ) A )
         WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
         AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}

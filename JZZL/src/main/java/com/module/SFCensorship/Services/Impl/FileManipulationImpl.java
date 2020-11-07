@@ -90,6 +90,14 @@ public class FileManipulationImpl implements FileManipulationService {
         return funArchiveRecordsDTOMapper.selectArchiveRecordPageCount(map);
     }
 
-    ;
+    @Override
+    public int selectFileMaxOrder(int archiverecordid) {
+        return funArchiveFilesDTOMapper.selectFileMaxOrder(archiverecordid);
+    }
+
+    @Override
+    public void updateFileByFileCode(FunArchiveFilesDTO record) {
+        funArchiveFilesDTOMapper.updateFileBySeqIdFileCode(record);
+    }
 
 }

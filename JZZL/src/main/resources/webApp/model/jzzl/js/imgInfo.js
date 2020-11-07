@@ -10,4 +10,7 @@ $(function () {
     const recordId = utils.getUrlPar('recordId');
     const fileCode = utils.getUrlPar('fileCode');
     console.log(recordId + '            ' + fileCode);
-})()
+    //加载文书所有图片至swiper
+    //每个文书有点击事件加载对应信息
+    //添加按钮
+})

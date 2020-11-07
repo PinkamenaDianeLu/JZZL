@@ -330,6 +330,44 @@ public class FileManipulationController extends BaseFactory {
         return reMap;
     }
 
-
+    /**
+     * 按照文书代码移动文件至所属文书
+     *
+     * @param fileOrder 文件代码数组
+     * @return String  |
+     * @author MrLu
+     * @createTime 2020/10/15 18:17
+     */
+    @RequestMapping(value = "/moveFiles", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "按照文书代码移动文件至所属文书", operType = OperLog.type.SELECT)
+    public String moveFiles(String fileOrder, String seqId,String recordid,String orirecordid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(fileOrder) || StringUtils.isEmpty(seqId)|| StringUtils.isEmpty(recordid)) {
+                throw new Exception("给一个? 自己体会");
+            }
+            int recordId=Integer.parseInt(recordid);
+            String[] fileOrders = fileOrder.split(",");
+            //该文书没有图片了
+          int maxOrder=  fileManipulationService.selectFileMaxOrder(recordId);
+            List<FunArchiveFilesDTO> moveFiles=  fileManipulationService.selectRecordFilesByFileCodes(fileOrders, Integer.parseInt(orirecordid));
+            for (FunArchiveFilesDTO thisMoveFile:
+                    moveFiles) {
+                thisMoveFile.setArchiverecordid(recordId);
+                thisMoveFile.setThisorder(maxOrder++);
+                //再加一个更新
+                fileManipulationService.updateFileByFileCode(thisMoveFile);
+            }
+            //获取对应文书的最大顺序
+            reValue.put("value", moveFiles);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
 
 }

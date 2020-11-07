@@ -120,4 +120,21 @@ public interface FileManipulationService {
      */
     List<Object> selectArchiveRecordPage(Map<String,Object> map) throws Exception;
     int selectArchiveRecordPageCount(Map<String,Object> map);
+
+    /**
+     * 查询一个文书中的最大顺序
+     * @author MrLu
+     * @param archiverecordid 文书id
+     * @createTime  2020/11/5 14:59
+     * @return   int |
+     */
+    int selectFileMaxOrder(int archiverecordid);
+     /**
+     * 根据文件代码和整理次序id更新文件
+     * @author MrLu
+     * @param record
+     * @createTime  2020/11/7 12:17
+     * @return  void  |
+      */
+    void updateFileByFileCode(FunArchiveFilesDTO record);
 }

@@ -323,7 +323,7 @@ var loadArchiveIndex = (function () {
         $(div).click(function () {
             //此时是列表第一次加载时、故图片位置为fileIndexing.i-1  当该元素被拖拽、上下移按钮后 要重新添加事件
             loadFileImg(div, thisFile.archiverecordid);
-        })
+        });
         div.append(p);
         p.append(createButtons(key, fileIndexing));
         return div;
@@ -1006,7 +1006,7 @@ var loadArchiveIndex = (function () {
     _loadArchiveIndex.prototype = {
         loadIndex, loadRecycleBin, reloadButton,
         saveData, restored, getSeqId,
-        getRecordIndexSort, progressBar, delFun
+        getRecordIndexSort, progressBar, delFun,createFilesDiv
     };
     return _loadArchiveIndex;
 })();

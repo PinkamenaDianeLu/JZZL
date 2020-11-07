@@ -107,6 +107,7 @@ var recordImgLoad = (function () {
         $('#newTagBtn').unbind().click(function () {
             if (thisFileCode) {
                 //鼠标点击固定区域新建标签  弹开个页 鼠标点哪加哪  保存后刷新该文书的标签方法加载标签 新建个标签表
+                
             } else {
                 layer.alert('请选择一张具体的文书图片');
             }
@@ -169,8 +170,9 @@ var recordImgLoad = (function () {
             // console.log('移动至方法');
             if (thisFileCode) {
                 //移动单个图片
-                moveToFn(thisFileCode, undefined);
+                moveToFn(thisFileCode, recordId);
             } else {
+
                 //移动整个文书
                 moveToFn(undefined, recordId);
             }
@@ -204,7 +206,7 @@ var recordImgLoad = (function () {
         checkFile = new Set();//被选中值set
 
         $('#frontImg div').click(function () {
-            const filecode = $(this).attr('id')
+            const filecode = $(this).attr('id').replace('front','');
             //判断是否被选中
             if ($(this).hasClass('active')) {
                 //被选中 -> 取消选中
@@ -235,11 +237,13 @@ var recordImgLoad = (function () {
             if (fileCode) {
                 //单页移动至
                 pString = fileCode;
-            } else if (recordId) {
-                //文书移动至
-               /* moveState = 1
-                pString = recordId;*/
+            } else  {
                 layer.alert('请选择要移动的图片，您也可以在平铺模式中多选图片进行批量移动')
+                return ;
+                /*//文书移动至
+                moveState = 1;
+                pString = recordId;*/
+
             }
         } else {
             //平面图状态
@@ -249,7 +253,7 @@ var recordImgLoad = (function () {
                 alert('请选择要移动的图片！');
                 return false;
             }
-            pString = JSON.stringify(Array.from(checkFile).join(','));
+            pString = Array.from(checkFile).join(',');
             moveState = 2
         }
         recordImgLoad.pValue = pString;//要移动的对象
@@ -261,7 +265,7 @@ var recordImgLoad = (function () {
             maxmin: false,
             shadeClose: true, //点击遮罩关闭层
             area: ['1111px', '600px'],
-            content: '/model/jzzl/jzYdTable.html?moveState=' + moveState+'&seqid='+parent.lai.getSeqId()
+            content: '/model/jzzl/jzYdTable.html?moveState=' + moveState+'&seqid='+parent.lai.getSeqId()+'&orirecordid='+recordId
         });
 
     }
