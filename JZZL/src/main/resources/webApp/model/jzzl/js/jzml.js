@@ -111,17 +111,20 @@ var recordCoverIndex = (function () {
         const typeDate = parent.lai.getRecordIndexSort(PEle, true);
         //循环生成
         let i = 1;//文书序号
+        let lastPageCount=1;
         let records = [];
         for (let thisRecord of typeDate) {
+
             records[records.length] = new recordObj(
                 thisRecord.name,
-                0,
+                lastPageCount,
                 i++,
                 thisRecord.recordObj.author,
                 utils.timeFormat.timestampToDate(thisRecord.recordObj.createtime),
                 thisRecord.recordObj.recordwh,
                 ''
             );
+            lastPageCount+=thisRecord.filecodes.split(',').length;
         }
         loadTable(records);
     }
@@ -189,8 +192,11 @@ var recordCoverIndex = (function () {
                 if ('success' === reV.message) {
 
                     console.log(JSON.parse(reV.value.indexinfo));
-                    //重新加载目录信息
-                    loadTable(JSON.parse(reV.value.indexinfo));
+                    if (reV.value.indexinfo){
+                        //重新加载目录信息
+                        loadTable(JSON.parse(reV.value.indexinfo));
+                    }
+
 //为保存按钮上方法
                     $('#saveIndexInfo').unbind().click(function () {
                         if (!reV.value) {

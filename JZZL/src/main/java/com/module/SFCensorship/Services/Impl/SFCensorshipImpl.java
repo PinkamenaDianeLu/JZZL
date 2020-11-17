@@ -1,11 +1,12 @@
 package com.module.SFCensorship.Services.Impl;
 
-import com.bean.jzgl.Converter.*;
+import com.bean.jzgl.Converter.FunArchiveSFCMapper;
+import com.bean.jzgl.Converter.FunArchiveSeqMapper;
+import com.bean.jzgl.Converter.FunCaseInfoMapper;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunCaseInfo;
-import com.bean.jzgl.Source.FunPeopelCase;
 import com.factory.BaseFactory;
 import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.SFCensorshipService;
@@ -127,6 +128,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
             r.setAuthor(record.getAuthor());
             r.setAuthorid(record.getAuthorid());
             r.setIsshow(0);
+            r.setIsdelete(0);
             r.setFilecode("F"+record.getRecordscode()+"R"+record.getId()+"T"+type.getId());
             insertFunArchiveFilesDTO(r);
         }else {

@@ -2,10 +2,12 @@ package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bean.jzgl.DTO.FunArchiveFilesDTO;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
-import com.bean.jzgl.Source.*;
+import com.bean.jzgl.Source.FunArchiveSFC;
+import com.bean.jzgl.Source.FunArchiveSeq;
+import com.bean.jzgl.Source.FunCaseInfo;
+import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.enums.EnumSoft;
 import com.enums.Enums;
@@ -174,6 +176,8 @@ public class SFCensorshipController extends BaseFactory {
             cover.setArchivecode(thisOriAt.getArchivecode());
             cover.setArchivesfcid(newSeq.getArchivesfcid());
             cover.setRecordstyle(0);
+            cover.setIsdelete(0);
+            cover.setPrevid(0);
             cover.setAuthor(newSeq.getAuthor());//整理人姓名
             cover.setAuthorid(newSeq.getAuthorid());//整理人id
             cover.setIsazxt(1);//封皮、目录、封底 都不是安综原有的东西
