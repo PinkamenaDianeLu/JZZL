@@ -24,11 +24,13 @@
         <result column="JCYRECORDCODE" jdbcType="VARCHAR" property="jcyrecordcode"/>
         <result column="PREVID" jdbcType="DECIMAL" property="previd"/>
         <result column="RECORDWH" jdbcType="VARCHAR" property="recordwh"/>
+        <result column="ISSUETIME" jdbcType="TIMESTAMP" property="issuetime"/>
+
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,ARCHIVESEQID,
      THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
-    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH
+    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH,ISSUETIME
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -139,11 +141,13 @@
         </set>
         where ID = #{id,jdbcType=DECIMAL}
     </update>
-    <select id="selectRecordsByJqbhPage" parameterType="map" resultMap="BaseResultMap">
+    <select id="selectRecordsByJqbhPage" parameterType="map" resultType="map">
         select * from ( SELECT A.*, ROWNUM RUM FROM (
         select
         <include refid="Base_Column_List"/>
-        from FUN_ARCHIVE_RECORDS where 1=1 and scbj=0
+        ,(SELECT LISTAGG(suspect.SUSPECTNAME, ',') WITHIN GROUP(ORDER BY suspect.SUSPECTNAME)
+        FROM FUN_SUSPECT suspect WHERE suspect.RECORDID=records.ID)  AS SUSPECTNAME
+        from FUN_ARCHIVE_RECORDS records where 1=1 and scbj=0
         AND JQBH = #{jqbh,jdbcType=VARCHAR}
         <if test="recordscode != null">
             AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}

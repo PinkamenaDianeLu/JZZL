@@ -91,6 +91,8 @@ table th,table td{text-align: center; font-size: 14px;}
 .left_title a i{display: inline-block; width: 40px; height: 40px;}
 .left_title a i.import{ background-position:-2px -50px;}
 .left_title a i.delete{ background-position:-40px -50px;}
+.left_title a i.history{ background-position:-640px -50px;}
+.left_title a i.searchBtn{ background-position:-680px -50px;}
 
 
 .left_text,.right_text{position: relative; height: 100%; width: 100%; overflow-y:auto; overflow-x: hidden; background: #fff;}
@@ -166,7 +168,7 @@ table th,table td{text-align: center; font-size: 14px;}
 .right_title a i.refresh{ background-position:-360px -54px;}
 .right_title a i.multiple{ background-position:-562px -54px;}
 .right_title a i.move{ background-position:-604px -53px;}
-.right_title a i.history{ background-position:-644px -53px;}
+
 .a_count{ display: inline-block; width: 115px; padding: 10px 0px 10px 5px;}
 .a_count input{ height: 40px; width: 70px; float: left; color: #999;}
 .a_count a{ display: inline-block; width: 35px; height: 20px; margin: 0 0px 0 5px; float: left;border: none;border-bottom: 1px solid #636262; background: none;}

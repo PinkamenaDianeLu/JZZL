@@ -18,7 +18,7 @@ var recordsTable = (function () {
 
     function getSearchParam() {
         let reS = new searchParam();
-        reS.recordscode=$('[name=recordscode]:checked').val();
+        reS.recordscode = $('[name=recordscode]:checked').val();
         return reS;
     };
 
@@ -39,7 +39,6 @@ var recordsTable = (function () {
                 }, {
                     field: 'ajbh',
                     title: '案件编号',
-
                 }, {
                     field: 'recordname',
                     title: '文书名称',
@@ -47,17 +46,26 @@ var recordsTable = (function () {
                         return utils.beautifulTitle(value, 13);
                     }
                 }, {
-                    field: 'createtime',
-                    title: '开具时间（伪）', formatter: (value) => {
+                    field: 'issuetime',
+                    title: '开具时间',
+                    formatter: (value, row) => {
                         return utils.timeFormat.timestampToDate2(value)
                     }
                 }, {
-                    field: 'archivecode',
-                    title: '犯罪嫌疑人'
+                    field: 'suspectname',
+                    title: '犯罪嫌疑人',
+                    formatter: (value, row) => {
+                        return utils.beautifulTitle(value, 13);
+                    }
                 },], param: function () {
                 return getSearchParam();
             }
         });
+        //选择后自动生成案卷名称
+    $('#recordsTable').on('check.bs.table', function (e, rows) {
+        $('#archivename').val(utils.timeFormat.yyyyMMddtoTMD2(rows.issuetime)+' '+rows.suspectname+' '+rows.recordname)
+        })
+
     }
 
     /**
@@ -69,6 +77,7 @@ var recordsTable = (function () {
     function searchTable() {
         tableObject.refreshTable();
     }
+
     //返回表格对象
     function getTable() {
         return tableObject;
@@ -80,34 +89,34 @@ var recordsTable = (function () {
     }
 
     _recordsTable.prototype = {
-        searchTable,getTable
+        searchTable, getTable
     };
     return _recordsTable;
 })();
 
 var createNewSFC = (function () {
     let peopelcaseid;
-    const searchParam = function (recordscode, archivename,recordsId) {
+    const searchParam = function (recordscode, archivename, recordsId) {
         this.peopelcaseid = peopelcaseid;
         this.recordscode = recordscode;
         this.archivename = archivename;
-        this.recordsId=recordsId;
+        this.recordsId = recordsId;
     };
 
     function getSearchParam() {
         let reS = new searchParam();
         reS.recordscode = $('[name=recordscode]:checked').val();
         reS.archivename = $('#archivename').val().trim();
-        reS.recordsId=$('#recordsTable').bootstrapTable('getSelections')[0].id;
-        reS.peopelcaseid=peopelcaseid;
+        reS.recordsId = $('#recordsTable').bootstrapTable('getSelections')[0].id;
+        reS.peopelcaseid = peopelcaseid;
         return reS;
     };
 
-     /**
+    /**
      * 保存内容
      * @author MrLu
      * @createTime  2020/10/7 15:17
-      */
+     */
     function createNSFC() {
         $.post({
             url: '/SFCensorship/createNewSFCensorship',

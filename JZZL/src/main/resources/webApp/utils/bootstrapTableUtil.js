@@ -47,10 +47,11 @@ var createTable = (function () {
                 },
                 queryParamsType: 'undefined',
                 undefinedText: '-',//某个值为null时的替补值
-                columns: _column
+                columns: _column,
+                // onClickRow: function (row, $element) {
+                //     console.log(row)
+                // }
             }).on('uncheck.bs.table check.bs.table check-all.bs.table uncheck-all.bs.table', function (e, rows) {
-            console.log(e)
-            console.log(rows)
             setClo(e.type, $.isArray(rows) ? rows : [rows]);                                 // 保存到全局 Set() 里
         })
     }

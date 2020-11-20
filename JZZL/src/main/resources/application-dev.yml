@@ -3,7 +3,7 @@ spring:
  datasource:
   jzgl:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:oracle:thin:@192.168.30.3:1521:orcl
+    url: jdbc:oracle:thin:@192.168.1.250:1521:orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
     username: jzzl
     password: jzzl
@@ -42,15 +42,14 @@ spring:
  output:
    ansi:
      enabled: always
- devtools:
-   restart:
-     exclude: /**
+ freemarker:
+   cache: false
  redis:
    cacheDatabase: 0
    sessionDatabase: 1
-   host: 192.168.30.3
+   host: 192.168.1.124
    port: 6379
-   password: sshbjzzl2020
+   password: tljj2020
    timeout: 3000
    lettuce:
      pool:
@@ -68,10 +67,12 @@ spring:
      max-request-size: 39MB
  cache:
    type: redis
-devtools:
-    restart:
-      enabled: true
-      exclude: static/**,public/**,testhtml/**
+ devtools:
+   livereload:
+     enabled: true
+   restart:
+     exclude: /**
+     enabled: true
 http:
     encoding:
       charset: UTF-8

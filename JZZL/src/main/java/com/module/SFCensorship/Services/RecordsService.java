@@ -1,5 +1,6 @@
 package com.module.SFCensorship.Services;
 
+import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.FunPeopelCase;
@@ -21,9 +22,9 @@ public interface RecordsService {
      * @author MrLu
      * @param  map (pageStart、pageEnd、jqbh)
      * @createTime  2020/10/4 14:02
-     * @return  List<FunArchiveRecordsDTO>  |
+     * @return   List<Object> |
      */
-    List<FunArchiveRecords> selectRecordsByJqbhPage(Map<String,Object> map);
+    List<Object> selectRecordsByJqbhPage(Map<String,Object> map) throws Exception;
     int selectRecordsByJqbhCount(Map<String,Object> map);
      /**
      * 通过id获取案件表
@@ -33,6 +34,15 @@ public interface RecordsService {
      * @return  FunPeopelCase  |
       */
      FunCaseInfo getFunCaseInfoById(Integer id);
+
+    /**
+     * 查询一个案件最原始的基础卷
+     * @author MrLu
+     * @param peoplecaseid 人员案件表id
+     * @createTime  2020/11/20 10:51
+     * @return  FunArchiveSeqDTO  |
+     */
+    FunArchiveSeqDTO selectBaseArchive(int peoplecaseid);
 
 
 }

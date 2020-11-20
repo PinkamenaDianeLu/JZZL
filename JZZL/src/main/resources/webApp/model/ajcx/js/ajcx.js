@@ -54,26 +54,23 @@ var ajcxTable = (function () {
                 }
             }, {
                 field: 'createtime',
-                title: '出卷时间', formatter: (value) => {
+                title: '整理时间', formatter: (value) => {
                     return utils.timeFormat.timestampToDate2(value)
                 }
             }, {
                 field: 'name',
-                title: '办案人'
+                title: '主办人'
             }, {
                 field: 'idcard',
-                title: '办案人身份证号'
+                title: '主办人身份证号'
             }, {
-                field: 'submitcount',
-                title: '送检次数'
+                field: 'idcard',
+                title: '送检状态'
             },{
-                field: 'casetype',
-                title: '案件类型'
-            }, {
                 title: '操作',
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.id + '\')">新建卷</a>';
+                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.id + '\')">进入卷宗</a>';
                 }
             }],param:function (){
                 return getSearchParam();

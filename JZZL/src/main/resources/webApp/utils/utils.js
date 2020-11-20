@@ -78,6 +78,13 @@ var utils = {
             return y + m + d;
 
         },
+        yyyyMMddtoTMD2:function(dateStr){
+            if (!dateStr) return '';
+            let y = dateStr.substr(0, 4) + "年",
+                m = dateStr.substr(5, 2) + "月",
+                d = dateStr.substr(8, 2) + "日";
+            return y + m + d;
+        },
         yyyyMMddhhmissToYMDhms: function (dateStr) {
             if (!dateStr) return undefined;
             let y = dateStr.substr(0, 4) + "年",

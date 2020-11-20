@@ -19,11 +19,12 @@
     <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
     <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid" />
     <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
+    <result column="PREVID" jdbcType="DECIMAL" property="previd" />
   </resultMap>
 
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,  AUTHOR, AUTHORIDCARD,
-    BATCHESSEQ, ISFINAL,PEOPELCASEID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME,ARCHIVESFCID,AUTHORID
+    BATCHESSEQ, ISFINAL,PEOPELCASEID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME,ARCHIVESFCID,AUTHORID,PREVID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -158,5 +159,14 @@
     select <include refid="Base_Column_List" /> from  FUN_ARCHIVE_SEQ where scbj=0
      and  archivesfcid=#{archivesfcid,jdbcType=DECIMAL}
      and  rownum=1 order by id desc
+  </select>
+
+  <select id="selectBaseArchive"   resultMap="BaseResultMap"  parameterType="java.lang.Integer">
+    SELECT <include refid="Base_Column_List" />
+    from  FUN_ARCHIVE_SEQ where scbj=0
+    AND  archivesfcid= ( SELECT ID
+    FROM FUN_ARCHIVE_SFC WHERE SCBJ=0
+    AND ARCHIVETYPE=0 AND PEOPLECASEID=#{peoplecaseid,jdbcType=DECIMAL} )
+    AND PREVID=0
   </select>
 </mapper>

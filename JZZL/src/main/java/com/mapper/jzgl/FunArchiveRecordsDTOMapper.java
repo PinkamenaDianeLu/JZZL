@@ -36,9 +36,9 @@ public interface FunArchiveRecordsDTOMapper {
      * @author MrLu
      * @param  map (pageStart、pageEnd、jqbh)
      * @createTime  2020/10/4 14:02
-     * @return  List<FunArchiveRecordsDTO>  |
+     * @return  List<Map<String,Object>>  |
       */
-    List<FunArchiveRecordsDTO> selectRecordsByJqbhPage(Map<String,Object> map);
+    List<Map<String,Object>> selectRecordsByJqbhPage(Map<String,Object> map);
     int selectRecordsByJqbhCount(Map<String,Object> map);
 
      /**

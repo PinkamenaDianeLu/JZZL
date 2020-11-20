@@ -26,5 +26,4 @@ public interface FunArchiveSFCDTOMapper {
      */
     List<FunArchiveSFCDTO> selectArchiveSFCPage(Map<String,Object> map);
     int selectArchiveSFCPageCount(Map<String,Object> map);
-
 }

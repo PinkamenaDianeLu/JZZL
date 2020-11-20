@@ -2,6 +2,7 @@ package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
@@ -75,8 +76,10 @@ public class RecordsController extends BaseFactory {
             pJsonObj.put("jqbh", recordsService.getFunCaseInfoById(peocaseid).getJqbh());
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
-            pJsonObj.put("archiveseqid",0);//这里查询的是未被送检的卷 所有传0
-            reMap.put("rows", transformBmField(recordsService.selectRecordsByJqbhPage(pJsonObj), FunArchiveRecords.class));
+            //查找该案件的基础卷
+            FunArchiveSeqDTO thisSeq=recordsService.selectBaseArchive(peocaseid);
+            pJsonObj.put("archiveseqid",thisSeq.getId());//这里查询的是未被送检的卷 所有传0
+            reMap.put("rows", recordsService.selectRecordsByJqbhPage(pJsonObj));
             reMap.put("total", recordsService.selectRecordsByJqbhCount(pJsonObj));
         } catch (Exception e) {
             e.printStackTrace();

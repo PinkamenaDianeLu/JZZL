@@ -34,6 +34,7 @@ public class FunArchiveSeqDTO {
 
     private int archivesfcid;
     private int authorid;
+    private int previd;
 
     public Integer getId() {
         return id;
@@ -179,5 +180,13 @@ public class FunArchiveSeqDTO {
 
     public void setAuthorid(int authorid) {
         this.authorid = authorid;
+    }
+
+    public int getPrevid() {
+        return previd;
+    }
+
+    public void setPrevid(int previd) {
+        this.previd = previd;
     }
 }

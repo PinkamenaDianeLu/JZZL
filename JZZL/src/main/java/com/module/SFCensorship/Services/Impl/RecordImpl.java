@@ -2,11 +2,15 @@ package com.module.SFCensorship.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunCaseInfoMapper;
+import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunCaseInfo;
+import com.factory.BaseFactory;
 import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
+import com.mapper.jzgl.FunArchiveSeqDTOMapper;
 import com.mapper.jzgl.FunCaseInfoDTOMapper;
 import com.module.SFCensorship.Services.RecordsService;
+import com.util.MapFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -19,19 +23,22 @@ import java.util.Map;
  * @describe
  */
 @Service
-public class RecordImpl implements RecordsService {
+public class RecordImpl extends BaseFactory implements RecordsService {
     @Resource
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
     @Resource
     FunCaseInfoDTOMapper funCaseInfoDTOMapper;
+    @Resource
+    FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
+
 
     @Override
     public FunArchiveRecords getFunArchiveRecordsById(Integer id) {
         return FunArchiveRecordsMapper.INSTANCE.pcDTOToPc(funArchiveRecordsDTOMapper.selectByPrimaryKey(id));
     }
     @Override
-    public List<FunArchiveRecords> selectRecordsByJqbhPage(Map<String,Object> map){
-        return  FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(funArchiveRecordsDTOMapper.selectRecordsByJqbhPage(map));
+    public  List<Object> selectRecordsByJqbhPage(Map<String,Object> map) throws Exception {
+        return MapFactory.mapToListBean(funArchiveRecordsDTOMapper.selectRecordsByJqbhPage(map));
     }
 
 
@@ -45,4 +52,10 @@ public class RecordImpl implements RecordsService {
     public FunCaseInfo getFunCaseInfoById(Integer id) {
         return FunCaseInfoMapper.INSTANCE.pcDTOToPc(funCaseInfoDTOMapper.selectByPrimaryKey(id));
     }
+
+    @Override
+    public FunArchiveSeqDTO selectBaseArchive(int peoplecaseid) {
+        return funArchiveSeqDTOMapper.selectBaseArchive(peoplecaseid);
+    }
+
 }

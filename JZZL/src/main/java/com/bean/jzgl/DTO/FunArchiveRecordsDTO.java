@@ -38,6 +38,7 @@ public class FunArchiveRecordsDTO {
     private Integer  previd;
     private String   jcyrecordcode;
     private String   recordwh;
+    private  Date issuetime;
 
     public Integer getId() {
         return id;
@@ -213,5 +214,13 @@ public class FunArchiveRecordsDTO {
 
     public void setRecordwh(String recordwh) {
         this.recordwh = recordwh;
+    }
+
+    public Date getIssuetime() {
+        return issuetime;
+    }
+
+    public void setIssuetime(Date issuetime) {
+        this.issuetime = issuetime;
     }
 }
