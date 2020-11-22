@@ -2,7 +2,7 @@ package com.bean.jzgl.Source;
 
 import java.util.Date;
 
-public class FunSuspect {
+public class FunSuspectRecord {
     private Integer id;
 
     private Integer scbj;
@@ -13,25 +13,17 @@ public class FunSuspect {
 
     private Date updatetime;
 
-    private String suspectidcard;
-
-    private String suspectname;
-
     private String jqbh;
-
-    private String ajbh;
 
     private Integer caseinfoid;
 
+    private String ajbh;
+
     private String sfcnumber;
 
-    private Integer casetype;
-
-    private Integer suspectstate;
+    private Integer suspectid;
 
     private Integer recordid;
-
-    private Integer defaultorder;
 
     public Integer getId() {
         return id;
@@ -73,36 +65,12 @@ public class FunSuspect {
         this.updatetime = updatetime;
     }
 
-    public String getSuspectidcard() {
-        return suspectidcard;
-    }
-
-    public void setSuspectidcard(String suspectidcard) {
-        this.suspectidcard = suspectidcard == null ? null : suspectidcard.trim();
-    }
-
-    public String getSuspectname() {
-        return suspectname;
-    }
-
-    public void setSuspectname(String suspectname) {
-        this.suspectname = suspectname == null ? null : suspectname.trim();
-    }
-
     public String getJqbh() {
         return jqbh;
     }
 
     public void setJqbh(String jqbh) {
         this.jqbh = jqbh == null ? null : jqbh.trim();
-    }
-
-    public String getAjbh() {
-        return ajbh;
-    }
-
-    public void setAjbh(String ajbh) {
-        this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
     public Integer getCaseinfoid() {
@@ -113,6 +81,14 @@ public class FunSuspect {
         this.caseinfoid = caseinfoid;
     }
 
+    public String getAjbh() {
+        return ajbh;
+    }
+
+    public void setAjbh(String ajbh) {
+        this.ajbh = ajbh == null ? null : ajbh.trim();
+    }
+
     public String getSfcnumber() {
         return sfcnumber;
     }
@@ -121,20 +97,12 @@ public class FunSuspect {
         this.sfcnumber = sfcnumber == null ? null : sfcnumber.trim();
     }
 
-    public Integer getCasetype() {
-        return casetype;
+    public Integer getSuspectid() {
+        return suspectid;
     }
 
-    public void setCasetype(Integer casetype) {
-        this.casetype = casetype;
-    }
-
-    public Integer getSuspectstate() {
-        return suspectstate;
-    }
-
-    public void setSuspectstate(Integer suspectstate) {
-        this.suspectstate = suspectstate;
+    public void setSuspectid(Integer suspectid) {
+        this.suspectid = suspectid;
     }
 
     public Integer getRecordid() {
@@ -143,13 +111,5 @@ public class FunSuspect {
 
     public void setRecordid(Integer recordid) {
         this.recordid = recordid;
-    }
-
-    public Integer getDefaultorder() {
-        return defaultorder;
-    }
-
-    public void setDefaultorder(Integer defaultorder) {
-        this.defaultorder = defaultorder;
     }
 }

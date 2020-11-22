@@ -23,7 +23,6 @@ public class FunArchiveSFCDTO {
 
     private String authoridcard;
 
-
     private Integer peoplecaseid;
 
     private String sfcnumber;
@@ -31,6 +30,8 @@ public class FunArchiveSFCDTO {
     private Integer archivetype;
 
     private String archivename;
+
+    private Integer caseinfoid;
 
     public Integer getId() {
         return id;
@@ -143,5 +144,13 @@ public class FunArchiveSFCDTO {
 
     public void setArchivename(String archivename) {
         this.archivename = archivename == null ? null : archivename.trim();
+    }
+
+    public Integer getCaseinfoid() {
+        return caseinfoid;
+    }
+
+    public void setCaseinfoid(Integer caseinfoid) {
+        this.caseinfoid = caseinfoid;
     }
 }

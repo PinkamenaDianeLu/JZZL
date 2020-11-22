@@ -42,9 +42,6 @@ spring:
   output:
     ansi:
       enabled: always
-  devtools:
-    restart:
-      exclude: /**
   redis:
     cacheDatabase: 0
     sessionDatabase: 1
@@ -68,15 +65,17 @@ spring:
       max-request-size: 39MB
   cache:
     type: redis
-devtools:
-  restart:
-    enabled: true
-    exclude: static/**,public/**,testhtml/**
-http:
-  encoding:
-    charset: UTF-8
-    enabled: true
-    force: true
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      exclude: /**
+      enabled: true
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 server:
   port: 8080
   error:

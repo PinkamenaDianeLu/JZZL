@@ -73,11 +73,11 @@ spring:
    restart:
      exclude: /**
      enabled: true
-http:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
+ http:
+   encoding:
+     charset: UTF-8
+     enabled: true
+     force: true
 server:
   port: 8080
   error:

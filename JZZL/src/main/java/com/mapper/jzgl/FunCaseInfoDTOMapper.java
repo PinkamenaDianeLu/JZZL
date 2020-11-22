@@ -11,4 +11,6 @@ public interface FunCaseInfoDTOMapper {
 
     int updateByPrimaryKeySelective(FunCaseInfoDTO record);
 
+    FunCaseInfoDTO selectCaseInfoByPeoplecaseId(int peoplecaseid);
+
 }

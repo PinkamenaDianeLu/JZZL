@@ -3,10 +3,7 @@ package com.module.SFCensorship.Controllers;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bean.jzgl.DTO.FunArchiveFilesDTO;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveSeqDTO;
-import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.SysUser;
@@ -133,32 +130,33 @@ public class ArrangeArchivesController extends BaseFactory {
     }
 
 
-
-     /**
+    /**
      * 查询文书下的所有文件
-     * @author MrLu
+     *
      * @param recordid 文书id
-     * @createTime  2020/11/7 21:45
-     * @return    |
-      */
-     @RequestMapping(value = "/selectFilesByRecordId", method = {RequestMethod.GET,
-             RequestMethod.POST})
-     @ResponseBody
-     @OperLog(operModul = operModul, operDesc = "查询文书下的所有文件", operType = OperLog.type.SELECT)
-     public  String selectFilesByRecordId(String recordid){
+     * @return |
+     * @author MrLu
+     * @createTime 2020/11/7 21:45
+     */
+    @RequestMapping(value = "/selectFilesByRecordId", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "查询文书下的所有文件", operType = OperLog.type.SELECT)
+    public String selectFilesByRecordId(String recordid) {
         JSONObject reValue = new JSONObject();
-                try {
-                    if (StringUtils.isEmpty(recordid)) {
-                        throw new Exception("你传nm呢？");
-                    }
-                    reValue.put("value",arrangeArchivesService.selectRecordFilesByRecordId(Integer.parseInt(recordid), 0));
-                    reValue.put("message", "success");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    reValue.put("message", "error");
-                }
-                return reValue.toJSONString();
+        try {
+            if (StringUtils.isEmpty(recordid)) {
+                throw new Exception("你传nm呢？");
+            }
+            reValue.put("value", arrangeArchivesService.selectRecordFilesByRecordId(Integer.parseInt(recordid), 0));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
     }
+
     /**
      * 新建整理记录
      *
@@ -557,13 +555,14 @@ public class ArrangeArchivesController extends BaseFactory {
     }
 
 
-     /**
+    /**
      * 实时还原被删除的文书文件
-     * @author MrLu
+     *
      * @param paramjson
-     * @createTime  2020/11/5 15:15
-     * @return   String |
-      */
+     * @return String |
+     * @author MrLu
+     * @createTime 2020/11/5 15:15
+     */
     @RequestMapping(value = "/saveRestoreDateOnTime", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -582,7 +581,7 @@ public class ArrangeArchivesController extends BaseFactory {
             FunArchiveRecordsDTO thisRecord = new FunArchiveRecordsDTO();
             thisRecord.setId(recordId);
             //还原后的位置
-            int maxOrder=1;
+            int maxOrder = 1;
             //要被操作的文件对象
             FunArchiveFilesDTO thisFile = new FunArchiveFilesDTO();
             if (StringUtils.isNotEmpty(fileCode)) {
@@ -597,7 +596,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 //更新对应文书的isdelet为1： 有文件删除
                 thisRecord.setIsdelete(1);
                 //还原至顺序的最后一位
-                maxOrder = arrangeArchivesService.selectFileMaxOrder(recordId)+1;
+                maxOrder = arrangeArchivesService.selectFileMaxOrder(recordId) + 1;
                 thisRecord.setArchiveseqid(maxOrder);
             } else {
                 //还原文书
@@ -608,7 +607,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 thisFile.setIsdelete(0);
                 arrangeArchivesService.updateFileByRecordId(thisFile);
                 //还原后在文书中的最后一位
-                maxOrder = arrangeArchivesService.selectRecordMaxOrder(recordId)+1;
+                maxOrder = arrangeArchivesService.selectRecordMaxOrder(recordId) + 1;
                 thisRecord.setThisorder(maxOrder);
             }
             //更新文书
@@ -657,6 +656,34 @@ public class ArrangeArchivesController extends BaseFactory {
                 thisFile.setFilename(name);
                 arrangeArchivesService.updateFileByFileCode(thisFile);
             }
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
+     /**
+     * 通过sfcid查询案件下的所有嫌疑人
+     * @author MrLu
+     * @param sfcid
+     * @createTime  2020/11/22 18:33
+     * @return  String  |
+      */
+    @RequestMapping(value = "/selectSuspectByCaseinfoId", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "通过sfcid查询案件下的所有嫌疑人", operType = OperLog.type.SELECT)
+    public String selectSuspectByCaseinfoId(String sfcid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(sfcid)) {
+                throw new Exception("没有sfcid");
+            }
+            FunArchiveSFCDTO thisSfc = arrangeArchivesService.selectFunArchiveSFCDTOById(Integer.parseInt(sfcid));
+            reValue.put("value", arrangeArchivesService.selectSuspectByCaseinfoId(thisSfc.getCaseinfoid()));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

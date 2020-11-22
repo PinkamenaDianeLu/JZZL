@@ -1,10 +1,7 @@
 package com.module.SFCensorship.Services;
 
 
-import com.bean.jzgl.DTO.FunArchiveFilesDTO;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveSeqDTO;
-import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
@@ -216,7 +213,31 @@ public interface ArrangeArchivesService {
     int selectRecordMaxOrder(int id);
 
 
+    /**
+     * 根据案件信息表id查询嫌疑人
+     * @author MrLu
+     * @param caseinfoid 案件信息表id
+     * @createTime  2020/11/22 18:24
+     * @return  List<FunSuspectDTO>  |
+     */
+    List<FunSuspectDTO> selectSuspectByCaseinfoId(Integer caseinfoid);
+    /**
+     * 根据送检卷id查询送检卷
+     * @author MrLu
+     * @param
+     * @createTime  2020/10/23 10:56
+     * @return    |
+     */
+    FunArchiveSFCDTO selectFunArchiveSFCDTOById (Integer sfcId);
 
 
+     /**
+     * 更新嫌疑人在案件中的优先级顺序
+     * @author MrLu
+     * @param
+     * @createTime  2020/11/22 18:41
+     * @return    |
+      */
+    void updateSuspectDefaultOrder(FunSuspectDTO record);
 
 }

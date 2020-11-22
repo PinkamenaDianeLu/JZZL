@@ -35,6 +35,7 @@ public class FunArchiveSFC {
     @CodeTableMapper(sourceFiled = "archivetype", codeTableType = "archivetype")
     private String archivetype_name;
     private String archivename;
+    private  Integer caseinfoid;
 
     public Integer getId() {
         return id;
@@ -155,5 +156,13 @@ public class FunArchiveSFC {
 
     public void setArchivetype_name(String archivetype_name) {
         this.archivetype_name = archivetype_name;
+    }
+
+    public Integer getCaseinfoid() {
+        return caseinfoid;
+    }
+
+    public void setCaseinfoid(Integer caseinfoid) {
+        this.caseinfoid = caseinfoid;
     }
 }

@@ -7,6 +7,7 @@ import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunCaseInfo;
+import com.bean.jzgl.Source.FunCasePeoplecase;
 import com.factory.BaseFactory;
 import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.SFCensorshipService;
@@ -138,6 +139,11 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     @Override
     public void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) {
         funArchiveFilesDTOMapper.insert(record);
+    }
+
+    @Override
+    public FunCaseInfo selectFunArchiveSFCDTOById (Integer sfcId){
+        return   FunCaseInfoMapper.INSTANCE.pcDTOToPc(funCaseInfoDTOMapper.selectCaseInfoByPeoplecaseId(sfcId));
     }
 
 }

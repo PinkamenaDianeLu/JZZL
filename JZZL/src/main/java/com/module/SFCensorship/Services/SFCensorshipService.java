@@ -2,6 +2,7 @@ package com.module.SFCensorship.Services;
 
 import com.bean.jzgl.DTO.FunArchiveFilesDTO;
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import com.bean.jzgl.DTO.FunArchiveSFCDTO;
 import com.bean.jzgl.DTO.FunArchiveTypeDTO;
 import com.bean.jzgl.Source.*;
 
@@ -96,4 +97,13 @@ public interface SFCensorshipService {
      */
      void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) ;
 
+
+      /**
+      * 根据id查询送检记录表
+      * @author MrLu
+      * @param
+      * @createTime  2020/11/21 11:25
+      * @return    |
+       */
+      FunCaseInfo selectFunArchiveSFCDTOById (Integer sfcId);
 }

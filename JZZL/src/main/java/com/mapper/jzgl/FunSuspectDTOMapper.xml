@@ -11,14 +11,16 @@
     <result column="SUSPECTNAME" jdbcType="VARCHAR" property="suspectname" />
     <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
     <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="PEOPELCASEID" jdbcType="DECIMAL" property="peopelcaseid" />
+    <result column="CASEINFOID" jdbcType="DECIMAL" property="caseinfoid" />
     <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
     <result column="CASETYPE" jdbcType="DECIMAL" property="casetype" />
     <result column="SUSPECTSTATE" jdbcType="DECIMAL" property="suspectstate" />
+    <result column="RECORDID" jdbcType="DECIMAL" property="recordid" />
+    <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder" />
   </resultMap>
   <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, SUSPECTIDCARD, SUSPECTNAME, JQBH, AJBH, 
-    PEOPELCASEID, SFCNUMBER, CASETYPE, SUSPECTSTATE
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, SUSPECTIDCARD, SUSPECTNAME, JQBH, AJBH,
+    CASEINFOID, SFCNUMBER, CASETYPE, SUSPECTSTATE, RECORDID, DEFAULTORDER
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -27,23 +29,17 @@
     where ID = #{id,jdbcType=DECIMAL}
   </select>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunSuspectDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_SUSPECT_ID.nextval from dual
+    </selectKey>
     insert into FUN_SUSPECT
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         ID,
-      </if>
-      <if test="scbj != null">
         SCBJ,
-      </if>
-      <if test="state != null">
         STATE,
-      </if>
-      <if test="createtime != null">
         CREATETIME,
-      </if>
-      <if test="updatetime != null">
         UPDATETIME,
-      </if>
       <if test="suspectidcard != null">
         SUSPECTIDCARD,
       </if>
@@ -56,8 +52,8 @@
       <if test="ajbh != null">
         AJBH,
       </if>
-      <if test="peopelcaseid != null">
-        PEOPELCASEID,
+      <if test="caseinfoid != null">
+        CASEINFOID,
       </if>
       <if test="sfcnumber != null">
         SFCNUMBER,
@@ -68,23 +64,19 @@
       <if test="suspectstate != null">
         SUSPECTSTATE,
       </if>
+      <if test="recordid != null">
+        RECORDID,
+      </if>
+      <if test="defaultorder != null">
+        DEFAULTORDER,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="scbj != null">
-        #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+        0,
+        0,
+        SYSDATE,
+      SYSDATE,
       <if test="suspectidcard != null">
         #{suspectidcard,jdbcType=VARCHAR},
       </if>
@@ -97,8 +89,8 @@
       <if test="ajbh != null">
         #{ajbh,jdbcType=VARCHAR},
       </if>
-      <if test="peopelcaseid != null">
-        #{peopelcaseid,jdbcType=DECIMAL},
+      <if test="caseinfoid != null">
+        #{caseinfoid,jdbcType=DECIMAL},
       </if>
       <if test="sfcnumber != null">
         #{sfcnumber,jdbcType=VARCHAR},
@@ -108,6 +100,12 @@
       </if>
       <if test="suspectstate != null">
         #{suspectstate,jdbcType=DECIMAL},
+      </if>
+      <if test="recordid != null">
+        #{recordid,jdbcType=DECIMAL},
+      </if>
+      <if test="defaultorder != null">
+        #{defaultorder,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -120,12 +118,7 @@
       <if test="state != null">
         STATE = #{state,jdbcType=DECIMAL},
       </if>
-      <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+        UPDATETIME = SYSDATE,
       <if test="suspectidcard != null">
         SUSPECTIDCARD = #{suspectidcard,jdbcType=VARCHAR},
       </if>
@@ -138,8 +131,8 @@
       <if test="ajbh != null">
         AJBH = #{ajbh,jdbcType=VARCHAR},
       </if>
-      <if test="peopelcaseid != null">
-        PEOPELCASEID = #{peopelcaseid,jdbcType=DECIMAL},
+      <if test="caseinfoid != null">
+        CASEINFOID = #{caseinfoid,jdbcType=DECIMAL},
       </if>
       <if test="sfcnumber != null">
         SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
@@ -150,7 +143,22 @@
       <if test="suspectstate != null">
         SUSPECTSTATE = #{suspectstate,jdbcType=DECIMAL},
       </if>
+      <if test="recordid != null">
+        RECORDID = #{recordid,jdbcType=DECIMAL},
+      </if>
+      <if test="defaultorder != null">
+        DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
+      </if>
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
+
+  <select id="selectSuspectByCaseinfoId"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from FUN_SUSPECT
+    where SCBJ=0 and CASEINFOID= #{caseinfoid,jdbcType=DECIMAL}
+    ORDER BY DEFAULTORDER
+
+  </select>
 </mapper>

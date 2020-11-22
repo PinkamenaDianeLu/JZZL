@@ -1028,9 +1028,8 @@ $(function () {
                 rcb.loadIndex(reV.value.id);//回收站目录加载
                 lai.loadRecycleBin(rcb);
 
-                //完成整理按钮
+                //拍摄快照按钮
                 $('#saveData').click(function () {
-
                     if (confirm('确定完成整理？')) {
                         //加载进度条
                         layer.open({
@@ -1047,6 +1046,29 @@ $(function () {
                         lai.saveData();
                     }
                 })
+
+                   $.post({
+                           url: '/ArrangeArchives/selectSuspectByCaseinfoId',
+                           data: {sfcid: sfcId},
+                           success: (re) => {
+                               const reV = JSON.parse(re);
+                               if ('success' === reV.message) {
+
+                                   if (!reV.value||0===reV.value.length){
+                                       alert('该案件没有任何嫌疑人！');
+                                   }else {
+                                       let suspects=document.createDocumentFragment();
+                                       for (let thisSuspect of reV.value){
+                                          let thisSuspectTd= utils.createElement.createElement({tag:'tr', attrs :{}, arg:'<td>'+thisSuspect.suspectname+'</td><td>'+thisSuspect.suspectidcard+'</td>'})
+                                           suspects.appendChild(thisSuspectTd);
+                                       }
+                                       $('#suspectTable').append(suspects);
+
+                                   }
+                               } else {
+                               }
+                           }
+                       });
             } else {
             }
         }

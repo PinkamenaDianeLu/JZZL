@@ -86,7 +86,7 @@ var sjjlTable = (function () {
      * @createTime  2020/9/25 10:40
      * @return    |
      */
-    function searchTable  () {
+    function searchTable() {
         tableObject.refreshTable();
     }
 
@@ -95,34 +95,54 @@ var sjjlTable = (function () {
     }
 
     _sjjlTable.prototype = {
-        loadTable,searchTable
+        loadTable, searchTable
     };
     return _sjjlTable;
 })();
 var st = new sjjlTable();
 $(function () {
     $('#userHeart').load('/userHeart.html');
-    //案件的id
+    //案件的id  peoplecase表
     const ajid = utils.getUrlPar('id');
-    st.pValue=ajid;//设置pv
-    st.loadTable(ajid);//加载表格
-    //查询按钮
-    $('#sjjlSearchBtn').click(function () {
-        st.searchTable(ajid);
-    })
 
-    //新建送检按钮
-    $('#createSFC').on('click', function () {
-        layer.open({
-            icon: 1,
-            type: 2,
-            title: '新建卷',
-            skin: 'layui-layer-lan',
-            maxmin: false,
-            shadeClose: true, //点击遮罩关闭层
-            area: ['1111px', '600px'],
-            content: '/model/ajcx/createSFC_f.html'
-        });
+    $.post({
+        url: '/SFCensorship/selectFunArchiveSFCById',
+        data: {peoplecaseid: ajid},
+        success: (re) => {
+            const reV = JSON.parse(re);
+            if ('success' === reV.message) {
+                console.log(reV)
+
+                //送检编号
+                $('#sfcnumber').html(reV.value.sfcnumber);
+                //案件名称
+                $('#casename').html(reV.value.casename);
+
+                st.pValue = ajid;//设置pv
+                st.loadTable(ajid);//加载表格
+                //查询按钮
+                $('#sjjlSearchBtn').click(function () {
+                    st.searchTable(ajid);
+                });
+
+                //新建送检按钮
+                $('#createSFC').on('click', function () {
+                    layer.open({
+                        icon: 1,
+                        type: 2,
+                        title: '新建卷',
+                        skin: 'layui-layer-lan',
+                        maxmin: false,
+                        shadeClose: true, //点击遮罩关闭层
+                        area: ['1111px', '600px'],
+                        content: '/model/ajcx/createSFC_f.html'
+                    });
+                });
+            } else {
+                console.error('查询案件信息失败！');
+            }
+        }
     });
+
 
 })

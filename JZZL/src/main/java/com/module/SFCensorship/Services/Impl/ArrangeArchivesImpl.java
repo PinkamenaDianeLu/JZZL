@@ -3,17 +3,11 @@ package com.module.SFCensorship.Services.Impl;
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunArchiveTypeMapper;
-import com.bean.jzgl.DTO.FunArchiveFilesDTO;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveSeqDTO;
-import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
-import com.mapper.jzgl.FunArchiveFilesDTOMapper;
-import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
-import com.mapper.jzgl.FunArchiveSeqDTOMapper;
-import com.mapper.jzgl.FunArchiveTypeDTOMapper;
+import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.ArrangeArchivesService;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +31,10 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
     @Resource
     FunArchiveFilesDTOMapper funArchiveFilesDTOMapper;
+    @Resource
+    FunSuspectDTOMapper funSuspectDTOMapper;
+    @Resource
+    FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
 
     @Override
     public List<FunArchiveType> selectArchiveTypeByJqSeq(int seqId) {
@@ -162,6 +160,17 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     public int selectRecordMaxOrder(int id) {
         return funArchiveRecordsDTOMapper.selectRecordMaxOrder(id);
     }
+    @Override
+   public List<FunSuspectDTO> selectSuspectByCaseinfoId(Integer caseinfoid){
+        return funSuspectDTOMapper.selectSuspectByCaseinfoId(caseinfoid);
+   };
+    @Override
+    public FunArchiveSFCDTO selectFunArchiveSFCDTOById (Integer sfcId){
+        return  funArchiveSFCDTOMapper.selectByPrimaryKey(sfcId);
+    }
 
-    ;
+    @Override
+    public void updateSuspectDefaultOrder(FunSuspectDTO record){
+        funSuspectDTOMapper.updateByPrimaryKeySelective(record);
+    };
 }

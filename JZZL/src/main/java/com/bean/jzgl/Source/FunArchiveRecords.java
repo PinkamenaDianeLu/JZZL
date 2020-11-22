@@ -32,14 +32,16 @@ public class FunArchiveRecords {
     private String recordscode;
     private Integer isdelete;
     private Integer isazxt;
-    private  Integer archivesfcid;
+    private Integer archivesfcid;
     private String author;
 
     private Integer authorid;
-    private Integer  previd;
-    private String   jcyrecordcode;
-    private String   recordwh;
-    private  Date issuetime;
+    private Integer previd;
+    private String jcyrecordcode;
+    private String recordwh;
+    private Date issuetime;
+    private Integer baserecordid;
+
     public Integer getId() {
         return id;
     }
@@ -230,5 +232,13 @@ public class FunArchiveRecords {
 
     public void setIssuetime(Date issuetime) {
         this.issuetime = issuetime;
+    }
+
+    public Integer getBaserecordid() {
+        return baserecordid;
+    }
+
+    public void setBaserecordid(Integer baserecordid) {
+        this.baserecordid = baserecordid;
     }
 }
