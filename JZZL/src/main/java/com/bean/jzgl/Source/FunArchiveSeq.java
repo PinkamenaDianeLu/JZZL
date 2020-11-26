@@ -40,6 +40,7 @@ public class FunArchiveSeq {
     private int authorid;
 
     private int previd;
+    private Integer baserecordid;
     public Integer getId() {
         return id;
     }
@@ -202,5 +203,13 @@ public class FunArchiveSeq {
 
     public void setPrevid(int previd) {
         this.previd = previd;
+    }
+
+    public Integer getBaserecordid() {
+        return baserecordid;
+    }
+
+    public void setBaserecordid(Integer baserecordid) {
+        this.baserecordid = baserecordid;
     }
 }

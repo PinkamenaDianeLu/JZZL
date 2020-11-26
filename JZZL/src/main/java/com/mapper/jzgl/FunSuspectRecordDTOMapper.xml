@@ -13,10 +13,12 @@
     <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
     <result column="SUSPECTID" jdbcType="DECIMAL" property="suspectid" />
     <result column="RECORDID" jdbcType="DECIMAL" property="recordid" />
+    <result column="RECORDTYPE" jdbcType="DECIMAL" property="recordtype" />
+
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, CASEINFOID, AJBH, SFCNUMBER, SUSPECTID, 
-    RECORDID
+    RECORDID,RECORDTYPE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -46,6 +48,7 @@
         STATE,
         CREATETIME,
         UPDATETIME,
+      RECORDTYPE,
       <if test="jqbh != null">
         JQBH,
       </if>
@@ -71,6 +74,7 @@
         #{state,jdbcType=DECIMAL},
        SYSDATE,
       SYSDATE,
+      #{recordtype,jdbcType=VARCHAR},
       <if test="jqbh != null">
         #{jqbh,jdbcType=VARCHAR},
       </if>
@@ -122,4 +126,11 @@
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
+
+<select id="selectRecordBySuspectid"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  SELECT  <include refid="Base_Column_List" />
+  from FUN_SUSPECT_RECORD WHERE SCBJ=0
+  AND  SUSPECTID = #{suspectid,jdbcType=DECIMAL}
+  AND  RECORDTYPE = #{recordtype,jdbcType=VARCHAR}
+</select>
 </mapper>

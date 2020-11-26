@@ -35,6 +35,8 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     FunSuspectDTOMapper funSuspectDTOMapper;
     @Resource
     FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
+    @Resource
+    SysRecordorderDTOMapper sysRecordorderDTOMapper;
 
     @Override
     public List<FunArchiveType> selectArchiveTypeByJqSeq(int seqId) {
@@ -62,8 +64,6 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
         return funArchiveSeqDTOMapper.selectByPrimaryKey(id);
     }
 
-    ;
-
     @Override
     public FunArchiveRecordsDTO selectFunArchiveRecordsById(Integer id) {
         return funArchiveRecordsDTOMapper.selectByPrimaryKey(id);
@@ -78,25 +78,27 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     public void insertFunArchiveRecords(FunArchiveRecordsDTO record) {
         funArchiveRecordsDTOMapper.insertSelective(record);
     }
+
     @Override
-    public  void insertFunArchiveType(FunArchiveTypeDTO funArchiveTypeDTO){
+    public void insertFunArchiveType(FunArchiveTypeDTO funArchiveTypeDTO) {
         funArchiveTypeDTOMapper.insertSelective(funArchiveTypeDTO);
     }
+
     @Override
-    public FunArchiveTypeDTO selectFunArchiveTypeById(Integer id){
-        return  funArchiveTypeDTOMapper.selectByPrimaryKey(id);
+    public FunArchiveTypeDTO selectFunArchiveTypeById(Integer id) {
+        return funArchiveTypeDTOMapper.selectByPrimaryKey(id);
     }
 
     @Override
-    public List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid,Integer isdelete) {
-        return funArchiveFilesDTOMapper.selectRecordFilesByRecordId(archiverecordid,isdelete);
+    public List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid, Integer isdelete) {
+        return funArchiveFilesDTOMapper.selectRecordFilesByRecordId(archiverecordid, isdelete);
     }
 
     @Override
-    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int seqId) {
-        Map<String,Object> map=new HashMap<>();
-        map.put("filecode",filesCode);
-        map.put("archiveseqid",seqId);
+    public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode, int seqId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("filecode", filesCode);
+        map.put("archiveseqid", seqId);
         return funArchiveFilesDTOMapper.selectRecordFilesByFileCodes(map);
     }
 
@@ -106,10 +108,10 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public FunArchiveFilesDTO selectFilesByFileCode(String filecode,int archiverecordid) {
-        Map<String,Object> map=new HashMap<>();
-        map.put("filecode",filecode);
-        map.put("archiverecordid",archiverecordid);
+    public FunArchiveFilesDTO selectFilesByFileCode(String filecode, int archiverecordid) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("filecode", filecode);
+        map.put("archiverecordid", archiverecordid);
         return funArchiveFilesDTOMapper.selectFilesByFileCode(map);
     }
 
@@ -122,8 +124,9 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     public FunArchiveRecordsDTO selectNextRecord(Integer id) {
         return funArchiveRecordsDTOMapper.selectNextRecord(id);
     }
+
     @Override
-    public void updateFunArchiveRecordsById(FunArchiveRecordsDTO record){
+    public void updateFunArchiveRecordsById(FunArchiveRecordsDTO record) {
         funArchiveRecordsDTOMapper.updateByPrimaryKeySelective(record);
     }
 
@@ -138,16 +141,16 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public void updateRecordOrderByTypeId(int archivetypeid, int id,int thisorder) {
-        funArchiveRecordsDTOMapper.updateRecordOrderByTypeId(archivetypeid,id,thisorder);
+    public void updateRecordOrderByTypeId(int archivetypeid, int id, int thisorder) {
+        funArchiveRecordsDTOMapper.updateRecordOrderByTypeId(archivetypeid, id, thisorder);
     }
 
     @Override
-    public void updateFileOrder(int archiverecordid, int thisorder,String filecode) {
-        Map<String,Object> pMap=new HashMap<>();
-        pMap.put("archiverecordid",archiverecordid);
-        pMap.put("thisorder",thisorder);
-        pMap.put("filecode",filecode);
+    public void updateFileOrder(int archiverecordid, int thisorder, String filecode) {
+        Map<String, Object> pMap = new HashMap<>();
+        pMap.put("archiverecordid", archiverecordid);
+        pMap.put("thisorder", thisorder);
+        pMap.put("filecode", filecode);
         funArchiveFilesDTOMapper.updateOrderByRecordId(pMap);
     }
 
@@ -160,17 +163,42 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     public int selectRecordMaxOrder(int id) {
         return funArchiveRecordsDTOMapper.selectRecordMaxOrder(id);
     }
+
     @Override
-   public List<FunSuspectDTO> selectSuspectByCaseinfoId(Integer caseinfoid){
+    public List<FunSuspectDTO> selectSuspectByCaseinfoId(Integer caseinfoid) {
         return funSuspectDTOMapper.selectSuspectByCaseinfoId(caseinfoid);
-   };
+    }
+
+    ;
+
     @Override
-    public FunArchiveSFCDTO selectFunArchiveSFCDTOById (Integer sfcId){
-        return  funArchiveSFCDTOMapper.selectByPrimaryKey(sfcId);
+    public FunArchiveSFCDTO selectFunArchiveSFCDTOById(Integer sfcId) {
+        return funArchiveSFCDTOMapper.selectByPrimaryKey(sfcId);
     }
 
     @Override
-    public void updateSuspectDefaultOrder(FunSuspectDTO record){
+    public List<FunSuspectRecordDTO> selectSuspectByRecordid(Integer recordid) {
+        return funSuspectDTOMapper.selectSuspectByRecordid(recordid);
+    }
+
+    @Override
+    public List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid) {
+        return funArchiveRecordsDTOMapper.selectRecordsBySuspect(suspectid);
+    }
+
+    @Override
+    public SysRecordorderDTO selectRecordOrderByTypes(String recordcode, Integer archivetype, Integer recordtype) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("recordcode", recordcode);
+        map.put("archivetype", archivetype);
+        map.put("recordtype", recordtype);
+        return sysRecordorderDTOMapper.selectRecordOrderByTypes(map);
+    }
+
+    @Override
+    public void updateSuspectDefaultOrder(FunSuspectDTO record) {
         funSuspectDTOMapper.updateByPrimaryKeySelective(record);
-    };
+    }
+
+
 }

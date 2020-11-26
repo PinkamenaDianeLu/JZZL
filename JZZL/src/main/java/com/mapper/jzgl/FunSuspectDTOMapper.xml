@@ -161,4 +161,15 @@
     ORDER BY DEFAULTORDER
 
   </select>
+
+
+  <select id="selectSuspectByRecordid"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" />
+    FROM FUN_SUSPECT SUSPECT
+    WHERE  scbj=0 AND EXISTS (SELECT 1
+    FROM FUN_SUSPECT_RECORD RE
+    WHERE RE.SUSPECTID = SUSPECT.ID AND RE.SCBJ=0
+    AND RE.RECORDID = #{recordid,jdbcType=DECIMAL})
+
+  </select>
 </mapper>

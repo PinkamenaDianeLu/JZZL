@@ -33,6 +33,8 @@ public class FunArchiveSFCDTO {
 
     private Integer caseinfoid;
 
+    private  Integer baserecordid;
+
     public Integer getId() {
         return id;
     }
@@ -152,5 +154,13 @@ public class FunArchiveSFCDTO {
 
     public void setCaseinfoid(Integer caseinfoid) {
         this.caseinfoid = caseinfoid;
+    }
+
+    public Integer getBaserecordid() {
+        return baserecordid;
+    }
+
+    public void setBaserecordid(Integer baserecordid) {
+        this.baserecordid = baserecordid;
     }
 }

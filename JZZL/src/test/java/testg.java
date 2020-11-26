@@ -1,3 +1,4 @@
+import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.bean.jzgl.Source.SysUser;
@@ -9,9 +10,7 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -144,5 +143,17 @@ public class testg {
     public void md5() {
         String encodeStr= DigestUtils.md5Hex("text + key");
         System.out.println("MD5加密后的字符串为:encodeStr="+encodeStr);
+    }
+
+    @Test
+    public void foreachJSONObject() {
+        JSONObject jsonObject = JSONObject.parseObject("{\"createtime\":1605577120000,\"dictlabel\":\"正常\",\"dictsort\":1,\"dicttype\":\"sys_role_status\",\"dictvalue\":\"0\",\"id\":123,\"isdefault\":\"Y\",\"remark\":\"角色正常状态\",\"scbj\":\"0\",\"status\":\"1\",\"updatetime\":1605577122000}");
+        Set<String> setiterator = jsonObject.keySet();
+        for (String thisKey:
+        setiterator) {
+            String  value = jsonObject.getString(thisKey);
+            System.out.println(thisKey+":"+value);
+
+        }
     }
 }

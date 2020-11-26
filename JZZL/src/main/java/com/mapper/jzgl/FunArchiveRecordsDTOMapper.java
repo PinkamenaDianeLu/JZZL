@@ -89,4 +89,15 @@ public interface FunArchiveRecordsDTOMapper {
       */
      List<Map<String, Object>>selectArchiveRecordPage(Map<String,Object> map);
     int selectArchiveRecordPageCount(Map<String,Object> map);
+
+
+
+     /**
+     * 查询该嫌疑人在基础卷中的文书
+     * @author MrLu
+     * @param suspectid 嫌疑人id
+     * @createTime  2020/11/26 17:01
+     * @return  List<FunArchiveRecordsDTO>  |
+      */
+    List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid);
 }

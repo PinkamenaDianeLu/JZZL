@@ -25,6 +25,8 @@ public class FunSuspectRecordDTO {
 
     private Integer recordid;
 
+    private Integer recordtype;
+
     public Integer getId() {
         return id;
     }
@@ -111,5 +113,13 @@ public class FunSuspectRecordDTO {
 
     public void setRecordid(Integer recordid) {
         this.recordid = recordid;
+    }
+
+    public Integer getRecordtype() {
+        return recordtype;
+    }
+
+    public void setRecordtype(Integer recordtype) {
+        this.recordtype = recordtype;
     }
 }

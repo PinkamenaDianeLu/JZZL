@@ -7,6 +7,7 @@ import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ArrangeArchivesService {
     /**
@@ -240,4 +241,37 @@ public interface ArrangeArchivesService {
       */
     void updateSuspectDefaultOrder(FunSuspectDTO record);
 
+
+
+     /**
+     * 通过文书id查询文书的相关人
+     * @author MrLu
+     * @param recordid 文书id
+     * @createTime  2020/11/25 17:40
+     * @return List<FunSuspectRecordDTO>   |
+      */
+    List<FunSuspectRecordDTO> selectSuspectByRecordid(Integer recordid);
+
+
+    /**
+     * 查询该嫌疑人在基础卷中的文书
+     * @author MrLu
+     * @param suspectid 嫌疑人id
+     * @createTime  2020/11/26 17:01
+     * @return  List<FunArchiveRecordsDTO>  |
+     */
+    List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid);
+
+
+    /**
+     * 按照送检卷类型和卷类型查询默认顺序
+     *
+     * @param recordcode 文书代码
+     * @param archivetype 送检卷卷类型
+     * @param recordtype 文书卷类型
+     * @return List<SysRecordorderDTO>    |
+     * @author MrLu
+     * @createTime 2020/11/26 15:23
+     */
+    SysRecordorderDTO selectRecordOrderByTypes(String recordcode,Integer archivetype,Integer recordtype);
 }

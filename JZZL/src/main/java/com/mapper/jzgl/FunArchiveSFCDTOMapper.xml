@@ -17,10 +17,11 @@
     <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
     <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
     <result column="CASEINFOID" jdbcType="DECIMAL" property="caseinfoid" />
+    <result column="BASERECORDID" jdbcType="DECIMAL" property="baserecordid" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ISSEND, AUTHOR, AUTHORIDCARD, 
-     PEOPLECASEID, SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,CASEINFOID
+     PEOPLECASEID, SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,CASEINFOID,BASERECORDID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -33,13 +34,14 @@
       CREATETIME, UPDATETIME, JQBH, 
       AJBH, ISSEND, AUTHOR, 
       AUTHORIDCARD,  PEOPLECASEID,
-      SFCNUMBER, ARCHIVETYPE, ARCHIVENAME
+      SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,BASERECORDID
       )
     values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
       #{ajbh,jdbcType=VARCHAR}, #{issend,jdbcType=DECIMAL}, #{author,jdbcType=VARCHAR}, 
       #{authoridcard,jdbcType=VARCHAR}, #{peoplecaseid,jdbcType=DECIMAL},
-      #{sfcnumber,jdbcType=VARCHAR}, #{archivetype,jdbcType=DECIMAL}, #{archivename,jdbcType=VARCHAR},#{caseinfoid,jdbcType=DECIMAL}
+      #{sfcnumber,jdbcType=VARCHAR}, #{archivetype,jdbcType=DECIMAL},
+      #{archivename,jdbcType=VARCHAR},#{caseinfoid,jdbcType=DECIMAL},#{baserecordid,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveSFCDTO">
@@ -60,6 +62,7 @@
       AUTHOR,
       AUTHORIDCARD,
       caseinfoid,
+      BASERECORDID,
       <if test="issend != null">
         ISSEND,
       </if>
@@ -85,6 +88,7 @@
       #{author,jdbcType=VARCHAR},
       #{authoridcard,jdbcType=VARCHAR},
       #{caseinfoid,jdbcType=DECIMAL},
+      #{baserecordid,jdbcType=DECIMAL},
       <if test="issend != null">
         #{issend,jdbcType=DECIMAL},
       </if>

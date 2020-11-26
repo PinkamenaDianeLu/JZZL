@@ -107,6 +107,7 @@ public class SFCensorshipController extends BaseFactory {
             newSfc.setArchivetype(thisSjlx.getValue());//
             newSfc.setArchivename(pJsonObj.getString("archivename"));
             newSfc.setCaseinfoid(thisFunPeopelCase.getId());//案件表id
+            newSfc.setBaserecordid(pJsonObj.getInteger("recordsId"));//基于那张文书选择的
             sFCensorshipService.insertFunArchiveSFC(newSfc);
             //新建送检整理次序
             FunArchiveSeq newSeq = new FunArchiveSeq();
@@ -122,6 +123,7 @@ public class SFCensorshipController extends BaseFactory {
             newSeq.setSfcnumber(newSfc.getSfcnumber());//送检编号
             newSeq.setArchivetype(newSfc.getArchivetype());//送检类型
             newSeq.setArchivename(newSfc.getArchivename());//送检名
+            newSeq.setBaserecordid(newSfc.getBaserecordid());//基于某张文书生成
             sFCensorshipService.insertFunArchiveSeq(newSeq);
 
             //得到新建的送检记录id  用此id得到对应的人

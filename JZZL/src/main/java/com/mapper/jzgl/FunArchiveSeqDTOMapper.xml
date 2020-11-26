@@ -20,11 +20,12 @@
     <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid" />
     <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
     <result column="PREVID" jdbcType="DECIMAL" property="previd" />
+    <result column="BASERECORDID" jdbcType="DECIMAL" property="baserecordid" />
   </resultMap>
 
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,  AUTHOR, AUTHORIDCARD,
-    BATCHESSEQ, ISFINAL,PEOPELCASEID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME,ARCHIVESFCID,AUTHORID,PREVID
+    BATCHESSEQ, ISFINAL,PEOPELCASEID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME,ARCHIVESFCID,AUTHORID,PREVID,BASERECORDID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -54,6 +55,7 @@
       ARCHIVENAME,
       ARCHIVESFCID,
       AUTHORID,
+      BASERECORDID,
       <if test="batchesseq != null">
         BATCHESSEQ,
       </if>
@@ -78,6 +80,7 @@
       #{archivename,jdbcType=VARCHAR},
       #{archivesfcid,jdbcType=DECIMAL},
       #{authorid,jdbcType=DECIMAL},
+      #{baserecordid,jdbcType=DECIMAL},
       <if test="batchesseq != null">
         #{batchesseq,jdbcType=DECIMAL},
       </if>

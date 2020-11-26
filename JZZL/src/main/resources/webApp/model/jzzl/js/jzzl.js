@@ -644,12 +644,12 @@ var loadArchiveIndex = (function () {
                 let thisOne = recordsMap.get(ddId);
                 thisOne.recordname = $(this).html();
                 recordsMap.set(ddId, thisOne);//缓存信息
-                saveReNameDateOnTime(ddId,null,thisOne.recordname )
+                saveReNameDateOnTime(ddId, null, thisOne.recordname)
             } else {
                 let thisOne = filesMap.get(ddId);
                 thisOne.filename = $(this).html();
                 filesMap.set(ddId, thisOne);//缓存信息
-                saveReNameDateOnTime(thisOne.archiverecordid,thisOne.filecode,thisOne.filename )
+                saveReNameDateOnTime(thisOne.archiverecordid, thisOne.filecode, thisOne.filename)
             }
             thisP.removeClass('pinput');
 
@@ -673,7 +673,7 @@ var loadArchiveIndex = (function () {
             recycleBinObj.addRecycleBin(ddId.replace('dd', ''), undefined);
             thisRecord.remove();
             recordsMap.delete(ddId);
-            saveDeleteDateOnTime(ddId,null);
+            saveDeleteDateOnTime(ddId, null);
         } else {
             //是图片
             thisRecord = thisRecord.parent().parent('.v2');//变成文书
@@ -685,12 +685,12 @@ var loadArchiveIndex = (function () {
                 }
             } else {
                 //删除单个文件
-                let thisRecordId=thisRecord.attr('id').replace('dd', '');
-                let fileCode=ddId.replace('fileIndex', '');
+                let thisRecordId = thisRecord.attr('id').replace('dd', '');
+                let fileCode = ddId.replace('fileIndex', '');
                 recycleBinObj.addRecycleBin(thisRecordId, fileCode);
                 $('#' + ddId).remove();
                 filesMap.delete(ddId);
-                saveDeleteDateOnTime(thisRecordId,fileCode);
+                saveDeleteDateOnTime(thisRecordId, fileCode);
             }
         }
     }
@@ -828,9 +828,7 @@ var loadArchiveIndex = (function () {
     }
 
 
-
-
-    function saveReNameDateOnTime(recordId, fileCode,name) {
+    function saveReNameDateOnTime(recordId, fileCode, name) {
         const renameObj = function () {
             this.recordid = recordId;//被移动的或被移动到的文书id
             this.filecode = fileCode;//文件代码 当移动的是文件时传入的文件代码
@@ -1006,7 +1004,7 @@ var loadArchiveIndex = (function () {
     _loadArchiveIndex.prototype = {
         loadIndex, loadRecycleBin, reloadButton,
         saveData, restored, getSeqId,
-        getRecordIndexSort, progressBar, delFun,createFilesDiv
+        getRecordIndexSort, progressBar, delFun, createFilesDiv
     };
     return _loadArchiveIndex;
 })();
@@ -1023,9 +1021,11 @@ $(function () {
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
-                lai.loadIndex(reV.value.id);//开始加载目录
+                const sfc = reV.value;
+                console.log(sfc);
+                lai.loadIndex(sfc.id);//开始加载目录
                 let rcb = new recycleBin(lai);//加载回收站部分
-                rcb.loadIndex(reV.value.id);//回收站目录加载
+                rcb.loadIndex(sfc.id);//回收站目录加载
                 lai.loadRecycleBin(rcb);
 
                 //拍摄快照按钮
@@ -1047,28 +1047,66 @@ $(function () {
                     }
                 })
 
-                   $.post({
-                           url: '/ArrangeArchives/selectSuspectByCaseinfoId',
-                           data: {sfcid: sfcId},
-                           success: (re) => {
-                               const reV = JSON.parse(re);
-                               if ('success' === reV.message) {
+                //判断是否为基础卷
+                if (sfc.archivetype || 0 !== sfc.archivetype) {
+                    //只有非基础卷才选人排序
+                    $.post({
+                        url: '/ArrangeArchives/selectSuspectByBaserecordId',
+                        data: {baserecordid: sfc.baserecordid},
+                        success: (re) => {
+                            const reV = JSON.parse(re);
+                            if ('success' === reV.message) {
 
-                                   if (!reV.value||0===reV.value.length){
-                                       alert('该案件没有任何嫌疑人！');
-                                   }else {
-                                       let suspects=document.createDocumentFragment();
-                                       for (let thisSuspect of reV.value){
-                                          let thisSuspectTd= utils.createElement.createElement({tag:'tr', attrs :{}, arg:'<td>'+thisSuspect.suspectname+'</td><td>'+thisSuspect.suspectidcard+'</td>'})
-                                           suspects.appendChild(thisSuspectTd);
-                                       }
-                                       $('#suspectTable').append(suspects);
+                                if (!reV.value || 0 === reV.value.length) {
+                                    alert('该案件没有任何嫌疑人！');
+                                } else {
+                                    let suspects = document.createDocumentFragment();
+                                    for (let thisSuspect of reV.value) {
+                                        let thisSuspectTd = utils.createElement.createElement({
+                                            tag: 'li',
+                                            attrs: {class: 'suspectSort',id:'suspectId'+thisSuspect.id},
+                                            arg: '<span>' + thisSuspect.suspectname + '</span><span>' + thisSuspect.suspectidcard + '</span>'
+                                        })
+                                        suspects.appendChild(thisSuspectTd);
+                                    }
+                                    $('#suspectUl').append(suspects);
 
-                                   }
-                               } else {
-                               }
-                           }
-                       });
+                                    //嫌疑人开启拖拽
+                                    $("#suspectUl").sortable({
+                                        delay: 50, cursor: 'move',
+                                        scroll: true, scrollSensitivity: 10,
+                                        cancel: "#suspectHead"
+                                    })
+                                    //弹出选择嫌疑人优先级窗口
+                                    layer.open({
+                                        type: 1,
+                                        title: '拖拽嫌疑人排序',
+                                        shade: [0.8, '#393D49'],
+                                        closeBtn: 1,
+                                        btn: ['确认顺序']
+                                        , yes: function (index, layero) {
+                                            //嫌疑人顺序set
+                                            let SuspectOrder=new Set();
+                                            //循环得到拖拽排序后的嫌疑人顺序
+                                            $('.suspectSort').forEach(function (index,item) {
+                                              let thisSuspectId=  $(item).attr('id');
+                                                SuspectOrder.add(thisSuspectId);
+                                            })
+                                            //传到后台开始整理
+                                            layer.close(index)
+                                        },
+                                        area: ['338px', '471px'],
+                                        content: $('#suspectOrderDiv')
+                                    });
+
+                                }
+                            } else {
+                            }
+                        }
+                    });
+                }
+
+
             } else {
             }
         }

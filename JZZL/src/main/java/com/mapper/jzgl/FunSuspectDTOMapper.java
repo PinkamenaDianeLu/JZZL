@@ -1,6 +1,7 @@
 package com.mapper.jzgl;
 
 import com.bean.jzgl.DTO.FunSuspectDTO;
+import com.bean.jzgl.DTO.FunSuspectRecordDTO;
 
 import java.util.List;
 
@@ -22,5 +23,12 @@ public interface FunSuspectDTOMapper {
       */
    List<FunSuspectDTO> selectSuspectByCaseinfoId(Integer caseinfoid);
 
-
+    /**
+    * 查询一个文书对应的所有嫌疑人
+    * @author MrLu
+    * @param recordid 文书id
+    * @createTime  2020/11/25 18:09
+    * @return   List<FunSuspectRecordDTO> |
+     */
+    List<FunSuspectRecordDTO> selectSuspectByRecordid(Integer recordid);
 }

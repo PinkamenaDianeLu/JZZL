@@ -1,5 +1,7 @@
 package com.bean.jzgl.Source;
 
+import com.config.annotations.CodeTableMapper;
+
 import java.util.Date;
 
 public class FunSuspectRecord {
@@ -24,7 +26,9 @@ public class FunSuspectRecord {
     private Integer suspectid;
 
     private Integer recordid;
-
+    private Integer recordtype;
+    @CodeTableMapper(sourceFiled = "recordtype", codeTableType = "archivetype")
+    private Integer recordtype_name;
     public Integer getId() {
         return id;
     }
@@ -111,5 +115,13 @@ public class FunSuspectRecord {
 
     public void setRecordid(Integer recordid) {
         this.recordid = recordid;
+    }
+
+    public Integer getRecordtype() {
+        return recordtype;
+    }
+
+    public void setRecordtype(Integer recordtype) {
+        this.recordtype = recordtype;
     }
 }

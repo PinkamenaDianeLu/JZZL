@@ -39,8 +39,9 @@
         from FUN_ARCHIVE_RECORDS
         where ID = #{id,jdbcType=DECIMAL}
     </select>
-    <select id="selectNextRecord"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"/>
+    <select id="selectNextRecord" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
         FROM FUN_ARCHIVE_RECORDS
         WHERE SCBJ=0 AND PREVID=#{id,jdbcType=DECIMAL}
     </select>
@@ -149,7 +150,11 @@
         select
         <include refid="Base_Column_List"/>
         ,(SELECT LISTAGG(suspect.SUSPECTNAME, ',') WITHIN GROUP(ORDER BY suspect.SUSPECTNAME)
-        FROM FUN_SUSPECT suspect WHERE suspect.RECORDID=records.ID)  AS SUSPECTNAME
+        FROM FUN_SUSPECT suspect WHERE scbj=0
+        AND EXISTS (SELECT 1
+        FROM FUN_SUSPECT_RECORD RE
+        WHERE RE.scbj=0 AND RE.SUSPECTID = SUSPECT.ID
+        AND RE.RECORDID = records.ID) ) AS SUSPECTNAME
         from FUN_ARCHIVE_RECORDS records where 1=1 and scbj=0
         AND JQBH = #{jqbh,jdbcType=VARCHAR}
         <if test="recordscode != null">
@@ -251,12 +256,24 @@
         FROM FUN_ARCHIVE_RECORDS r
         where 1=1 and scbj=0
         <if test="null != archivetypeid">
-        and r.ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+            and r.ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
         </if>
         and r.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
         AND RECORDSTYLE &lt;&gt; 0
         <if test="null != recordname and recordname!=''">
             AND r.RECORDNAME LIKE '%'||#{recordname,jdbcType=VARCHAR}||'%'
         </if>
+    </select>
+
+    <select id="selectRecordsBySuspect"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_RECORDS RECORDS
+        WHERE 1 = 1
+        AND EXISTS (SELECT 1
+        FROM FUN_SUSPECT_RECORD SR
+        WHERE SCBJ = 0
+        AND SUSPECTID = #{suspectid,jdbcType=DECIMAL}
+        AND RECORDS.ID = SR.RECORDID)
     </select>
 </mapper>

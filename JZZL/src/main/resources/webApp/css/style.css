@@ -30,7 +30,7 @@ input[type=checkbox]{ margin: 0;}
 .ico01{display: inline-block; background-image: url(../images/ico_1.png); background-repeat: no-repeat;}
 
 /***********top*********/
-.header{position:absolute;top:0px; left:0px; z-index: 99; width: 100%; height:80px; background-image: url(../images/her-bg.jpg); background-position: center 0px; background-repeat:no-repeat;moz-box-shadow:0px 5px 10px rgba(73,110,176,0.35); -webkit-box-shadow:0px 5px 10px rgba(73,110,176,0.35); box-shadow:0px 5px 10px rgba(73,110,176,0.35);}
+.header{position:absolute;top:0px; left:0px; z-index: 99; width: 100%; height:80px; background-image: url(../images/her-bg.jpg); background-color: #124eb8; background-size: 100% auto; background-position: center bottom; background-repeat:no-repeat;moz-box-shadow:0px 5px 10px rgba(73,110,176,0.35); -webkit-box-shadow:0px 5px 10px rgba(73,110,176,0.35); box-shadow:0px 5px 10px rgba(73,110,176,0.35);}
 .header .logo{float: left; width: 290px; height:80px;background-image: url(../images/logo.png); background-position:left center;}
 .header h2{ position: absolute; color: #fff; font-size: 18px; line-height: 30px; width: calc( 100% - 600px); margin: 20px 300px;}
 .r_nav{ float: right;}
@@ -228,3 +228,10 @@ table th,table td{text-align: center; font-size: 14px;}
 }
 
 .editGreen{color: #fff; background: #358df5; border: none;}
+.ul_x{position: relative; width: 100%;float: left;}
+.ul_x li{ position: relative; width: 100%;float: left;}
+.ul_x li span{ display: inline-block; float: left; width: 80px;padding: 8px 5px; line-height: 18px;}
+.ul_x li span:nth-child(1){ text-align: left; padding-left: 15px;}
+.ul_x li span:nth-child(2){ width: 150px; text-align: left;}
+.ul_x li:nth-child(1){background-color: #f2f2f2; border-bottom: 1px solid #C9C9C9; font-weight: bold;}
+.ul_x li:nth-of-type(odd){background-color: #f1f1f1;}

@@ -19,7 +19,7 @@ var ajcxTable = (function () {
 
     function getSearchParam() {
         let reS = new searchParam();
-        reS.ajbh = $('#ajbh').val().trim();
+        reS.ajbh = $('#ajbhHead').val().trim()+$('#ajbh').val().trim();
         reS.jqbh = $('#jqbh').val().trim();
         return reS;
     };
