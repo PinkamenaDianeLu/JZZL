@@ -12,10 +12,11 @@
         <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder"/>
         <result column="RECORDTYPE" jdbcType="DECIMAL" property="recordtype"/>
         <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype"/>
+        <result column="RECORDSTYLE" jdbcType="DECIMAL" property="recordstyle"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, RECORDNAME, RECORDCODE, DEFAULTORDER, RECORDTYPE, 
-    ARCHIVETYPE
+    ARCHIVETYPE,RECORDSTYLE
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -151,11 +152,11 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM SYS_RECORDORDER
-        where
-        scbj=0 and
-        recordcode= #{recordcode,jdbcType=VARCHAR}
-         archivetype = #{archivetype,jdbcType=DECIMAL}
-        AND recordtype= #{recordtype,jdbcType=DECIMAL}
+        WHERE
+        SCBJ=0 AND
+        RECORDCODE= #{recordcode,jdbcType=VARCHAR}
+         ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+        AND RECORDTYPE= #{recordtype,jdbcType=DECIMAL}
         and ROWNUM=1
     </select>
 </mapper>

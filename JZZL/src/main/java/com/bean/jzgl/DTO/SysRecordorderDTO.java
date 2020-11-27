@@ -23,6 +23,8 @@ public class SysRecordorderDTO {
 
     private Integer archivetype;
 
+    private  Integer recordstyle;
+
     public Integer getId() {
         return id;
     }
@@ -101,5 +103,13 @@ public class SysRecordorderDTO {
 
     public void setArchivetype(Integer archivetype) {
         this.archivetype = archivetype;
+    }
+
+    public Integer getRecordstyle() {
+        return recordstyle;
+    }
+
+    public void setRecordstyle(Integer recordstyle) {
+        this.recordstyle = recordstyle;
     }
 }

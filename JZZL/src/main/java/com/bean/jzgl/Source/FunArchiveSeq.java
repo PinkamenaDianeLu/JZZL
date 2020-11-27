@@ -31,7 +31,7 @@ public class FunArchiveSeq {
 
 
     private  String recordsnumber;
-    private  int peopelcaseid;
+    private  int caseinfoid;
     private int archivetype;
     @CodeTableMapper(sourceFiled = "archivetype", codeTableType = "archivetype")
     private String archivetype_name;
@@ -41,6 +41,7 @@ public class FunArchiveSeq {
 
     private int previd;
     private Integer baserecordid;
+    private int isactive;
     public Integer getId() {
         return id;
     }
@@ -140,14 +141,13 @@ public class FunArchiveSeq {
         this.recordsnumber = recordsnumber;
     }
 
-    public int getPeopelcaseid() {
-        return peopelcaseid;
+    public int getCaseinfoid() {
+        return caseinfoid;
     }
 
-    public void setPeopelcaseid(int peopelcaseid) {
-        this.peopelcaseid = peopelcaseid;
+    public void setCaseinfoid(int caseinfoid) {
+        this.caseinfoid = caseinfoid;
     }
-
 
     public int getArchivetype() {
         return archivetype;
@@ -211,5 +211,13 @@ public class FunArchiveSeq {
 
     public void setBaserecordid(Integer baserecordid) {
         this.baserecordid = baserecordid;
+    }
+
+    public int getIsactive() {
+        return isactive;
+    }
+
+    public void setIsactive(int isactive) {
+        this.isactive = isactive;
     }
 }

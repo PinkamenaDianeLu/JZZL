@@ -55,6 +55,13 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
+    public List<FunArchiveRecordsDTO> selectRecordsDtoByTypeid(int archivetypeid, int isDelete) {
+        Map<String, Object> pMap = new HashMap<>();
+        pMap.put("archivetypeid", archivetypeid);
+        pMap.put("isdelete", isDelete);
+        return funArchiveRecordsDTOMapper.selectRecordsByTypeid(pMap);
+    }
+    @Override
     public FunArchiveSeq selectLastSeqBySfc(int sfcId) {
         return FunArchiveSeqMapper.INSTANCE.pcDTOToPc(funArchiveSeqDTOMapper.selectLastSeqBySfc(sfcId));
     }
@@ -167,9 +174,7 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public List<FunSuspectDTO> selectSuspectByCaseinfoId(Integer caseinfoid) {
         return funSuspectDTOMapper.selectSuspectByCaseinfoId(caseinfoid);
-    }
-
-    ;
+    };
 
     @Override
     public FunArchiveSFCDTO selectFunArchiveSFCDTOById(Integer sfcId) {
@@ -193,6 +198,11 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
         map.put("archivetype", archivetype);
         map.put("recordtype", recordtype);
         return sysRecordorderDTOMapper.selectRecordOrderByTypes(map);
+    }
+
+    @Override
+    public FunArchiveSeqDTO selectActiveSeqByCaseId(int caseinfoid) {
+        return funArchiveSeqDTOMapper.selectActiveSeqByCaseId(caseinfoid);
     }
 
     @Override

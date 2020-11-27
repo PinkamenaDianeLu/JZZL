@@ -695,6 +695,31 @@ public class ArrangeArchivesController extends BaseFactory {
     }
 
 
+     /**
+     * 查询案件活跃的基础卷内的所有卷类型
+     * @author MrLu
+     * @param caseinfoid 案件表id
+     * @createTime  2020/11/27 9:32
+     * @return    |
+      */
+     @RequestMapping(value = "/selectBaseTypes", method = {RequestMethod.GET,
+             RequestMethod.POST})
+     @ResponseBody
+     @OperLog(operModul = operModul, operDesc = "查询案件活跃的基础卷内的所有卷类型", operType = OperLog.type.SELECT)
+     public String selectBaseTypes(String caseinfoid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            FunArchiveSeqDTO baseSeq= arrangeArchivesService.selectActiveSeqByCaseId(Integer.parseInt(caseinfoid));
+            reValue.put("value", arrangeArchivesService.selectArchiveTypeByJqSeq(baseSeq.getId()));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
     /**
      * 根据嫌疑人顺序生成卷
      *
@@ -708,60 +733,94 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "根据嫌疑人顺序生成卷", operType = OperLog.type.SELECT)
-    public String createArchiveBySuspectOrder(String suspectorder, String seqid) {
+    public String createArchiveBySuspectOrder(String suspectorder, String seqid,String recordtypeid,String isdelete) {
         JSONObject reValue = new JSONObject();
         try {
             if (StringUtils.isEmpty(seqid)) {
                 throw new Exception("?");
             }
+            SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+            int recordTypeId=Integer.parseInt(recordtypeid);
             int seqId = Integer.parseInt(seqid);
             //查询送检卷类型
             FunArchiveSeq thisFunArchiveSeq = arrangeArchivesService.selectLastSeqBySfc(seqId);
-            //得到基础卷中所有的卷类型
-            List<FunArchiveType> baseRecordTypes= arrangeArchivesService.selectArchiveTypeByJqSeq(thisFunArchiveSeq.getBaserecordid());
+            //得到该卷类型详细信息
+            FunArchiveTypeDTO thisArchiveType= arrangeArchivesService.selectFunArchiveTypeById(recordTypeId);
+            //查询卷类型中所有的文书  注意这行要紧贴着查询  否在在插入后id就会发生改变
+            List<FunArchiveRecordsDTO> Records= arrangeArchivesService.selectRecordsDtoByTypeid(recordTypeId, Integer.parseInt(isdelete));
+            //创建新的卷类型
+            thisArchiveType.setArchiveseqid(thisFunArchiveSeq.getArchivesfcid());
+            thisArchiveType.setArchiveseqid(thisFunArchiveSeq.getId());
+            thisArchiveType.setIsazxt(1);//不是案宗来的了
+            arrangeArchivesService.insertFunArchiveType(thisArchiveType);
+            int newRecordTypeId=thisArchiveType.getId();
 
-            // TODO: 2020/11/26  人员排序逻辑 
-            for (FunArchiveType thisType:baseRecordTypes){
+
+            int recordOrder=1;
+            for (FunArchiveRecordsDTO thisRecord : Records) {
+                 // 循环文书  查找文书对应在 sys_recordorder 中 是否存在
+                //查询这个文书的在文书信息表中的信息
+                SysRecordorderDTO thisRo =
+                        arrangeArchivesService.selectRecordOrderByTypes(thisRecord.getRecordscode(), thisFunArchiveSeq.getArchivetype(), thisRecord.getRecordstyle());
+                if (null != thisRo) {
+                    boolean    toPeople=1==thisRo.getRecordstyle();//该文书是否对人
+                    if (!toPeople){
+                        //该文书非对嫌疑人单选
+
+                    }
+                    thisRecord.setPrevid(thisRecord.getId());//基于什么变得
+                    thisRecord.setArchiveseqid(seqId);//整理次序id
+                    thisRecord.setArchivetypeid(newRecordTypeId);//文书类型id
+                    thisRecord.setArchivesfcid(thisFunArchiveSeq.getArchivesfcid());
+                    thisRecord.setThisorder(recordOrder++);//文书顺序
+                    //得到文书代码的顺序
+//                    defaultOrder = thisRo.getDefaultorder();
+                } else {
+                    //没有的话说明该卷类型不需要此文书  忽略就行了
+//                    defaultOrder++;
+                }
+
+
+                // TODO: 2020/11/26  人员排序逻辑
                 //查找基础卷id select max(id) from fun_archive_seq where scbj=0 and archivetype=0 and caseinfoid=
                 //得到基础卷中对应类型的文书  select * from fun_archive_type where scbj=0 and seqid=
                 //返回ajax 开始进度条 回收站*6+普通*6
-                //ajax后台  新建卷类型 查找卷类型的所有文书  order by defaultorder
+                //ajax后台  新建卷类型 查找卷类型的所有文书  order by defaultorder   ok
                 // 循环文书  查找文书对应在 sys_recordorder 中 是否存在 select * from sys_recordorder where recordcode=? and recordtype=? and archivetype=?
                 //不存在 无视该文书  存在 判断该文书是否对人 不对人 -> 正常复制
                 //对人的 开始统一插入所有对人的文书
                 // 循环人  人 + 类型  查找所有对单个人的文书 foreach(suspectid){select * from fun_suspect_record where suspectid=? and recordtype=? and recordstyle=1}
                 // 对人的文书插入结束之后 开始继续插入  此时判断该文书是否对人 只插入不对人的文书
                 //完成 返回
-                
+
                 //基础卷挪动时 子卷不会将对文书的文书插入到对人文书的中间
 
 
             }
 
 
-
             //送检卷类型
             int archiveType = thisFunArchiveSeq.getArchivetype();
             String[] suspectOrder = suspectorder.split(",");
             //按照顺序循环嫌疑人
-            int suspectRecordsCount_1=0;
-            int suspectRecordsCount_2=0;
-            int suspectRecordsCount_3=0;
-            int suspectRecordsCount_4=0;
-            int suspectRecordsCount_5=0;
+            int suspectRecordsCount_1 = 0;
+            int suspectRecordsCount_2 = 0;
+            int suspectRecordsCount_3 = 0;
+            int suspectRecordsCount_4 = 0;
+            int suspectRecordsCount_5 = 0;
             for (String thisSuspectId : suspectOrder) {
                 //在基础卷中查找该嫌疑人的所有文书
                 List<FunArchiveRecordsDTO> records = arrangeArchivesService.selectRecordsBySuspect(Integer.parseInt(thisSuspectId));
 
                 //循环所有文书以供新建
-                int defaultOrder=1;
+                int defaultOrder = 1;
                 for (FunArchiveRecordsDTO thisRecord : records) {
                     //查询这个文书的默认顺序
-                    SysRecordorderDTO thisRo=  arrangeArchivesService.selectRecordOrderByTypes(thisRecord.getRecordscode(),archiveType,thisRecord.getRecordstyle());
-                    if (null!=thisRo){
+                    SysRecordorderDTO thisRo = arrangeArchivesService.selectRecordOrderByTypes(thisRecord.getRecordscode(), archiveType, thisRecord.getRecordstyle());
+                    if (null != thisRo) {
                         //得到文书代码的顺序
-                        defaultOrder=thisRo.getDefaultorder();
-                    }else {
+                        defaultOrder = thisRo.getDefaultorder();
+                    } else {
                         //文书代码查不到顺序
                         defaultOrder++;
                     }

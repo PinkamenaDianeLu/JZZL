@@ -29,6 +29,8 @@ public class SysRecordorder {
     @CodeTableMapper(sourceFiled = "archivetype", codeTableType = "archivetype")
     private String archivetype_name;
 
+    private Integer recordstyle;
+
     public Integer getId() {
         return id;
     }
@@ -123,5 +125,13 @@ public class SysRecordorder {
 
     public void setArchivetype_name(String archivetype_name) {
         this.archivetype_name = archivetype_name;
+    }
+
+    public Integer getRecordstyle() {
+        return recordstyle;
+    }
+
+    public void setRecordstyle(Integer recordstyle) {
+        this.recordstyle = recordstyle;
     }
 }

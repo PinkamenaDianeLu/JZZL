@@ -28,14 +28,14 @@ public class FunArchiveSeqDTO {
     private Integer isfinal;
 
     private String recordsnumber;
-    private int peopelcaseid;
+    private int caseinfoid;
     private int archivetype;
     private String archivename;
 
     private int archivesfcid;
     private int authorid;
     private int previd;
-
+    private int isactive;
     private Integer baserecordid;
     public Integer getId() {
         return id;
@@ -134,14 +134,13 @@ public class FunArchiveSeqDTO {
         this.recordsnumber = recordsnumber;
     }
 
-    public int getPeopelcaseid() {
-        return peopelcaseid;
+    public int getCaseinfoid() {
+        return caseinfoid;
     }
 
-    public void setPeopelcaseid(int peopelcaseid) {
-        this.peopelcaseid = peopelcaseid;
+    public void setCaseinfoid(int caseinfoid) {
+        this.caseinfoid = caseinfoid;
     }
-
 
     public int getArchivetype() {
         return archivetype;
@@ -197,5 +196,13 @@ public class FunArchiveSeqDTO {
 
     public void setBaserecordid(Integer baserecordid) {
         this.baserecordid = baserecordid;
+    }
+
+    public int getIsactive() {
+        return isactive;
+    }
+
+    public void setIsactive(int isactive) {
+        this.isactive = isactive;
     }
 }

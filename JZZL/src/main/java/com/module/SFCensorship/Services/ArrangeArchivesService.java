@@ -30,6 +30,9 @@ public interface ArrangeArchivesService {
      */
     List<FunArchiveRecords>  selectRecordsByTypeid(int archivetypeid,int isDelete);
 
+
+    List<FunArchiveRecordsDTO> selectRecordsDtoByTypeid(int archivetypeid, int isDelete);
+
      /**
      * 根据id查找整理记录
      * @author MrLu
@@ -274,4 +277,13 @@ public interface ArrangeArchivesService {
      * @createTime 2020/11/26 15:23
      */
     SysRecordorderDTO selectRecordOrderByTypes(String recordcode,Integer archivetype,Integer recordtype);
+
+    /**
+     * 查询某个案件正在活跃的基础卷
+     * @author MrLu
+     * @param  caseinfoid 案件表id
+     * @createTime  2020/11/27 9:22
+     * @return  FunArchiveSeqDTO  |
+     */
+    FunArchiveSeqDTO  selectActiveSeqByCaseId(int caseinfoid);
 }

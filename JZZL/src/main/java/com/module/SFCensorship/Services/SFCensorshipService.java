@@ -43,11 +43,11 @@ public interface SFCensorshipService {
     /**
      * 得到某个案件最后的送检次序
      * @author MrLu
-     * @param peoplecaseid 案件表id
+     * @param caseinfoid 案件表id
      * @createTime  2020/10/4 16:31
      * @return   int  |
      */
-    int getLastSFCSeq(int peoplecaseid);
+    int getLastSFCSeq(int caseinfoid);
 
     /**
      * 通过警情编号查询警情对应文书

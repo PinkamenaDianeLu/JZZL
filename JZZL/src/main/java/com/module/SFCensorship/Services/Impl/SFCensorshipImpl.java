@@ -75,8 +75,8 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public int getLastSFCSeq(int peoplecaseid) {
-        return funArchiveSeqDTOMapper.getLastSFCSeq(peoplecaseid);
+    public int getLastSFCSeq(int caseinfoid) {
+        return funArchiveSeqDTOMapper.getLastSFCSeq(caseinfoid);
     }
 
     @Override

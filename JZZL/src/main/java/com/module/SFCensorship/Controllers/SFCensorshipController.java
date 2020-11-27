@@ -118,7 +118,7 @@ public class SFCensorshipController extends BaseFactory {
             newSeq.setAuthoridcard(userNow.getIdcardnumber());//整理人身份证号
             newSeq.setBatchesseq(0);//新建送检记录 为第0次
             //TODO MrLu 2020/10/4 卷宗编号是干啥的来着？？
-            newSeq.setPeopelcaseid(newSfc.getPeoplecaseid());//案件表id
+            newSeq.setCaseinfoid(newSfc.getCaseinfoid());//案件表id
             newSeq.setIsfinal(Enums.IsFinal.NO);//是否是完结版
             newSeq.setSfcnumber(newSfc.getSfcnumber());//送检编号
             newSeq.setArchivetype(newSfc.getArchivetype());//送检类型

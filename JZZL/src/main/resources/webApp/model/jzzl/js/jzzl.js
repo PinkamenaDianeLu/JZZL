@@ -1009,6 +1009,47 @@ var loadArchiveIndex = (function () {
     return _loadArchiveIndex;
 })();
 
+/**
+ * 弹出进度条
+ * @author MrLu
+ * @createTime  2020/11/27 9:37
+ */
+var alertProgressBarWindow = function () {
+    //加载进度条
+    layer.open({
+        id: 10086,
+        type: 1,
+        title: false,
+        shade: [0.8, '#393D49'],
+        closeBtn: 0,
+        area: ['453px', '170px'],
+        content: $('#progressBarDiv')
+    });
+    //为进度条的弹出框附加一个class 增加透明样式
+    $('#10086').parent().addClass('progressBarParent');
+}
+
+/**
+ * 按照嫌疑人开始整理卷宗
+ * @author MrLu
+ * @param caseinfoid 案件信息表id
+ * @createTime  2020/11/27 9:40
+ * @return    |
+ */
+var createArchiveBySuspect = function (caseinfoid) {
+    //开始整理
+    $.post({
+        url: '/ArrangeArchives/selectBaseTypes',
+        data: {caseinfoid},
+        success: (re) => {
+            const reV = JSON.parse(re);
+            if ('success' === reV.message) {
+                console.log(reV.value);
+            } else {
+            }
+        }
+    });
+}
 var lai = new loadArchiveIndex();
 $(function () {
     $('#userHeart').load('/userHeart.html');
@@ -1031,18 +1072,7 @@ $(function () {
                 //拍摄快照按钮
                 $('#saveData').click(function () {
                     if (confirm('确定完成整理？')) {
-                        //加载进度条
-                        layer.open({
-                            id: 10086,
-                            type: 1,
-                            title: false,
-                            shade: [0.8, '#393D49'],
-                            closeBtn: 0,
-                            area: ['453px', '170px'],
-                            content: $('#progressBarDiv')
-                        });
-                        //为进度条的弹出框附加一个class 增加透明样式
-                        $('#10086').parent().addClass('progressBarParent');
+                        alertProgressBarWindow();
                         lai.saveData();
                     }
                 })
@@ -1064,7 +1094,7 @@ $(function () {
                                     for (let thisSuspect of reV.value) {
                                         let thisSuspectTd = utils.createElement.createElement({
                                             tag: 'li',
-                                            attrs: {class: 'suspectSort',id:'suspectId'+thisSuspect.id},
+                                            attrs: {class: 'suspectSort', id: 'suspectId' + thisSuspect.id},
                                             arg: '<span>' + thisSuspect.suspectname + '</span><span>' + thisSuspect.suspectidcard + '</span>'
                                         })
                                         suspects.appendChild(thisSuspectTd);
@@ -1086,14 +1116,17 @@ $(function () {
                                         btn: ['确认顺序']
                                         , yes: function (index, layero) {
                                             //嫌疑人顺序set
-                                            let SuspectOrder=new Set();
+                                            let SuspectOrder = new Set();
                                             //循环得到拖拽排序后的嫌疑人顺序
-                                            $('.suspectSort').forEach(function (index,item) {
-                                              let thisSuspectId=  $(item).attr('id');
+                                            $('.suspectSort').forEach(function (index, item) {
+                                                let thisSuspectId = $(item).attr('id');
                                                 SuspectOrder.add(thisSuspectId);
                                             })
                                             //传到后台开始整理
                                             layer.close(index)
+                                            //弹出进度条
+                                            alertProgressBarWindow();
+                                            createArchiveBySuspect(sfc.caseinfoid);
                                         },
                                         area: ['338px', '471px'],
                                         content: $('#suspectOrderDiv')

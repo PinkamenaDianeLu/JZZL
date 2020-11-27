@@ -25,7 +25,7 @@ public interface FunArchiveSeqDTOMapper {
      /**
      * 分页查询送检记录表
      * @author MrLu
-     * @param map 分页参数 peopelcaseid为必传项
+     * @param map 分页参数 caseinfoid为必传项
      * @createTime  2020/9/27 15:48
      * @return    |
       */
@@ -43,11 +43,11 @@ public interface FunArchiveSeqDTOMapper {
      /**
      * 得到某个案件最后的整理次序
      * @author MrLu
-     * @param peoplecaseid 案件表id
+     * @param caseinfoid 案件表id
      * @createTime  2020/10/4 16:31
      * @return   int  |
       */
-    int getLastSFCSeq(int peoplecaseid);
+    int getLastSFCSeq(int caseinfoid);
 
      /**
      * 查询一个案件最原始的基础卷
@@ -57,4 +57,13 @@ public interface FunArchiveSeqDTOMapper {
      * @return  FunArchiveSeqDTO  |
       */
     FunArchiveSeqDTO selectBaseArchive(int peoplecaseid);
+
+     /**
+     * 查询某个案件正在活跃的基础卷
+     * @author MrLu
+     * @param  caseinfoid 案件表id
+     * @createTime  2020/11/27 9:22
+     * @return  FunArchiveSeqDTO  |
+      */
+    FunArchiveSeqDTO  selectActiveSeqByCaseId(int caseinfoid);
 }

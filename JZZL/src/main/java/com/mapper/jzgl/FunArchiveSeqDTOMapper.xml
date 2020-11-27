@@ -13,7 +13,7 @@
     <result column="AUTHORIDCARD" jdbcType="VARCHAR" property="authoridcard" />
     <result column="BATCHESSEQ" jdbcType="DECIMAL" property="batchesseq" />
     <result column="ISFINAL" jdbcType="DECIMAL" property="isfinal" />
-    <result column="PEOPELCASEID" jdbcType="VARCHAR" property="peopelcaseid" />
+    <result column="CASEINFOID" jdbcType="VARCHAR" property="caseinfoid" />
     <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
     <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
     <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
@@ -21,11 +21,13 @@
     <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
     <result column="PREVID" jdbcType="DECIMAL" property="previd" />
     <result column="BASERECORDID" jdbcType="DECIMAL" property="baserecordid" />
+    <result column="ISACTIVE" jdbcType="DECIMAL" property="isactive" />
   </resultMap>
 
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,  AUTHOR, AUTHORIDCARD,
-    BATCHESSEQ, ISFINAL,PEOPELCASEID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME,ARCHIVESFCID,AUTHORID,PREVID,BASERECORDID
+    BATCHESSEQ, ISFINAL,CASEINFOID,SFCNUMBER,ARCHIVETYPE,ARCHIVENAME,ARCHIVESFCID,
+    AUTHORID,PREVID,BASERECORDID,ISACTIVE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -47,7 +49,7 @@
         UPDATETIME,
         JQBH,
         AJBH,
-        PEOPELCASEID,
+        CASEINFOID,
         AUTHOR,
         AUTHORIDCARD,
       SFCNUMBER,
@@ -56,6 +58,7 @@
       ARCHIVESFCID,
       AUTHORID,
       BASERECORDID,
+      ISACTIVE,
       <if test="batchesseq != null">
         BATCHESSEQ,
       </if>
@@ -72,7 +75,7 @@
       sysdate,
         #{jqbh,jdbcType=VARCHAR},
         #{ajbh,jdbcType=VARCHAR},
-        #{peopelcaseid,jdbcType=VARCHAR},
+        #{CASEINFOID,jdbcType=VARCHAR},
         #{author,jdbcType=VARCHAR},
         #{authoridcard,jdbcType=VARCHAR},
       #{sfcnumber,jdbcType=DECIMAL},
@@ -81,6 +84,7 @@
       #{archivesfcid,jdbcType=DECIMAL},
       #{authorid,jdbcType=DECIMAL},
       #{baserecordid,jdbcType=DECIMAL},
+      #{isactive,jdbcType=DECIMAL},
       <if test="batchesseq != null">
         #{batchesseq,jdbcType=DECIMAL},
       </if>
@@ -123,6 +127,9 @@
       <if test="isfinal != null">
         ISFINAL = #{isfinal,jdbcType=DECIMAL},
       </if>
+      <if test="isactive != null">
+        ISACTIVE = #{isactive,jdbcType=DECIMAL},
+      </if>
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
@@ -132,7 +139,7 @@
     select
     <include refid="Base_Column_List"/>
     from FUN_ARCHIVE_SEQ aseq where 1=1 and scbj=0
-    and PEOPELCASEID = #{peopelcaseid,jdbcType=DECIMAL}
+    and CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
     <if test="null != jqbh and jqbh!=''">
       AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
     </if>
@@ -146,7 +153,7 @@
   </select>
   <select id="selectArchiveSeqPageCount" resultType="java.lang.Integer" parameterType="map">
     select count(0) from   FUN_ARCHIVE_SEQ where 1=1 and scbj=0
-    AND PEOPELCASEID = #{peopelcaseid,jdbcType=DECIMAL}
+    AND CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
     <if test="null != jqbh and jqbh!=''">
       AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
     </if>
@@ -156,7 +163,7 @@
   </select>
 
   <select id="getLastSFCSeq" resultType="java.lang.Integer" parameterType="java.lang.Integer">
-    select nvl(max(BATCHESSEQ),0) from FUN_ARCHIVE_SEQ where scbj=0 and PEOPELCASEID=#{peopelcaseid,jdbcType=VARCHAR}
+    select nvl(max(BATCHESSEQ),0) from FUN_ARCHIVE_SEQ where scbj=0 and CASEINFOID=#{caseinfoid,jdbcType=VARCHAR}
   </select>
   <select id="selectLastSeqBySfc"  resultMap="BaseResultMap" parameterType="java.lang.Integer">
     select <include refid="Base_Column_List" /> from  FUN_ARCHIVE_SEQ where scbj=0
@@ -171,5 +178,15 @@
     FROM FUN_ARCHIVE_SFC WHERE SCBJ=0
     AND ARCHIVETYPE=0 AND PEOPLECASEID=#{peoplecaseid,jdbcType=DECIMAL} )
     AND PREVID=0
+  </select>
+
+  <select id="selectActiveSeqByCaseId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FUN_ARCHIVE_SEQ
+    WHERE scbj=0
+    AND archivetype=0
+    AND caseinfoid=#{caseinfoid,jdbcType=VARCHAR}
+    AND ISACTIVE = 1 AND ROWNUM=1
   </select>
 </mapper>
