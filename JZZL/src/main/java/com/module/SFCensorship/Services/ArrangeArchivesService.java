@@ -31,7 +31,7 @@ public interface ArrangeArchivesService {
     List<FunArchiveRecords>  selectRecordsByTypeid(int archivetypeid,int isDelete);
 
 
-    List<FunArchiveRecordsDTO> selectRecordsDtoByTypeid(int archivetypeid, int isDelete);
+    List<FunArchiveRecordsDTO> selectRecordsDtoByTypeid(int archivetypeid, Integer isDelete);
 
      /**
      * 根据id查找整理记录
@@ -257,13 +257,13 @@ public interface ArrangeArchivesService {
 
 
     /**
-     * 查询该嫌疑人在基础卷中的文书
+     * 查询该嫌疑人某类型的文书  按照sys_recordorder顺序排序
      * @author MrLu
      * @param suspectid 嫌疑人id
      * @createTime  2020/11/26 17:01
      * @return  List<FunArchiveRecordsDTO>  |
      */
-    List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid);
+    List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid,Integer recordtype,Integer archiveseqid);
 
 
     /**
@@ -286,4 +286,14 @@ public interface ArrangeArchivesService {
      * @return  FunArchiveSeqDTO  |
      */
     FunArchiveSeqDTO  selectActiveSeqByCaseId(int caseinfoid);
+
+    /**
+     * 查询一个人的对应文书
+     * @author MrLu
+     * @param suspectid 嫌疑人id
+     *    @param recordtype 文书类型
+     * @createTime  2020/11/26 15:27
+     * @return  List<FunSuspectRecordDTO>  |
+     */
+    List<FunSuspectRecordDTO> selectRecordBySuspectid(int suspectid,int recordtype);
 }

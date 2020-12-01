@@ -129,7 +129,7 @@
 
 <select id="selectRecordBySuspectid"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
   SELECT  <include refid="Base_Column_List" />
-  from FUN_SUSPECT_RECORD WHERE SCBJ=0
+  FROM FUN_SUSPECT_RECORD WHERE SCBJ=0
   AND  SUSPECTID = #{suspectid,jdbcType=DECIMAL}
   AND  RECORDTYPE = #{recordtype,jdbcType=VARCHAR}
 </select>

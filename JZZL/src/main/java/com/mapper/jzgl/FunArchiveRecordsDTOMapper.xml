@@ -265,15 +265,22 @@
         </if>
     </select>
 
-    <select id="selectRecordsBySuspect"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM FUN_ARCHIVE_RECORDS RECORDS
-        WHERE 1 = 1
-        AND EXISTS (SELECT 1
-        FROM FUN_SUSPECT_RECORD SR
-        WHERE SCBJ = 0
-        AND SUSPECTID = #{suspectid,jdbcType=DECIMAL}
-        AND RECORDS.ID = SR.RECORDID)
+    <select id="selectRecordsBySuspectAType"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+             SELECT  AR.*
+  FROM FUN_ARCHIVE_RECORDS AR
+  LEFT JOIN (SELECT *
+               FROM SYS_RECORDORDER
+              WHERE SCBJ = 0
+                AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}) RO
+    ON RO.RECORDCODE = AR.RECORDSCODE
+ WHERE AR.SCBJ = 0
+   AND AR.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+   AND EXISTS (SELECT 1
+          FROM FUN_SUSPECT_RECORD SR
+         WHERE SCBJ = 0
+           AND SUSPECTID = #{suspectid,jdbcType=DECIMAL}
+           AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
+           AND AR.ID = SR.RECORDID)
+ ORDER BY RO.DEFAULTORDER
     </select>
 </mapper>

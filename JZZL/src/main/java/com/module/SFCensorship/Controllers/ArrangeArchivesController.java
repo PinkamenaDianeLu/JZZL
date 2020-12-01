@@ -695,21 +695,22 @@ public class ArrangeArchivesController extends BaseFactory {
     }
 
 
-     /**
+    /**
      * 查询案件活跃的基础卷内的所有卷类型
-     * @author MrLu
+     *
      * @param caseinfoid 案件表id
-     * @createTime  2020/11/27 9:32
-     * @return    |
-      */
-     @RequestMapping(value = "/selectBaseTypes", method = {RequestMethod.GET,
-             RequestMethod.POST})
-     @ResponseBody
-     @OperLog(operModul = operModul, operDesc = "查询案件活跃的基础卷内的所有卷类型", operType = OperLog.type.SELECT)
-     public String selectBaseTypes(String caseinfoid) {
+     * @return |
+     * @author MrLu
+     * @createTime 2020/11/27 9:32
+     */
+    @RequestMapping(value = "/selectBaseTypes", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "查询案件活跃的基础卷内的所有卷类型", operType = OperLog.type.SELECT)
+    public String selectBaseTypes(String caseinfoid) {
         JSONObject reValue = new JSONObject();
         try {
-            FunArchiveSeqDTO baseSeq= arrangeArchivesService.selectActiveSeqByCaseId(Integer.parseInt(caseinfoid));
+            FunArchiveSeqDTO baseSeq = arrangeArchivesService.selectActiveSeqByCaseId(Integer.parseInt(caseinfoid));
             reValue.put("value", arrangeArchivesService.selectArchiveTypeByJqSeq(baseSeq.getId()));
             reValue.put("message", "success");
         } catch (Exception e) {
@@ -733,50 +734,89 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "根据嫌疑人顺序生成卷", operType = OperLog.type.SELECT)
-    public String createArchiveBySuspectOrder(String suspectorder, String seqid,String recordtypeid,String isdelete) {
+    public String createArchiveBySuspectOrder(String suspectorder, String seqid, String recordtypeid) {
         JSONObject reValue = new JSONObject();
         try {
             if (StringUtils.isEmpty(seqid)) {
                 throw new Exception("?");
             }
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
-            int recordTypeId=Integer.parseInt(recordtypeid);
+            int recordTypeId = Integer.parseInt(recordtypeid);//基础卷的 文书类型id
             int seqId = Integer.parseInt(seqid);
-            //查询送检卷类型
-            FunArchiveSeq thisFunArchiveSeq = arrangeArchivesService.selectLastSeqBySfc(seqId);
+            //查询新的送检卷类型
+            FunArchiveSeqDTO thisFunArchiveSeq = arrangeArchivesService.selectFunArchiveSeqById(seqId);
             //得到该卷类型详细信息
-            FunArchiveTypeDTO thisArchiveType= arrangeArchivesService.selectFunArchiveTypeById(recordTypeId);
-            //查询卷类型中所有的文书  注意这行要紧贴着查询  否在在插入后id就会发生改变
-            List<FunArchiveRecordsDTO> Records= arrangeArchivesService.selectRecordsDtoByTypeid(recordTypeId, Integer.parseInt(isdelete));
+            FunArchiveTypeDTO thisArchiveType = arrangeArchivesService.selectFunArchiveTypeById(recordTypeId);//这里的recordTypeId为基础卷的
+            //查询卷类型中所有的文书  注意这行要紧贴着查询  否在在插入后id就会发生改变  注意此时的recordTypeId为基础卷的
+            List<FunArchiveRecordsDTO> Records = arrangeArchivesService.selectRecordsDtoByTypeid(recordTypeId, null);
+            int oriSeqId=thisArchiveType.getArchiveseqid();//原有的（基础卷）整理次序id
             //创建新的卷类型
-            thisArchiveType.setArchiveseqid(thisFunArchiveSeq.getArchivesfcid());
+            thisArchiveType.setArchivesfcid(thisFunArchiveSeq.getArchivesfcid());
             thisArchiveType.setArchiveseqid(thisFunArchiveSeq.getId());
+            thisArchiveType.setArchiveseqid(seqId);
             thisArchiveType.setIsazxt(1);//不是案宗来的了
             arrangeArchivesService.insertFunArchiveType(thisArchiveType);
-            int newRecordTypeId=thisArchiveType.getId();
+            int newRecordTypeId = thisArchiveType.getId();
 
-
-            int recordOrder=1;
+            int recordOrder = 1;
+            boolean toPeople = true;//对人文书是否已经集体完成
             for (FunArchiveRecordsDTO thisRecord : Records) {
-                 // 循环文书  查找文书对应在 sys_recordorder 中 是否存在
+                // 循环文书  查找文书对应在 sys_recordorder 中 是否存在
                 //查询这个文书的在文书信息表中的信息
+                System.out.println("RECORDCODE:"+thisRecord.getRecordscode());
+                System.out.println("ARCHIVETYPE:"+thisFunArchiveSeq.getArchivetype());
+                System.out.println("RECORDTYPE:"+thisRecord.getRecordstyle());
                 SysRecordorderDTO thisRo =
                         arrangeArchivesService.selectRecordOrderByTypes(thisRecord.getRecordscode(), thisFunArchiveSeq.getArchivetype(), thisRecord.getRecordstyle());
-                if (null != thisRo) {
-                    boolean    toPeople=1==thisRo.getRecordstyle();//该文书是否对人
-                    if (!toPeople){
-                        //该文书非对嫌疑人单选
 
-                    }
-                    thisRecord.setPrevid(thisRecord.getId());//基于什么变得
-                    thisRecord.setArchiveseqid(seqId);//整理次序id
-                    thisRecord.setArchivetypeid(newRecordTypeId);//文书类型id
-                    thisRecord.setArchivesfcid(thisFunArchiveSeq.getArchivesfcid());
-                    thisRecord.setThisorder(recordOrder++);//文书顺序
-                    //得到文书代码的顺序
+                //当全部对人文书插入完毕后 在遇到对人的文书就可以直接跳过了
+                if (null != thisRo&&toPeople) {
+                     toPeople = (1 == thisRo.getRecordstyle());//该文书是否对人
+
+                    if (toPeople ) {
+                        //该文书对嫌疑人单选
+                        //插入按照顺序插入全部对人文书
+                        String[] suspectOrder = suspectorder.split(",");
+                        for (String thisSuspectId:
+                        suspectOrder) {
+                            //查找这个嫌疑人的所有文书
+                            List<FunArchiveRecordsDTO> records =
+                                    arrangeArchivesService.selectRecordsBySuspect(StringUtil.StringToInteger(thisSuspectId),thisArchiveType.getArchivetype(),seqId);
+                            for (FunArchiveRecordsDTO thisSuspectRecord:
+                            records) {
+                                int oriRecordId=thisSuspectRecord.getId();
+                                thisSuspectRecord.setPrevid(oriRecordId);//基于什么变得
+                                thisSuspectRecord.setArchiveseqid(seqId);//整理次序id
+                                thisSuspectRecord.setArchivetypeid(newRecordTypeId);//文书类型id
+                                thisSuspectRecord.setArchivesfcid(thisFunArchiveSeq.getArchivesfcid());
+                                thisSuspectRecord.setThisorder(recordOrder++);//文书顺序
+                                thisSuspectRecord.setAuthorid(userNow.getId());
+                                thisSuspectRecord.setAuthor(userNow.getXm());
+                                //得到文书代码的顺序
 //                    defaultOrder = thisRo.getDefaultorder();
+                                copyRecordToNew(oriRecordId, thisSuspectRecord);
+
+                            }
+
+                        }
+                        toPeople = false;//对人的都插入完了  就再不用插入了
+
+                    } else {
+                        //对文书
+                        int oriRecordId=thisRecord.getId();
+                        thisRecord.setPrevid(oriRecordId);//基于什么变得
+                        thisRecord.setArchiveseqid(seqId);//整理次序id
+                        thisRecord.setArchivetypeid(newRecordTypeId);//文书类型id
+                        thisRecord.setAuthorid(userNow.getId());
+                        thisRecord.setAuthor(userNow.getXm());
+                        thisRecord.setArchivesfcid(thisFunArchiveSeq.getArchivesfcid());
+                        thisRecord.setThisorder(recordOrder++);//文书顺序
+                        copyRecordToNew(oriRecordId, thisRecord);
+                    }
+
                 } else {
                     //没有的话说明该卷类型不需要此文书  忽略就行了
+                    System.out.println("忽略了呢");
 //                    defaultOrder++;
                 }
 
@@ -797,43 +837,32 @@ public class ArrangeArchivesController extends BaseFactory {
 
 
             }
-
-
-            //送检卷类型
-            int archiveType = thisFunArchiveSeq.getArchivetype();
-            String[] suspectOrder = suspectorder.split(",");
-            //按照顺序循环嫌疑人
-            int suspectRecordsCount_1 = 0;
-            int suspectRecordsCount_2 = 0;
-            int suspectRecordsCount_3 = 0;
-            int suspectRecordsCount_4 = 0;
-            int suspectRecordsCount_5 = 0;
-            for (String thisSuspectId : suspectOrder) {
-                //在基础卷中查找该嫌疑人的所有文书
-                List<FunArchiveRecordsDTO> records = arrangeArchivesService.selectRecordsBySuspect(Integer.parseInt(thisSuspectId));
-
-                //循环所有文书以供新建
-                int defaultOrder = 1;
-                for (FunArchiveRecordsDTO thisRecord : records) {
-                    //查询这个文书的默认顺序
-                    SysRecordorderDTO thisRo = arrangeArchivesService.selectRecordOrderByTypes(thisRecord.getRecordscode(), archiveType, thisRecord.getRecordstyle());
-                    if (null != thisRo) {
-                        //得到文书代码的顺序
-                        defaultOrder = thisRo.getDefaultorder();
-                    } else {
-                        //文书代码查不到顺序
-                        defaultOrder++;
-                    }
-                    thisRecord.setPrevid(thisRecord.getId());//上一任的id
-                    thisRecord.setThisorder(defaultOrder);//文书的顺序
-
-                }
-            }
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
             reValue.put("message", "error");
         }
         return reValue.toJSONString();
+    }
+
+    private void copyRecordToNew(int oriId,FunArchiveRecordsDTO newRecord){
+        arrangeArchivesService.insertFunArchiveRecords(newRecord);//新建
+        int newRecordId=newRecord.getId();//新建的文书id
+        //开始复制文书文件
+        //查找该文书原有的文件
+        for (FunArchiveFilesDTO thisFile:
+        arrangeArchivesService.selectRecordFilesByRecordId(oriId, null)) {
+            thisFile.setArchiveseqid(newRecord.getArchiveseqid());
+            thisFile.setArchivesfcid(newRecord.getArchivesfcid());
+            thisFile.setArchivetypeid(newRecord.getArchivetypeid());
+            thisFile.setArchiverecordid(newRecordId);
+            thisFile.setAuthor(newRecord.getAuthor());
+            thisFile.setAuthorid(newRecord.getAuthorid());
+            //复制插入
+            arrangeArchivesService.insertFunArchiveFilesDTO(thisFile);
+        }
+       ;
+
+
     }
 }

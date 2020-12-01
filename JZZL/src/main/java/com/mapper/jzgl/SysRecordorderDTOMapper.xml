@@ -153,10 +153,10 @@
         <include refid="Base_Column_List"/>
         FROM SYS_RECORDORDER
         WHERE
-        SCBJ=0 AND
-        RECORDCODE= #{recordcode,jdbcType=VARCHAR}
-         ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
-        AND RECORDTYPE= #{recordtype,jdbcType=DECIMAL}
+        SCBJ=0
+        AND RECORDCODE  = #{recordcode,jdbcType=VARCHAR}
+        AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+        AND RECORDTYPE  = #{recordtype,jdbcType=DECIMAL}
         and ROWNUM=1
     </select>
 </mapper>

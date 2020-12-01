@@ -127,13 +127,11 @@ public class SFCensorshipController extends BaseFactory {
             sFCensorshipService.insertFunArchiveSeq(newSeq);
 
             //得到新建的送检记录id  用此id得到对应的人
-            //TODO MrLu 2020/10/4   recordsId插入
 //            Integer recordsId = pJsonObj.getInteger("recordsId");
             //查询关联人  插入关联人的文书和一些基础文书
 
             //创建新建卷
-            //TODO MrLu 2020/10/8   未对应人筛选文书
-            cloneRecords(thisFunPeopelCase.getJqbh(), newSeq);
+//            cloneRecords(thisFunPeopelCase.getJqbh(), newSeq);
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

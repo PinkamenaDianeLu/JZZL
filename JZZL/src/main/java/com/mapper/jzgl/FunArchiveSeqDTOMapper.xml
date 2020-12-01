@@ -75,7 +75,7 @@
       sysdate,
         #{jqbh,jdbcType=VARCHAR},
         #{ajbh,jdbcType=VARCHAR},
-        #{CASEINFOID,jdbcType=VARCHAR},
+        #{caseinfoid,jdbcType=VARCHAR},
         #{author,jdbcType=VARCHAR},
         #{authoridcard,jdbcType=VARCHAR},
       #{sfcnumber,jdbcType=DECIMAL},

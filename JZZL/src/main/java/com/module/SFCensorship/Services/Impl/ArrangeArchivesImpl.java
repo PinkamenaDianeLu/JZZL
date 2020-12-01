@@ -37,6 +37,8 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
     @Resource
     SysRecordorderDTOMapper sysRecordorderDTOMapper;
+    @Resource
+    FunSuspectRecordDTOMapper funSuspectRecordDTOMapper;
 
     @Override
     public List<FunArchiveType> selectArchiveTypeByJqSeq(int seqId) {
@@ -55,7 +57,7 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public List<FunArchiveRecordsDTO> selectRecordsDtoByTypeid(int archivetypeid, int isDelete) {
+    public List<FunArchiveRecordsDTO> selectRecordsDtoByTypeid(int archivetypeid, Integer isDelete) {
         Map<String, Object> pMap = new HashMap<>();
         pMap.put("archivetypeid", archivetypeid);
         pMap.put("isdelete", isDelete);
@@ -187,8 +189,8 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid) {
-        return funArchiveRecordsDTOMapper.selectRecordsBySuspect(suspectid);
+    public List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid,Integer recordtype,Integer archiveseqid) {
+        return funArchiveRecordsDTOMapper.selectRecordsBySuspectAType(suspectid,recordtype,archiveseqid);
     }
 
     @Override
@@ -203,6 +205,11 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public FunArchiveSeqDTO selectActiveSeqByCaseId(int caseinfoid) {
         return funArchiveSeqDTOMapper.selectActiveSeqByCaseId(caseinfoid);
+    }
+
+    @Override
+    public List<FunSuspectRecordDTO> selectRecordBySuspectid(int suspectid, int recordtype) {
+        return funSuspectRecordDTOMapper.selectRecordBySuspectid(suspectid,recordtype);
     }
 
     @Override

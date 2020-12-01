@@ -93,11 +93,13 @@ public interface FunArchiveRecordsDTOMapper {
 
 
      /**
-     * 查询该嫌疑人在基础卷中的文书
+     * 查询该嫌疑人某类型的文书  按照sys_recordorder顺序排序
      * @author MrLu
      * @param suspectid 嫌疑人id
+      * @param recordtype 文书类型
+      * @param archiveseqid 整理次序id
      * @createTime  2020/11/26 17:01
      * @return  List<FunArchiveRecordsDTO>  |
       */
-    List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid);
+    List<FunArchiveRecordsDTO> selectRecordsBySuspectAType(@Param("suspectid") Integer suspectid,@Param("recordtype") Integer recordtype,@Param("archiveseqid") Integer archiveseqid);
 }

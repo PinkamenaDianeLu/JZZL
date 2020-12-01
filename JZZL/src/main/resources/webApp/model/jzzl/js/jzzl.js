@@ -1009,25 +1009,57 @@ var loadArchiveIndex = (function () {
     return _loadArchiveIndex;
 })();
 
-/**
- * 弹出进度条
+ /**
+ * 进度条相关调度
  * @author MrLu
- * @createTime  2020/11/27 9:37
- */
-var alertProgressBarWindow = function () {
-    //加载进度条
-    layer.open({
-        id: 10086,
-        type: 1,
-        title: false,
-        shade: [0.8, '#393D49'],
-        closeBtn: 0,
-        area: ['453px', '170px'],
-        content: $('#progressBarDiv')
-    });
-    //为进度条的弹出框附加一个class 增加透明样式
-    $('#10086').parent().addClass('progressBarParent');
-}
+ * @param
+ * @createTime  2020/11/28 10:06
+ * @return    |
+  */
+var progressBar=(function () {
+     let progressLength = 0;//进度条进度
+    function alertProgressBarWindow() {
+        //加载进度条
+        layer.open({
+            id: 10086,
+            type: 1,
+            title: false,
+            shade: [0.8, '#393D49'],
+            closeBtn: 0,
+            area: ['453px', '170px'],
+            content: $('#progressBarDiv')
+        });
+        //为进度条的弹出框附加一个class 增加透明样式
+        $('#10086').parent().addClass('progressBarParent');
+    }
+
+     /**
+      * 涨进度条
+      * @author MrLu
+      * @createTime  2020/10/27 11:34
+      */
+     function addProgressBar(bfb) {
+         progressLength = progressLength + (+bfb);
+         $('#progressBar').css('width', progressLength + '%').html(progressLength + '%');
+         if (progressLength > 100) {
+             // layer.closeAll()
+             alert('进度条走完了 清0');
+             //初始化进度条
+             progressLength = 0;
+             $('#progressBar').css('width', 0 + '%').html(0 + '%');
+         }
+     }
+
+    function _progressBar(){}
+    _progressBar.prototype={
+        alertProgressBarWindow,addProgressBar
+    }
+    return _progressBar;
+
+})();
+
+
+
 
 /**
  * 按照嫌疑人开始整理卷宗
@@ -1036,7 +1068,8 @@ var alertProgressBarWindow = function () {
  * @createTime  2020/11/27 9:40
  * @return    |
  */
-var createArchiveBySuspect = function (caseinfoid) {
+var createArchiveBySuspect = function (SuspectOrder, seqid,caseinfoid) {
+
     //开始整理
     $.post({
         url: '/ArrangeArchives/selectBaseTypes',
@@ -1045,11 +1078,33 @@ var createArchiveBySuspect = function (caseinfoid) {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
                 console.log(reV.value);
+               let pb=new progressBar();
+                pb.alertProgressBarWindow();
+                for (let thisType of reV.value) {
+                    $.post({
+                        url: '/ArrangeArchives/createArchiveBySuspectOrder',
+                        data: {
+                            suspectorder: Array.from(SuspectOrder).join(','),
+                            seqid: seqid,
+                            recordtypeid: thisType.id
+
+                        },
+                        success: (re) => {
+                            const reV = JSON.parse(re);
+                            if ('success' === reV.message) {
+                                pb.addProgressBar(20);
+                            } else {
+                            }
+                        }
+                    });
+                }
             } else {
             }
         }
     });
 }
+
+
 var lai = new loadArchiveIndex();
 $(function () {
     $('#userHeart').load('/userHeart.html');
@@ -1062,27 +1117,26 @@ $(function () {
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
-                const sfc = reV.value;
-                console.log(sfc);
-                lai.loadIndex(sfc.id);//开始加载目录
+                const seq = reV.value;//最新的整理记录id
+                console.log(seq);
+                lai.loadIndex(seq.id);//开始加载目录
                 let rcb = new recycleBin(lai);//加载回收站部分
-                rcb.loadIndex(sfc.id);//回收站目录加载
+                rcb.loadIndex(seq.id);//回收站目录加载
                 lai.loadRecycleBin(rcb);
 
                 //拍摄快照按钮
                 $('#saveData').click(function () {
                     if (confirm('确定完成整理？')) {
-                        alertProgressBarWindow();
                         lai.saveData();
                     }
                 })
 
                 //判断是否为基础卷
-                if (sfc.archivetype || 0 !== sfc.archivetype) {
+                if (seq.archivetype || 0 !== seq.archivetype) {
                     //只有非基础卷才选人排序
                     $.post({
                         url: '/ArrangeArchives/selectSuspectByBaserecordId',
-                        data: {baserecordid: sfc.baserecordid},
+                        data: {baserecordid: seq.baserecordid},
                         success: (re) => {
                             const reV = JSON.parse(re);
                             if ('success' === reV.message) {
@@ -1118,15 +1172,13 @@ $(function () {
                                             //嫌疑人顺序set
                                             let SuspectOrder = new Set();
                                             //循环得到拖拽排序后的嫌疑人顺序
-                                            $('.suspectSort').forEach(function (index, item) {
+                                            $('.suspectSort').each(function (index, item) {
                                                 let thisSuspectId = $(item).attr('id');
                                                 SuspectOrder.add(thisSuspectId);
                                             })
                                             //传到后台开始整理
                                             layer.close(index)
-                                            //弹出进度条
-                                            alertProgressBarWindow();
-                                            createArchiveBySuspect(sfc.caseinfoid);
+                                            createArchiveBySuspect(SuspectOrder, seq.id,seq.caseinfoid);
                                         },
                                         area: ['338px', '471px'],
                                         content: $('#suspectOrderDiv')
