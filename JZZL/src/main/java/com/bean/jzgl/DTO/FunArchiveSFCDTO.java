@@ -18,6 +18,7 @@ public class FunArchiveSFCDTO {
     private String ajbh;
 
     private Integer issend;
+    private Integer issuspectorder;
 
     private String author;
 
@@ -162,5 +163,13 @@ public class FunArchiveSFCDTO {
 
     public void setBaserecordid(Integer baserecordid) {
         this.baserecordid = baserecordid;
+    }
+
+    public Integer getIssuspectorder() {
+        return issuspectorder;
+    }
+
+    public void setIssuspectorder(Integer issuspectorder) {
+        this.issuspectorder = issuspectorder;
     }
 }

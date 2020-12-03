@@ -21,7 +21,7 @@ public class FunArchiveSFC {
     private String ajbh;
 
     private Enums.IsSend issend;
-
+    private Integer issuspectorder;
     private String author;
 
     private String authoridcard;
@@ -174,5 +174,13 @@ public class FunArchiveSFC {
 
     public void setBaserecordid(Integer baserecordid) {
         this.baserecordid = baserecordid;
+    }
+
+    public Integer getIssuspectorder() {
+        return issuspectorder;
+    }
+
+    public void setIssuspectorder(Integer issuspectorder) {
+        this.issuspectorder = issuspectorder;
     }
 }

@@ -266,21 +266,24 @@
     </select>
 
     <select id="selectRecordsBySuspectAType"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
-             SELECT  AR.*
-  FROM FUN_ARCHIVE_RECORDS AR
+ SELECT A.*
+  FROM (SELECT AR.*
+          FROM FUN_ARCHIVE_RECORDS AR
+         WHERE AR.SCBJ = 0
+           AND AR.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+
+           AND EXISTS (SELECT 1
+                  FROM FUN_SUSPECT_RECORD SR
+                 WHERE SCBJ = 0
+                   AND SUSPECTID = #{suspectid,jdbcType=DECIMAL}
+                   AND AR.ID = SR.RECORDID)) A
   LEFT JOIN (SELECT *
                FROM SYS_RECORDORDER
               WHERE SCBJ = 0
-                AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}) RO
-    ON RO.RECORDCODE = AR.RECORDSCODE
- WHERE AR.SCBJ = 0
-   AND AR.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
-   AND EXISTS (SELECT 1
-          FROM FUN_SUSPECT_RECORD SR
-         WHERE SCBJ = 0
-           AND SUSPECTID = #{suspectid,jdbcType=DECIMAL}
-           AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
-           AND AR.ID = SR.RECORDID)
- ORDER BY RO.DEFAULTORDER
+                AND RECORDSTYLE = 1
+                AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}) R
+    ON A.RECORDSCODE = R.RECORDCODE
+    WHERE R.RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
+    ORDER BY r.defaultorder ASC
     </select>
 </mapper>

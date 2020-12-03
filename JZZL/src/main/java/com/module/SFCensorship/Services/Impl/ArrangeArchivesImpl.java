@@ -1,10 +1,12 @@
 package com.module.SFCensorship.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
+import com.bean.jzgl.Converter.FunArchiveSFCMapper;
 import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunArchiveTypeMapper;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.mapper.jzgl.*;
@@ -189,8 +191,8 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid,Integer recordtype,Integer archiveseqid) {
-        return funArchiveRecordsDTOMapper.selectRecordsBySuspectAType(suspectid,recordtype,archiveseqid);
+    public List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid,Integer recordtype,Integer archiveseqid,Integer archivetype) {
+        return funArchiveRecordsDTOMapper.selectRecordsBySuspectAType(suspectid,recordtype,archiveseqid,archivetype);
     }
 
     @Override
@@ -210,6 +212,16 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public List<FunSuspectRecordDTO> selectRecordBySuspectid(int suspectid, int recordtype) {
         return funSuspectRecordDTOMapper.selectRecordBySuspectid(suspectid,recordtype);
+    }
+
+    @Override
+    public void updateArchiveSfcById(FunArchiveSFCDTO funArchiveSFCDTO) {
+        funArchiveSFCDTOMapper.updateByPrimaryKeySelective(funArchiveSFCDTO);
+    }
+
+    @Override
+    public FunArchiveSFC selectFunArchiveSFCById(int id) {
+        return FunArchiveSFCMapper.INSTANCE.pcDTOToPc(funArchiveSFCDTOMapper.selectByPrimaryKey(id));
     }
 
     @Override

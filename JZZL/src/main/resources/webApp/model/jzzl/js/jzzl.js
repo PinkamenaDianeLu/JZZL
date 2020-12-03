@@ -186,20 +186,26 @@ var loadArchiveIndex = (function () {
                     //循环文书
 
                     utils.functional.forEach(reV.value, function (thisRecord) {
+
                         const thisDD = createRecordDiv(thisRecord, indexing);
                         //判断划分拖拽域
                         if ('ZL001' === thisDD.class || 'ZL003' === thisDD.class) {
                             //卷首、文书目录 正常加载
+                            console.log('193')
                             $('#' + liD).append(thisDD);
                         } else if ('ZL002' === thisDD.class) {
                             //卷尾加载 普通卷+卷尾
+                            console.log('197')
                             $('#' + liD).append(sortDiv).append(thisDD);
                         } else {
                             //普通卷放入可拖拽域
+                            console.log('200')
                             sortDiv.append(thisDD);
                         }
                         indexing.i++; //此行必须在$('#' + liD).append的后边
+
                     });
+
                     loadProgress--;
                     if (0 === loadProgress) {
                         //打开加载第一个文书类型
@@ -1009,15 +1015,17 @@ var loadArchiveIndex = (function () {
     return _loadArchiveIndex;
 })();
 
- /**
+/**
  * 进度条相关调度
  * @author MrLu
- * @param
+ * @param  fn  进度条走满之后运行的函数
  * @createTime  2020/11/28 10:06
  * @return    |
-  */
-var progressBar=(function () {
-     let progressLength = 0;//进度条进度
+ */
+var progressBar = (function () {
+    let progressLength = 0;//进度条进度
+    var overFn;
+
     function alertProgressBarWindow() {
         //加载进度条
         layer.open({
@@ -1033,42 +1041,49 @@ var progressBar=(function () {
         $('#10086').parent().addClass('progressBarParent');
     }
 
-     /**
-      * 涨进度条
-      * @author MrLu
-      * @createTime  2020/10/27 11:34
-      */
-     function addProgressBar(bfb) {
-         progressLength = progressLength + (+bfb);
-         $('#progressBar').css('width', progressLength + '%').html(progressLength + '%');
-         if (progressLength > 100) {
-             // layer.closeAll()
-             alert('进度条走完了 清0');
-             //初始化进度条
-             progressLength = 0;
-             $('#progressBar').css('width', 0 + '%').html(0 + '%');
-         }
-     }
+    /**
+     * 涨进度条
+     * @author MrLu
+     * @param bfb 百分比进度
+     *  @param fn 但百分比超过100触发的事件
+     * @createTime  2020/10/27 11:34
+     */
+    function addProgressBar(bfb) {
+        progressLength = progressLength + (+bfb);
+        $('#progressBar').css('width', progressLength + '%').html(progressLength + '%');
+        if (progressLength > 100) {
+            //关闭进度条窗口
+            layer.closeAll();
+            //初始化进度条
+            progressLength = 0;
+            $('#progressBar').css('width', 0 + '%').html(0 + '%');
+            overFn();
+        }
+    }
 
-    function _progressBar(){}
-    _progressBar.prototype={
-        alertProgressBarWindow,addProgressBar
+    function _progressBar(fn) {
+        overFn = fn;
+    }
+
+    _progressBar.prototype = {
+        alertProgressBarWindow, addProgressBar
     }
     return _progressBar;
 
 })();
 
 
-
-
 /**
  * 按照嫌疑人开始整理卷宗
  * @author MrLu
+ * @param SuspectOrder 嫌疑人顺序 [1,2,3]
+ * @param seqid 案件信息表id
  * @param caseinfoid 案件信息表id
+ * @param fn 案件信息表id
  * @createTime  2020/11/27 9:40
  * @return    |
  */
-var createArchiveBySuspect = function (SuspectOrder, seqid,caseinfoid) {
+var createArchiveBySuspect = function (SuspectOrder, seqid, caseinfoid, fn) {
 
     //开始整理
     $.post({
@@ -1078,9 +1093,10 @@ var createArchiveBySuspect = function (SuspectOrder, seqid,caseinfoid) {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
                 console.log(reV.value);
-               let pb=new progressBar();
+                let pb = new progressBar(fn);
                 pb.alertProgressBarWindow();
                 for (let thisType of reV.value) {
+                    if (1===+thisType.id){
                     $.post({
                         url: '/ArrangeArchives/createArchiveBySuspectOrder',
                         data: {
@@ -1092,13 +1108,17 @@ var createArchiveBySuspect = function (SuspectOrder, seqid,caseinfoid) {
                         success: (re) => {
                             const reV = JSON.parse(re);
                             if ('success' === reV.message) {
+                                console.log('成功执行一遍！' + reV.length)
                                 pb.addProgressBar(20);
                             } else {
+                                pb.addProgressBar(0);
                             }
                         }
                     });
+                    }
                 }
             } else {
+                console.error('基础卷信息查询失败！');
             }
         }
     });
@@ -1110,30 +1130,52 @@ $(function () {
     $('#userHeart').load('/userHeart.html');
     //送检的id
     const sfcId = utils.getUrlPar('id');
-    //查询送检最后一次整理的记录
+    //查询送检最后一次整理的记录selectLastSeqBySfc
     $.post({
-        url: '/ArrangeArchives/selectLastSeqBySfc',
+        url: '/ArrangeArchives/selectLastSeqSfcBySfc',
         data: {id: sfcId},
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
-                const seq = reV.value;//最新的整理记录id
-                console.log(seq);
-                lai.loadIndex(seq.id);//开始加载目录
-                let rcb = new recycleBin(lai);//加载回收站部分
-                rcb.loadIndex(seq.id);//回收站目录加载
-                lai.loadRecycleBin(rcb);
+                const seq = reV.value.seq;//最新的整理记录id
+                const sfc = reV.value.sfc;//送检卷信息
+                const isSuspectOrder=0===+sfc.issuspectorder;
+                console.log(isSuspectOrder);
+                function loadArchives() {
+                    lai.loadIndex(seq.id);//开始加载目录
+                    let rcb = new recycleBin(lai);//加载回收站部分
+                    rcb.loadIndex(seq.id);//回收站目录加载
+                    lai.loadRecycleBin(rcb);
+                    //判断是否已经选过人了 没选过就更改为已选过
+                    if (isSuspectOrder){
+                        //更新该送检卷为已经选人
+                        $.post({
+                            url: '/ArrangeArchives/updateArchiveSfcIssuspectorder',
+                            data: {sfcid: sfcId, issuspectorder: 1},
+                            success: (re) => {
+                                const reV = JSON.parse(re);
+                                if ('success' === reV.message) {
+                                    console.log('嫌疑人已排序！');
+                                } else {
+                                    console.error('嫌疑人排序记录失败，下次可能需要重新加载嫌疑人！');
+                                }
+                            }
+                        });
+                    }
+                }
+
 
                 //拍摄快照按钮
                 $('#saveData').click(function () {
                     if (confirm('确定完成整理？')) {
                         lai.saveData();
                     }
-                })
+                });
 
-                //判断是否为基础卷
-                if (seq.archivetype || 0 !== seq.archivetype) {
-                    //只有非基础卷才选人排序
+                //选人 -》 进度条走完  -> 加载数据
+                // 不用选人  -> 直接加载数据
+                //判断是否已经给人排过序了   已排过了直接加载文书目录
+                if (isSuspectOrder) {
                     $.post({
                         url: '/ArrangeArchives/selectSuspectByBaserecordId',
                         data: {baserecordid: seq.baserecordid},
@@ -1145,6 +1187,7 @@ $(function () {
                                     alert('该案件没有任何嫌疑人！');
                                 } else {
                                     let suspects = document.createDocumentFragment();
+                                    //加载选嫌疑人框
                                     for (let thisSuspect of reV.value) {
                                         let thisSuspectTd = utils.createElement.createElement({
                                             tag: 'li',
@@ -1178,7 +1221,7 @@ $(function () {
                                             })
                                             //传到后台开始整理
                                             layer.close(index)
-                                            createArchiveBySuspect(SuspectOrder, seq.id,seq.caseinfoid);
+                                            createArchiveBySuspect(SuspectOrder, seq.id, seq.caseinfoid, loadArchives);
                                         },
                                         area: ['338px', '471px'],
                                         content: $('#suspectOrderDiv')
@@ -1186,13 +1229,18 @@ $(function () {
 
                                 }
                             } else {
+                                console.error('该文书关联嫌疑人查询失败！')
                             }
                         }
                     });
+                } else {
+                    //不需要选人了 直接加载好了
+                    loadArchives()
                 }
 
 
             } else {
+                console.error('未能获取到创建卷信息！');
             }
         }
     });

@@ -3,6 +3,7 @@ package com.module.SFCensorship.Services;
 
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
 
@@ -263,7 +264,7 @@ public interface ArrangeArchivesService {
      * @createTime  2020/11/26 17:01
      * @return  List<FunArchiveRecordsDTO>  |
      */
-    List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid,Integer recordtype,Integer archiveseqid);
+    List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid,Integer recordtype,Integer archiveseqid,Integer archivetype);
 
 
     /**
@@ -296,4 +297,26 @@ public interface ArrangeArchivesService {
      * @return  List<FunSuspectRecordDTO>  |
      */
     List<FunSuspectRecordDTO> selectRecordBySuspectid(int suspectid,int recordtype);
+
+
+     /**
+     * 根据id更新ArchiveSfc表
+     * @author MrLu
+     * @param funArchiveSFCDTO 得有id哦
+     * @createTime  2020/12/3 13:24
+     * @return    |
+      */
+    void updateArchiveSfcById(FunArchiveSFCDTO funArchiveSFCDTO);
+
+
+     /**
+     * 根据id查询FunArchiveSFC表
+     * @author MrLu
+     * @param id 表id
+     * @createTime  2020/12/3 13:33
+     * @return  FunArchiveSFC  |
+      */
+    FunArchiveSFC selectFunArchiveSFCById(int id);
+
+
 }

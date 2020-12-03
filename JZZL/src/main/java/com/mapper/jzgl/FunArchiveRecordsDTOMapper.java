@@ -101,5 +101,8 @@ public interface FunArchiveRecordsDTOMapper {
      * @createTime  2020/11/26 17:01
      * @return  List<FunArchiveRecordsDTO>  |
       */
-    List<FunArchiveRecordsDTO> selectRecordsBySuspectAType(@Param("suspectid") Integer suspectid,@Param("recordtype") Integer recordtype,@Param("archiveseqid") Integer archiveseqid);
+    List<FunArchiveRecordsDTO> selectRecordsBySuspectAType(@Param("suspectid") Integer suspectid,
+                                                           @Param("recordtype") Integer recordtype,
+                                                           @Param("archiveseqid") Integer archiveseqid,
+                                                           @Param("archivetype")Integer archivetype);
 }
