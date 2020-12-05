@@ -23,7 +23,8 @@ var recordImgLoad = (function () {
             url: '/ArrangeArchives/loadFilesByFileCodes',
             data: {
                 fileOrder: fileOrder.join(','),
-                seqId: parent.lai.getSeqId()},
+                seqId: parent.lai.getSeqId()
+            },
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
@@ -107,7 +108,7 @@ var recordImgLoad = (function () {
         $('#newTagBtn').unbind().click(function () {
             if (thisFileCode) {
                 //鼠标点击固定区域新建标签  弹开个页 鼠标点哪加哪  保存后刷新该文书的标签方法加载标签 新建个标签表
-                
+
             } else {
                 layer.alert('请选择一张具体的文书图片');
             }
@@ -206,7 +207,7 @@ var recordImgLoad = (function () {
         checkFile = new Set();//被选中值set
 
         $('#frontImg div').click(function () {
-            const filecode = $(this).attr('id').replace('front','');
+            const filecode = $(this).attr('id').replace('front', '');
             //判断是否被选中
             if ($(this).hasClass('active')) {
                 //被选中 -> 取消选中
@@ -237,9 +238,9 @@ var recordImgLoad = (function () {
             if (fileCode) {
                 //单页移动至
                 pString = fileCode;
-            } else  {
+            } else {
                 layer.alert('请选择要移动的图片，您也可以在平铺模式中多选图片进行批量移动')
-                return ;
+                return;
                 /*//文书移动至
                 moveState = 1;
                 pString = recordId;*/
@@ -265,7 +266,7 @@ var recordImgLoad = (function () {
             maxmin: false,
             shadeClose: true, //点击遮罩关闭层
             area: ['1111px', '600px'],
-            content: '/model/jzzl/jzYdTable.html?moveState=' + moveState+'&seqid='+parent.lai.getSeqId()+'&orirecordid='+recordId
+            content: '/model/jzzl/jzYdTable.html?moveState=' + moveState + '&seqid=' + parent.lai.getSeqId() + '&orirecordid=' + recordId
         });
 
     }
@@ -469,15 +470,55 @@ var recordImgLoad = (function () {
         let div = document.createElement('div');
         div.id = 'front' + file.filecode;
         div.setAttribute('class', 'div_a');
+        //缩略图
         let front = utils.createElement.createElement({
             tag: 'img', attrs: {
+                id: 'frontImg' + file.filecode,
                 src: file.fileurl,
                 class: 'img_text',
-                width: '140px', height: '180px'
+                width: '150px', height: '192px'
             }
         });
+        //大图
+        let largeWrapper = utils.createElement.createElement({
+            tag: 'div', attrs: {
+                id: 'preview' + file.filecode,
+                style: 'display:none',
+                class: 'larimg',
 
-        div.append(front)
+            }, arg: '<img width= "450px" height="576px" src="' + file.fileurl + '">'
+        });
+        //生成跟随鼠标的小方框
+        let mov = utils.createElement.createElement({
+            tag: 'div', attrs: {
+                id: 'mov' + file.filecode,
+                class: 'movClass',
+                style: 'display:none;pointer-events:none'
+            }
+        })
+
+        front.onmouseover = function () {
+            $(mov).show();//显示小框
+            $(largeWrapper).show();//方法图显示
+        }
+        front.onmousemove = function (e) {
+            let topY = e.offsetY;
+            let topX = e.offsetX;
+            mov.style.top = topY + 'px'
+            mov.style.left = topX + 'px'
+            largeWrapper.scrollLeft=(topX-25)*3;
+            largeWrapper.scrollTop=(topY-25)*3;
+
+        }
+        front.addEventListener('mouseleave', function () {
+            $(mov).hide();
+            $(largeWrapper).hide();
+        })
+
+        div.append(front);
+        div.append(mov);
+        div.append(largeWrapper);
+
         return div;
     }
 

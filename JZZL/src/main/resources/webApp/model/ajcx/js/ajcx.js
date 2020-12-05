@@ -12,21 +12,23 @@ var ajcxTable = (function () {
 
     let tableObject;
 
-    const searchParam = function (ajbh, jqbh) {
+    const searchParam = function (ajbh, jqbh,casetype) {
         this.ajbh = ajbh;
         this.jqbh = jqbh;
+        this.casetype = casetype;
     };
 
     function getSearchParam() {
         let reS = new searchParam();
         reS.ajbh = $('#ajbhHead').val().trim()+$('#ajbh').val().trim();
         reS.jqbh = $('#jqbh').val().trim();
+        reS.casetype=$('#casetype').val();
         return reS;
     };
     /**
-     * 送检记录
+     * 查看送检记录
      * @author MrLu
-     * @param id 案件关系表id
+     * @param id 案件信息表id
      * @createTime  2020/9/25 9:56
      * @return    |
      */
@@ -70,7 +72,7 @@ var ajcxTable = (function () {
                 title: '操作',
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.id + '\')">进入卷宗</a>';
+                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.caseinfoid + '\')">进入卷宗</a>';
                 }
             }],param:function (){
                 return getSearchParam();
@@ -100,7 +102,15 @@ var ajcxTable = (function () {
 })()
 $(function () {
 
-    let at=new ajcxTable();
+    let at=new ajcxTable(1);
+    $('.caseTypeTab').click(function () {
+        //样式转换
+        $('.caseTypeTab').removeClass('active');
+        $(this).addClass('active');
+        //转换刑事行政
+        $('#casetype').val(+$(this).attr('value'));
+        at.searchTable();
+    })
     $('#ajcxSearchBtn').click(function () {
         at.searchTable();
     });

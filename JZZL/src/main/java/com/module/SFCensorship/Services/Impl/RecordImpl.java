@@ -54,8 +54,8 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     }
 
     @Override
-    public FunArchiveSeqDTO selectBaseArchive(int peoplecaseid) {
-        return funArchiveSeqDTOMapper.selectBaseArchive(peoplecaseid);
+    public FunArchiveSeqDTO selectBaseArchive(int caseInfoId) {
+        return funArchiveSeqDTOMapper.selectBaseArchive(caseInfoId);
     }
 
 }

@@ -12,7 +12,7 @@
     <result column="ISSEND" jdbcType="DECIMAL" property="issend" />
     <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
     <result column="AUTHORIDCARD" jdbcType="VARCHAR" property="authoridcard" />
-    <result column="PEOPLECASEID" jdbcType="DECIMAL" property="peoplecaseid" />
+
     <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
     <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
     <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
@@ -22,7 +22,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ISSEND, AUTHOR, AUTHORIDCARD, 
-     PEOPLECASEID, SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,CASEINFOID,BASERECORDID,ISSUSPECTORDER
+      SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,CASEINFOID,BASERECORDID,ISSUSPECTORDER
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -34,13 +34,13 @@
     insert into FUN_ARCHIVE_SFC (ID, SCBJ, STATE, 
       CREATETIME, UPDATETIME, JQBH, 
       AJBH, ISSEND, AUTHOR, 
-      AUTHORIDCARD,  PEOPLECASEID,
+      AUTHORIDCARD,
       SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,BASERECORDID,ISSUSPECTORDER
       )
     values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
       #{ajbh,jdbcType=VARCHAR}, #{issend,jdbcType=DECIMAL}, #{author,jdbcType=VARCHAR}, 
-      #{authoridcard,jdbcType=VARCHAR}, #{peoplecaseid,jdbcType=DECIMAL},
+      #{authoridcard,jdbcType=VARCHAR},
       #{sfcnumber,jdbcType=VARCHAR}, #{archivetype,jdbcType=DECIMAL},
       #{archivename,jdbcType=VARCHAR},#{caseinfoid,jdbcType=DECIMAL},
       #{baserecordid,jdbcType=DECIMAL},#{issuspectorder,jdbcType=DECIMAL}
@@ -60,7 +60,6 @@
       UPDATETIME,
       JQBH,
       AJBH,
-      PEOPLECASEID,
       AUTHOR,
       AUTHORIDCARD,
       caseinfoid,
@@ -87,7 +86,6 @@
       sysdate,
       #{jqbh,jdbcType=VARCHAR},
       #{ajbh,jdbcType=VARCHAR},
-      #{peoplecaseid,jdbcType=DECIMAL},
       #{author,jdbcType=VARCHAR},
       #{authoridcard,jdbcType=VARCHAR},
       #{caseinfoid,jdbcType=DECIMAL},
@@ -132,9 +130,6 @@
       <if test="authoridcard != null">
         AUTHORIDCARD = #{authoridcard,jdbcType=VARCHAR},
       </if>
-      <if test="peoplecaseid != null">
-        PEOPLECASEID = #{peoplecaseid,jdbcType=DECIMAL},
-      </if>
       <if test="sfcnumber != null">
         SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
       </if>
@@ -152,17 +147,19 @@
   </update>
 
   <select id="selectArchiveSFCPage"  resultMap="BaseResultMap" parameterType="map">
-    select * from ( SELECT A.*, ROWNUM RUM FROM (
-    select
+    SELECT <include refid="Base_Column_List"/>
+    FROM FUN_ARCHIVE_SFC
+    WHERE 1=1 AND SCBJ=0 AND ARCHIVETYPE = 0
+    AND CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
+    UNION ALL
+    SELECT <include refid="Base_Column_List"/>
+     FROM ( SELECT A.*, ROWNUM RUM FROM (
+    SELECT
     <include refid="Base_Column_List"/>
-    from FUN_ARCHIVE_SFC asfc where 1=1 and scbj=0
-    and PEOPLECASEID = #{peoplecaseid,jdbcType=DECIMAL}
-    <if test="null != jqbh and jqbh!=''">
-      AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
-    </if>
-    <if test="null != ajbh and ajbh!=''">
-      AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
-    </if>
+    from FUN_ARCHIVE_SFC asfc
+    WHERE 1=1 AND SCBJ=0
+    AND ARCHIVETYPE > 0
+    and CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
     order by id desc
     ) A )
     WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
@@ -170,12 +167,6 @@
   </select>
   <select id="selectArchiveSFCPageCount" resultType="java.lang.Integer" parameterType="map">
     select count(0) from   FUN_ARCHIVE_SFC where 1=1 and scbj=0
-    AND PEOPLECASEID = #{peoplecaseid,jdbcType=DECIMAL}
-    <if test="null != jqbh and jqbh!=''">
-      AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
-    </if>
-    <if test="null != ajbh and ajbh!=''">
-      AND AJBH LIKE '%'||#{ajbh,jdbcType=VARCHAR}||'%'
-    </if>
+    and CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
   </select>
 </mapper>

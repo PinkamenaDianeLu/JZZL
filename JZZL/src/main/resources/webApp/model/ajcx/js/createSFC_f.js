@@ -33,17 +33,11 @@ var recordsTable = (function () {
                 valign: 'middle',
             },
 
-                {
-                    field: 'jqbh',
-                    title: '警情编号'
-                }, {
-                    field: 'ajbh',
-                    title: '案件编号',
-                }, {
+              {
                     field: 'recordname',
                     title: '文书名称',
                     formatter: (value, row) => {
-                        return utils.beautifulTitle(value, 13);
+                        return utils.beautifulTitle(value, 18);
                     }
                 }, {
                     field: 'issuetime',
@@ -55,7 +49,7 @@ var recordsTable = (function () {
                     field: 'suspectname',
                     title: '犯罪嫌疑人',
                     formatter: (value, row) => {
-                        return utils.beautifulTitle(value, 13);
+                        return utils.beautifulTitle(value, 16);
                     }
                 },], param: function () {
                 return getSearchParam();
@@ -95,9 +89,9 @@ var recordsTable = (function () {
 })();
 
 var createNewSFC = (function () {
-    let peopelcaseid;
+    let caseinfoid;
     const searchParam = function (recordscode, archivename, recordsId) {
-        this.peopelcaseid = peopelcaseid;
+        this.caseinfoid = caseinfoid;
         this.recordscode = recordscode;
         this.archivename = archivename;
         this.recordsId = recordsId;
@@ -108,7 +102,7 @@ var createNewSFC = (function () {
         reS.recordscode = $('[name=recordscode]:checked').val();
         reS.archivename = $('#archivename').val().trim();
         reS.recordsId = $('#recordsTable').bootstrapTable('getSelections')[0].id;
-        reS.peopelcaseid = peopelcaseid;
+        reS.caseinfoid = caseinfoid;
         return reS;
     };
 
@@ -136,7 +130,7 @@ var createNewSFC = (function () {
     }
 
     function _createNewSFC(idP) {
-        peopelcaseid = idP;
+        caseinfoid = idP;
     }
 
     _createNewSFC.prototype = {createNSFC};

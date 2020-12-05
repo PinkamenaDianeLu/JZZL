@@ -142,8 +142,12 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public FunCaseInfo selectFunArchiveSFCDTOById (Integer sfcId){
-        return   FunCaseInfoMapper.INSTANCE.pcDTOToPc(funCaseInfoDTOMapper.selectCaseInfoByPeoplecaseId(sfcId));
+    public FunCaseInfo selectFunArchiveSFCDTOByCaseInfoId (Integer caseinfoid){
+        return   FunCaseInfoMapper.INSTANCE.pcDTOToPc(funCaseInfoDTOMapper.selectCaseInfoByCaseInfoId(caseinfoid));
+    }
+    @Override
+    public  void  updateFunArchiveRecordById(FunArchiveRecordsDTO record){
+        funArchiveRecordsDTOMapper.updateByPrimaryKeySelective( record);
     }
 
 }

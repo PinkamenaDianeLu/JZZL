@@ -17,15 +17,16 @@
     <div class="index-main1">
     <div class="in_tab">
         <ul id="myTab" class="nav nav-tabs">
-            <li class="active">
-                <a href="#xingshi" data-toggle="tab">刑事</a>
+            <li class="caseTypeTab active" value="1" >
+                <a data-toggle="tab">刑事</a>
             </li>
-            <li><a href="#xingzheng" data-toggle="tab">行政</a></li>
+            <li  value="2"  class="caseTypeTab"><a data-toggle="tab">行政</a></li>
         </ul>
         <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade in active" id="xingshi">
                 <div class="t_search">
                     <div class="row">
+                        <input type="hidden" id="casetype" value="1"/>
                         <div class="col-md-1">案件名称 ：</div>
                         <div class="col-md-2"><input type="text" placeholder=""/></div>
                         <div class="col-md-1">主办人：</div>

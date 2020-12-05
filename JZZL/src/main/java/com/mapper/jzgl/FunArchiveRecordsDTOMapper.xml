@@ -139,6 +139,9 @@
             <if test="isdelete != null">
                 ISDELETE = #{isdelete,jdbcType=DECIMAL},
             </if>
+            <if test="previd != null">
+                PREVID = #{previd,jdbcType=DECIMAL},
+            </if>
             <if test="recordwh != null">
                 RECORDWH = #{recordwh,jdbcType=VARCHAR},
             </if>
@@ -155,8 +158,7 @@
         FROM FUN_SUSPECT_RECORD RE
         WHERE RE.scbj=0 AND RE.SUSPECTID = SUSPECT.ID
         AND RE.RECORDID = records.ID) ) AS SUSPECTNAME
-        from FUN_ARCHIVE_RECORDS records where 1=1 and scbj=0
-        AND JQBH = #{jqbh,jdbcType=VARCHAR}
+        FROM FUN_ARCHIVE_RECORDS RECORDS WHERE 1=1 AND SCBJ=0 AND PREVID=0
         <if test="recordscode != null">
             AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
         </if>
@@ -169,8 +171,7 @@
         AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
     </select>
     <select id="selectRecordsByJqbhCount" resultType="java.lang.Integer" parameterType="java.lang.String">
-        SELECT COUNT(0) FROM FUN_ARCHIVE_RECORDS where 1=1 and scbj=0
-        AND JQBH = #{jqbh,jdbcType=VARCHAR}
+        SELECT COUNT(0) FROM FUN_ARCHIVE_RECORDS where 1=1 and scbj=0  AND PREVID=0
         <if test="recordscode != null">
             AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
         </if>

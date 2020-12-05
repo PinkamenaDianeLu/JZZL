@@ -91,7 +91,7 @@ public class FileManipulationController extends BaseFactory {
             JSONObject re = new JSONObject();
             FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(Integer.parseInt(recordId));
             FunArchiveSFCDTO thisSfc = fileManipulationService.selectFunArchiveSFCDTOById(Integer.parseInt(sfcId));
-            FunCaseInfoDTO thisCase = fileManipulationService.selectFunCaseInfoDTOById(thisSfc.getPeoplecaseid());
+            FunCaseInfoDTO thisCase = fileManipulationService.selectFunCaseInfoDTOById(thisSfc.getCaseinfoid());
             re.put("archivename", thisRecord.getRecordname());//文书名称
             re.put("recordstyle", thisRecord.getRecordstyle());//文书类型
             re.put("sfcname", thisSfc.getArchivename());//送检卷名称

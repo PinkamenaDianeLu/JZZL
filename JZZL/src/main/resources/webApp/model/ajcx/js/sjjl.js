@@ -9,7 +9,7 @@
 var sjjlTable = (function () {
 
     let tableObject;
-    let ajid;
+    let ajid;//caseinfoId
 
     const searchParam = function () {
         this.id = ajid;
@@ -71,7 +71,12 @@ var sjjlTable = (function () {
                     title: '操作',
                     align: 'center',
                     formatter: function (value, row, index) {
-                        return '<a class="b_but edit" onclick="submitForCensorship(\'' + row.id + '\')">整理</a>';
+                        let reBtn='<a class="b_but edit" onclick="submitForCensorship(\'' + row.id + '\')">整理</a>';
+                        if (0!==row.archivetype){
+                            reBtn+='<a class="b_but edit" >发送</a>';
+                        }
+
+                        return reBtn;
                     }
                 }
             ], param: function () {
@@ -102,27 +107,26 @@ var sjjlTable = (function () {
 var st = new sjjlTable();
 $(function () {
     $('#userHeart').load('/userHeart.html');
-    //案件的id  peoplecase表
+    //案件的id  caseinfo表
     const ajid = utils.getUrlPar('id');
 
     $.post({
         url: '/SFCensorship/selectFunArchiveSFCById',
-        data: {peoplecaseid: ajid},
+        data: {caseinfoid: ajid},
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
                 console.log(reV)
-
                 //送检编号
                 $('#sfcnumber').html(reV.value.sfcnumber);
                 //案件名称
                 $('#casename').html(reV.value.casename);
 
-                st.pValue = ajid;//设置pv
+                st.pValue = ajid;//设置pv为caseinfoid
                 st.loadTable(ajid);//加载表格
                 //查询按钮
                 $('#sjjlSearchBtn').click(function () {
-                    st.searchTable(ajid);
+                    st.searchTable();
                 });
 
                 //新建送检按钮

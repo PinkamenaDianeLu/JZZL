@@ -18,7 +18,7 @@ public interface FunArchiveSFCDTOMapper {
 
 
     /**
-     * 分页查询送检记录表
+     * 分页查询送检记录表(基础卷总是在第一个)
      * @author MrLu
      * @param map 分页参数 peopelcaseid为必传项
      * @createTime  2020/9/27 15:48

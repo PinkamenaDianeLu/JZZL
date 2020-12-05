@@ -173,10 +173,11 @@
 
   <select id="selectBaseArchive"   resultMap="BaseResultMap"  parameterType="java.lang.Integer">
     SELECT <include refid="Base_Column_List" />
-    from  FUN_ARCHIVE_SEQ where scbj=0
-    AND  archivesfcid= ( SELECT ID
+    FROM  FUN_ARCHIVE_SEQ WHERE SCBJ=0 AND ARCHIVETYPE=0
+    AND  ARCHIVESFCID= ( SELECT ID
     FROM FUN_ARCHIVE_SFC WHERE SCBJ=0
-    AND ARCHIVETYPE=0 AND PEOPLECASEID=#{peoplecaseid,jdbcType=DECIMAL} )
+    AND ARCHIVETYPE=0
+    AND CASEINFOID=#{caseInfoId,jdbcType=DECIMAL} )
     AND PREVID=0
   </select>
 

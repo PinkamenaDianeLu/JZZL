@@ -38,11 +38,11 @@ public interface RecordsService {
     /**
      * 查询一个案件最原始的基础卷
      * @author MrLu
-     * @param peoplecaseid 人员案件表id
+     * @param caseInfoId 案件信息表id
      * @createTime  2020/11/20 10:51
      * @return  FunArchiveSeqDTO  |
      */
-    FunArchiveSeqDTO selectBaseArchive(int peoplecaseid);
+    FunArchiveSeqDTO selectBaseArchive(int caseInfoId);
 
 
 }

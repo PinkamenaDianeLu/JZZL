@@ -72,12 +72,12 @@ public class RecordsController extends BaseFactory {
             if (StringUtils.isEmpty(pid)) {
                 throw new Exception("缺少关键参数：pid(peoplecaseid)");
             }
-            int peocaseid = Integer.parseInt(DecodeUrlP(pid));
-            pJsonObj.put("jqbh", recordsService.getFunCaseInfoById(peocaseid).getJqbh());
+            int caseInfoId = Integer.parseInt(DecodeUrlP(pid));
+//            pJsonObj.put("jqbh", recordsService.getFunCaseInfoById(caseInfoId).getJqbh());
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
-            //查找该案件的基础卷
-            FunArchiveSeqDTO thisSeq=recordsService.selectBaseArchive(peocaseid);
+            //查找该案件的基础卷的第0次（案宗抽取次）的整理次序id
+            FunArchiveSeqDTO thisSeq=recordsService.selectBaseArchive(caseInfoId);
             pJsonObj.put("archiveseqid",thisSeq.getId());//这里查询的是未被送检的卷 所有传0
             reMap.put("rows", recordsService.selectRecordsByJqbhPage(pJsonObj));
             reMap.put("total", recordsService.selectRecordsByJqbhCount(pJsonObj));

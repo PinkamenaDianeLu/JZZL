@@ -254,8 +254,9 @@
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
-  <select id="selectCaseInfoByPeoplecaseId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT    <include refid="Base_Column_List" />
-    from FUN_CASE_INFO WHERE SCBJ=0 AND ID = (SELECT CASEINFOID FROM FUN_CASE_PEOPLECASE WHERE FUN_CASE_PEOPLECASE.ID=#{peoplecaseid,jdbcType=DECIMAL})
+  <select id="selectCaseInfoByCaseInfoId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    from FUN_CASE_INFO WHERE SCBJ=0
+    AND ID = #{caseinfoid,jdbcType=DECIMAL}
   </select>
 </mapper>

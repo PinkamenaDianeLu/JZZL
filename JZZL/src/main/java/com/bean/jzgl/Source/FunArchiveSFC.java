@@ -27,7 +27,6 @@ public class FunArchiveSFC {
     private String authoridcard;
 
 
-    private Integer peoplecaseid;
 
     private String sfcnumber;
 
@@ -120,13 +119,7 @@ public class FunArchiveSFC {
     }
 
 
-    public Integer getPeoplecaseid() {
-        return peoplecaseid;
-    }
 
-    public void setPeoplecaseid(Integer peoplecaseid) {
-        this.peoplecaseid = peoplecaseid;
-    }
 
     public String getSfcnumber() {
         return sfcnumber;

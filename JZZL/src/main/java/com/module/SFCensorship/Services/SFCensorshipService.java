@@ -105,5 +105,15 @@ public interface SFCensorshipService {
       * @createTime  2020/11/21 11:25
       * @return    |
        */
-      FunCaseInfo selectFunArchiveSFCDTOById (Integer sfcId);
+      FunCaseInfo selectFunArchiveSFCDTOByCaseInfoId (Integer caseinfoid);
+
+       /**
+       * 通过id更新文书表
+       * @author MrLu
+       * @param record
+       * @createTime  2020/12/5 15:49
+       * @return    |
+        */
+      void  updateFunArchiveRecordById(FunArchiveRecordsDTO record);
+
 }

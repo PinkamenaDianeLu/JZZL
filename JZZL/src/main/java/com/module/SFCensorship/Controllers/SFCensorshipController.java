@@ -67,7 +67,7 @@ public class SFCensorshipController extends BaseFactory {
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
             //解密id参数
-            pJsonObj.put("peoplecaseid", DecodeUrlP(pJsonObj.getString("id")));//解密的id
+            pJsonObj.put("caseinfoid", DecodeUrlP(pJsonObj.getString("id")));//解密的id
             reMap.put("rows", transformBmField(sFCensorshipService.selectArchiveSFCPage(pJsonObj), FunArchiveSFC.class));
             reMap.put("total", sFCensorshipService.selectArchiveSFCPageCount(pJsonObj));
         } catch (Exception e) {
@@ -85,29 +85,30 @@ public class SFCensorshipController extends BaseFactory {
         try {
             //查询案件信息
             JSONObject pJsonObj = JSON.parseObject(params);
-            String id = pJsonObj.getString("peopelcaseid");
-            if (StringUtils.isEmpty(id)) {
-                throw new Exception("关键参数：peopelcaseid 未传递");
+            String caseinfoid = pJsonObj.getString("caseinfoid");
+            if (StringUtils.isEmpty(caseinfoid)) {
+                throw new Exception("关键参数：caseinfoid 未传递");
             }
-            int peopelcaseid = Integer.parseInt(DecodeUrlP(id));//得到解密后的案件表id
-            FunCaseInfo thisFunPeopelCase = sFCensorshipService.getFunCaseInfoById(peopelcaseid);
+            int recordId=pJsonObj.getInteger("recordsId");//使用的文书id
+            int caseInfoId = Integer.parseInt(DecodeUrlP(caseinfoid));//得到解密后的案件表id
+            FunCaseInfo thisFunCaseInfo = sFCensorshipService.getFunCaseInfoById(caseInfoId);
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
             //新建送检记录
             FunArchiveSFC newSfc = new FunArchiveSFC();
-            newSfc.setJqbh(thisFunPeopelCase.getJqbh());
-            newSfc.setAjbh(thisFunPeopelCase.getAjbh());
+            newSfc.setJqbh(thisFunCaseInfo.getJqbh());
+            newSfc.setAjbh(thisFunCaseInfo.getAjbh());
             newSfc.setIssend(Enums.IsSend.NO);
             newSfc.setAuthor(userNow.getXm());
             newSfc.setAuthoridcard(userNow.getIdcardnumber());
-            newSfc.setPeoplecaseid(peopelcaseid);
+//            newSfc.setPeoplecaseid(peopelcaseid);
             String sjlxString = pJsonObj.getString("recordscode");
             //recordscode如果为空怎么办呢？   你不会不让他空啊
             EnumSoft.sjlx thisSjlx = EnumUtils.getEnum(EnumSoft.sjlx.class, sjlxString);
-            newSfc.setSfcnumber(thisFunPeopelCase.getSfcnumber());//送检编号
+            newSfc.setSfcnumber(thisFunCaseInfo.getSfcnumber());//送检编号
             newSfc.setArchivetype(thisSjlx.getValue());//
             newSfc.setArchivename(pJsonObj.getString("archivename"));
-            newSfc.setCaseinfoid(thisFunPeopelCase.getId());//案件表id
-            newSfc.setBaserecordid(pJsonObj.getInteger("recordsId"));//基于那张文书选择的
+            newSfc.setCaseinfoid(thisFunCaseInfo.getId());//案件表id
+            newSfc.setBaserecordid(recordId);//基于那张文书选择的
             sFCensorshipService.insertFunArchiveSFC(newSfc);
             //新建送检整理次序
             FunArchiveSeq newSeq = new FunArchiveSeq();
@@ -126,10 +127,12 @@ public class SFCensorshipController extends BaseFactory {
             newSeq.setBaserecordid(newSfc.getBaserecordid());//基于某张文书生成
             sFCensorshipService.insertFunArchiveSeq(newSeq);
 
-            //得到新建的送检记录id  用此id得到对应的人
-//            Integer recordsId = pJsonObj.getInteger("recordsId");
-            //查询关联人  插入关联人的文书和一些基础文书
+            //记录该文书已选择过了
 
+            FunArchiveRecordsDTO uRecord=new FunArchiveRecordsDTO();
+            uRecord.setId(recordId);
+            uRecord.setPrevid(1);
+            sFCensorshipService.updateFunArchiveRecordById(uRecord);
             //创建新建卷
 //            cloneRecords(thisFunPeopelCase.getJqbh(), newSeq);
             reValue.put("message", "success");
@@ -209,9 +212,9 @@ public class SFCensorshipController extends BaseFactory {
     }
 
      /**
-     * 根据人员id案件表查询案件信息
+     * 根据案件信息表查询案件信息
      * @author MrLu
-     * @param  peoplecaseid
+     * @param  caseinfoid
      * @createTime  2020/11/21 11:37
      * @return  String  |
       */
@@ -219,14 +222,14 @@ public class SFCensorshipController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "查询案件信息", operType = OperLog.type.INSERT)
-    public String selectFunArchiveSFCById(String peoplecaseid) {
+    public String selectFunArchiveSFCById(String caseinfoid) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(peoplecaseid)) {
+            if (StringUtils.isEmpty(caseinfoid)) {
                 throw new Exception("你想查nm吗？");
             }
 
-            reValue.put("value", sFCensorshipService.selectFunArchiveSFCDTOById(Integer.parseInt( DecodeUrlP(peoplecaseid))));
+            reValue.put("value", sFCensorshipService.selectFunArchiveSFCDTOByCaseInfoId(Integer.parseInt( DecodeUrlP(caseinfoid))));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

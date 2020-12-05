@@ -191,15 +191,12 @@ var loadArchiveIndex = (function () {
                         //判断划分拖拽域
                         if ('ZL001' === thisDD.class || 'ZL003' === thisDD.class) {
                             //卷首、文书目录 正常加载
-                            console.log('193')
                             $('#' + liD).append(thisDD);
                         } else if ('ZL002' === thisDD.class) {
                             //卷尾加载 普通卷+卷尾
-                            console.log('197')
                             $('#' + liD).append(sortDiv).append(thisDD);
                         } else {
                             //普通卷放入可拖拽域
-                            console.log('200')
                             sortDiv.append(thisDD);
                         }
                         indexing.i++; //此行必须在$('#' + liD).append的后边
@@ -1096,7 +1093,7 @@ var createArchiveBySuspect = function (SuspectOrder, seqid, caseinfoid, fn) {
                 let pb = new progressBar(fn);
                 pb.alertProgressBarWindow();
                 for (let thisType of reV.value) {
-                    if (1===+thisType.id){
+                    // if (1!==+thisType.id){
                     $.post({
                         url: '/ArrangeArchives/createArchiveBySuspectOrder',
                         data: {
@@ -1105,17 +1102,17 @@ var createArchiveBySuspect = function (SuspectOrder, seqid, caseinfoid, fn) {
                             recordtypeid: thisType.id
 
                         },
-                        success: (re) => {
-                            const reV = JSON.parse(re);
-                            if ('success' === reV.message) {
-                                console.log('成功执行一遍！' + reV.length)
-                                pb.addProgressBar(20);
+                        success: (insertRe) => {
+                            const insertReV = JSON.parse(insertRe);
+                            if ('success' === insertReV.message) {
+                                console.log('成功执行一遍！' + insertReV.value);
+                                pb.addProgressBar(16.7);
                             } else {
                                 pb.addProgressBar(0);
                             }
                         }
                     });
-                    }
+                    // }
                 }
             } else {
                 console.error('基础卷信息查询失败！');

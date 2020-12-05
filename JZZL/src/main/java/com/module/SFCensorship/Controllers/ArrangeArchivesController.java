@@ -761,7 +761,7 @@ public class ArrangeArchivesController extends BaseFactory {
      * 根据嫌疑人顺序生成卷
      *    //查找基础卷id select max(id) from fun_archive_seq where scbj=0 and archivetype=0 and caseinfoid=
      *                 //得到基础卷中对应类型的文书  select * from fun_archive_type where scbj=0 and seqid=
-     *                 //返回ajax 开始进度条 回收站*6+普通*6
+     *                 //返回ajax 开始进度条 普通*6
      *                 //ajax后台  新建卷类型 查找卷类型的所有文书  order by defaultorder   ok
      *                 // 循环文书  查找文书对应在 sys_recordorder 中 是否存在 select * from sys_recordorder where recordcode=? and recordtype=? and archivetype=?
      *                 //不存在 无视该文书  存在 判断该文书是否对人 不对人 -> 正常复制
@@ -867,6 +867,7 @@ public class ArrangeArchivesController extends BaseFactory {
                     System.out.println("忽略了呢"+thisRecord.getRecordscode());
                 }
             }
+            reValue.put("value", recordOrder);
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

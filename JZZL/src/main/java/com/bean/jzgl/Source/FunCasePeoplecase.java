@@ -30,7 +30,7 @@ public class FunCasePeoplecase {
     private String casename;
 
     private Integer caseinfoid;
-
+    private Integer casetype;
     private Integer sysuserid;
 
     private String barxm;
@@ -193,5 +193,13 @@ public class FunCasePeoplecase {
 
     public void setBadwdwmc(String badwdwmc) {
         this.badwdwmc = badwdwmc == null ? null : badwdwmc.trim();
+    }
+
+    public Integer getCasetype() {
+        return casetype;
+    }
+
+    public void setCasetype(Integer casetype) {
+        this.casetype = casetype;
     }
 }
