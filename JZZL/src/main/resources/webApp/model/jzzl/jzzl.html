@@ -48,14 +48,13 @@
         .progressBarParent{background-color: rgba(0,0,0,0);box-shadow: none}
         .progressBarParent .layui-layer-page .layui-layer-content{background-color: rgba(30,36,32,0.9);  border-radius: 10px;}
 #progressBarDiv{ padding: 0px 30px 30px}
-        .larimg{ position: absolute; top:0px; left:145px; width: 290px; height: 290px; overflow: hidden; z-index: 999;}
+        .larimg{ position: absolute; top:0px; left:167px; width: 290px; height: 290px; overflow: hidden; z-index: 999;}
     </style>
 </head>
 <body>
 <div id="userHeart"></div>
 
-<div class="index-main"
-     style="position:fixed; display: inline-block; width:1360px; left:50%; margin-left:-680px; height:calc(100% - 115px); margin-top: 0px; overflow-y: hidden;">
+<div class="index-main">
 
     <div class="c_left">
         <div class="left_title"><!--<a class="a_done" id="saveData">完成整理</a>-->
@@ -82,10 +81,10 @@
             <a class="recordImgBtn" id="reUpLoadBtn"><i class="ico upload"></i><span>重新上传</span></a>
             <a class="recordImgBtn" id="addUploadBtn"><i class="ico add-upload"></i><span>添加上传</span></a>
             <a class="recordImgBtn" id="deleteBtn"><i class="ico delete"></i><span>删除</span></a>
-            <a class="recordImgBtn" id="imgInfoBtn"><i class="ico max"></i><span>图片详细</span></a>
-<!--            <div class="a_count recordImgBtn"><input type="text" value="100 %"/><a>+</a><a style="border: none;">-</a></div>-->
-<!--            <a class="recordImgBtn"><i class="ico min"></i><span>缩小</span></a>-->
-            <div class="a_page recordImgBtn"><span>跳至</span><input type="number" value="1"/><span> /8</span></div>
+            <a class="recordImgBtn" id="zoomInBtn"><i class="ico max"></i><span>放大</span></a>
+          <div class="a_count recordImgBtn"><input type="number" id="proportion" value="100" /><span>%</span></div>
+            <a class="recordImgBtn" id="zoomOutBtn"><i class="ico min"></i><span>缩小</span></a>
+            <div class="a_page recordImgBtn"><span>跳至</span><input type="number" value="1" id="jumpToPage"/><span id="pageSum"> /8</span></div>
             <a id="multipleBtn" style="display: none"  class="recordImgBtn"><i class="ico multiple"></i><span>多选</span></a>
             <a id="moveToBtn"   class="recordImgBtn"><i class="ico move"></i><span>移动至</span></a>
             <div class="right recordImgBtn">
@@ -95,9 +94,11 @@
         </div>
         <div class="img_p" id="commonimgDiv">
             <div class="right_text" id="ImgBigDiv">
-<!--                <div class="a_title">标签注释说明，有啥问题！</div>-->
-<!--                <div class="a_title red" style="top: 200px; left:100px">标签注释说明，有啥问题！</div>-->
-<!--                <div class="a_title green" style="top: 400px; left:400px">标签注释说明，有啥问题！</div>-->
+               <!--<div class="div_a_title">
+                <div class="a_title">标签注释说明，有啥问题！<b>X</b></div>
+                <div class="a_title red">标签注释说明，有啥问题！</div>
+                <div class="a_title green">标签注释说明，有啥问题！</div>
+               </div>-->
             </div>
             <div class="r_img_min" id="thumbnailDiv"></div>
         </div>

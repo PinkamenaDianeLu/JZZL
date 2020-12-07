@@ -63,6 +63,9 @@ var recordImgLoad = (function () {
                             $('#frontImg').append(loadFrontImg(thisFile));//加载平铺图
 
                         });
+                        //跳转至区域
+                        $('#pageSum').html('/' + i);// 总页数
+                        $('#jumpToPage').val(1);//跳到哪（赋值1 默认显示第一页）
                         /*********************为功能区按钮添加方法******************************/
                         //切换视图按钮
                         viewModel = false;//下拉显示
@@ -122,6 +125,36 @@ var recordImgLoad = (function () {
                 layer.alert('请选择需要重新上传的图片');
             }
         });
+
+        //放大按钮
+        $('#zoomInBtn').unbind().click(function () {
+            //放大倍率
+            let proportionValue = +$('#proportion').val();
+            proportionValue = proportionValue + 10 > 200 ? 200 : proportionValue + 10;
+            $('#proportion').val(proportionValue);
+            zoomImg(proportionValue * 0.01)
+        })
+        //缩小按钮
+        $('#zoomOutBtn').unbind().click(function () {
+            //放大倍率
+            let proportionValue = +$('#proportion').val();
+            proportionValue = proportionValue - 10 < 10 ? 10 : proportionValue - 10;
+            $('#proportion').val(proportionValue);
+            zoomImg(proportionValue * 0.01)
+        })
+        //更改比率
+        $('#proportion').unbind().change(function () {
+            let proportionValue = +$(this).val();
+            //最大放大200%
+            if (proportionValue > 200) {
+                proportionValue = 200;
+            } else if (proportionValue < 10) {
+                //最小10%
+                proportionValue = 10;
+            }
+            $(this).val(proportionValue);
+            zoomImg(proportionValue * 0.01)
+        })
         //添加上传按钮
         $('#addUploadBtn').unbind().click(function () {
             if (thisFileCode) {
@@ -179,6 +212,49 @@ var recordImgLoad = (function () {
             }
 
         });
+
+        //跳转至
+        $('#jumpToPage').unbind().change(function () {
+            let pageNum = +$(this).val();
+            let proportionValue = +$('#proportion').val();
+            if (pageNum > imgMap.size) {
+                pageNum = imgMap.size;
+            } else if (pageNum < 1) {
+                //最小10%
+                pageNum = 1;
+            }
+            $('#ImgBigDiv').animate({
+                scrollTop: (((pageNum - 1) * 1467 * proportionValue * 0.01) + 50)
+            }, 300);
+            $(this).val(pageNum);
+            /*   $(this).val(pageNum);
+               //获取div的滚动位置
+
+               //获取当前缩放比率
+
+              */
+        });
+        //大图div滚动条事件
+        $('#ImgBigDiv').unbind().scroll(function () {
+            let scrollTopValue = +document.getElementById('ImgBigDiv').scrollTop;
+            let proportionValue = +$('#proportion').val();
+            scrollTopValue = (scrollTopValue - 50) / (1467 * proportionValue * 0.01);
+            $('#jumpToPage').val(+scrollTopValue.toFixed(0) + 1);
+        })
+    }
+
+
+    /**
+     * 放大缩小图片比率
+     * @author MrLu
+     * @param proportionValue 比率值 数值类型
+     * @createTime  2020/12/7 17:00
+     * @return    |
+     */
+    function zoomImg(proportionValue) {
+        $('.bigImg').attr('width', 957 * proportionValue + 'px');
+        $('.bigImg').attr('height', 1467 * proportionValue + 'px');
+
     }
 
     /**
@@ -321,10 +397,14 @@ var recordImgLoad = (function () {
         let div = document.createElement('div');
         div.id = 'bigImg' + file.filecode;
         div.setAttribute('class', 'div_a');
+        const proportion = +$('#proportion').val();
+        let width = 957 * (proportion * 0.01);
+        let height = 1467 * (proportion * 0.01);
         let bigImg = utils.createElement.createElement({
             tag: 'img', attrs: {
                 src: file.fileurl,
-                class: 'img_text'
+                class: 'img_text bigImg',
+                width: width + 'px', height: height + 'px'
             }
         });
         bigImg.addEventListener('click', function () {
@@ -372,9 +452,10 @@ var recordImgLoad = (function () {
      * @return    |
      */
     function jumpImg(ele) {
+        const proportion = +$('#proportion').val();
         $('#thumbnailDiv .active').removeClass('active');
         $('#ImgBigDiv').animate({
-            scrollTop: ((+($(ele).index()) * 940) + 50)
+            scrollTop: ((+($(ele).index()) * 1467 * proportion * 0.01) + 50)
         }, 300);
         $(ele).addClass('active');
     }
@@ -469,7 +550,7 @@ var recordImgLoad = (function () {
     function loadFrontImg(file) {
         let div = document.createElement('div');
         div.id = 'front' + file.filecode;
-        div.setAttribute('class', 'div_a');
+        div.setAttribute('class', 'div_a frontDiv');
         //缩略图
         let front = utils.createElement.createElement({
             tag: 'img', attrs: {
@@ -488,6 +569,7 @@ var recordImgLoad = (function () {
 
             }, arg: '<img width= "450px" height="576px" src="' + file.fileurl + '">'
         });
+        /////////放大镜效果
         //生成跟随鼠标的小方框
         let mov = utils.createElement.createElement({
             tag: 'div', attrs: {
@@ -498,19 +580,24 @@ var recordImgLoad = (function () {
         })
 
         front.onmouseover = function () {
+            let pervDivLength = $('#front' + file.filecode).prevAll('.frontDiv').length;
+            if (0 === pervDivLength % 4 && 0 !== pervDivLength) {
+                $(largeWrapper).css('left', '-288px');
+            }
             $(mov).show();//显示小框
-            $(largeWrapper).show();//方法图显示
+            $(largeWrapper).show();//方大图显示
         }
         front.onmousemove = function (e) {
             let topY = e.offsetY;
             let topX = e.offsetX;
             mov.style.top = topY + 'px'
             mov.style.left = topX + 'px'
-            largeWrapper.scrollLeft=(topX-25)*3;
-            largeWrapper.scrollTop=(topY-25)*3;
+            largeWrapper.scrollLeft = (topX - 25) * 3;
+            largeWrapper.scrollTop = (topY - 25) * 3;
 
         }
         front.addEventListener('mouseleave', function () {
+            $(largeWrapper).removeAttr('style');
             $(mov).hide();
             $(largeWrapper).hide();
         })
