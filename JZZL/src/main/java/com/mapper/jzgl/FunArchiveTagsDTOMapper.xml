@@ -14,17 +14,16 @@
     <result column="ARCHIVESEQID" jdbcType="DECIMAL" property="archiveseqid" />
     <result column="ARCHIVETYPEID" jdbcType="DECIMAL" property="archivetypeid" />
     <result column="ARCHIVEFILEID" jdbcType="DECIMAL" property="archivefileid" />
+    <result column="RECORDID" jdbcType="DECIMAL" property="recordid" />
     <result column="FILECODE" jdbcType="VARCHAR" property="filecode" />
     <result column="TAGINFO" jdbcType="VARCHAR" property="taginfo" />
     <result column="TAGCOLOUR" jdbcType="VARCHAR" property="tagcolour" />
-    <result column="POSITIONX" jdbcType="VARCHAR" property="positionx" />
-    <result column="POSITIONY" jdbcType="VARCHAR" property="positiony" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, AUTHOR, AUTHORID, AUTHORXM, ARCHIVESFCID, 
-    ARCHIVESEQID, ARCHIVETYPEID, ARCHIVEFILEID, FILECODE, TAGINFO, TAGCOLOUR, POSITIONX, 
-    POSITIONY
+    ARCHIVESEQID, ARCHIVETYPEID, ARCHIVEFILEID,FILECODE, RECORDID, TAGINFO, TAGCOLOUR
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -32,143 +31,30 @@
     where ID = #{id,jdbcType=DECIMAL}
   </select>
   <insert id="insert" parameterType="com.bean.jzgl.DTO.FunArchiveTagsDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARCHIVE_TAGS_ID.nextval from dual
+    </selectKey>
     insert into FUN_ARCHIVE_TAGS (ID, SCBJ, STATE, 
       CREATETIME, UPDATETIME, AUTHOR, 
       AUTHORID, AUTHORXM, ARCHIVESFCID, 
       ARCHIVESEQID, ARCHIVETYPEID, ARCHIVEFILEID, 
-      FILECODE, TAGINFO, TAGCOLOUR, 
-      POSITIONX, POSITIONY)
-    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{author,jdbcType=VARCHAR}, 
+      FILECODE, TAGINFO, TAGCOLOUR,RECORDID)
+    values (#{id,jdbcType=DECIMAL}, 0, 0,
+      SYSDATE, SYSDATE, #{author,jdbcType=VARCHAR},
       #{authorid,jdbcType=DECIMAL}, #{authorxm,jdbcType=VARCHAR}, #{archivesfcid,jdbcType=DECIMAL}, 
       #{archiveseqid,jdbcType=DECIMAL}, #{archivetypeid,jdbcType=DECIMAL}, #{archivefileid,jdbcType=DECIMAL}, 
-      #{filecode,jdbcType=VARCHAR}, #{taginfo,jdbcType=VARCHAR}, #{tagcolour,jdbcType=VARCHAR}, 
-      #{positionx,jdbcType=VARCHAR}, #{positiony,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveTagsDTO">
-    insert into FUN_ARCHIVE_TAGS
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        ID,
-      </if>
-      <if test="scbj != null">
-        SCBJ,
-      </if>
-      <if test="state != null">
-        STATE,
-      </if>
-      <if test="createtime != null">
-        CREATETIME,
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME,
-      </if>
-      <if test="author != null">
-        AUTHOR,
-      </if>
-      <if test="authorid != null">
-        AUTHORID,
-      </if>
-      <if test="authorxm != null">
-        AUTHORXM,
-      </if>
-      <if test="archivesfcid != null">
-        ARCHIVESFCID,
-      </if>
-      <if test="archiveseqid != null">
-        ARCHIVESEQID,
-      </if>
-      <if test="archivetypeid != null">
-        ARCHIVETYPEID,
-      </if>
-      <if test="archivefileid != null">
-        ARCHIVEFILEID,
-      </if>
-      <if test="filecode != null">
-        FILECODE,
-      </if>
-      <if test="taginfo != null">
-        TAGINFO,
-      </if>
-      <if test="tagcolour != null">
-        TAGCOLOUR,
-      </if>
-      <if test="positionx != null">
-        POSITIONX,
-      </if>
-      <if test="positiony != null">
-        POSITIONY,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="scbj != null">
-        #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="author != null">
-        #{author,jdbcType=VARCHAR},
-      </if>
-      <if test="authorid != null">
-        #{authorid,jdbcType=DECIMAL},
-      </if>
-      <if test="authorxm != null">
-        #{authorxm,jdbcType=VARCHAR},
-      </if>
-      <if test="archivesfcid != null">
-        #{archivesfcid,jdbcType=DECIMAL},
-      </if>
-      <if test="archiveseqid != null">
-        #{archiveseqid,jdbcType=DECIMAL},
-      </if>
-      <if test="archivetypeid != null">
-        #{archivetypeid,jdbcType=DECIMAL},
-      </if>
-      <if test="archivefileid != null">
-        #{archivefileid,jdbcType=DECIMAL},
-      </if>
-      <if test="filecode != null">
-        #{filecode,jdbcType=VARCHAR},
-      </if>
-      <if test="taginfo != null">
-        #{taginfo,jdbcType=VARCHAR},
-      </if>
-      <if test="tagcolour != null">
-        #{tagcolour,jdbcType=VARCHAR},
-      </if>
-      <if test="positionx != null">
-        #{positionx,jdbcType=VARCHAR},
-      </if>
-      <if test="positiony != null">
-        #{positiony,jdbcType=VARCHAR},
-      </if>
-    </trim>
+      #{filecode,jdbcType=VARCHAR}, #{taginfo,jdbcType=VARCHAR}, #{tagcolour,jdbcType=VARCHAR}
+      ,#{recordid,jdbcType=DECIMAL}
+   )
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveTagsDTO">
     update FUN_ARCHIVE_TAGS
     <set>
-      <if test="scbj != null">
-        SCBJ = #{scbj,jdbcType=DECIMAL},
-      </if>
       <if test="state != null">
         STATE = #{state,jdbcType=DECIMAL},
       </if>
-      <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+        UPDATETIME = SYSDATE,
       <if test="author != null">
         AUTHOR = #{author,jdbcType=VARCHAR},
       </if>
@@ -199,13 +85,16 @@
       <if test="tagcolour != null">
         TAGCOLOUR = #{tagcolour,jdbcType=VARCHAR},
       </if>
-      <if test="positionx != null">
-        POSITIONX = #{positionx,jdbcType=VARCHAR},
-      </if>
-      <if test="positiony != null">
-        POSITIONY = #{positiony,jdbcType=VARCHAR},
-      </if>
     </set>
     where ID = #{id,jdbcType=DECIMAL}
   </update>
+
+<select id="selectArchiveTagsById" parameterType="map" resultMap="BaseResultMap">
+  select  <include refid="Base_Column_List" />
+  from FUN_ARCHIVE_TAGS
+  where SCBJ=0
+  AND  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+  AND  FILECODE = #{filecode,jdbcType=VARCHAR}
+  ORDER BY ID DESC
+</select>
 </mapper>

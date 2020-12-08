@@ -27,15 +27,13 @@ public class FunArchiveTagsDTO {
 
     private Integer archivefileid;
 
+    private Integer recordid;
+
     private String filecode;
 
     private String taginfo;
 
     private String tagcolour;
-
-    private String positionx;
-
-    private String positiony;
 
     public Integer getId() {
         return id;
@@ -157,19 +155,11 @@ public class FunArchiveTagsDTO {
         this.tagcolour = tagcolour == null ? null : tagcolour.trim();
     }
 
-    public String getPositionx() {
-        return positionx;
+    public Integer getRecordid() {
+        return recordid;
     }
 
-    public void setPositionx(String positionx) {
-        this.positionx = positionx == null ? null : positionx.trim();
-    }
-
-    public String getPositiony() {
-        return positiony;
-    }
-
-    public void setPositiony(String positiony) {
-        this.positiony = positiony == null ? null : positiony.trim();
+    public void setRecordid(Integer recordid) {
+        this.recordid = recordid;
     }
 }

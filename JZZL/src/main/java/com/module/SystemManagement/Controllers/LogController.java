@@ -45,13 +45,14 @@ public class LogController {
     RedisTemplate<String, Serializable> redisCSTemplate;
     private final
     RedisTemplate<String, Object> redisCCTemplate;
-
-    public LogController(LogService logService, RedisTemplate<String, Serializable> redisCSTemplate, RedisTemplate<String, Object> redisCCTemplate, @Qualifier("UserService") UserService userService, UserSession userSession) {
+    private final UserService userServiceByRedis;
+    public LogController(LogService logService, RedisTemplate<String, Serializable> redisCSTemplate, RedisTemplate<String, Object> redisCCTemplate, @Qualifier("UserService") UserService userService, UserSession userSession, @Qualifier("UserServiceByRedis") UserService userServiceByRedis) {
         this.logService = logService;
         this.redisCSTemplate = redisCSTemplate;
         this.redisCCTemplate = redisCCTemplate;
         this.userService = userService;
         this.userSession = userSession;
+        this.userServiceByRedis = userServiceByRedis;
     }
 
     /**
@@ -110,23 +111,50 @@ public class LogController {
         return reValue.toJSONString();
     }
 
-     /**
+    /**
      * 记录登录日志
-     * @author MrLu
+     *
      * @param sysUserNow 已经登录的用户
-     * @createTime  2020/10/8 15:03
-     * @return  void  |
-      */
-    private void saveLoginLog(SysUser sysUserNow){
+     * @return void  |
+     * @author MrLu
+     * @createTime 2020/10/8 15:03
+     */
+    private void saveLoginLog(SysUser sysUserNow) {
+        logService.updateHistoryLog(sysUserNow.getId());//将之前的所有日志标记为过去
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        SysLogsLoginDTO SysLogsLoginDTO=new SysLogsLoginDTO();
+        SysLogsLoginDTO SysLogsLoginDTO = new SysLogsLoginDTO();
         SysLogsLoginDTO.setIp(IpUtil.getIpAddress(request));
         SysLogsLoginDTO.setXm(sysUserNow.getXm());
         SysLogsLoginDTO.setOperator(sysUserNow.getIdcardnumber());
         SysLogsLoginDTO.setSysusername(sysUserNow.getUsername());
+        SysLogsLoginDTO.setState(1);//这是本次登录的日志
         SysLogsLoginDTO.setSysuserid(sysUserNow.getId());
         logService.insertLogLogin(SysLogsLoginDTO);
+    }
+
+     /**
+     * 获取上次登录日志
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/8 14:59
+     * @return    |
+      */
+    @RequestMapping(value = "/getPrevLoginHistory", method = {RequestMethod.GET,
+            RequestMethod.POST}, produces = "text/html;charset=UTF-8")
+    @ResponseBody
+    @OperLog(operModul = "index", operDesc = "获取上次登录日志", operType = OperLog.type.SELECT)
+    public String getPrevLoginHistory() {
+        JSONObject reValue = new JSONObject();
+        try {
+            SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+            reValue.put("value", logService.selectPrevLogHistory(userNow.getId()));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
     }
 
 }

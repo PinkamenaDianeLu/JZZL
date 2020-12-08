@@ -1085,7 +1085,7 @@ var createArchiveBySuspect = function (SuspectOrder, seqid, caseinfoid, fn) {
     //开始整理
     $.post({
         url: '/ArrangeArchives/selectBaseTypes',
-        data: {caseinfoid},
+        data: {caseinfoid,seqid},
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
@@ -1175,7 +1175,10 @@ $(function () {
                 if (isSuspectOrder) {
                     $.post({
                         url: '/ArrangeArchives/selectSuspectByBaserecordId',
-                        data: {baserecordid: seq.baserecordid},
+                        data: {baserecordid: seq.baserecordid,
+                            archivetype:seq.archivetype,
+                            seqid:seq.id
+                        },
                         success: (re) => {
                             const reV = JSON.parse(re);
                             if ('success' === reV.message) {

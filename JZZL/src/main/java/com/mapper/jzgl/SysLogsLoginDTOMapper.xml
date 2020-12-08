@@ -31,9 +31,21 @@
       CREATETIME, UPDATETIME, IP, 
       SYSUSERID, SYSUSERNAME, OPERATOR, 
       XM)
-    values (#{id,jdbcType=DECIMAL}, 0, 0,
+    values (#{id,jdbcType=DECIMAL}, 0, 1,
       sysdate, sysdate, #{ip,jdbcType=VARCHAR},
       #{sysuserid,jdbcType=DECIMAL}, #{sysusername,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR},
       #{xm,jdbcType=VARCHAR})
   </insert>
+
+  <update id="updateHistoryLog" parameterType="java.lang.Integer" >
+    update SYS_LOGS_LOGIN set state=0,UPDATETIME=sysdate
+    where scbj=0 and SYSUSERID=#{sysuserid,jdbcType=DECIMAL} and state=1
+  </update>
+
+  <select id="selectPrevLogHistory" parameterType="java.lang.Integer"  resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" /> FROM SYS_LOGS_LOGIN
+    WHERE
+     ID = (SELECT MAX(ID) FROM SYS_LOGS_LOGIN
+     WHERE scbj=0 and  sysuserid=#{sysuserid,jdbcType=DECIMAL}  AND state &lt; 1)
+  </select>
 </mapper>

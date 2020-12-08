@@ -33,9 +33,6 @@ public class FunArchiveTags {
 
     private String tagcolour;
 
-    private String positionx;
-
-    private String positiony;
 
     public Integer getId() {
         return id;
@@ -157,19 +154,4 @@ public class FunArchiveTags {
         this.tagcolour = tagcolour == null ? null : tagcolour.trim();
     }
 
-    public String getPositionx() {
-        return positionx;
-    }
-
-    public void setPositionx(String positionx) {
-        this.positionx = positionx == null ? null : positionx.trim();
-    }
-
-    public String getPositiony() {
-        return positiony;
-    }
-
-    public void setPositiony(String positiony) {
-        this.positiony = positiony == null ? null : positiony.trim();
-    }
 }

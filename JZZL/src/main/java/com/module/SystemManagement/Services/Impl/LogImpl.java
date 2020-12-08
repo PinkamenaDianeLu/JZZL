@@ -29,4 +29,15 @@ public class LogImpl implements LogService {
     public void insertLogLogin(SysLogsLoginDTO sysLogsLoginDTO) {
         sysLogsLoginDTOMapper.insert(sysLogsLoginDTO);
     }
+
+    @Override
+    public SysLogsLoginDTO selectPrevLogHistory(Integer sysuserid) {
+        return sysLogsLoginDTOMapper.selectPrevLogHistory(sysuserid);
+    }
+
+    @Override
+    public void updateHistoryLog(Integer sysuserid) {
+        sysLogsLoginDTOMapper.updateHistoryLog(sysuserid);
+    }
+
 }

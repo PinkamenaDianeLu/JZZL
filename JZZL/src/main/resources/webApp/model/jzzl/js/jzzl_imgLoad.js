@@ -9,6 +9,13 @@ var recordImgLoad = (function () {
     let viewModel;//显示状态 true 下拉图 false平铺图
     let checkFile = new Set();//复选功能中被选中的文件的filecode数组
     let imgMap = new Map();//文书图片
+    let colorList=['#FFA500',
+        '#40E0D0',
+        '#F08080',
+        '#FF4500',
+        '#1E90FF',
+        '#11b121',
+        '#4d1f53']
 
     /**
      * 查询文书的图片数据
@@ -61,6 +68,7 @@ var recordImgLoad = (function () {
                             $('#thumbnailDiv').append(loadThumbnail(thisFile, i++));
                             $('#ImgBigDiv').append(loadImgs(thisFile));
                             $('#frontImg').append(loadFrontImg(thisFile));//加载平铺图
+                            loadTags(thisFile.filecode);//加载标签
 
                         });
                         //跳转至区域
@@ -83,6 +91,19 @@ var recordImgLoad = (function () {
                 }
             }
         });
+    }
+
+    //标签对象
+    const tags = function (id, updatetime, authorxm, archiveseqid, archivefileid, recordid, filecode, taginfo, tagcolour) {
+        this.id = id;
+        this.updatetime = updatetime;
+        this.authorxm = authorxm;
+        this.archiveseqid = archiveseqid;
+        this.archivefileid = archivefileid;
+        this.recordid = recordid;
+        this.filecode = filecode;
+        this.taginfo = taginfo;
+        this.tagcolour = tagcolour;
     }
 
 
@@ -111,6 +132,32 @@ var recordImgLoad = (function () {
         $('#newTagBtn').unbind().click(function () {
             if (thisFileCode) {
                 //鼠标点击固定区域新建标签  弹开个页 鼠标点哪加哪  保存后刷新该文书的标签方法加载标签 新建个标签表
+                layer.prompt({
+                    title: '输入标签内容，限制为50字', formType: 2
+                }, function (text, index) {
+                    let tagsObj = new tags();
+                    tagsObj.filecode = thisFileCode;
+                    tagsObj.recordid = recordId;
+                    tagsObj.taginfo = text;
+                    tagsObj.tagcolour = '#11b121';
+                    $.post({
+                        url: '/FileTags/createNewTags',
+                        data: {
+                            tag: JSON.stringify(tagsObj)
+                        },
+                        success: (re) => {
+                            const reV = JSON.parse(re);
+                            if ('success' === reV.message) {
+                                console.log('添加成功');
+                                loadTags(thisFileCode);
+                            } else {
+                                console.log('添加失败');
+                            }
+                        }
+                    });
+                    //文件filecode  seqid 文件id
+                    layer.close(index);
+                })
 
             } else {
                 layer.alert('请选择一张具体的文书图片');
@@ -125,7 +172,6 @@ var recordImgLoad = (function () {
                 layer.alert('请选择需要重新上传的图片');
             }
         });
-
         //放大按钮
         $('#zoomInBtn').unbind().click(function () {
             //放大倍率
@@ -212,7 +258,6 @@ var recordImgLoad = (function () {
             }
 
         });
-
         //跳转至
         $('#jumpToPage').unbind().change(function () {
             let pageNum = +$(this).val();
@@ -227,19 +272,18 @@ var recordImgLoad = (function () {
                 scrollTop: (((pageNum - 1) * 1467 * proportionValue * 0.01) + 50)
             }, 300);
             $(this).val(pageNum);
-            /*   $(this).val(pageNum);
-               //获取div的滚动位置
 
-               //获取当前缩放比率
-
-              */
         });
         //大图div滚动条事件
         $('#ImgBigDiv').unbind().scroll(function () {
             let scrollTopValue = +document.getElementById('ImgBigDiv').scrollTop;
             let proportionValue = +$('#proportion').val();
             scrollTopValue = (scrollTopValue - 50) / (1467 * proportionValue * 0.01);
-            $('#jumpToPage').val(+scrollTopValue.toFixed(0) + 1);
+            let pageCountNow=+scrollTopValue.toFixed(0) + 1
+            if (pageCountNow>imgMap.size){
+                pageCountNow=imgMap.size;
+            }
+            $('#jumpToPage').val(pageCountNow);
         })
     }
 
@@ -254,6 +298,66 @@ var recordImgLoad = (function () {
     function zoomImg(proportionValue) {
         $('.bigImg').attr('width', 957 * proportionValue + 'px');
         $('.bigImg').attr('height', 1467 * proportionValue + 'px');
+
+    }
+
+     /**
+     * 加载标签
+     * @author MrLu
+     * @param 
+     * @createTime  2020/12/8 14:29
+     * @return    |  
+      */
+    function loadTags(fileCode) {
+        if (document.getElementById('bigImg' + fileCode)) {
+            $.post({
+                url: '/FileTags/selectArchiveTags',
+                data: {archiveseqid: parent.lai.getSeqId(), filecode: fileCode},
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        if (reV.value) {
+                            $('#tags' + fileCode).remove();
+                            let thisTagsList = utils.createElement.createElement({
+                                tag: 'div', attrs: {
+                                    class: 'div_a_title',
+                                    id: 'tags' + fileCode
+                                }
+                            })
+                            for (let thisTag of reV.value) {
+                                let thisTagDiv = utils.createElement.createElement({
+                                    tag: 'div', attrs: {
+                                        class: 'a_title',
+                                        id: 'tag' + thisTag.id,
+                                        colour:colorList.indexOf(thisTag.tagcolour),
+                                        style: 'background:' + thisTag.tagcolour
+                                    }, arg: '' + thisTag.taginfo + '&nbsp;&nbsp;&nbsp;&nbsp;'+thisTag.authorxm+"&nbsp;&nbsp;"+utils.timeFormat.timestampToDate(thisTag.createtime)
+                                })
+                                //点击标签变色
+                                thisTagDiv.addEventListener('click',function () {
+                                    //获取当前颜色下标+1
+                                  let colorNow=  +$(this).attr('colour')+1;
+                                  if (colorNow>=colorList.length){
+                                      colorNow=0;
+                                  }
+                                    let color=colorList[colorNow];
+                                  $(this).attr({'style':'background:' + color,colour:colorNow})
+                                })
+                                $(thisTagsList).append(thisTagDiv);
+                            }
+                            $('#bigImg' + fileCode).append(thisTagsList);
+                        }
+                    } else {
+                        console.error('标签查询错误')
+                    }
+                }
+            });
+        } else {
+            console.log('加载标签时父图还未加载完成，等待完成。。。。。。。。。。。');
+            setTimeout(function () {
+                loadTags(fileCode)
+            }, 1000);
+        }
 
     }
 
@@ -523,6 +627,7 @@ var recordImgLoad = (function () {
                     let thumbnail = loadThumbnail(thisFile);
                     let ImgBig = loadThumbnail(thisFile);
                     let front = loadThumbnail(thisFile);
+                    loadTags(thisFile.filecode);//加载标签
                     //如果不是放第一个 调整顺序
                     if (operation) {
                         $('#thumbnail' + prevFileCode).after(thumbnail);

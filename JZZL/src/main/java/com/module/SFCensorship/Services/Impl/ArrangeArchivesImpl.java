@@ -186,7 +186,7 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public List<FunSuspectRecordDTO> selectSuspectByRecordid(Integer recordid) {
+    public List<FunSuspectDTO> selectSuspectByRecordid(Integer recordid) {
         return funSuspectDTOMapper.selectSuspectByRecordid(recordid);
     }
 
@@ -222,6 +222,11 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public FunArchiveSFC selectFunArchiveSFCById(int id) {
         return FunArchiveSFCMapper.INSTANCE.pcDTOToPc(funArchiveSFCDTOMapper.selectByPrimaryKey(id));
+    }
+
+    @Override
+    public List<FunSuspectDTO> selectSuspectById(Integer id) {
+        return funSuspectDTOMapper.selectSuspectById(id);
     }
 
     @Override
