@@ -22,6 +22,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author MrLu
@@ -99,7 +100,8 @@ public class LogController {
                 //上缴session 在redis中的对应id
                 userSession.setUserRedisId(UserRedisId);
                 //上缴redis一个序列化的
-                redisCSTemplate.opsForValue().set(UserRedisId, sysUserNow);
+                redisCSTemplate.opsForValue().set(UserRedisId, sysUserNow, 600, TimeUnit.SECONDS);
+
                 //记录登录日志
                 saveLoginLog(sysUserNow);
             }

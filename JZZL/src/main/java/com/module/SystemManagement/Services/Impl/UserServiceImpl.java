@@ -20,7 +20,13 @@ public class UserServiceImpl  implements UserService {
     //此时的vkey应当是用户id
     @Override
     public SysUser getUserNow(String VKey) throws Exception {
+        System.err.println("空实现！");
         return null;
+    }
+
+    @Override
+    public void touchUserNow( int s) throws Exception {
+        System.err.println("空实现！");
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author MrLu
@@ -41,7 +42,13 @@ public class UserServiceByRedisImpl implements UserService {
     }
 
     @Override
+    public void touchUserNow(int s) throws Exception {
+        redisCLTemplate.expire(userSession.getUserRedisId(), s, TimeUnit.SECONDS);
+    }
+
+    @Override
     public SysUser loginVerification(String username, String pwd) throws Exception {
+        System.err.println("空实现！");
         return null;
     }
 }

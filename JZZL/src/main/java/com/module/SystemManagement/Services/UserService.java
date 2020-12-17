@@ -20,6 +20,16 @@ public interface UserService {
 
 
      /**
+     * 重设当前用户掉线时间
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/17 21:22
+     * @return    |
+      */
+    void touchUserNow(int s) throws  Exception;
+
+
+     /**
      * 登录验证
      * @author MrLu
      * @param username 用户名（明文）

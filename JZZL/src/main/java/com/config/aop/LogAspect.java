@@ -116,6 +116,7 @@ public class LogAspect {
                 record.setSysusername("未登录");
             }
 
+            userServiceByRedis.touchUserNow(6*100);
             //TODO MrLu 2020/11/26   记得打开记日志
            // logService.insertLog(record);
         } catch (Exception e) {

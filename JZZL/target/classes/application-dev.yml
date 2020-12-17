@@ -47,6 +47,7 @@ spring:
  redis:
    cacheDatabase: 0
    sessionDatabase: 1
+   onlineUsers: 2
    host: 192.168.1.124
    port: 6379
    password: tljj2020
@@ -57,7 +58,7 @@ spring:
        max-idle: 5
        max-wait: 5
        min-idle: 0
-     shutdown-timeout: 10000
+     shutdown-timeout: 10
 
  resources:
    static-locations: classpath:webApp/,classpath:static/

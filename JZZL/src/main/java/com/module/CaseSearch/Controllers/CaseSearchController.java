@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
+import com.config.webSocket.WebSocketMessage;
 import com.module.CaseSearch.Services.CaseSearchService;
 import com.module.SystemManagement.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +31,8 @@ public class CaseSearchController {
     private final UserService userServiceByRedis;
     private final
     CaseSearchService caseSearchService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
     @Autowired
     public CaseSearchController(@Qualifier("UserServiceByRedis") UserService userServiceByRedis, CaseSearchService caseSearchService) {
         this.userServiceByRedis = userServiceByRedis;
@@ -62,6 +66,11 @@ public class CaseSearchController {
             pJsonObj.put("sysuserid",userNow.getId());
             reMap.put("rows", caseSearchService.selectPeopleCasePage(pJsonObj));
             reMap.put("total", caseSearchService.selectPeopleCasePageCount(pJsonObj));
+            WebSocketMessage message=new WebSocketMessage();
+            message.setMessage("我是从查案子来的");
+            message.setfrom("system");
+            message.setto(userNow.getIdcardnumber());
+            messagingTemplate.convertAndSend("/queues/"+userNow.getIdcardnumber(), message);
         } catch (Exception e) {
             e.printStackTrace();
         }

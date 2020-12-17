@@ -11,9 +11,11 @@
                 <p><b>·</b>上次登录时间：<span id="heartPrevTime">未登录</span></p>
             </div>
         </div>
-        <div class="ico r_nav_c"><span>1</span></div>
+        <div id="websocketMessage" class="ico r_nav_c"><span>1</span></div>
         <div class="ico r_nav_r" onclick="window.close()"></div>
     </div>
 </div>
-
+<script src="/webjars/sockjs-client/sockjs.min.js"></script>
+<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+<script src="/js/webSocket.js"></script>
 <script src="/js/userHeart.js"></script>

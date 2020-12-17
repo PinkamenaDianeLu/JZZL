@@ -61,20 +61,23 @@ public class RedisSessionPoolConfig {
     @Qualifier("createSessionLettuceConnectionFactory")
     LettuceConnectionFactory createSessionLettuceConnectionFactory(GenericObjectPoolConfig genericObjectPoolConfig){
 
+        //在RedisSessionPoolConfig 注入
+        genericObjectPoolConfig.setMaxIdle(maxIdle);
+        genericObjectPoolConfig.setMinIdle(minIdle);
+        genericObjectPoolConfig.setMaxTotal(maxActive);
+        genericObjectPoolConfig.setMaxWaitMillis(maxWait);
+        genericObjectPoolConfig.setTimeBetweenEvictionRunsMillis(100);
+//        builder.poolConfig(genericObjectPoolConfig);
+        LettuceClientConfiguration lettuceClientConfiguration = LettucePoolingClientConfiguration.builder()
+                .commandTimeout(Duration.ofMillis(timeout))
+                .shutdownTimeout(Duration.ofMillis(shutdownTimeOut))
+                .poolConfig(genericObjectPoolConfig)
+                .build();
         //redis配置
-        RedisConfiguration redisConfiguration = new
-                RedisStandaloneConfiguration(host,port);
-        ((RedisStandaloneConfiguration) redisConfiguration).setDatabase(sessionDatabaseIndex);
-        ((RedisStandaloneConfiguration) redisConfiguration).setPassword(password);
-
-        //redis客户端配置
-        LettucePoolingClientConfiguration.LettucePoolingClientConfigurationBuilder
-                builder =  LettucePoolingClientConfiguration.builder().
-                commandTimeout(Duration.ofMillis(timeout));
-
-        builder.shutdownTimeout(Duration.ofMillis(shutdownTimeOut));
-        builder.poolConfig(genericObjectPoolConfig);
-        LettuceClientConfiguration lettuceClientConfiguration = builder.build();
+        RedisStandaloneConfiguration redisConfiguration = new
+                RedisStandaloneConfiguration(host, port);
+        redisConfiguration.setDatabase(sessionDatabaseIndex);
+        redisConfiguration.setPassword(password);
 
         //根据配置和客户端配置创建连接
         LettuceConnectionFactory lettuceConnectionFactory = new
