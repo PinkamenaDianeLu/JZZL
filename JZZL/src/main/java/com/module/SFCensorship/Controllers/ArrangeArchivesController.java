@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
-import com.bean.jzgl.Source.FunArchiveRecords;
-import com.bean.jzgl.Source.FunArchiveSeq;
-import com.bean.jzgl.Source.FunArchiveType;
-import com.bean.jzgl.Source.SysUser;
+import com.bean.jzgl.Source.*;
 import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
 import com.module.SFCensorship.Services.ArrangeArchivesService;
@@ -59,8 +56,10 @@ public class ArrangeArchivesController extends BaseFactory {
         try {
             int sfcId = Integer.parseInt(DecodeUrlP(id));
             JSONObject reV = new JSONObject();
-            reV.put("sfc", arrangeArchivesService.selectFunArchiveSFCById(sfcId));
+            FunArchiveSFC thisSfc=arrangeArchivesService.selectFunArchiveSFCById(sfcId);
+            reV.put("sfc", thisSfc);
             reV.put("seq", arrangeArchivesService.selectLastSeqBySfc(sfcId));
+            reV.put("issuspectorder", arrangeArchivesService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid()).getIssuspectorder() );//基础卷是否已经为嫌疑人排序
             reValue.put("value", reV);
             reValue.put("message", "success");
         } catch (Exception e) {
@@ -671,68 +670,6 @@ public class ArrangeArchivesController extends BaseFactory {
 
 
     /**
-     * 通过sfcid查询案件下的所有嫌疑人
-     *
-     * @param baserecordid
-     * @return String  |
-     * @author MrLu
-     * @createTime 2020/11/22 18:33
-     */
-    @RequestMapping(value = "/selectSuspectByBaserecordId", method = {RequestMethod.GET,
-            RequestMethod.POST})
-    @ResponseBody
-    @OperLog(operModul = operModul, operDesc = "通过baserecordid查询该文书对应的所有嫌疑人", operType = OperLog.type.SELECT)
-    public String selectSuspectByBaserecordId(String baserecordid, String archivetype, String seqid) {
-        JSONObject reValue = new JSONObject();
-        try {
-            if (StringUtil.isEmptyAll(baserecordid, archivetype, seqid)) {
-                throw new Exception("缺少必要值");
-            }
-            int archiveType = Integer.parseInt(archivetype);
-            List<FunSuspectDTO> suspects = new ArrayList<>();
-            if (0 == archiveType) {
-                //说明是基础卷
-                suspects = arrangeArchivesService.selectSuspectById(Integer.parseInt(seqid));
-            } else {
-                suspects = arrangeArchivesService.selectSuspectByRecordid(Integer.parseInt(baserecordid));
-            }
-            reValue.put("value", suspects);
-            reValue.put("message", "success");
-        } catch (Exception e) {
-            e.printStackTrace();
-            reValue.put("message", "error");
-        }
-        return reValue.toJSONString();
-    }
-
-
-    /**
-     * 查询案件活跃的基础卷内的所有卷类型
-     *
-     * @param caseinfoid 案件表id
-     * @return |
-     * @author MrLu
-     * @createTime 2020/11/27 9:32
-     */
-    @RequestMapping(value = "/selectBaseTypes", method = {RequestMethod.GET,
-            RequestMethod.POST})
-    @ResponseBody
-    @OperLog(operModul = operModul, operDesc = "查询案件活跃的基础卷内的所有卷类型", operType = OperLog.type.SELECT)
-    public String selectBaseTypes(String caseinfoid,String seqid) {
-        JSONObject reValue = new JSONObject();
-        try {
-            FunArchiveSeqDTO baseSeq = arrangeArchivesService.selectActiveSeqByCaseId(Integer.parseInt(caseinfoid));
-            reValue.put("value", arrangeArchivesService.selectArchiveTypeByJqSeq(baseSeq.getId()));
-            reValue.put("message", "success");
-        } catch (Exception e) {
-            e.printStackTrace();
-            reValue.put("message", "error");
-        }
-        return reValue.toJSONString();
-    }
-
-
-    /**
      * 更新送检卷是否已为人排序字段
      *
      * @param issuspectorder 是否已被排序 0否 1是
@@ -823,7 +760,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 SysRecordorderDTO thisRo =
                         arrangeArchivesService.selectRecordOrderByTypes(thisRecord.getRecordscode(),
                                 thisFunArchiveSeq.getArchivetype(),
-                                thisArchiveType.getArchivetype());
+                                thisArchiveType.getRecordtype());
 
                 //当全部对人文书插入完毕后 在遇到对人的文书就可以直接跳过了
                 if (null != thisRo) {
@@ -840,7 +777,7 @@ public class ArrangeArchivesController extends BaseFactory {
                             //查找这个嫌疑人在当前卷类型下的所有文书
                             List<FunArchiveRecordsDTO> records =
                                     arrangeArchivesService.selectRecordsBySuspect(StringUtil.StringToInteger(thisSuspectId),
-                                            thisArchiveType.getArchivetype(),
+                                            thisArchiveType.getRecordtype(),
                                             oriSeqId, thisFunArchiveSeq.getArchivetype());
                             System.out.println("嫌疑人文书数：" + records.size());
                             for (FunArchiveRecordsDTO thisSuspectRecord :

@@ -59,6 +59,7 @@
       AUTHORID,
       BASERECORDID,
       ISACTIVE,
+      PREVID,
       <if test="batchesseq != null">
         BATCHESSEQ,
       </if>
@@ -85,6 +86,7 @@
       #{authorid,jdbcType=DECIMAL},
       #{baserecordid,jdbcType=DECIMAL},
       #{isactive,jdbcType=DECIMAL},
+      #{previd,jdbcType=DECIMAL},
       <if test="batchesseq != null">
         #{batchesseq,jdbcType=DECIMAL},
       </if>
@@ -189,5 +191,21 @@
     AND archivetype=0
     AND caseinfoid=#{caseinfoid,jdbcType=VARCHAR}
     AND ISACTIVE = 1 AND ROWNUM=1
+  </select>
+
+  <select id="updateBaseSeqIsNotActive" parameterType="java.lang.Integer">
+    UPDATE FUN_ARCHIVE_SEQ set ISACTIVE=1 where scbj=0 and ARCHIVESFCID=#{archivesfcid,jdbcType=VARCHAR}
+  </select>
+  <select id="selectActiveSeqByCaseInfoId" parameterType="java.lang.Integer"  resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List" />
+    FROM FUN_ARCHIVE_SEQ SEQ
+    WHERE SCBJ = 0
+    AND ISACTIVE = 0
+    AND EXISTS (SELECT ID
+    FROM FUN_ARCHIVE_SFC SFC
+    WHERE SCBJ = 0
+    AND CASEINFOID = #{caseinfoid,jdbcType=VARCHAR}
+    AND ISSEND &lt; 1
+    AND SEQ.ARCHIVESFCID = SFC.ID)
   </select>
 </mapper>

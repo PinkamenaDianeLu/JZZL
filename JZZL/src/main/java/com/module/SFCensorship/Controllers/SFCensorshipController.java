@@ -2,8 +2,7 @@ package com.module.SFCensorship.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveTypeDTO;
+import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunCaseInfo;
@@ -14,6 +13,7 @@ import com.enums.Enums;
 import com.factory.BaseFactory;
 import com.module.SFCensorship.Services.SFCensorshipService;
 import com.module.SystemManagement.Services.UserService;
+import com.util.StringUtil;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author MrLu
@@ -89,7 +87,7 @@ public class SFCensorshipController extends BaseFactory {
             if (StringUtils.isEmpty(caseinfoid)) {
                 throw new Exception("关键参数：caseinfoid 未传递");
             }
-            int recordId=pJsonObj.getInteger("recordsId");//使用的文书id
+            int recordId = pJsonObj.getInteger("recordsId");//使用的文书id
             int caseInfoId = Integer.parseInt(DecodeUrlP(caseinfoid));//得到解密后的案件表id
             FunCaseInfo thisFunCaseInfo = sFCensorshipService.getFunCaseInfoById(caseInfoId);
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
@@ -129,7 +127,7 @@ public class SFCensorshipController extends BaseFactory {
 
             //记录该文书已选择过了
 
-            FunArchiveRecordsDTO uRecord=new FunArchiveRecordsDTO();
+            FunArchiveRecordsDTO uRecord = new FunArchiveRecordsDTO();
             uRecord.setId(recordId);
             uRecord.setPrevid(1);
             sFCensorshipService.updateFunArchiveRecordById(uRecord);
@@ -211,25 +209,28 @@ public class SFCensorshipController extends BaseFactory {
         }
     }
 
-     /**
+    /**
      * 根据案件信息表查询案件信息
+     *
+     * @param caseinfoid
+     * @return String  |
      * @author MrLu
-     * @param  caseinfoid
-     * @createTime  2020/11/21 11:37
-     * @return  String  |
-      */
-    @RequestMapping(value = "/selectFunArchiveSFCById", method = {RequestMethod.GET,
+     * @createTime 2020/11/21 11:37
+     */
+    @RequestMapping(value = "/selectCaseInfoById", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "查询案件信息", operType = OperLog.type.INSERT)
-    public String selectFunArchiveSFCById(String caseinfoid) {
+    public String selectCaseInfoById(String caseinfoid) {
         JSONObject reValue = new JSONObject();
         try {
             if (StringUtils.isEmpty(caseinfoid)) {
                 throw new Exception("你想查nm吗？");
             }
+            int caseInfoId=Integer.parseInt(DecodeUrlP(caseinfoid));
 
-            reValue.put("value", sFCensorshipService.selectFunArchiveSFCDTOByCaseInfoId(Integer.parseInt( DecodeUrlP(caseinfoid))));
+            reValue.put("value", sFCensorshipService.getFunCaseInfoById(caseInfoId));
+            reValue.put("issuspectorder", 1==sFCensorshipService.selectBaseSfcByCaseinfoid(caseInfoId).getIssuspectorder());//基础卷是否已经为嫌疑人排序
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,4 +238,171 @@ public class SFCensorshipController extends BaseFactory {
         }
         return reValue.toJSONString();
     }
+
+
+    /**
+     * 通过案件id查询案件下的所有嫌疑人
+     *
+     * @param caseinfoid
+     * @return String  |
+     * @author MrLu
+     * @createTime 2020/11/22 18:33
+     */
+    @RequestMapping(value = "/selectSuspectByCaseInfoId", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "通过caseinfoid查询该案件对应的所有嫌疑人", operType = OperLog.type.SELECT)
+    public String selectSuspectByCaseInfoId(String caseinfoid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(caseinfoid)) {
+                throw new Exception("缺少必要值");
+            }
+            int caseInfoId = Integer.parseInt(DecodeUrlP(caseinfoid));
+            List<FunSuspectDTO> suspects = new ArrayList<>();
+            //说明是基础卷
+            suspects = sFCensorshipService.selectSuspectById(caseInfoId);
+            reValue.put("value", suspects);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
+    @RequestMapping(value = "/orderArchivesBySuspectOrder", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "通过caseinfoid查询该案件对应的所有嫌疑人", operType = OperLog.type.SELECT)
+    public String orderArchivesBySuspectOrder(String issuspectorder, String caseinfoid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            //为嫌疑人整理顺序
+            if (StringUtils.isEmpty(issuspectorder) && StringUtils.isEmpty(caseinfoid)) {
+                throw new Exception("你传尼玛呢?????????????");
+            }
+            String[] SuspectOrder = issuspectorder.split(",");
+            //案件表id
+            int CaseInfoId = Integer.parseInt(DecodeUrlP(caseinfoid));
+            //按照顺序循环所有的嫌疑人
+            int sOrder = 1;//嫌疑人相对顺序
+            FunSuspectDTO funSuspectDTO = new FunSuspectDTO();
+
+            for (String thissuspectid : SuspectOrder) {
+                int thisSuspectId = StringUtil.StringToInteger(thissuspectid);
+                funSuspectDTO.setId(thisSuspectId);
+                funSuspectDTO.setDefaultorder(sOrder++);
+                //更新嫌疑人顺序
+                sFCensorshipService.updateSuspectDefaultOrder(funSuspectDTO);
+            }
+            List<FunArchiveSeqDTO> seqList = sFCensorshipService.selectActiveSeqByCaseInfoId(CaseInfoId);
+            SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+            for (FunArchiveSeqDTO thisSeq :
+                    seqList) {
+                // 更新此送检次序为不活跃状态(其实是更新一个sfc下面的所有seq的isactive为1（不活跃）)
+                sFCensorshipService.updateBaseSeqIsNotActive(thisSeq.getArchivesfcid());
+                //新建送检次序
+                thisSeq.setAuthor(userNow.getXm());//创建人姓名
+                thisSeq.setAuthorid(userNow.getId());//创建人id
+                thisSeq.setAuthoridcard(userNow.getIdcardnumber());//创建人身份证号
+                thisSeq.setPrevid(thisSeq.getId());//上一个id
+                thisSeq.setBatchesseq(thisSeq.getBatchesseq() + 1);//整理次序
+                thisSeq.setIsactive(0);//是否活跃
+                sFCensorshipService.insertFunArchiveSeq(thisSeq);
+                //上一次的id
+                int oriSeqId = thisSeq.getPrevid();
+
+                //按照seq的文书类型重新整理
+               createArchiveBySuspect(oriSeqId, thisSeq);
+            }
+            //标记为已为嫌疑人排序
+            sFCensorshipService.updateIssuspectorderByCaseinfoid(CaseInfoId);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+    /**FunArchiveSeqDTOMapper
+     * 根据嫌疑人顺序自动整理基础卷
+     *
+     * @param oriSeqId 原有的整理次序id
+     * @param newSeq   新建的整理次序id
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/15 11:06
+     */
+    private void createArchiveBySuspect(int oriSeqId, FunArchiveSeqDTO newSeq) throws Exception {
+        //得到基础卷的默认顺序
+        List<SysRecordorderDTO> baseOrder = sFCensorshipService.selectSysRecordOrderByArchiveType(newSeq.getArchivetype());
+
+        //查询该卷类型需要的卷
+
+        List<SysRecordtypeorderDTO> needRecordType = sFCensorshipService.selectRecordtypeorderByArchivetype(newSeq.getArchivetype());
+        FunArchiveTypeDTO funArchiveTypeDTO = new FunArchiveTypeDTO();
+        funArchiveTypeDTO.setArchiveseqid(newSeq.getId());//seqid
+        funArchiveTypeDTO.setIsazxt(1);//不是案宗来的了
+        funArchiveTypeDTO.setJqbh(newSeq.getJqbh());//警情编号
+        funArchiveTypeDTO.setArchivesfcid(newSeq.getArchivesfcid());//sfcid
+        funArchiveTypeDTO.setAjbh(newSeq.getAjbh());//案件编号
+        funArchiveTypeDTO.setArchivename("?");//不知道干啥的两个字段
+        funArchiveTypeDTO.setArchivecode("?");
+        //循环插入对应的类型
+        Map<Integer, Integer> recordTypeIdMap = new HashMap<>();
+        for (SysRecordtypeorderDTO thisRecordType : needRecordType) {
+//            funArchiveTypeDTO.setr
+            funArchiveTypeDTO.setRecordtype(thisRecordType.getRecordcode());//文书类型代码
+            funArchiveTypeDTO.setRecordtypecn(thisRecordType.getRecordname());//文书类型名
+            funArchiveTypeDTO.setDefaultorder(thisRecordType.getDefaultorder());//默认顺序
+            sFCensorshipService.insertFunArchiveType(funArchiveTypeDTO);//插入
+            //将类型对应的type表的id记录下来
+            recordTypeIdMap.put(thisRecordType.getRecordcode(), funArchiveTypeDTO.getId());
+
+        }
+        System.out.println(recordTypeIdMap);
+        int i = 0;
+        int test =0;
+        for (SysRecordorderDTO thisOrder :
+                baseOrder) {
+            //查看这个顺序的应有的文书
+            List<FunArchiveRecordsDTO> thisRecord = sFCensorshipService.selectReocrdBySeqRcode(oriSeqId, thisOrder.getRecordcode(),thisOrder.getRecordtype());
+            //同一个文书代码可能对应多个文书（大多数情况就一个）
+            int j = 0;
+            for (FunArchiveRecordsDTO thisReocrd : thisRecord) {
+                test++;
+                i += j;
+                thisReocrd.setArchivetypeid(recordTypeIdMap.get(thisOrder.getRecordtype()));//typeid
+                thisReocrd.setArchiveseqid(newSeq.getId());//seqid
+                thisReocrd.setThisorder(thisOrder.getDefaultorder() + i++);//顺序
+                thisReocrd.setPrevid(thisReocrd.getId());//上一个
+                copyRecordToNew(thisReocrd.getId(), thisReocrd);//复制文书下面的图片
+            }
+        }
+        System.out.println(i);
+        System.out.println("新建文书："+test);
+    }
+
+    private void copyRecordToNew(int oriId, FunArchiveRecordsDTO newRecord) {
+        sFCensorshipService.insertFunArchiveRecords(newRecord);//新建
+        int newRecordId = newRecord.getId();//新建的文书id
+        //开始复制文书文件
+        //查找该文书原有的文件
+        for (FunArchiveFilesDTO thisFile :
+                sFCensorshipService.selectRecordFilesByRecordId(oriId, null)) {
+            thisFile.setArchiveseqid(newRecord.getArchiveseqid());
+            thisFile.setArchivesfcid(newRecord.getArchivesfcid());
+            thisFile.setArchivetypeid(newRecord.getArchivetypeid());
+            thisFile.setArchiverecordid(newRecordId);
+            thisFile.setAuthor(newRecord.getAuthor());
+            thisFile.setAuthorid(newRecord.getAuthorid());
+            //复制插入
+            sFCensorshipService.insertFunArchiveFilesDTO(thisFile);
+        }
+
+    }
+
 }

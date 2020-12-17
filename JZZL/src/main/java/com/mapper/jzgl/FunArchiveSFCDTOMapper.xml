@@ -169,4 +169,16 @@
     select count(0) from   FUN_ARCHIVE_SFC where 1=1 and scbj=0
     and CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
   </select>
+
+  <update id="updateIssuspectorderByCaseinfoid" parameterType="java.lang.Integer">
+    UPDATE FUN_ARCHIVE_SFC SET ISSUSPECTORDER=1 WHERE  SCBJ=0 AND
+    CASEINFOID=#{caseinfoid,jdbcType=DECIMAL} AND ARCHIVETYPE=0
+  </update>
+
+  <select id="selectBaseSfcByCaseinfoid" parameterType="java.lang.Integer"   resultMap="BaseResultMap" >
+    SELECT <include refid="Base_Column_List"/>
+    FROM FUN_ARCHIVE_SFC WHERE SCBJ=0
+    AND CASEINFOID=#{caseinfoid,jdbcType=DECIMAL}
+    AND ARCHIVETYPE=0
+  </select>
 </mapper>

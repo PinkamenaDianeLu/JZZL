@@ -156,4 +156,9 @@ public class testg {
 
         }
     }
+    @Test
+    public  void aijiajia(){
+        int i=0;
+        System.out.println(i++);
+    }
 }

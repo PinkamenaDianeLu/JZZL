@@ -38,7 +38,7 @@ public class FunArchiveRecordsDTO {
     private Integer  previd;
     private String   jcyrecordcode;
     private String   recordwh;
-    private  Date issuetime;
+    private  Date effectivetime;
     private Integer baserecordid;
 
     public Integer getId() {
@@ -218,11 +218,11 @@ public class FunArchiveRecordsDTO {
     }
 
     public Date getIssuetime() {
-        return issuetime;
+        return effectivetime;
     }
 
-    public void setIssuetime(Date issuetime) {
-        this.issuetime = issuetime;
+    public void setIssuetime(Date effectivetime) {
+        this.effectivetime = effectivetime;
     }
 
     public Integer getBaserecordid() {

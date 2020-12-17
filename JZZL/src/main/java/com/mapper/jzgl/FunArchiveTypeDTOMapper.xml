@@ -9,8 +9,8 @@
     <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
     <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
     <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype" />
-    <result column="ARCHIVETYPECN" jdbcType="VARCHAR" property="archivetypecn" />
+    <result column="RECORDTYPE" jdbcType="DECIMAL" property="recordtype" />
+    <result column="RECORDTYPECN" jdbcType="VARCHAR" property="recordtypecn" />
     <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder" />
     <result column="ARCHIVENAME" jdbcType="VARCHAR"  property="archivename" />
     <result column="ISAZXT"  jdbcType="DECIMAL"  property="isazxt" />
@@ -20,7 +20,7 @@
 
   </resultMap>
   <sql id="Base_Column_List">
-    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ARCHIVETYPE, ARCHIVETYPECN, 
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, RECORDTYPE, RECORDTYPECN,
     DEFAULTORDER,ARCHIVENAME,ISAZXT,ARCHIVESEQID,ARCHIVECODE,ARCHIVESFCID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -43,8 +43,8 @@
         UPDATETIME,
         JQBH,
         AJBH,
-        ARCHIVETYPE,
-        ARCHIVETYPECN,
+        RECORDTYPE,
+        RECORDTYPECN,
         DEFAULTORDER,
         ISAZXT,
         ARCHIVESEQID,
@@ -62,8 +62,8 @@
         sysdate,
         #{jqbh,jdbcType=VARCHAR},
         #{ajbh,jdbcType=VARCHAR},
-        #{archivetype,jdbcType=DECIMAL},
-        #{archivetypecn,jdbcType=VARCHAR},
+        #{recordtype,jdbcType=DECIMAL},
+        #{recordtypecn,jdbcType=VARCHAR},
         #{defaultorder,jdbcType=DECIMAL},
         #{isazxt,jdbcType=DECIMAL},
         #{archiveseqid,jdbcType=DECIMAL},
@@ -96,11 +96,11 @@
       <if test="ajbh != null">
         AJBH = #{ajbh,jdbcType=VARCHAR},
       </if>
-      <if test="archivetype != null">
-        ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL},
+      <if test="recordtype != null">
+          RECORDTYPE = #{recordtype,jdbcType=DECIMAL},
       </if>
-      <if test="archivetypecn != null">
-        ARCHIVETYPECN = #{archivetypecn,jdbcType=VARCHAR},
+      <if test="recordtypecn != null">
+          RECORDTYPECN = #{recordtypecn,jdbcType=VARCHAR},
       </if>
       <if test="defaultorder != null">
         DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},

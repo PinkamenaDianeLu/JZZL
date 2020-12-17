@@ -66,4 +66,23 @@ public interface FunArchiveSeqDTOMapper {
      * @return  FunArchiveSeqDTO  |
       */
     FunArchiveSeqDTO  selectActiveSeqByCaseId(int caseinfoid);
+
+
+     /**
+     * 更新一个送检卷下的整理次序都是不活跃状态
+     * @author MrLu
+     * @param archivesfcid 送检卷id
+     * @createTime  2020/12/10 9:27
+     * @return    |
+      */
+    void updateBaseSeqIsNotActive(int archivesfcid);
+
+     /**
+     * 查询一个案件下所有活跃的且未被送检的文书整理次序
+     * @author MrLu
+     * @param caseinfoid 案件id
+     * @createTime  2020/12/15 15:09
+     * @return    |
+      */
+    List<FunArchiveSeqDTO> selectActiveSeqByCaseInfoId(int caseinfoid);
 }

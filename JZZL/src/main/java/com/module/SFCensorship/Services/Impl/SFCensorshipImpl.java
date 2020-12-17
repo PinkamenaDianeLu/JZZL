@@ -3,6 +3,7 @@ package com.module.SFCensorship.Services.Impl;
 import com.bean.jzgl.Converter.FunArchiveSFCMapper;
 import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunCaseInfoMapper;
+import com.bean.jzgl.Converter.SysRecordorderMapper;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
@@ -37,7 +38,12 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
     @Resource
     FunArchiveFilesDTOMapper funArchiveFilesDTOMapper;
-
+    @Resource
+    FunSuspectDTOMapper funSuspectDTOMapper;
+    @Resource
+    SysRecordorderDTOMapper sysRecordorderDTOMapper;
+    @Resource
+    SysRecordtypeorderDTOMapper sysRecordtypeorderDTOMapper;
     @Override
     public List<FunArchiveSFC> selectArchiveSFCPage(Map<String, Object> map) {
         return FunArchiveSFCMapper.INSTANCE.pcDTOToPcs(funArchiveSFCDTOMapper.selectArchiveSFCPage(map));
@@ -63,6 +69,11 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
+    public void insertFunArchiveSeq(FunArchiveSeqDTO record) {
+        funArchiveSeqDTOMapper.insertSelective(record);
+    }
+
+    @Override
     public void insertFunArchiveSFC(FunArchiveSFC funArchiveSFC) {
         FunArchiveSFCDTO funArchiveSFCDTO= FunArchiveSFCMapper.INSTANCE.pcToPcDTO(funArchiveSFC);
         funArchiveSFCDTOMapper.insertSelective(funArchiveSFCDTO);
@@ -72,6 +83,11 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     @Override
     public FunCaseInfo getFunCaseInfoById(Integer id) {
         return FunCaseInfoMapper.INSTANCE.pcDTOToPc(funCaseInfoDTOMapper.selectByPrimaryKey(id));
+    }
+
+    @Override
+    public FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid) {
+        return funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid);
     }
 
     @Override
@@ -122,7 +138,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
             r.setFileurl("/");
             r.setOriginurl("/");
             r.setIsdowland(1);
-            r.setFilename(type.getArchivetypecn());
+            r.setFilename(type.getRecordtypecn());
             r.setArchiveseqid(record.getArchiveseqid());
             r.setArchivesfcid(record.getArchivesfcid());
             r.setIsazxt(1);
@@ -142,12 +158,64 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public FunCaseInfo selectFunArchiveSFCDTOByCaseInfoId (Integer caseinfoid){
-        return   FunCaseInfoMapper.INSTANCE.pcDTOToPc(funCaseInfoDTOMapper.selectCaseInfoByCaseInfoId(caseinfoid));
-    }
-    @Override
     public  void  updateFunArchiveRecordById(FunArchiveRecordsDTO record){
         funArchiveRecordsDTOMapper.updateByPrimaryKeySelective( record);
     }
+
+    @Override
+    public List<FunSuspectDTO> selectSuspectById(Integer id) {
+        return funSuspectDTOMapper.selectSuspectById(id);
+    }
+
+    @Override
+    public FunArchiveSeqDTO selectActiveSeqByCaseId(int caseinfoid) {
+        return funArchiveSeqDTOMapper.selectActiveSeqByCaseId(caseinfoid);
+    }
+
+    @Override
+    public void updateBaseSeqIsNotActive(int archivesfcid) {
+        funArchiveSeqDTOMapper.updateBaseSeqIsNotActive(archivesfcid);
+    }
+
+    @Override
+    public void insertFunArchiveRecords(FunArchiveRecordsDTO record) {
+        funArchiveRecordsDTOMapper.insertSelective(record);
+    }
+
+    @Override
+    public List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid, Integer isdelete) {
+        return funArchiveFilesDTOMapper.selectRecordFilesByRecordId(archiverecordid, isdelete);
+    }
+
+    @Override
+    public void updateSuspectDefaultOrder(FunSuspectDTO record) {
+        funSuspectDTOMapper.updateByPrimaryKeySelective(record);
+    }
+
+    @Override
+    public List<SysRecordorderDTO> selectSysRecordOrderByArchiveType(int archivetype) {
+        return sysRecordorderDTOMapper.selectSysRecordOrderByArchiveType(archivetype);
+    }
+
+    @Override
+    public List<FunArchiveRecordsDTO> selectReocrdBySeqRcode(Integer archiveseqid, String recordscode,Integer recordtype) {
+        return funArchiveRecordsDTOMapper.selectReocrdBySeqRcode(archiveseqid,recordscode,recordtype);
+    }
+
+    @Override
+    public List<FunArchiveSeqDTO> selectActiveSeqByCaseInfoId(int caseinfoid) {
+        return funArchiveSeqDTOMapper.selectActiveSeqByCaseInfoId(caseinfoid);
+    }
+
+    @Override
+    public List<SysRecordtypeorderDTO> selectRecordtypeorderByArchivetype(Integer archivetype) {
+        return sysRecordtypeorderDTOMapper.selectRecordtypeorderByArchivetype(archivetype);
+    }
+
+    @Override
+    public void updateIssuspectorderByCaseinfoid(Integer caseinfoid) {
+        funArchiveSFCDTOMapper.updateIssuspectorderByCaseinfoid(caseinfoid);
+    }
+
 
 }

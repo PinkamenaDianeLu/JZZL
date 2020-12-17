@@ -24,14 +24,14 @@
         <result column="JCYRECORDCODE" jdbcType="VARCHAR" property="jcyrecordcode"/>
         <result column="PREVID" jdbcType="DECIMAL" property="previd"/>
         <result column="RECORDWH" jdbcType="VARCHAR" property="recordwh"/>
-        <result column="ISSUETIME" jdbcType="TIMESTAMP" property="issuetime"/>
+        <result column="EFFECTIVETIME" jdbcType="TIMESTAMP" property="effectivetime"/>
         <result column="BASERECORDID" jdbcType="DECIMAL" property="baserecordid"/>
 
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,ARCHIVESEQID,
      THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
-    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH,ISSUETIME,BASERECORDID
+    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH,EFFECTIVETIME,BASERECORDID
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -286,5 +286,18 @@
     ON A.RECORDSCODE = R.RECORDCODE
     WHERE R.RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
     ORDER BY r.defaultorder ASC
+    </select>
+
+    <select id="selectReocrdBySeqRcode" parameterType="map" resultMap="BaseResultMap">
+        SELECT  <include refid="Base_Column_List"/>
+        from FUN_ARCHIVE_RECORDS
+        where SCBJ=0
+        AND  RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
+        AND archivetypeid =
+         (SELECT ID FROM fun_archive_type
+         WHERE SCBJ=0
+          AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+          AND recordtype= #{recordtype,jdbcType=DECIMAL} )
+        ORDER BY EFFECTIVETIME ASC
     </select>
 </mapper>

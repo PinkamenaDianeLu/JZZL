@@ -17,9 +17,9 @@ public class FunArchiveTypeDTO {
 
     private String ajbh;
 
-    private Integer archivetype;
+    private Integer recordtype;
 
-    private String archivetypecn;
+    private String recordtypecn;
 
     private Integer defaultorder;
 
@@ -85,20 +85,20 @@ public class FunArchiveTypeDTO {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public Integer getArchivetype() {
-        return archivetype;
+    public Integer getRecordtype() {
+        return recordtype;
     }
 
-    public void setArchivetype(Integer archivetype) {
-        this.archivetype = archivetype;
+    public void setRecordtype(Integer recordtype) {
+        this.recordtype = recordtype;
     }
 
-    public String getArchivetypecn() {
-        return archivetypecn;
+    public String getRecordtypecn() {
+        return recordtypecn;
     }
 
-    public void setArchivetypecn(String archivetypecn) {
-        this.archivetypecn = archivetypecn == null ? null : archivetypecn.trim();
+    public void setRecordtypecn(String recordtypecn) {
+        this.recordtypecn = recordtypecn;
     }
 
     public Integer getDefaultorder() {

@@ -41,7 +41,7 @@ public interface ArrangeArchivesService {
      * @createTime  2020/10/13 16:30
      * @return  FunArchiveSeqDTO  |
       */
-    FunArchiveSeqDTO selectFunArchiveSeqById(Integer id);
+     FunArchiveSeqDTO selectFunArchiveSeqById(Integer id);
 
      /**
      * 查询送检记录下最后一次整理
@@ -280,13 +280,13 @@ public interface ArrangeArchivesService {
     SysRecordorderDTO selectRecordOrderByTypes(String recordcode,Integer archivetype,Integer recordtype);
 
     /**
-     * 查询某个案件正在活跃的基础卷
+     *  查询案件的基础卷
      * @author MrLu
-     * @param  caseinfoid 案件表id
-     * @createTime  2020/11/27 9:22
-     * @return  FunArchiveSeqDTO  |
+     * @param
+     * @createTime  2020/12/17 18:00
+     * @return    |
      */
-    FunArchiveSeqDTO  selectActiveSeqByCaseId(int caseinfoid);
+    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid);
 
     /**
      * 查询一个人的对应文书
@@ -317,13 +317,16 @@ public interface ArrangeArchivesService {
      * @return  FunArchiveSFC  |
       */
     FunArchiveSFC selectFunArchiveSFCById(int id);
+
+
+
     /**
-     * 按照seqId查询对应案件下的嫌疑人
+     * 更新一个送检卷下的整理次序都是不活跃状态
      * @author MrLu
-     * @param  id  eqId
-     * @createTime  2020/12/8 18:47
-     * @return  List<FunSuspectDTO>  |
+     * @param archivesfcid 送检卷id
+     * @createTime  2020/12/10 9:27
+     * @return    |
      */
-    List<FunSuspectDTO>   selectSuspectById(Integer id);
+    void updateBaseSeqIsNotActive(int archivesfcid);
 
 }

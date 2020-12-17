@@ -15,7 +15,6 @@ $(function () {
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
-                console.log(reV)
                 const log=reV.value;
                 $('#heartUsername').html(log.sysusername);
                 $('#heartPrevIp').html(log.ip);

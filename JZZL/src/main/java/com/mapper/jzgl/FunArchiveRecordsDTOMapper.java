@@ -105,4 +105,18 @@ public interface FunArchiveRecordsDTOMapper {
                                                            @Param("recordtype") Integer recordtype,
                                                            @Param("archiveseqid") Integer archiveseqid,
                                                            @Param("archivetype")Integer archivetype);
+
+
+     /**
+     * 查询某一整理次序下对应文书代码的文书
+     * @author MrLu
+     * @param archiveseqid
+      * @param recordscode 文书代码
+      * @param  recordtype 文书类型
+     * @createTime  2020/12/15 14:31
+     * @return    |
+      */
+    List<FunArchiveRecordsDTO>  selectReocrdBySeqRcode(@Param("archiveseqid") Integer archiveseqid,
+                                                       @Param("recordscode") String recordscode,
+                                                       @Param("recordtype") Integer recordtype);
 }

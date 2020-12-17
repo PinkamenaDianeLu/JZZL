@@ -19,9 +19,9 @@ public class FunArchiveType {
 
     private String ajbh;
 
-    private Integer archivetype;
+    private Integer recordtype;
 
-    private String archivetypecn;
+    private String recordtypecn;
 
     private Integer defaultorder;
     private Enums.IsAzxt isazxt;
@@ -85,20 +85,20 @@ public class FunArchiveType {
         this.ajbh = ajbh == null ? null : ajbh.trim();
     }
 
-    public Integer getArchivetype() {
-        return archivetype;
+    public String getRecordtypecn() {
+        return recordtypecn;
     }
 
-    public void setArchivetype(Integer archivetype) {
-        this.archivetype = archivetype;
+    public void setRecordtypecn(String recordtypecn) {
+        this.recordtypecn = recordtypecn;
     }
 
-    public String getArchivetypecn() {
-        return archivetypecn;
+    public Integer getRecordtype() {
+        return recordtype;
     }
 
-    public void setArchivetypecn(String archivetypecn) {
-        this.archivetypecn = archivetypecn == null ? null : archivetypecn.trim();
+    public void setRecordtype(Integer recordtype) {
+        this.recordtype = recordtype;
     }
 
     public Integer getDefaultorder() {

@@ -205,9 +205,10 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public FunArchiveSeqDTO selectActiveSeqByCaseId(int caseinfoid) {
-        return funArchiveSeqDTOMapper.selectActiveSeqByCaseId(caseinfoid);
+    public FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid) {
+        return funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid);
     }
+
 
     @Override
     public List<FunSuspectRecordDTO> selectRecordBySuspectid(int suspectid, int recordtype) {
@@ -224,9 +225,10 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
         return FunArchiveSFCMapper.INSTANCE.pcDTOToPc(funArchiveSFCDTOMapper.selectByPrimaryKey(id));
     }
 
+
     @Override
-    public List<FunSuspectDTO> selectSuspectById(Integer id) {
-        return funSuspectDTOMapper.selectSuspectById(id);
+    public void updateBaseSeqIsNotActive(int archivesfcid) {
+        funArchiveSeqDTOMapper.updateBaseSeqIsNotActive(archivesfcid);
     }
 
     @Override

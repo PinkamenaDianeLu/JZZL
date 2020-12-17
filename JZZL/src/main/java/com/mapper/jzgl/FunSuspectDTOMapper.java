@@ -33,9 +33,9 @@ public interface FunSuspectDTOMapper {
     List<FunSuspectDTO> selectSuspectByRecordid(Integer recordid);
 
      /**
-     * 按照seqId查询对应案件下的嫌疑人
+     * 按照id查询对应案件下的嫌疑人
      * @author MrLu
-     * @param  id  eqId
+     * @param  id  caseinfoid
      * @createTime  2020/12/8 18:47
      * @return  List<FunSuspectDTO>  |
       */

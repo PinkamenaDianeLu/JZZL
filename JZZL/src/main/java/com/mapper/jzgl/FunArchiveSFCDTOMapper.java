@@ -26,4 +26,22 @@ public interface FunArchiveSFCDTOMapper {
      */
     List<FunArchiveSFCDTO> selectArchiveSFCPage(Map<String,Object> map);
     int selectArchiveSFCPageCount(Map<String,Object> map);
+    
+     /**
+     * 将案件id下的基础卷标记为已为嫌疑人排序
+     * @author MrLu
+     * @param 
+     * @createTime  2020/12/17 17:54
+     * @return    |  
+      */
+    void updateIssuspectorderByCaseinfoid(Integer caseinfoid);
+
+     /**
+     *  查询案件的基础卷
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/17 18:00
+     * @return    |
+      */
+    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid);
 }

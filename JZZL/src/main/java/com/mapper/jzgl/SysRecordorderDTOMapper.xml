@@ -159,4 +159,17 @@
         AND RECORDTYPE  = #{recordtype,jdbcType=DECIMAL}
         and ROWNUM=1
     </select>
+    <select id="selectSysRecordOrderByArchiveType" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select  <include refid="Base_Column_List"/>
+        FROM SYS_RECORDORDER
+        WHERE
+        SCBJ=0  AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+        ORDER BY  DEFAULTORDER ASC
+    </select>
+
+    <select id="selectRecordTypeByArchiveType" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+        SELECT RECORDTYPE FROM   SYS_RECORDORDER
+        WHERE SCBJ=0 and  ARCHIVETYPE= #{archivetype,jdbcType=DECIMAL}
+        GROUP BY RECORDTYPE
+    </select>
 </mapper>
