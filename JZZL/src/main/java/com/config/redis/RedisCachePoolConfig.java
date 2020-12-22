@@ -86,8 +86,7 @@ public class RedisCachePoolConfig {
 
 
         //根据配置和客户端配置创建连接
-        LettuceConnectionFactory lettuceConnectionFactory = new
+        return new
                 LettuceConnectionFactory(redisConfiguration, lettuceClientConfiguration);
-        return lettuceConnectionFactory;
     }
 }

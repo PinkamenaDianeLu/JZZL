@@ -26,7 +26,7 @@ public interface UserService {
      * @createTime  2020/12/17 21:22
      * @return    |
       */
-    void touchUserNow(int s) throws  Exception;
+    void touchUserNow(int s,String username) throws  Exception;
 
 
      /**

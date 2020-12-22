@@ -27,22 +27,27 @@ public interface SysRecordorderDTOMapper {
      * @author MrLu
      * @createTime 2020/11/26 15:23
      */
-    SysRecordorderDTO selectRecordOrderByTypes(Map<String,Object> map);
-     /**
+    SysRecordorderDTO selectRecordOrderByTypes(Map<String, Object> map);
+
+    /**
      * 查询某种类型的卷的文书顺序
-     * @author MrLu
+     *
      * @param archivetype 0基础卷 7补充侦查工作卷 8提请批捕卷 9移送起诉卷
-     * @createTime  2020/12/15 11:11
-     * @return    |
-      */
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/15 11:11
+     */
     List<SysRecordorderDTO> selectSysRecordOrderByArchiveType(int archivetype);
 
-     /**
+    /**
      * 查询某种类型的卷的中的文书类型
+     *
+     * @param archivetype 0基础卷 7补充侦查工作卷 8提请批捕卷 9移送起诉卷
+     * @return |
      * @author MrLu
-     * @param  archivetype 0基础卷 7补充侦查工作卷 8提请批捕卷 9移送起诉卷
-     * @createTime  2020/12/17 9:59
-     * @return    |
-      */
+     * @createTime 2020/12/17 9:59
+     */
     List<Integer> selectRecordTypeByArchiveType(int archivetype);
+
+
 }

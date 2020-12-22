@@ -300,4 +300,22 @@
           AND recordtype= #{recordtype,jdbcType=DECIMAL} )
         ORDER BY EFFECTIVETIME ASC
     </select>
+
+    <select id="selectRecordOrderForSuspect" parameterType="map" resultMap="BaseResultMap">
+    SELECT RECORDS.*
+  FROM FUN_ARCHIVE_RECORDS RECORDS, SYS_RECORDORDER RECORDORDER
+ WHERE RECORDORDER.SCBJ = 0
+   AND RECORDS.SCBJ = 0
+   AND RECORDS.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+   AND RECORDS.RECORDSCODE = RECORDORDER.RECORDCODE
+   AND RECORDORDER.RECORDSTYLE = 1
+   AND RECORDORDER.RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
+   AND RECORDORDER.ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+   AND EXISTS (SELECT 1
+          FROM FUN_SUSPECT_RECORD SUSPECT
+         WHERE SCBJ = 0
+           AND SUSPECT.RECORDID = RECORDS.ID
+           AND SUSPECT.SUSPECTID = #{suspectid,jdbcType=DECIMAL})
+ ORDER BY RECORDORDER.DEFAULTORDER ASC
+    </select>
 </mapper>

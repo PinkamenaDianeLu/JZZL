@@ -1,18 +1,20 @@
 package com.factory;
 
+import com.alibaba.fastjson.JSONObject;
 import com.config.annotations.CodeTableMapper;
+import com.config.webSocket.WebSocketMessage;
+import com.enums.Enums;
+import com.module.WebSocket.Services.WebSocketService;
 import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import sun.misc.BASE64Decoder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author MrLu
@@ -22,9 +24,12 @@ import java.util.Optional;
 public class BaseFactory {
     @Autowired
     RedisTemplate<String, Object> redisCCTemplate;
-
-
-
+    @Autowired
+    RedisTemplate<String, Object> redisOnlineUserTemplate;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private WebSocketService webSocketService;
     /**
      * 解码添加了salt的base64
      *
@@ -161,6 +166,36 @@ public class BaseFactory {
             }
         }
         return Obj;
+    }
+
+     /**
+     * websocket实时发送消息
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/18 9:21
+     * @return    |  
+      */
+    protected void websocketSendMessage(String message,String consigneeIdCard,Enums.messagetype messageType) {
+        //1.验证发送的用户是否在线
+        consigneeIdCard = Optional.ofNullable(consigneeIdCard).orElse("noBody");
+        WebSocketMessage messageObj = new WebSocketMessage();
+        boolean isSend=false;
+        //判断用户是否在线
+        if (redisOnlineUserTemplate.hasKey(consigneeIdCard)){
+            //发送消息
+            messageObj.setMessage(message);//消息内容
+            messageObj.setsender("system");//发送人 系统
+            messageObj.setreceiver(consigneeIdCard);//发给谁
+            messageObj.setMessagetype(messageType.getValue());//发送类型
+            messageObj.setSendtime(new Date());//发送时间
+            isSend=true;
+            messagingTemplate.convertAndSend("/queues/" + consigneeIdCard, messageObj);
+        }
+
+          //记录日志
+        webSocketService.insertWebSocketLog(messageObj,isSend);
+
+
     }
 
 

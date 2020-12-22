@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.SysLogsWebsocketDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.SysLogsWebsocketDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="SENDER" jdbcType="VARCHAR" property="sender" />
+    <result column="SERVERIP" jdbcType="VARCHAR" property="serverip" />
+    <result column="MESSAGETYPE" jdbcType="DECIMAL" property="messagetype" />
+    <result column="MESSAGE" jdbcType="VARCHAR" property="message" />
+    <result column="RECEIVER" jdbcType="VARCHAR" property="receiver" />
+    <result column="RECEIVERTIME" jdbcType="TIMESTAMP" property="receivertime" />
+    <result column="RECEIVERIP" jdbcType="VARCHAR" property="receiverip" />
+    <result column="ISRECEIVED" jdbcType="DECIMAL" property="isreceived" />
+    <result column="SENDTIME" jdbcType="TIMESTAMP" property="sendtime" />
+    <result column="ISSENDED" jdbcType="DECIMAL" property="issended" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, SENDER, SERVERIP, MESSAGETYPE, MESSAGE,
+    RECEIVER, RECEIVERTIME, RECEIVERIP, ISRECEIVED, SENDTIME, ISSENDED
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_LOGS_WEBSOCKET
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.SysLogsWebsocketDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select seq_SYS_LOGS_WEBSOCKET_id.nextval from dual
+    </selectKey>
+    insert into SYS_LOGS_WEBSOCKET
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        ID,
+        SCBJ,
+        STATE,
+        CREATETIME,
+        UPDATETIME,
+        SENDER,
+        SERVERIP,
+        MESSAGETYPE,
+        MESSAGE,
+        RECEIVER,
+        ISRECEIVED,
+      ISSENDED,
+      <if test="receivertime != null">
+        RECEIVERTIME,
+      </if>
+      <if test="receiverip != null">
+        RECEIVERIP,
+      </if>
+      <if test="sendtime != null">
+        SENDTIME,
+      </if>
+
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        #{id,jdbcType=DECIMAL},
+        0,
+        0,
+        SYSDATE,
+        SYSDATE,
+        #{sender,jdbcType=VARCHAR},
+        #{serverip,jdbcType=VARCHAR},
+        #{messagetype,jdbcType=DECIMAL},
+        #{message,jdbcType=VARCHAR},
+        #{receiver,jdbcType=VARCHAR},
+        #{isreceived,jdbcType=DECIMAL},
+      #{issended,jdbcType=DECIMAL},
+      <if test="receivertime != null">
+        #{receivertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiverip != null">
+        #{receiverip,jdbcType=VARCHAR},
+      </if>
+      <if test="sendtime != null">
+        #{sendtime,jdbcType=TIMESTAMP},
+      </if>
+
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.SysLogsWebsocketDTO">
+    update SYS_LOGS_WEBSOCKET
+    <set>
+      <if test="scbj != null">
+        SCBJ = #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="state != null">
+        STATE = #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="createtime != null">
+        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null">
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sender != null">
+        SENDER = #{sender,jdbcType=VARCHAR},
+      </if>
+      <if test="serverip != null">
+        SERVERIP = #{serverip,jdbcType=VARCHAR},
+      </if>
+      <if test="messagetype != null">
+        MESSAGETYPE = #{messagetype,jdbcType=DECIMAL},
+      </if>
+      <if test="message != null">
+        MESSAGE = #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="receiver != null">
+        RECEIVER = #{receiver,jdbcType=VARCHAR},
+      </if>
+      <if test="receivertime != null">
+        RECEIVERTIME = #{receivertime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receiverip != null">
+        RECEIVERIP = #{receiverip,jdbcType=VARCHAR},
+      </if>
+      <if test="isreceived != null">
+        ISRECEIVED = #{isreceived,jdbcType=DECIMAL},
+      </if>
+      <if test="sendtime != null">
+        SENDTIME = #{sendtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="issended != null">
+        ISSENDED = #{issended,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+  <select id="selectMessageByUsername" parameterType="map" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" />
+    from SYS_LOGS_WEBSOCKET WHERE SCBJ=0
+     AND  ISRECEIVED = #{isreceived,jdbcType=DECIMAL}
+     AND RECEIVER = #{receiver,jdbcType=VARCHAR}
+     ORDER BY SENDTIME DESC
+  </select>
+
+  <update id="readMessage" parameterType="int[]">
+    UPDATE SYS_LOGS_WEBSOCKET
+    SET  ISRECEIVED = 1
+    WHERE ID IN
+    <foreach collection="ids" item="item" separator=","
+             open="(" close=")">
+      #{item,jdbcType=DECIMAL}
+    </foreach>
+  </update>
+</mapper>

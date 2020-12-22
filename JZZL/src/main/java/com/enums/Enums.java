@@ -297,6 +297,46 @@ public class Enums {
         }
     }
 
+     /**
+     * websocket消息类型
+     * @author MrLu
+     * @createTime  2020/12/18 10:29
+      */
+    public enum messagetype{
+         typeNegativeOne(-1, "确认收到"),
+         typeZero(0, "智能整理"),
+         typeOne(1, "文件打包"),
+         typeTwo(2, "打包发送"),
+         typeThree(3, "其它");
+         messagetype(int value, String name) {
+             this.value = value;
+             this.name = name;
+         }
+
+         private int value;
+         private String name;
+
+         public String getName() {
+             return name;
+         }
+
+         public void setName(String name) {
+             this.name = name;
+         }
+
+         public int getValue() {
+             return value;
+         }
+
+         public void setValue(int value) {
+             this.value = value;
+         }
+
+         @Override
+         public String toString() {
+             return name;
+         }
+    }
 
     public static void main(String[] args) {
         System.out.println(EnumsUtil.getEnumByValue(PersonType.class, "1").getName());

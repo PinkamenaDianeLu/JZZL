@@ -25,7 +25,7 @@ public class UserServiceImpl  implements UserService {
     }
 
     @Override
-    public void touchUserNow( int s) throws Exception {
+    public void touchUserNow( int s,String username) throws Exception {
         System.err.println("空实现！");
     }
 

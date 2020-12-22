@@ -243,7 +243,7 @@ var recycleBin = (function () {
                 //有此文书啦
                 $.post({
                     url: '/ArrangeArchives/loadFilesByFileCodes',
-                    data: {fileOrder: fileCodes,seqId:seqid},
+                    data: {fileOrder: fileCodes,seqId:seqid,recordId},
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {

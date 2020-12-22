@@ -171,8 +171,9 @@
   </select>
 
   <update id="updateIssuspectorderByCaseinfoid" parameterType="java.lang.Integer">
-    UPDATE FUN_ARCHIVE_SFC SET ISSUSPECTORDER=1 WHERE  SCBJ=0 AND
-    CASEINFOID=#{caseinfoid,jdbcType=DECIMAL} AND ARCHIVETYPE=0
+    UPDATE FUN_ARCHIVE_SFC SET ISSUSPECTORDER=#{issuspectorder,jdbcType=DECIMAL}
+    WHERE  SCBJ=0 AND
+    id=#{sfcid,jdbcType=DECIMAL}
   </update>
 
   <select id="selectBaseSfcByCaseinfoid" parameterType="java.lang.Integer"   resultMap="BaseResultMap" >

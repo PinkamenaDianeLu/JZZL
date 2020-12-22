@@ -11,7 +11,13 @@
                 <p><b>·</b>上次登录时间：<span id="heartPrevTime">未登录</span></p>
             </div>
         </div>
-        <div id="websocketMessage" class="ico r_nav_c"><span>1</span></div>
+        <div id="websocketMessage" class="ico r_nav_c"><span></span>
+            <div class="r_hover">
+                <p >未读消息<a class="right" id="haveRead">全部确认</a></p>
+                <ul class="mess_ul" id="webSocketMessageUl">
+                </ul>
+            </div>
+        </div>
         <div class="ico r_nav_r" onclick="window.close()"></div>
     </div>
 </div>

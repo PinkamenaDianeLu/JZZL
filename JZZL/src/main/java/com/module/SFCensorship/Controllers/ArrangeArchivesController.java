@@ -348,15 +348,15 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.SELECT)
-    public String loadFilesByFileCodes(String fileOrder, String seqId) {
+    public String loadFilesByFileCodes(String fileOrder, String seqId,String recordId) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(fileOrder) || StringUtils.isEmpty(seqId)) {
+            if (StringUtils.isEmpty(fileOrder) || StringUtils.isEmpty(seqId)|| StringUtils.isEmpty(recordId)) {
                 throw new Exception("给一个? 自己体会");
             }
             String[] fileOrders = fileOrder.split(",");
             //该文书没有图片了
-            reValue.put("value", arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders, Integer.parseInt(seqId)));
+            reValue.put("value", arrangeArchivesService.selectRecordFilesByFileCodes(fileOrders, StringUtil.StringToInteger(recordId)));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

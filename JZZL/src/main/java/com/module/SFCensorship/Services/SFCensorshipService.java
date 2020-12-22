@@ -55,23 +55,22 @@ public interface SFCensorshipService {
     int getLastSFCSeq(int caseinfoid);
 
     /**
-     * 通过警情编号查询警情对应文书
+     * 根据typeid查找文书  根据thisorder排序
      * @author MrLu
-     * @param map （jqbh）
-     * @createTime  2020/10/8 10:37
-     * @return  List<FunArchiveRecordsDTO>  |
+     * @param archivetypeid
+     * @createTime  2020/10/9 11:33
+     * @return   List<FunArchiveRecordsDTO> |
      */
-    List<FunArchiveRecordsDTO> selectRecordsByJqbh(Map<String,Object> map);
+    List<FunArchiveRecordsDTO>  selectRecordsByTypeid(int archivetypeid);
 
     /**
      * 查询卷类型表
      * @author MrLu
-     * @param jqbh 警情编号
      * @param archiveseqid 送检次序id
      * @createTime  2020/10/8 11:05
      * @return  List<FunArchiveTypeDTO>  |
      */
-    List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(String jqbh,int archiveseqid);
+    List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(int archiveseqid);
 
 
      /**
@@ -85,14 +84,14 @@ public interface SFCensorshipService {
 
 
      /**
-     * 新建文书 并对应的复制文书中的文书图片
+     * 新建文书目录 封皮 封底
      * @author MrLu
      * @param record
       *@param  type
      * @createTime  2020/10/8 11:38
      * @return  void  |
       */
-   void insertFunArchiveRecords(FunArchiveRecordsDTO record,FunArchiveTypeDTO type);
+   void insertZlRecords(FunArchiveRecordsDTO record,FunArchiveTypeDTO type);
     /**
     * 新建文书图片
     * @author MrLu
@@ -208,10 +207,20 @@ public interface SFCensorshipService {
      * @createTime  2020/12/17 17:43
      * @return    |
      */
-    void updateIssuspectorderByCaseinfoid(Integer caseinfoid);
+    void updateIssuspectorderBySfcId(Integer issuspectorder,Integer seqid);
 
 
 
-
+    /**
+     * 查某个卷下某个类型对某个人的文书  按照顺序排序
+     * @author MrLu
+     * @param suspectid 嫌疑人id
+     * @param archivetype 0基础卷 7补充侦查工作卷 8提请批捕卷 9移送起诉卷
+     * @param recordtype 1诉讼文书卷  2证据材料卷  3补充侦查卷
+     * @param archiveseqid seqid
+     * @createTime  2020/12/21 9:38
+     * @return    |
+     */
+    List<FunArchiveRecordsDTO> selectRecordOrderForSuspect(int suspectid, int archivetype, int recordtype, int archiveseqid);
 
 }

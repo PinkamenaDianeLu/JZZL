@@ -28,6 +28,7 @@ $(function () {
                         if ('success' === reV.message) {
                             //登录成功
                             location.href = '../model/ajcx/ajcx.html';
+                            sessionStorage.username = oriName;
                         }else if ('deny' === reV.message){
                             alert('用户名或密码错误！')
                         }else {

@@ -57,7 +57,9 @@ var recordsTable = (function () {
         });
         //选择后自动生成案卷名称
     $('#recordsTable').on('check.bs.table', function (e, rows) {
-        $('#archivename').val(utils.timeFormat.yyyyMMddtoTMD2(rows.issuetime)+' '+rows.suspectname+' '+rows.recordname)
+        $('#archivename').val(utils.timeFormat.yyyyMMddtoTMD2(rows.issuetime)+' '
+            +(rows.suspectname||'')+' '
+            +rows.recordname)
         })
 
     }
@@ -143,6 +145,7 @@ $(function () {
     //搜索按钮
     $('[name=recordscode]').click(function () {
         rt.searchTable();
+        $('#archivename').val('');//清空名称
     });
 
     let cnf = new createNewSFC(ajid);

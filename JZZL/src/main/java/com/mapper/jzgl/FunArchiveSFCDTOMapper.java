@@ -28,13 +28,13 @@ public interface FunArchiveSFCDTOMapper {
     int selectArchiveSFCPageCount(Map<String,Object> map);
     
      /**
-     * 将案件id下的基础卷标记为已为嫌疑人排序
+     * 将送检卷标记为已为嫌疑人排序
      * @author MrLu
      * @param 
      * @createTime  2020/12/17 17:54
      * @return    |  
       */
-    void updateIssuspectorderByCaseinfoid(Integer caseinfoid);
+    void updateIssuspectorderByCaseinfoid(Integer issuspectorder,Integer sfcid);
 
      /**
      *  查询案件的基础卷

@@ -1,47 +1,56 @@
 package com.config.webSocket;
 
+import java.util.Date;
+
 /**
  * @author Mrlu
  * @createTime 2020/5/23
  * @describe  WebSocket信息实体类
  */
-public class WebSocketMessage {
-    private  String to; //发送给谁
-    private  String from;//消息来源
+
+public class WebSocketMessage  {
+    private  String receiver; //发送给谁
+    private  String sender;//消息来源
     private  String message;//信息
+    private  Integer messagetype;
+    private Date sendtime;
+
+    public WebSocketMessage(String receiver, String sender, String message, Integer messagetype, Date sendtime) {
+        this.receiver = receiver;
+        this.sender = sender;
+        this.message = message;
+        this.messagetype = messagetype;
+        this.sendtime = sendtime;
+    }
+
+    public WebSocketMessage() {
+    }
 
     @Override
     public String toString() {
         return "WebSocketMessage{" +
-                "to='" + to + '\'' +
-                ", from='" + from + '\'' +
+                "receiver='" + receiver + '\'' +
+                ", sender='" + sender + '\'' +
                 ", message='" + message + '\'' +
+                ", messagetype=" + messagetype +
+                ", sendtime=" + sendtime +
                 '}';
     }
 
-    public WebSocketMessage() {
-
-    }
-    public WebSocketMessage(String to, String from, String message) {
-        this.to = to;
-        this.from = from;
-        this.message = message;
+    public String getreceiver() {
+        return receiver;
     }
 
-    public String getto() {
-        return to;
+    public void setreceiver(String receiver) {
+        this.receiver = receiver;
     }
 
-    public void setto(String to) {
-        this.to = to;
+    public String getsender() {
+        return sender;
     }
 
-    public String getfrom() {
-        return from;
-    }
-
-    public void setfrom(String from) {
-        this.from = from;
+    public void setsender(String sender) {
+        this.sender = sender;
     }
 
     public String getMessage() {
@@ -50,5 +59,21 @@ public class WebSocketMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Integer getMessagetype() {
+        return messagetype;
+    }
+
+    public void setMessagetype(Integer messagetype) {
+        this.messagetype = messagetype;
+    }
+
+    public Date getSendtime() {
+        return sendtime;
+    }
+
+    public void setSendtime(Date sendtime) {
+        this.sendtime = sendtime;
     }
 }

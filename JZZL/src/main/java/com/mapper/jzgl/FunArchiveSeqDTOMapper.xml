@@ -190,7 +190,7 @@
     WHERE scbj=0
     AND archivetype=0
     AND caseinfoid=#{caseinfoid,jdbcType=VARCHAR}
-    AND ISACTIVE = 1 AND ROWNUM=1
+    AND ISACTIVE = 0 AND ROWNUM=1
   </select>
 
   <select id="updateBaseSeqIsNotActive" parameterType="java.lang.Integer">

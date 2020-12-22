@@ -109,6 +109,8 @@ public class LogAspect {
                 record.setSysuserid(userNow.getId());//用户id
                 record.setOperator(userNow.getIdcardnumber());
                 record.setSysusername(userNow.getUsername());
+                //更新在线用户
+                userServiceByRedis.touchUserNow(420,userNow.getUsername());
             }else {
                 //未登录的用户
                 record.setSysuserid(-1);//用户id
@@ -116,7 +118,7 @@ public class LogAspect {
                 record.setSysusername("未登录");
             }
 
-            userServiceByRedis.touchUserNow(6*100);
+
             //TODO MrLu 2020/11/26   记得打开记日志
            // logService.insertLog(record);
         } catch (Exception e) {

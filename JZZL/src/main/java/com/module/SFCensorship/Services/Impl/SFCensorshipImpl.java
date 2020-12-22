@@ -44,6 +44,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     SysRecordorderDTOMapper sysRecordorderDTOMapper;
     @Resource
     SysRecordtypeorderDTOMapper sysRecordtypeorderDTOMapper;
+
     @Override
     public List<FunArchiveSFC> selectArchiveSFCPage(Map<String, Object> map) {
         return FunArchiveSFCMapper.INSTANCE.pcDTOToPcs(funArchiveSFCDTOMapper.selectArchiveSFCPage(map));
@@ -63,7 +64,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
      */
     @Override
     public void insertFunArchiveSeq(FunArchiveSeq record) {
-        FunArchiveSeqDTO FunArchiveSeqDTO=FunArchiveSeqMapper.INSTANCE.pcToPcDTO(record);
+        FunArchiveSeqDTO FunArchiveSeqDTO = FunArchiveSeqMapper.INSTANCE.pcToPcDTO(record);
         funArchiveSeqDTOMapper.insertSelective(FunArchiveSeqDTO);
         record.setId(FunArchiveSeqDTO.getId());
     }
@@ -75,7 +76,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
 
     @Override
     public void insertFunArchiveSFC(FunArchiveSFC funArchiveSFC) {
-        FunArchiveSFCDTO funArchiveSFCDTO= FunArchiveSFCMapper.INSTANCE.pcToPcDTO(funArchiveSFC);
+        FunArchiveSFCDTO funArchiveSFCDTO = FunArchiveSFCMapper.INSTANCE.pcToPcDTO(funArchiveSFC);
         funArchiveSFCDTOMapper.insertSelective(funArchiveSFCDTO);
         funArchiveSFC.setId(funArchiveSFCDTO.getId());
     }
@@ -96,15 +97,18 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public List<FunArchiveRecordsDTO> selectRecordsByJqbh(Map<String,Object> map) {
-        return funArchiveRecordsDTOMapper.selectRecordsByJqbh(map);
+    public List<FunArchiveRecordsDTO> selectRecordsByTypeid(int archivetypeid) {
+        //archivetypeid
+        Map<String,Object> map=new HashMap<>();
+        map.put("archivetypeid",archivetypeid);
+        return funArchiveRecordsDTOMapper.selectRecordsByTypeid(map);
     }
 
+
     @Override
-    public List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(String jqbh,int archiveseqid) {
+    public List<FunArchiveTypeDTO> selectArchiveTypeByJqSeq(int archiveseqid) {
         Map<String, Object> pMap = new HashMap<>();//查询参数
-        pMap.put("jqbh", jqbh);
-        pMap.put("archiveseqid", 0);
+        pMap.put("archiveseqid", archiveseqid);
         return funArchiveTypeDTOMapper.selectArchiveTypeByJqSeq(pMap);
     }
 
@@ -114,17 +118,17 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public void insertFunArchiveRecords(FunArchiveRecordsDTO record,FunArchiveTypeDTO type) {
+    public void insertZlRecords(FunArchiveRecordsDTO record, FunArchiveTypeDTO type) {
         funArchiveRecordsDTOMapper.insertSelective(record);
-        if (record.getRecordscode().startsWith("ZL")){
+        if (record.getRecordscode().startsWith("ZL")) {
             //是文书封皮、目录、封底
-            FunArchiveFilesDTO r=new FunArchiveFilesDTO();
+            FunArchiveFilesDTO r = new FunArchiveFilesDTO();
             r.setJqbh(record.getJqbh());
             r.setAjbh(record.getAjbh());
             r.setThisorder(0);//封皮、目录、封底 他们只有一页，在文书中永远是第一页
             r.setArchiverecordid(record.getId());
             r.setArchivetypeid(record.getArchivetypeid());
-            switch (record.getRecordscode()){
+            switch (record.getRecordscode()) {
                 case "ZL001":
                     r.setFiletype(1);
                     break;
@@ -146,20 +150,22 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
             r.setAuthorid(record.getAuthorid());
             r.setIsshow(0);
             r.setIsdelete(0);
-            r.setFilecode("F"+record.getRecordscode()+"R"+record.getId()+"T"+type.getId());
+            r.setFilecode("F" + record.getRecordscode() + "R" + record.getId() + "T" + type.getId());
             insertFunArchiveFilesDTO(r);
-        }else {
+        } else {
             //查询复制
+
         }
     }
+
     @Override
     public void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) {
         funArchiveFilesDTOMapper.insert(record);
     }
 
     @Override
-    public  void  updateFunArchiveRecordById(FunArchiveRecordsDTO record){
-        funArchiveRecordsDTOMapper.updateByPrimaryKeySelective( record);
+    public void updateFunArchiveRecordById(FunArchiveRecordsDTO record) {
+        funArchiveRecordsDTOMapper.updateByPrimaryKeySelective(record);
     }
 
     @Override
@@ -198,8 +204,8 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public List<FunArchiveRecordsDTO> selectReocrdBySeqRcode(Integer archiveseqid, String recordscode,Integer recordtype) {
-        return funArchiveRecordsDTOMapper.selectReocrdBySeqRcode(archiveseqid,recordscode,recordtype);
+    public List<FunArchiveRecordsDTO> selectReocrdBySeqRcode(Integer archiveseqid, String recordscode, Integer recordtype) {
+        return funArchiveRecordsDTOMapper.selectReocrdBySeqRcode(archiveseqid, recordscode, recordtype);
     }
 
     @Override
@@ -213,8 +219,18 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public void updateIssuspectorderByCaseinfoid(Integer caseinfoid) {
-        funArchiveSFCDTOMapper.updateIssuspectorderByCaseinfoid(caseinfoid);
+    public void updateIssuspectorderBySfcId(Integer issuspectorder, Integer sfcid) {
+        funArchiveSFCDTOMapper.updateIssuspectorderByCaseinfoid(issuspectorder, sfcid);
+    }
+
+    @Override
+    public List<FunArchiveRecordsDTO> selectRecordOrderForSuspect(int suspectid, int archivetype, int recordtype, int archiveseqid) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("archivetype", archivetype);
+        map.put("recordtype", recordtype);
+        map.put("suspectid", suspectid);
+        map.put("archiveseqid", archiveseqid);
+        return funArchiveRecordsDTOMapper.selectRecordOrderForSuspect(map);
     }
 
 

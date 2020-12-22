@@ -1,6 +1,7 @@
 package com.mapper.jzgl;
 
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
+import com.bean.jzgl.DTO.SysRecordorderDTO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -119,4 +120,18 @@ public interface FunArchiveRecordsDTOMapper {
     List<FunArchiveRecordsDTO>  selectReocrdBySeqRcode(@Param("archiveseqid") Integer archiveseqid,
                                                        @Param("recordscode") String recordscode,
                                                        @Param("recordtype") Integer recordtype);
+
+
+    /**
+     * 查某个卷下某个类型对某个人的文书  按照顺序排序
+     *
+     * @param map {archivetype 0基础卷 7补充侦查工作卷 8提请批捕卷 9移送起诉卷
+     *            recordtype 1诉讼文书卷  2证据材料卷  3补充侦查卷
+     *            suspectid 嫌疑人id
+     *            archiveseqid seqid}
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/21 9:38
+     */
+    List<FunArchiveRecordsDTO> selectRecordOrderForSuspect(Map<String, Integer> map);
 }

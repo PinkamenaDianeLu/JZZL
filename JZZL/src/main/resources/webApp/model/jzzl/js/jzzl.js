@@ -729,7 +729,7 @@ var loadArchiveIndex = (function () {
             //阳间还有这个文书
             $.post({
                 url: '/ArrangeArchives/loadFilesByFileCodes',
-                data: {fileOrder: fileCodes, seqId: seqid},
+                data: {fileOrder: fileCodes, seqId: seqid,recordId},
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
@@ -1111,7 +1111,7 @@ $(function () {
                     }
                 });
                 if (isSuspectOrder) {
-                    alert('您还没有为嫌疑人整理顺序！');
+                    layer.alert('您还没有为嫌疑人整理顺序，或智能排序未完成，请留意页面右上角通知区域或刷新页面重试');
                     window.close();
                 } else {
                     //不需要选人了 直接加载好了

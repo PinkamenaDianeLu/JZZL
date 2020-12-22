@@ -38,7 +38,6 @@ import java.lang.reflect.Method;
 public class RedisConfig  extends CachingConfigurerSupport {
      /**
      * @author MrLu
-     * @param
      * @createTime  2020/4/28 23:34
      * @describe  将定义新的模板使用Serializable缓存数据在redis上 缓存位置： session
      * @version 1.0
@@ -74,6 +73,19 @@ public class RedisConfig  extends CachingConfigurerSupport {
       */
     @Bean
     public RedisTemplate<String, Object> redisCCTemplate(@Qualifier("createCacheLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        initDomainRedisTemplate(redisTemplate,cf);
+        return redisTemplate;
+    }
+
+     /**
+     * 将用户记录再在线用户上 缓存位置： onlineUsers
+     * @author MrLu
+     * @createTime  2020/12/18 9:29
+      * @return  RedisTemplate<String, Object>  | <用户username,登录时间>
+      */
+    @Bean
+    public RedisTemplate<String, Object> redisOnlineUserTemplate(@Qualifier("createOnlineUserLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         initDomainRedisTemplate(redisTemplate,cf);
         return redisTemplate;

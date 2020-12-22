@@ -28,6 +28,8 @@ public class UserServiceByRedisImpl implements UserService {
     RedisTemplate<String, Object> redisCLTemplate;
     @Autowired
     UserSession userSession;
+    @Autowired
+    RedisTemplate<String, Object>  redisOnlineUserTemplate;
 
     @Override
     public SysUser getUserNow(String VKey) throws Exception {
@@ -42,8 +44,9 @@ public class UserServiceByRedisImpl implements UserService {
     }
 
     @Override
-    public void touchUserNow(int s) throws Exception {
+    public void touchUserNow(int s,String username) throws Exception {
         redisCLTemplate.expire(userSession.getUserRedisId(), s, TimeUnit.SECONDS);
+        redisOnlineUserTemplate.expire(username, s, TimeUnit.SECONDS);
     }
 
     @Override

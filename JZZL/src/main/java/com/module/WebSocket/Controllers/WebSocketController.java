@@ -28,7 +28,7 @@ public class WebSocketController {
     @MessageMapping(WebSocketConfig.HELLO_MAPPING)
     @SendTo("/topic/greetings")
     public WebSocketMessage greeting(WebSocketMessage message) throws Exception {
-        return new WebSocketMessage("nolog", "system", "您好！");
+        return new WebSocketMessage();
     }
 
     /**
@@ -41,11 +41,11 @@ public class WebSocketController {
     @MessageMapping("/chat")
     public void chat(WebSocketMessage message) {
         System.out.println("收到消息！");
-        String returnUser=message.getfrom();
+        String returnUser=message.getreceiver();
         try {
             System.out.println(returnUser);
           //  returnUser=userNow.getIdcardnumber();//发给谁
-            message.setfrom("system");//发送人
+            message.setsender("system");//发送人
             message.setMessage("就你订阅的我吗！");
         } catch (Exception e) {
             e.printStackTrace();

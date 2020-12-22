@@ -30,7 +30,8 @@ var recordImgLoad = (function () {
             url: '/ArrangeArchives/loadFilesByFileCodes',
             data: {
                 fileOrder: fileOrder.join(','),
-                seqId: parent.lai.getSeqId()
+                seqId: parent.lai.getSeqId(),
+                recordId
             },
             success: (re) => {
                 const reV = JSON.parse(re);
