@@ -68,7 +68,7 @@ var dropUpload = (function () {
                 if (!/\/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(thisImg.type)) {
                     msg += ' 不是可上传的类型！';
                     isCool = false;
-                }else  if (fileSize > (5 * 1024)) {
+                } else if (fileSize > (5 * 1024)) {
                     msg += '文件过大！请上传小于5M的图片';
                     isCool = false;
                 }
@@ -149,10 +149,11 @@ var dropUpload = (function () {
     /**
      * 上传
      * @author MrLu
+     * @param recordId  要上传的文书id
      * @createTime  2020/11/1 17:12
      * @return    |
      */
-    function upload() {
+    function upload(recordId) {
         if ($('#thumbnailZone').find('.redThumbnail').length > 0) {
             layer.alert('红色边框的图片无法上传，请删除后重试！')
         } else {
@@ -160,20 +161,40 @@ var dropUpload = (function () {
             for (const item of iterator1) {
                 let formData = new FormData();
                 let pDiv = $('#' + item[0]);
-                formData.append('fileName', pDiv.find('input').val());
-                formData.append('fileOrder', pDiv.index());
-                formData.append('newFile', item[1]);
+                formData.append('fileName', pDiv.find('input').val());//文件名称
+                formData.append('fileOrder', pDiv.index());//文件的顺序
+                formData.append('newFile', item[1]);//文件本身
+                formData.append('recordId', recordId);//文件所属文书的id
                 console.log(pDiv.find('input').val());
                 console.log(pDiv.index());
                 console.log(item[1]);
                 pDiv.find('.thumbnailMsg').html('正在上传');
-                pDiv.find('.thumbnailMsg').html('上传成功');
-                files.delete(item[1].keyForInput);
-                if (files.size === 0) {
-                    layer.alert('上传完成');
-                    const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                    parent.layer.close(index);
-                }
+                $.post({
+                    url: '/FileManipulation/upLoadRecordFiles',
+                    ache: false,
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: (re) => {
+                        const reV = JSON.parse(re);
+                        if ("success" === reV.message) {
+                            pDiv.find('.thumbnailMsg').html('上传成功');
+                            //刷新父页面
+                            // parent.dqfxpgbgOut.reFreshTk();
+                            // layer.msg('提交成功');
+                            files.delete(item[1].keyForInput);
+                            //自我关闭
+                         /*   const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index);*/
+                        }
+                    }
+                })
+
+                /*         if (files.size === 0) {
+                             layer.alert('上传完成');
+                             const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                             parent.layer.close(index);
+                         }*/
                 //如果有上传失败的话
                 /*
                 /  pDiv.find('.thumbnailMsg').html('上传失败');
@@ -197,37 +218,16 @@ var dropUpload = (function () {
 
 $(function () {
     console.log(utils.getUrlPar('recordId'));
-
+    const recordId = utils.getUrlPar('recordId');
     //拖拽域
     let zl = new dropUpload('dropZone');
 
     $('#submit-all').click(function () {
         $(this).unbind();//防止重复点击
-        zl.upload();
+        zl.upload(recordId);
     });
     $('#removeAll').click(function () {
         zl.allRemove();
     });
-    /*    let formData = new FormData();
-        formData.append('newFile', $("#newFiles")[0].files[0]);
-        $.post({
-            url: '/FileManipulation/upLoadRecordFiles',
-            ache: false,
-            processData: false,
-            contentType: false,
-            data: formData,
-            success: (re) => {
-                const reV = JSON.parse(re);
-                if ('success' === reV.message) {
-                    if ("success" === reV.message) {
-                        //刷新父页面
-                        parent.dqfxpgbgOut.reFreshTk();
-                        layer.msg('提交成功');
-                        //自我关闭
-                        const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                        parent.layer.close(index);
-                    }
-                }
-            }
-        })*/
+
 })

@@ -40,4 +40,13 @@ public interface FunSuspectDTOMapper {
      * @return  List<FunSuspectDTO>  |
       */
     List<FunSuspectDTO>   selectSuspectById(Integer id);
+
+     /**
+     * 通过seqid查询该案件的嫌疑人
+     * @author MrLu
+     * @param seqid
+     * @createTime  2020/12/23 15:00
+     * @return    |
+      */
+    List<FunSuspectDTO> selectSuspectBySeqId(Integer seqid);
 }

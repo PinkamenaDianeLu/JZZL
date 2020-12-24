@@ -100,4 +100,9 @@ public class FileManipulationImpl implements FileManipulationService {
         funArchiveFilesDTOMapper.updateFileBySeqIdFileCode(record);
     }
 
+    @Override
+    public void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) {
+        funArchiveFilesDTOMapper.insert(record);
+    }
+
 }

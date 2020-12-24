@@ -27,14 +27,20 @@
     where ID = #{id,jdbcType=DECIMAL}
   </select>
   <insert id="insert" parameterType="com.bean.jzgl.DTO.FunSuspectRecordDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_SUSPECT_RECORD_ID.nextval from dual
+    </selectKey>
     insert into FUN_SUSPECT_RECORD (ID, SCBJ, STATE, 
       CREATETIME, UPDATETIME, JQBH, 
       CASEINFOID, AJBH, SFCNUMBER, 
-      SUSPECTID, RECORDID)
-    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
-      #{caseinfoid,jdbcType=DECIMAL}, #{ajbh,jdbcType=VARCHAR}, #{sfcnumber,jdbcType=VARCHAR}, 
-      #{suspectid,jdbcType=DECIMAL}, #{recordid,jdbcType=DECIMAL})
+      SUSPECTID, RECORDID,RECORDTYPE)
+    values (#{id,jdbcType=DECIMAL},0, 0,
+      SYSDATE, SYSDATE, #{jqbh,jdbcType=VARCHAR},
+      #{caseinfoid,jdbcType=DECIMAL}, #{ajbh,jdbcType=VARCHAR}
+      , #{sfcnumber,jdbcType=VARCHAR},
+      #{suspectid,jdbcType=DECIMAL}, #{recordid,jdbcType=DECIMAL}
+      ,#{recordtype,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunSuspectRecordDTO">
     <selectKey resultType="INTEGER" order="BEFORE"
@@ -70,8 +76,8 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
         #{id,jdbcType=DECIMAL},
-        #{scbj,jdbcType=DECIMAL},
-        #{state,jdbcType=DECIMAL},
+        0,
+        0,
        SYSDATE,
       SYSDATE,
       #{recordtype,jdbcType=VARCHAR},
@@ -133,4 +139,11 @@
   AND  SUSPECTID = #{suspectid,jdbcType=DECIMAL}
   AND  RECORDTYPE = #{recordtype,jdbcType=VARCHAR}
 </select>
+
+  <select id="selectSuspectRecordByRid"   parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" />
+     FROM FUN_SUSPECT_RECORD WHERE SCBJ=0
+    AND RECORDID = #{recordid,jdbcType=DECIMAL}
+    AND RECORDTYPE = 1 and rownum=1
+  </select>
 </mapper>

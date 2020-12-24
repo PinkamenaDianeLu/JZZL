@@ -729,7 +729,7 @@ var loadArchiveIndex = (function () {
             //阳间还有这个文书
             $.post({
                 url: '/ArrangeArchives/loadFilesByFileCodes',
-                data: {fileOrder: fileCodes, seqId: seqid,recordId},
+                data: {fileOrder: fileCodes, seqId: seqid, recordId},
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
@@ -831,6 +831,15 @@ var loadArchiveIndex = (function () {
     }
 
 
+    /**
+     * 实时保存重命名的数据
+     * @author MrLu
+     * @param recordId
+     * @param fileCode
+     * @param name 重命名的名称
+     * @createTime  2020/121/22 15:40
+     * @return    |
+     */
     function saveReNameDateOnTime(recordId, fileCode, name) {
         const renameObj = function () {
             this.recordid = recordId;//被移动的或被移动到的文书id
@@ -984,6 +993,27 @@ var loadArchiveIndex = (function () {
         return saveData;
     }
 
+
+    /**
+     * 上传新的文书
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/22 15:49
+     * @return    |
+     */
+    function createNewRecord() {
+        layer.open({
+            icon: 1,
+            type: 2,
+            title: '新建',
+            skin: 'layui-layer-lan',
+            maxmin: false,
+            shadeClose: true, //点击遮罩关闭层
+            area: ['1111px', '600px'],
+            content: '/model/jzzl/createNewRecord.html?seqid=' + seqid
+        });
+    }
+
     /**
      * 涨进度条
      * @author MrLu
@@ -1007,7 +1037,7 @@ var loadArchiveIndex = (function () {
     _loadArchiveIndex.prototype = {
         loadIndex, loadRecycleBin, reloadButton,
         saveData, restored, getSeqId,
-        getRecordIndexSort, progressBar, delFun, createFilesDiv
+        getRecordIndexSort, progressBar, delFun, createFilesDiv, createNewRecord
     };
     return _loadArchiveIndex;
 })();
@@ -1110,6 +1140,11 @@ $(function () {
                         lai.saveData();
                     }
                 });
+                //新创建文书
+                $('#createRecord').click(function () {
+                    lai.createNewRecord();
+                })
+
                 if (isSuspectOrder) {
                     layer.alert('您还没有为嫌疑人整理顺序，或智能排序未完成，请留意页面右上角通知区域或刷新页面重试');
                     window.close();

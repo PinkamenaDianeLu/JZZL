@@ -9,15 +9,11 @@ import java.util.Map;
 
 public interface SysRecordorderDTOMapper {
 
-    int insert(SysRecordorderDTO record);
 
-    int insertSelective(SysRecordorderDTO record);
 
     SysRecordorderDTO selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(SysRecordorderDTO record);
 
-    int updateByPrimaryKey(SysRecordorderDTO record);
 
     /**
      * 按照送检卷类型和卷类型查询默认顺序
@@ -48,6 +44,16 @@ public interface SysRecordorderDTOMapper {
      * @createTime 2020/12/17 9:59
      */
     List<Integer> selectRecordTypeByArchiveType(int archivetype);
+
+     /**
+     * 查询一个类型卷中该出现的文书代码
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/22 19:03
+     * @return    |
+      */
+    List<SysRecordorderDTO>  selectRecordCodesByAtype(Map<String,Object> map);
+    Integer selectRecordCodesByAtypeCount(Map<String,Object> map);
 
 
 }

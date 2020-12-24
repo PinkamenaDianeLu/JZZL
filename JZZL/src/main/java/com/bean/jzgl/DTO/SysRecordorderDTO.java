@@ -25,6 +25,8 @@ public class SysRecordorderDTO {
 
     private  Integer recordstyle;
 
+    private  Integer isaccessory;
+
     public Integer getId() {
         return id;
     }
@@ -111,5 +113,13 @@ public class SysRecordorderDTO {
 
     public void setRecordstyle(Integer recordstyle) {
         this.recordstyle = recordstyle;
+    }
+
+    public Integer getIsaccessory() {
+        return isaccessory;
+    }
+
+    public void setIsaccessory(Integer isaccessory) {
+        this.isaccessory = isaccessory;
     }
 }

@@ -389,7 +389,14 @@ public class SFCensorshipController extends BaseFactory {
                         thisSuspectRecord.setArchivetypeid(recordTypeIdMap.get(thisOrder.getRecordtype()));//typeid
                         thisSuspectRecord.setArchiveseqid(newSeq.getId());//seqid
                         thisSuspectRecord.setThisorder(i);//顺序
+                        FunSuspectRecordDTO sr=   sFCensorshipService.selectSuspectRecordByRid(thisSuspectRecord.getId());//此时使用原有的id查询
                         copyRecordsToNew(thisSuspectRecord);//（copy）
+                        if (null!=sr){
+                            //这里应该保证sr不能为空  因为这个文书如果对人但是在嫌疑人文书关联表中没有数据那么就是数据出现错误了  是个问题了
+                            //对人文书复制关联表
+                            sr.setRecordid(thisSuspectRecord.getId());//注意此时是新的id了
+                            sFCensorshipService.insertSuspectRecord(sr);
+                        }
                     }
                 }
                 recordType.add(thisOrder.getRecordtype());//记录当前操作的文书类型

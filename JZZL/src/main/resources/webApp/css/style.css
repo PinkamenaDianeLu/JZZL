@@ -235,7 +235,7 @@ table th,table td{text-align: center; font-size: 14px;}
     width:100%;
     height:80px
 }
-
+.left_title a i.add{ background-position:-840px -50px;}
 .editGreen{color: #fff; background: #358df5; border: none;}
 .ul_x{position: relative; width: 100%;float: left;}
 .ul_x li{ position: relative; width: 100%;float: left;}

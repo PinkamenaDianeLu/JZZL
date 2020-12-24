@@ -45,7 +45,7 @@ public class FunArchiveFilesDTO {
     private Integer isshow;
     private  String filecode;
     private Integer isdelete;
-
+    private String serverip;
     public Integer getId() {
         return id;
     }
@@ -228,5 +228,13 @@ public class FunArchiveFilesDTO {
 
     public void setIsdelete(Integer isdelete) {
         this.isdelete = isdelete;
+    }
+
+    public String getServerip() {
+        return serverip;
+    }
+
+    public void setServerip(String serverip) {
+        this.serverip = serverip;
     }
 }

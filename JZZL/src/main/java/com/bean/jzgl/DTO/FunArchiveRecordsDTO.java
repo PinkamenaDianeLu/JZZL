@@ -217,11 +217,11 @@ public class FunArchiveRecordsDTO {
         this.recordwh = recordwh;
     }
 
-    public Date getIssuetime() {
+    public Date getEffectivetime() {
         return effectivetime;
     }
 
-    public void setIssuetime(Date effectivetime) {
+    public void setEffectivetime(Date effectivetime) {
         this.effectivetime = effectivetime;
     }
 

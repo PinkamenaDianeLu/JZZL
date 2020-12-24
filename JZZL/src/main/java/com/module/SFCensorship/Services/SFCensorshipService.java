@@ -222,5 +222,20 @@ public interface SFCensorshipService {
      * @return    |
      */
     List<FunArchiveRecordsDTO> selectRecordOrderForSuspect(int suspectid, int archivetype, int recordtype, int archiveseqid);
-
+    /**
+     * 查询该文书对嫌疑人的关联信息
+     * @author MrLu
+     * @param recordid
+     * @createTime  2020/12/24 23:03
+     * @return    |
+     */
+    FunSuspectRecordDTO selectSuspectRecordByRid (int recordid);
+     /**
+     * 插入嫌疑人文书关联表
+     * @author MrLu
+     * @param  record
+     * @createTime  2020/12/24 23:19
+     * @return    |  
+      */
+    void insertSuspectRecord(FunSuspectRecordDTO record);
 }

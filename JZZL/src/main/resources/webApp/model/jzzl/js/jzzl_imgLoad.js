@@ -26,6 +26,11 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/15 18:31
      */
     function loadFilesByRecord(recordId, fileOrder, callback) {
+        console.log();
+        if (fileOrder.length<=0){
+            layer.alert('该文书下没有发现文书图片！');
+            return ;
+        }
         $.post({
             url: '/ArrangeArchives/loadFilesByFileCodes',
             data: {
@@ -89,6 +94,8 @@ var recordImgLoad = (function () {
                     }
                     callback();//回调方法
                 } else {
+                    console.error('文书图片加载错误'+fileOrder.join(','));
+                    layer.alert('图片加载失败！');
                 }
             }
         });
@@ -120,12 +127,12 @@ var recordImgLoad = (function () {
         //为下载按钮添加方法
         $('#downLoadBtn').unbind().click(function () {
             if (thisFileCode) {
-                utils.createElement.downLoadImg(imgMap.get(thisFileCode).fileurl);
+                utils.createElement.downLoadImg(imgMap.get(thisFileCode).serverip+imgMap.get(thisFileCode).fileurl);
             } else {
                 //当操作整个文书对象时  下载文书的所有图片
                 const iterator1 = imgMap[Symbol.iterator]();
                 for (const item of iterator1) {
-                    utils.createElement.downLoadImg(item[1].fileurl);
+                    utils.createElement.downLoadImg(item[1].serverip+item[1].fileurl);
                 }
             }
         });
@@ -167,10 +174,16 @@ var recordImgLoad = (function () {
         //重新上传按钮
         $('#reUpLoadBtn').unbind().click(function () {
             if (thisFileCode) {
-                //上传至该文书后面
             } else {
-                //上传至整个文书的最后
                 layer.alert('请选择需要重新上传的图片');
+            }
+        });
+        //创建新文书按钮
+        $('#newRecordBtn').unbind().click(function () {
+            if (thisFileCode) {
+                //没啥
+            } else {
+
             }
         });
         //放大按钮
@@ -204,11 +217,7 @@ var recordImgLoad = (function () {
         })
         //添加上传按钮
         $('#addUploadBtn').unbind().click(function () {
-            if (thisFileCode) {
-                //上传至该文书后面
-            } else {
-                //上传至整个文书的最后
-            }
+            //直接上传到文书的后面
             recordImgLoad.pValue = recordId;
             layer.open({
                 icon: 1,
@@ -507,7 +516,7 @@ var recordImgLoad = (function () {
         let height = 1467 * (proportion * 0.01);
         let bigImg = utils.createElement.createElement({
             tag: 'img', attrs: {
-                src: file.fileurl,
+                src: file.serverip+file.fileurl,
                 class: 'img_text bigImg',
                 width: width + 'px', height: height + 'px'
             }
@@ -533,7 +542,7 @@ var recordImgLoad = (function () {
         //创建缩略图
         let thumbnail = utils.createElement.createElement({
             tag: 'img', attrs: {
-                src: file.fileurl,
+                src: file.serverip+file.fileurl,
                 class: 'img_text',
                 width: '120px', height: '154px'
             }
@@ -661,7 +670,7 @@ var recordImgLoad = (function () {
         let front = utils.createElement.createElement({
             tag: 'img', attrs: {
                 id: 'frontImg' + file.filecode,
-                src: file.fileurl,
+                src: file.serverip+file.fileurl,
                 class: 'img_text',
                 width: '150px', height: '192px'
             }
@@ -673,7 +682,7 @@ var recordImgLoad = (function () {
                 style: 'display:none',
                 class: 'larimg',
 
-            }, arg: '<img width= "450px" height="576px" src="' + file.fileurl + '">'
+            }, arg: '<img width= "450px" height="576px" src="' + file.serverip+file.fileurl + '">'
         });
         /////////放大镜效果
         //生成跟随鼠标的小方框

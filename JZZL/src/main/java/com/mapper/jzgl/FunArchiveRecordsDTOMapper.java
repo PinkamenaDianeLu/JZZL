@@ -134,4 +134,23 @@ public interface FunArchiveRecordsDTOMapper {
      * @createTime 2020/12/21 9:38
      */
     List<FunArchiveRecordsDTO> selectRecordOrderForSuspect(Map<String, Integer> map);
+
+
+     /**
+     * 查询该类型文书在某本卷中的某个类型的上一个文书（不能是封皮封底目录）
+     * @author MrLu
+     * @param map
+     * @createTime  2020/12/23 18:40
+     * @return    |
+      */
+    FunArchiveRecordsDTO selectPriveRecord(Map<String, Integer> map);
+
+     /**
+     * 把某个文书之后的文书顺序+1
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/23 18:36
+     * @return    |
+      */
+    void updateOrderAdd(int archiveseqid,int archivetypeid,int thisorder);
 }

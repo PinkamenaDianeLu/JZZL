@@ -8,6 +8,7 @@ import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
 import com.module.SFCensorship.Services.FileManipulationService;
 import com.module.SystemManagement.Services.UserService;
+import com.util.GlobalUtil;
 import com.util.SftpUtil;
 import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -279,7 +280,9 @@ public class FileManipulationController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "上传图片", operType = OperLog.type.INSERT)
-    public String upLoadRecordFiles(String reportTitle, String reportContent, @RequestParam("newFile") MultipartFile newFile) {
+    public String upLoadRecordFiles(String fileName, String fileOrder,
+                                    String recordid,
+                                    @RequestParam("newFile") MultipartFile newFile) {
         JSONObject reValue = new JSONObject();
         try {
             //如果有附件的 触发附件上传
@@ -288,15 +291,50 @@ public class FileManipulationController extends BaseFactory {
                 String orgFileName = newFile.getOriginalFilename();
                 String orgFileSuffix = orgFileName.substring(orgFileName.lastIndexOf("."));
                 //上传的文件名
-                String fileName = UUID.randomUUID() + orgFileSuffix;
+                String osFileName = UUID.randomUUID() + orgFileSuffix;
                 //上传路径 年与日
                 Calendar now = Calendar.getInstance();
+                //最终上传路径
                 String uploadFile = now.get(Calendar.YEAR) + "/" + (now.get(Calendar.MONTH) + 1) + now.get(Calendar.DAY_OF_MONTH);
-                String jdlj = SftpUtil.upLoad(fileName, uploadFile, "others", newFile.getInputStream());
-//                newReport.setAttachment(newFile.getOriginalFilename());//上传文件原名
-//                newReport.setAttachmenturl(jdlj);//文件在服务器上的位置
+                //得到上传完成后的文件名
+                String jdlj = SftpUtil.upLoad(osFileName, uploadFile, "img", newFile.getInputStream());
+                int recordId=Integer.parseInt(recordid);
+
+                FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(recordId);
+              //  thisRecord.setBaserecordid(); //基于生成的id
+
+                int maxOrder=  fileManipulationService.selectFileMaxOrder(recordId);
+
+                SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+                //将文件上传记录保存至数据库
+                FunArchiveFilesDTO newRecordFile=new FunArchiveFilesDTO();
+                newRecordFile.setJqbh(thisRecord.getJqbh());
+                newRecordFile.setAjbh(thisRecord.getAjbh());
+                newRecordFile.setThisorder(maxOrder+Integer.parseInt(fileOrder)+1);//文件的顺序
+                newRecordFile.setArchiverecordid(recordId);//所属文书id
+                newRecordFile.setArchivetypeid(thisRecord.getArchivetypeid());//文书类型id
+                newRecordFile.setFiletype(0);//文件类型 文件
+                newRecordFile.setFileurl("/"+uploadFile+"/"+osFileName);//图片路径
+                newRecordFile.setOriginurl(jdlj);
+                newRecordFile.setIsdowland(1);//是否已经下载
+                newRecordFile.setFilename(fileName);//文件名称
+                newRecordFile.setArchiveseqid(thisRecord.getArchiveseqid());//seq
+                newRecordFile.setArchivesfcid(thisRecord.getArchivesfcid());//sfc
+                newRecordFile.setIsazxt(1);//是否来自案宗 不是
+                newRecordFile.setAuthor(userNow.getXm());//用户名
+                newRecordFile.setAuthorid(userNow.getId());//用户id
+                newRecordFile.setIsshow(0);//是否显示
+                newRecordFile.setFilecode("R"+UUID.randomUUID());
+                newRecordFile.setIsdelete(0);//是否已删除
+                String serverIp= GlobalUtil.getGlobal("nginxFinUrl");//服务器ip地址
+                newRecordFile.setServerip(serverIp);
+
+                fileManipulationService.insertFunArchiveFilesDTO(newRecordFile);
+                reValue.put("message", "success");
+            }else {
+                throw new  Exception("低情商:你传尼玛呢弟弟 高情商:？");
             }
-            reValue.put("message", "success");
+
         } catch (Exception e) {
             e.printStackTrace();
             reValue.put("message", "error");

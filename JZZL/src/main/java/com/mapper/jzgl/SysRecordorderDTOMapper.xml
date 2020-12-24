@@ -13,10 +13,11 @@
         <result column="RECORDTYPE" jdbcType="DECIMAL" property="recordtype"/>
         <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype"/>
         <result column="RECORDSTYLE" jdbcType="DECIMAL" property="recordstyle"/>
+        <result column="ISACCESSORY" jdbcType="DECIMAL" property="isaccessory"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, RECORDNAME, RECORDCODE, DEFAULTORDER, RECORDTYPE, 
-    ARCHIVETYPE,RECORDSTYLE
+    ARCHIVETYPE,RECORDSTYLE,ISACCESSORY
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -24,129 +25,6 @@
         from SYS_RECORDORDER
         where ID = #{id,jdbcType=DECIMAL}
     </select>
-    <insert id="insert" parameterType="com.bean.jzgl.DTO.SysRecordorderDTO">
-    insert into SYS_RECORDORDER (ID, SCBJ, STATE, 
-      CREATETIME, UPDATETIME, RECORDNAME, 
-      RECORDCODE, DEFAULTORDER, RECORDTYPE, 
-      ARCHIVETYPE)
-    values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{recordname,jdbcType=VARCHAR}, 
-      #{recordcode,jdbcType=VARCHAR}, #{defaultorder,jdbcType=DECIMAL}, #{recordtype,jdbcType=DECIMAL}, 
-      #{archivetype,jdbcType=DECIMAL})
-  </insert>
-    <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.SysRecordorderDTO">
-        insert into SYS_RECORDORDER
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                ID,
-            </if>
-            <if test="scbj != null">
-                SCBJ,
-            </if>
-            <if test="state != null">
-                STATE,
-            </if>
-            <if test="createtime != null">
-                CREATETIME,
-            </if>
-            <if test="updatetime != null">
-                UPDATETIME,
-            </if>
-            <if test="recordname != null">
-                RECORDNAME,
-            </if>
-            <if test="recordcode != null">
-                RECORDCODE,
-            </if>
-            <if test="defaultorder != null">
-                DEFAULTORDER,
-            </if>
-            <if test="recordtype != null">
-                RECORDTYPE,
-            </if>
-            <if test="archivetype != null">
-                ARCHIVETYPE,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=DECIMAL},
-            </if>
-            <if test="scbj != null">
-                #{scbj,jdbcType=DECIMAL},
-            </if>
-            <if test="state != null">
-                #{state,jdbcType=DECIMAL},
-            </if>
-            <if test="createtime != null">
-                #{createtime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatetime != null">
-                #{updatetime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="recordname != null">
-                #{recordname,jdbcType=VARCHAR},
-            </if>
-            <if test="recordcode != null">
-                #{recordcode,jdbcType=VARCHAR},
-            </if>
-            <if test="defaultorder != null">
-                #{defaultorder,jdbcType=DECIMAL},
-            </if>
-            <if test="recordtype != null">
-                #{recordtype,jdbcType=DECIMAL},
-            </if>
-            <if test="archivetype != null">
-                #{archivetype,jdbcType=DECIMAL},
-            </if>
-        </trim>
-    </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.SysRecordorderDTO">
-        update SYS_RECORDORDER
-        <set>
-            <if test="scbj != null">
-                SCBJ = #{scbj,jdbcType=DECIMAL},
-            </if>
-            <if test="state != null">
-                STATE = #{state,jdbcType=DECIMAL},
-            </if>
-            <if test="createtime != null">
-                CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updatetime != null">
-                UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="recordname != null">
-                RECORDNAME = #{recordname,jdbcType=VARCHAR},
-            </if>
-            <if test="recordcode != null">
-                RECORDCODE = #{recordcode,jdbcType=VARCHAR},
-            </if>
-            <if test="defaultorder != null">
-                DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
-            </if>
-            <if test="recordtype != null">
-                RECORDTYPE = #{recordtype,jdbcType=DECIMAL},
-            </if>
-            <if test="archivetype != null">
-                ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL},
-            </if>
-        </set>
-        where ID = #{id,jdbcType=DECIMAL}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.bean.jzgl.DTO.SysRecordorderDTO">
-    update SYS_RECORDORDER
-    set SCBJ = #{scbj,jdbcType=DECIMAL},
-      STATE = #{state,jdbcType=DECIMAL},
-      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      RECORDNAME = #{recordname,jdbcType=VARCHAR},
-      RECORDCODE = #{recordcode,jdbcType=VARCHAR},
-      DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
-      RECORDTYPE = #{recordtype,jdbcType=DECIMAL},
-      ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
-    where ID = #{id,jdbcType=DECIMAL}
-  </update>
 
     <select id="selectRecordOrderByTypes" parameterType="map" resultMap="BaseResultMap">
         SELECT
@@ -174,4 +52,29 @@
         GROUP BY RECORDTYPE
     </select>
 
+    <select id="selectRecordCodesByAtype" resultMap="BaseResultMap" parameterType="map">
+        SELECT *
+        FROM ( SELECT A.*, ROWNUM RUM FROM
+        ( SELECT
+        <include refid="Base_Column_List"/>
+        FROM SYS_RECORDORDER
+        WHERE SCBJ = 0
+        AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+        AND RECORDNAME LIKE '%'||#{recordname,jdbcType=DECIMAL}||'%'
+        AND ISACCESSORY = #{isaccessory,jdbcType=DECIMAL}
+        AND RECORDSTYLE &lt;&gt; 0
+        ORDER BY DEFAULTORDER ASC
+        ) A )
+        WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
+        AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
+    </select>
+    <select id="selectRecordCodesByAtypeCount" resultType="java.lang.Integer" parameterType="map">
+        SELECT count(1)
+        FROM SYS_RECORDORDER
+        WHERE SCBJ = 0
+        AND  RECORDNAME  LIKE   '%'||#{recordname,jdbcType=DECIMAL}||'%'
+        AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+        AND ISACCESSORY = #{isaccessory,jdbcType=DECIMAL}
+        AND RECORDSTYLE &lt;&gt; 0
+  </select>
 </mapper>

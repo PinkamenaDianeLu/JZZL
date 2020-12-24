@@ -24,4 +24,17 @@ public interface FunSuspectRecordDTOMapper {
       */
     List<FunSuspectRecordDTO> selectRecordBySuspectid(int suspectid,int recordtype);
 
+     /**
+     * 查询该文书对嫌疑人的关联信息
+      * 这里限制了RECORDTYPE = 1 其实没必要 因为调用此方法时的文书id一定时对单个人的
+     * @author MrLu
+     * @param recordid
+     * @createTime  2020/12/24 23:03
+     * @return    |
+      */
+    FunSuspectRecordDTO selectSuspectRecordByRid (int recordid);
+
+
+
+
 }

@@ -158,7 +158,7 @@
     <include refid="Base_Column_List" />
     from FUN_SUSPECT
     where SCBJ=0 and CASEINFOID= #{caseinfoid,jdbcType=DECIMAL}
-    ORDER BY DEFAULTORDER
+    ORDER BY DEFAULTORDER ASC
 
   </select>
 
@@ -177,4 +177,13 @@
     SELECT <include refid="Base_Column_List" />  FROM FUN_SUSPECT SUSPECT
     WHERE SCBJ=0 AND CASEINFOID =#{caseinfoid,jdbcType=DECIMAL}
   </select>
+
+  <select id="selectSuspectBySeqId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT   <include refid="Base_Column_List" /> FROM  FUN_SUSPECT
+     WHERE SCBJ=0
+     AND CASEINFOID = (SELECT CASEINFOID
+     FROM fun_archive_seq
+     WHERE  id = #{seqid,jdbcType=DECIMAL})
+  </select>
+
 </mapper>

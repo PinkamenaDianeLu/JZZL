@@ -182,7 +182,15 @@
     AND CASEINFOID=#{caseInfoId,jdbcType=DECIMAL} )
     AND PREVID=0
   </select>
-
+  <select id="selectBaseArchiveBySeqId"   resultMap="BaseResultMap"  parameterType="java.lang.Integer">
+    SELECT <include refid="Base_Column_List" />
+    FROM  FUN_ARCHIVE_SEQ WHERE SCBJ=0 AND ARCHIVETYPE=0
+    AND  ARCHIVESFCID= ( SELECT ID
+    FROM FUN_ARCHIVE_seq WHERE SCBJ=0
+    AND ARCHIVETYPE=0
+    AND id=#{seqid,jdbcType=DECIMAL} )
+    AND PREVID=0
+  </select>
   <select id="selectActiveSeqByCaseId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />

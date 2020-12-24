@@ -73,6 +73,7 @@
             JCYRECORDCODE,
             PREVID,
             BASERECORDID,
+            EFFECTIVETIME,
             <if test="recordstyle != null">
                 RECORDSTYLE,
             </if>
@@ -103,6 +104,7 @@
             #{jcyrecordcode,jdbcType=VARCHAR},
             #{previd,jdbcType=DECIMAL},
             #{baserecordid,jdbcType=DECIMAL},
+            #{effectivetime,jdbcType=TIMESTAMP},
             <if test="recordstyle != null">
                 #{recordstyle,jdbcType=VARCHAR},
             </if>
@@ -171,7 +173,7 @@
         AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
     </select>
     <select id="selectRecordsByJqbhCount" resultType="java.lang.Integer" parameterType="java.lang.String">
-        SELECT COUNT(0) FROM FUN_ARCHIVE_RECORDS where 1=1 and scbj=0  AND PREVID=0
+        SELECT COUNT(0) FROM FUN_ARCHIVE_RECORDS where 1=1 and scbj=0 AND PREVID=0
         <if test="recordscode != null">
             AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
         </if>
@@ -266,7 +268,7 @@
         </if>
     </select>
 
-    <select id="selectRecordsBySuspectAType"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <select id="selectRecordsBySuspectAType" parameterType="java.lang.Integer" resultMap="BaseResultMap">
  SELECT A.*
   FROM (SELECT AR.*
           FROM FUN_ARCHIVE_RECORDS AR
@@ -289,15 +291,16 @@
     </select>
 
     <select id="selectReocrdBySeqRcode" parameterType="map" resultMap="BaseResultMap">
-        SELECT  <include refid="Base_Column_List"/>
+        SELECT
+        <include refid="Base_Column_List"/>
         from FUN_ARCHIVE_RECORDS
         where SCBJ=0
-        AND  RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
+        AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
         AND archivetypeid =
-         (SELECT ID FROM fun_archive_type
-         WHERE SCBJ=0
-          AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
-          AND recordtype= #{recordtype,jdbcType=DECIMAL} )
+        (SELECT ID FROM fun_archive_type
+        WHERE SCBJ=0
+        AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        AND recordtype= #{recordtype,jdbcType=DECIMAL} )
         ORDER BY EFFECTIVETIME ASC
     </select>
 
@@ -318,4 +321,42 @@
            AND SUSPECT.SUSPECTID = #{suspectid,jdbcType=DECIMAL})
  ORDER BY RECORDORDER.DEFAULTORDER ASC
     </select>
+
+    <select id="selectPriveRecord" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM (SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_RECORDS R
+        WHERE SCBJ = 0
+        <if test="null == suspectid">
+        AND EXISTS (SELECT 1
+        FROM SYS_RECORDORDER S
+        WHERE R.RECORDSCODE = S.RECORDCODE
+        AND S.SCBJ=0
+        AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
+        AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+        AND S.DEFAULTORDER &lt; #{defaultorder,jdbcType=DECIMAL}
+        )
+        </if>
+        <if test="null != suspectid">
+            and EXISTS
+            (SELECT 1 FROM fun_suspect_record s
+            WHERE suspectid=#{suspectid,jdbcType=DECIMAL}
+            AND r.id=s.recordid)
+        </if>
+        AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        ORDER BY R.THISORDER DESC)
+        WHERE ROWNUM = 1
+    </select>
+
+    <update id="updateOrderAdd" parameterType="java.lang.Integer">
+        update FUN_ARCHIVE_RECORDS
+        set THISORDER=THISORDER+1 where
+        scbj=0
+        and  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+           AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+            AND THISORDER &gt; #{thisorder,jdbcType=DECIMAL}
+          AND RECORDSTYLE &lt;&gt; 0
+    </update>
 </mapper>

@@ -137,4 +137,13 @@ public interface FileManipulationService {
      * @return  void  |
       */
     void updateFileByFileCode(FunArchiveFilesDTO record);
+
+    /**
+     * 新建文件
+     * @author MrLu
+     * @param record
+     * @createTime  2020/10/27 14:27
+     * @return  void  |
+     */
+    void insertFunArchiveFilesDTO(FunArchiveFilesDTO record);
 }

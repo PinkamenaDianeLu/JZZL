@@ -30,7 +30,7 @@ public class SysRecordorder {
     private String archivetype_name;
 
     private Integer recordstyle;
-
+    private  Integer isaccessory;
     public Integer getId() {
         return id;
     }
@@ -133,5 +133,13 @@ public class SysRecordorder {
 
     public void setRecordstyle(Integer recordstyle) {
         this.recordstyle = recordstyle;
+    }
+
+    public Integer getIsaccessory() {
+        return isaccessory;
+    }
+
+    public void setIsaccessory(Integer isaccessory) {
+        this.isaccessory = isaccessory;
     }
 }

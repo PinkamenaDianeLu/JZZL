@@ -58,6 +58,8 @@ public interface FunArchiveSeqDTOMapper {
       */
     FunArchiveSeqDTO selectBaseArchive(int caseInfoId);
 
+    FunArchiveSeqDTO  selectBaseArchiveBySeqId(int seqid);
+
      /**
      * 查询某个案件正在活跃的基础卷
      * @author MrLu

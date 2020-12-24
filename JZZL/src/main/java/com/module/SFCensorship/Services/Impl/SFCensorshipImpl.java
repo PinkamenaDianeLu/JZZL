@@ -44,6 +44,8 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     SysRecordorderDTOMapper sysRecordorderDTOMapper;
     @Resource
     SysRecordtypeorderDTOMapper sysRecordtypeorderDTOMapper;
+    @Resource
+    FunSuspectRecordDTOMapper funSuspectRecordDTOMapper;
 
     @Override
     public List<FunArchiveSFC> selectArchiveSFCPage(Map<String, Object> map) {
@@ -232,6 +234,14 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
         map.put("archiveseqid", archiveseqid);
         return funArchiveRecordsDTOMapper.selectRecordOrderForSuspect(map);
     }
+    @Override
+    public FunSuspectRecordDTO selectSuspectRecordByRid(int recordid) {
+        return funSuspectRecordDTOMapper.selectSuspectRecordByRid(recordid);
+    }
 
+    @Override
+    public void insertSuspectRecord(FunSuspectRecordDTO record) {
+        funSuspectRecordDTOMapper.insert(record);
+    }
 
 }
