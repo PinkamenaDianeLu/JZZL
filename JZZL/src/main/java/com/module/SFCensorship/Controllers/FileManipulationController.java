@@ -125,22 +125,22 @@ public class FileManipulationController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "保存卷宗封皮信息", operType = OperLog.type.InsertOrUpdate)
-    public String saveCover(String coverid, String fileid,String cover) {
+    public String saveCover(String coverid, String fileid, String cover) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(fileid) ||StringUtils.isEmpty(coverid) || StringUtils.isEmpty(cover)) {
+            if (StringUtils.isEmpty(fileid) || StringUtils.isEmpty(coverid) || StringUtils.isEmpty(cover)) {
                 throw new Exception("你传nm呢？");
             }
             FunArchiveFilesDTO thisFile = fileManipulationService.selectFunArchiveFilesDTOById(Integer.parseInt(fileid));
 
             FunArchiveCoverDTO coverDTO = JSON.parseObject(cover, FunArchiveCoverDTO.class);
 
-            int coverId=Integer.parseInt(coverid);
-            if (coverId>0){
+            int coverId = Integer.parseInt(coverid);
+            if (coverId > 0) {
                 //更新
                 coverDTO.setId(coverId);
                 fileManipulationService.updateFunArchiveCoverById(coverDTO);
-            }else {
+            } else {
                 //新建
                 SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
                 coverDTO.setAuthor(userNow.getUsername());
@@ -276,6 +276,51 @@ public class FileManipulationController extends BaseFactory {
 
     }
 
+
+    /**
+     * 添加上传
+     *
+     * @param fileName  文件名
+     * @param fileOrder 文件顺序
+     * @param recordId  文书id
+     * @param maxOrder  最大顺序
+     * @param newFile   文件
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/25 9:55
+     */
+    @RequestMapping(value = "/addUpLoadRecordFile", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "添加上传图片", operType = OperLog.type.INSERT)
+    public String addUpLoadRecordFile(String fileName, String fileOrder,
+                                      Integer recordId, Integer maxOrder,
+                                      @RequestParam("newFile") MultipartFile newFile) {
+        JSONObject reValue = new JSONObject();
+        try {
+            FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(recordId);
+            //将文件上传记录保存至数据库
+            FunArchiveFilesDTO newRecordFile = new FunArchiveFilesDTO();
+            newFile(newRecordFile,newFile);
+            newRecordFile.setJqbh(thisRecord.getJqbh());
+            newRecordFile.setAjbh(thisRecord.getAjbh());
+            newRecordFile.setArchiverecordid(recordId);//所属文书id
+            newRecordFile.setArchivetypeid(thisRecord.getArchivetypeid());//文书类型id
+            newRecordFile.setFilename(fileName);//文件名称
+            newRecordFile.setArchiveseqid(thisRecord.getArchiveseqid());//seq
+            newRecordFile.setArchivesfcid(thisRecord.getArchivesfcid());//sfc
+            newRecordFile.setThisorder(maxOrder + Integer.parseInt(fileOrder) + 1);//文件的顺序
+            fileManipulationService.insertFunArchiveFilesDTO(newRecordFile);
+
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
     @RequestMapping(value = "/upLoadRecordFiles", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -287,52 +332,24 @@ public class FileManipulationController extends BaseFactory {
         try {
             //如果有附件的 触发附件上传
             if (null != newFile) {
-                //这里不判断文件后缀 因为vsftp中没有给x权限  所以即使有问题的文件也执行不了
-                String orgFileName = newFile.getOriginalFilename();
-                String orgFileSuffix = orgFileName.substring(orgFileName.lastIndexOf("."));
-                //上传的文件名
-                String osFileName = UUID.randomUUID() + orgFileSuffix;
-                //上传路径 年与日
-                Calendar now = Calendar.getInstance();
-                //最终上传路径
-                String uploadFile = now.get(Calendar.YEAR) + "/" + (now.get(Calendar.MONTH) + 1) + now.get(Calendar.DAY_OF_MONTH);
-                //得到上传完成后的文件名
-                String jdlj = SftpUtil.upLoad(osFileName, uploadFile, "img", newFile.getInputStream());
-                int recordId=Integer.parseInt(recordid);
-
+            int recordId = Integer.parseInt(recordid);
                 FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(recordId);
-              //  thisRecord.setBaserecordid(); //基于生成的id
-
-                int maxOrder=  fileManipulationService.selectFileMaxOrder(recordId);
-
-                SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
-                //将文件上传记录保存至数据库
-                FunArchiveFilesDTO newRecordFile=new FunArchiveFilesDTO();
+                FunArchiveFilesDTO newRecordFile = new FunArchiveFilesDTO();
+                //上传文件
+                newFile(newRecordFile,newFile);
                 newRecordFile.setJqbh(thisRecord.getJqbh());
                 newRecordFile.setAjbh(thisRecord.getAjbh());
-                newRecordFile.setThisorder(maxOrder+Integer.parseInt(fileOrder)+1);//文件的顺序
+                newRecordFile.setThisorder(Integer.parseInt(fileOrder));//文件的顺序
                 newRecordFile.setArchiverecordid(recordId);//所属文书id
                 newRecordFile.setArchivetypeid(thisRecord.getArchivetypeid());//文书类型id
-                newRecordFile.setFiletype(0);//文件类型 文件
-                newRecordFile.setFileurl("/"+uploadFile+"/"+osFileName);//图片路径
-                newRecordFile.setOriginurl(jdlj);
-                newRecordFile.setIsdowland(1);//是否已经下载
                 newRecordFile.setFilename(fileName);//文件名称
                 newRecordFile.setArchiveseqid(thisRecord.getArchiveseqid());//seq
                 newRecordFile.setArchivesfcid(thisRecord.getArchivesfcid());//sfc
-                newRecordFile.setIsazxt(1);//是否来自案宗 不是
-                newRecordFile.setAuthor(userNow.getXm());//用户名
-                newRecordFile.setAuthorid(userNow.getId());//用户id
-                newRecordFile.setIsshow(0);//是否显示
-                newRecordFile.setFilecode("R"+UUID.randomUUID());
-                newRecordFile.setIsdelete(0);//是否已删除
-                String serverIp= GlobalUtil.getGlobal("nginxFinUrl");//服务器ip地址
-                newRecordFile.setServerip(serverIp);
 
                 fileManipulationService.insertFunArchiveFilesDTO(newRecordFile);
                 reValue.put("message", "success");
-            }else {
-                throw new  Exception("低情商:你传尼玛呢弟弟 高情商:？");
+            } else {
+                throw new Exception("低情商:你传尼玛呢弟弟 高情商:？");
             }
 
         } catch (Exception e) {
@@ -342,12 +359,58 @@ public class FileManipulationController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+    @RequestMapping(value = "/selectFileByFileId", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "按照id查询文件", operType = OperLog.type.SELECT)
+    public String selectFileByFileId(Integer fileid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (null == fileid) {
+                throw new Exception("你搞我呢？");
+            }
+            reValue.put("value", fileManipulationService.selectFunArchiveFilesDTOById(fileid));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
 
-     /**
+    @RequestMapping(value = "/reUpLoadFile", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "重新上传图片", operType = OperLog.type.UPDATE)
+    public String reUpLoadFile(Integer fileId,
+                               @RequestParam("newFile") MultipartFile newFile) {
+        JSONObject reValue = new JSONObject();
+        try {
+            FunArchiveFilesDTO oriFile = fileManipulationService.selectFunArchiveFilesDTOById(fileId);
+            //把原有的干了
+            oriFile.setIsshow(oriFile.getIsshow()+1);
+            fileManipulationService.updateFunArchiveFileDTO(oriFile);
+            //传新的  夺舍它
+            newFile(oriFile, newFile);//上传个新的 并对原有值做操作
+            fileManipulationService.insertFunArchiveFilesDTO(oriFile);
+
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+
+
+    }
+
+
+    /**
      * 分页查询文书
+     *
      * @author MrLu
-     * @createTime  2020/11/6 9:26
-      */
+     * @createTime 2020/11/6 9:26
+     */
     @RequestMapping(value = "/selectArchiveRecordPage", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -359,7 +422,7 @@ public class FileManipulationController extends BaseFactory {
             JSONObject pJsonObj = JSON.parseObject(params);
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
-            pJsonObj.put("archiveseqid",pJsonObj.getInteger("seqid"));//整理次序id
+            pJsonObj.put("archiveseqid", pJsonObj.getInteger("seqid"));//整理次序id
             reMap.put("rows", fileManipulationService.selectArchiveRecordPage(pJsonObj));
             reMap.put("total", fileManipulationService.selectArchiveRecordPageCount(pJsonObj));
         } catch (Exception e) {
@@ -380,18 +443,18 @@ public class FileManipulationController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "按照文书代码移动文件至所属文书", operType = OperLog.type.SELECT)
-    public String moveFiles(String fileOrder, String seqId,String recordid,String orirecordid) {
+    public String moveFiles(String fileOrder, String seqId, String recordid, String orirecordid) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(fileOrder) || StringUtils.isEmpty(seqId)|| StringUtils.isEmpty(recordid)) {
+            if (StringUtils.isEmpty(fileOrder) || StringUtils.isEmpty(seqId) || StringUtils.isEmpty(recordid)) {
                 throw new Exception("给一个? 自己体会");
             }
-            int recordId=Integer.parseInt(recordid);
+            int recordId = Integer.parseInt(recordid);
             String[] fileOrders = fileOrder.split(",");
             //该文书没有图片了
-          int maxOrder=  fileManipulationService.selectFileMaxOrder(recordId);
-            List<FunArchiveFilesDTO> moveFiles=  fileManipulationService.selectRecordFilesByFileCodes(fileOrders, Integer.parseInt(orirecordid));
-            for (FunArchiveFilesDTO thisMoveFile:
+            int maxOrder = fileManipulationService.selectFileMaxOrder(recordId);
+            List<FunArchiveFilesDTO> moveFiles = fileManipulationService.selectRecordFilesByFileCodes(fileOrders, Integer.parseInt(orirecordid));
+            for (FunArchiveFilesDTO thisMoveFile :
                     moveFiles) {
                 thisMoveFile.setArchiverecordid(recordId);
                 thisMoveFile.setThisorder(maxOrder++);
@@ -408,4 +471,38 @@ public class FileManipulationController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+    /**
+     * 上传图片
+     *
+     * @param
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/25 15:33
+     */
+    private void newFile(FunArchiveFilesDTO oriFile, MultipartFile newFile) throws Exception {
+        //这里不判断文件后缀 因为vsftp中没有给x权限  所以即使有问题的文件也执行不了
+        String orgFileName = newFile.getOriginalFilename();
+        String orgFileSuffix = orgFileName.substring(orgFileName.lastIndexOf("."));
+        //上传的文件名
+        String osFileName = UUID.randomUUID() + orgFileSuffix;
+        //上传路径 年与日
+        Calendar now = Calendar.getInstance();
+        //最终上传路径
+        String uploadFile = now.get(Calendar.YEAR) + "/" + (now.get(Calendar.MONTH) + 1) + now.get(Calendar.DAY_OF_MONTH);
+        //得到上传完成后的文件名
+        String jdlj = SftpUtil.upLoad(osFileName, uploadFile, "img", newFile.getInputStream());
+        SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+        String serverIp = GlobalUtil.getGlobal("nginxFinUrl");//服务器ip地址
+        oriFile.setServerip(serverIp);//服务器ip
+        oriFile.setAuthor(userNow.getXm());//用户名
+        oriFile.setAuthorid(userNow.getId());//用户id
+        oriFile.setFilecode("R" + UUID.randomUUID());//文件代码
+        oriFile.setIsdowland(1);//是否已经下载
+        oriFile.setIsdelete(0);//是否被删除
+        oriFile.setIsshow(0);//是否显示
+        oriFile.setIsazxt(1);//是否来自案宗 不是
+        oriFile.setFileurl("/" + uploadFile + "/" + osFileName);//图片路径
+        oriFile.setOriginurl(jdlj);//服务器上的路径
+
+    }
 }

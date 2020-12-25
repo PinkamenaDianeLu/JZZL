@@ -41,6 +41,7 @@ var dropUpload = (function () {
             //阻止浏览器默认打开文件的操作
             e.preventDefault();
             const files = e.dataTransfer.files;
+
             //拖文件进来了呢
             createThumbnailZone(files)
 
@@ -153,11 +154,12 @@ var dropUpload = (function () {
      * @createTime  2020/11/1 17:12
      * @return    |
      */
-    function upload(recordId) {
+    function upload(recordId,maxOrder) {
         if ($('#thumbnailZone').find('.redThumbnail').length > 0) {
             layer.alert('红色边框的图片无法上传，请删除后重试！')
         } else {
             const iterator1 = files[Symbol.iterator]();
+            let overSize=files.size;
             for (const item of iterator1) {
                 let formData = new FormData();
                 let pDiv = $('#' + item[0]);
@@ -165,12 +167,10 @@ var dropUpload = (function () {
                 formData.append('fileOrder', pDiv.index());//文件的顺序
                 formData.append('newFile', item[1]);//文件本身
                 formData.append('recordId', recordId);//文件所属文书的id
-                console.log(pDiv.find('input').val());
-                console.log(pDiv.index());
-                console.log(item[1]);
+                formData.append('maxOrder', maxOrder);//文件所属文书的id
                 pDiv.find('.thumbnailMsg').html('正在上传');
                 $.post({
-                    url: '/FileManipulation/upLoadRecordFiles',
+                    url: '/FileManipulation/addUpLoadRecordFile',
                     ache: false,
                     processData: false,
                     contentType: false,
@@ -179,13 +179,17 @@ var dropUpload = (function () {
                         const reV = JSON.parse(re);
                         if ("success" === reV.message) {
                             pDiv.find('.thumbnailMsg').html('上传成功');
+                            overSize--;
                             //刷新父页面
-                            // parent.dqfxpgbgOut.reFreshTk();
-                            // layer.msg('提交成功');
                             files.delete(item[1].keyForInput);
-                            //自我关闭
-                         /*   const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                            parent.layer.close(index);*/
+                            if (0===overSize){
+                                layer.msg('全部上传成功！');
+                                //自我关闭
+                                const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                                parent.layer.close(index);
+                            }
+                        }else {
+                            pDiv.find('.thumbnailMsg').html('上传失败');
                         }
                     }
                 })
@@ -217,14 +221,18 @@ var dropUpload = (function () {
 
 
 $(function () {
-    console.log(utils.getUrlPar('recordId'));
+
+
+
     const recordId = utils.getUrlPar('recordId');
+    const maxOrder = utils.getUrlPar('maxOrder');
+    console.log(maxOrder);
     //拖拽域
     let zl = new dropUpload('dropZone');
 
     $('#submit-all').click(function () {
         $(this).unbind();//防止重复点击
-        zl.upload(recordId);
+        zl.upload(recordId,maxOrder);
     });
     $('#removeAll').click(function () {
         zl.allRemove();

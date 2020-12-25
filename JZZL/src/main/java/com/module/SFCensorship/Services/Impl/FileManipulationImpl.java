@@ -105,4 +105,11 @@ public class FileManipulationImpl implements FileManipulationService {
         funArchiveFilesDTOMapper.insert(record);
     }
 
+    @Override
+    public void updateFunArchiveFileDTO(FunArchiveFilesDTO record) {
+        funArchiveFilesDTOMapper.updateByPrimaryKeySelective(record);
+
+
+    }
+
 }

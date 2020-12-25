@@ -9,7 +9,7 @@ var recordImgLoad = (function () {
     let viewModel;//显示状态 true 下拉图 false平铺图
     let checkFile = new Set();//复选功能中被选中的文件的filecode数组
     let imgMap = new Map();//文书图片
-    let colorList=['#FFA500',
+    let colorList = ['#FFA500',
         '#40E0D0',
         '#F08080',
         '#FF4500',
@@ -27,9 +27,9 @@ var recordImgLoad = (function () {
      */
     function loadFilesByRecord(recordId, fileOrder, callback) {
         console.log();
-        if (fileOrder.length<=0){
+        if (fileOrder.length <= 0) {
             layer.alert('该文书下没有发现文书图片！');
-            return ;
+            return;
         }
         $.post({
             url: '/ArrangeArchives/loadFilesByFileCodes',
@@ -94,7 +94,7 @@ var recordImgLoad = (function () {
                     }
                     callback();//回调方法
                 } else {
-                    console.error('文书图片加载错误'+fileOrder.join(','));
+                    console.error('文书图片加载错误' + fileOrder.join(','));
                     layer.alert('图片加载失败！');
                 }
             }
@@ -127,12 +127,12 @@ var recordImgLoad = (function () {
         //为下载按钮添加方法
         $('#downLoadBtn').unbind().click(function () {
             if (thisFileCode) {
-                utils.createElement.downLoadImg(imgMap.get(thisFileCode).serverip+imgMap.get(thisFileCode).fileurl);
+                utils.createElement.downLoadImg(imgMap.get(thisFileCode).serverip + imgMap.get(thisFileCode).fileurl);
             } else {
                 //当操作整个文书对象时  下载文书的所有图片
                 const iterator1 = imgMap[Symbol.iterator]();
                 for (const item of iterator1) {
-                    utils.createElement.downLoadImg(item[1].serverip+item[1].fileurl);
+                    utils.createElement.downLoadImg(item[1].serverip + item[1].fileurl);
                 }
             }
         });
@@ -174,16 +174,19 @@ var recordImgLoad = (function () {
         //重新上传按钮
         $('#reUpLoadBtn').unbind().click(function () {
             if (thisFileCode) {
+                console.log();
+                layer.open({
+                    icon: 1,
+                    type: 2,
+                    title: '重新上传',
+                    skin: 'layui-layer-lan',
+                    maxmin: false,
+                    shadeClose: false, //点击遮罩关闭层
+                    area: ['1000px', '700px'],
+                    content: '/model/jzzl/imgReUpload.html?fileId=' + imgMap.get(thisFileCode).id
+                });
             } else {
                 layer.alert('请选择需要重新上传的图片');
-            }
-        });
-        //创建新文书按钮
-        $('#newRecordBtn').unbind().click(function () {
-            if (thisFileCode) {
-                //没啥
-            } else {
-
             }
         });
         //放大按钮
@@ -219,15 +222,17 @@ var recordImgLoad = (function () {
         $('#addUploadBtn').unbind().click(function () {
             //直接上传到文书的后面
             recordImgLoad.pValue = recordId;
+            let files = $('#ImgBigDiv').children();
+            let key = $(files[files.length - 1]).attr('id').replace('bigImg', '');
             layer.open({
                 icon: 1,
                 type: 2,
                 title: '添加上传',
                 skin: 'layui-layer-lan',
                 maxmin: false,
-                shadeClose: true, //点击遮罩关闭层
+                shadeClose: false, //点击遮罩关闭层
                 area: ['1111px', '600px'],
-                content: '/model/jzzl/imgUpload.html?recordId=' + recordId
+                content: '/model/jzzl/imgUpload.html?recordId=' + recordId + '&maxOrder=' + imgMap.get(key).thisorder
             });
         });
         //删除按钮
@@ -289,9 +294,9 @@ var recordImgLoad = (function () {
             let scrollTopValue = +document.getElementById('ImgBigDiv').scrollTop;
             let proportionValue = +$('#proportion').val();
             scrollTopValue = (scrollTopValue - 50) / (1467 * proportionValue * 0.01);
-            let pageCountNow=+scrollTopValue.toFixed(0) + 1
-            if (pageCountNow>imgMap.size){
-                pageCountNow=imgMap.size;
+            let pageCountNow = +scrollTopValue.toFixed(0) + 1
+            if (pageCountNow > imgMap.size) {
+                pageCountNow = imgMap.size;
             }
             $('#jumpToPage').val(pageCountNow);
         })
@@ -311,13 +316,13 @@ var recordImgLoad = (function () {
 
     }
 
-     /**
+    /**
      * 加载标签
      * @author MrLu
-     * @param 
+     * @param
      * @createTime  2020/12/8 14:29
-     * @return    |  
-      */
+     * @return    |
+     */
     function loadTags(fileCode) {
         if (document.getElementById('bigImg' + fileCode)) {
             $.post({
@@ -336,22 +341,24 @@ var recordImgLoad = (function () {
                             })
                             for (let thisTag of reV.value) {
                                 let thisTagDiv = utils.createElement.createElement({
-                                    tag: 'div', attrs: {
+                                    tag: 'div',
+                                    attrs: {
                                         class: 'a_title',
                                         id: 'tag' + thisTag.id,
-                                        colour:colorList.indexOf(thisTag.tagcolour),
+                                        colour: colorList.indexOf(thisTag.tagcolour),
                                         style: 'background:' + thisTag.tagcolour
-                                    }, arg: '' + thisTag.taginfo + '&nbsp;&nbsp;&nbsp;&nbsp;'+thisTag.authorxm+"&nbsp;&nbsp;"+utils.timeFormat.timestampToDate(thisTag.createtime)
+                                    },
+                                    arg: '' + thisTag.taginfo + '&nbsp;&nbsp;&nbsp;&nbsp;' + thisTag.authorxm + "&nbsp;&nbsp;" + utils.timeFormat.timestampToDate(thisTag.createtime)
                                 })
                                 //点击标签变色
-                                thisTagDiv.addEventListener('click',function () {
+                                thisTagDiv.addEventListener('click', function () {
                                     //获取当前颜色下标+1
-                                  let colorNow=  +$(this).attr('colour')+1;
-                                  if (colorNow>=colorList.length){
-                                      colorNow=0;
-                                  }
-                                    let color=colorList[colorNow];
-                                  $(this).attr({'style':'background:' + color,colour:colorNow})
+                                    let colorNow = +$(this).attr('colour') + 1;
+                                    if (colorNow >= colorList.length) {
+                                        colorNow = 0;
+                                    }
+                                    let color = colorList[colorNow];
+                                    $(this).attr({'style': 'background:' + color, colour: colorNow})
                                 })
                                 $(thisTagsList).append(thisTagDiv);
                             }
@@ -516,7 +523,7 @@ var recordImgLoad = (function () {
         let height = 1467 * (proportion * 0.01);
         let bigImg = utils.createElement.createElement({
             tag: 'img', attrs: {
-                src: file.serverip+file.fileurl,
+                src: file.serverip + file.fileurl,
                 class: 'img_text bigImg',
                 width: width + 'px', height: height + 'px'
             }
@@ -542,7 +549,7 @@ var recordImgLoad = (function () {
         //创建缩略图
         let thumbnail = utils.createElement.createElement({
             tag: 'img', attrs: {
-                src: file.serverip+file.fileurl,
+                src: file.serverip + file.fileurl,
                 class: 'img_text',
                 width: '120px', height: '154px'
             }
@@ -670,7 +677,7 @@ var recordImgLoad = (function () {
         let front = utils.createElement.createElement({
             tag: 'img', attrs: {
                 id: 'frontImg' + file.filecode,
-                src: file.serverip+file.fileurl,
+                src: file.serverip + file.fileurl,
                 class: 'img_text',
                 width: '150px', height: '192px'
             }
@@ -682,7 +689,7 @@ var recordImgLoad = (function () {
                 style: 'display:none',
                 class: 'larimg',
 
-            }, arg: '<img width= "450px" height="576px" src="' + file.serverip+file.fileurl + '">'
+            }, arg: '<img width= "450px" height="576px" src="' + file.serverip + file.fileurl + '">'
         });
         /////////放大镜效果
         //生成跟随鼠标的小方框
@@ -739,6 +746,9 @@ var recordImgLoad = (function () {
                                    }) {
         if (this instanceof _recordImgLoad) {
             recordId = recordIdP;
+            //重置一些值
+            imgMap = new Map();
+            checkFile = new Set();
             loadFilesByRecord(recordId, fileOrder, callback)
         } else {
 

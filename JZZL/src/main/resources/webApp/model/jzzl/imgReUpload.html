@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>案卷整理</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+<link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
+<link type="text/css" rel="stylesheet" href="/css/style.css">
+<style>
+	body{ background: #fff; text-align: center;}
+	.t_img{ width: 400px; height: 560px;line-height: 560px; position: relative;float: left; text-align: center; display: inline-block; border: 1px solid #eee;}
+	.t_img img{max-width: 400px; max-height: 560px; vertical-align: middle;}
+	.t_img input{ opacity: 0; width: 400px; height: 560px; position: absolute; z-index: 1; top:0;}
+	.t_img span{ font-size: 80px; background: #eeeeee; width: 400px; height: 560px; display: inline-block; line-height: 560px; color: #999;}
+	.t_img_i{ background-image: url(/images/ico_1.png); background-position: -320px -50px; display: inline-block; float: left; margin: 33% 20px; width: 40px; height: 40px;}
+
+</style>
+</head>
+<body>
+<div style="position: relative; width:900px; background: #f00; text-align:center; margin: 10px auto;">
+	<div class="t_img">
+		<img  id="oldImg" />
+	</div>
+	<i class="t_img_i"></i>
+	<div class="t_img" id="uploadZone"><img id="newImg" /><span id="jia">+</span>
+	</div>
+	<input type="file" style="display: none" id="newFiles" />
+</div>
+<button class="ok_but" id="reUploadBtn" style="margin-top: 10px;">确定上传</button>
+<script src="/Framework/js/jquery.min.js"></script>
+<script src="/Framework/layer/layer.js"></script>
+<script src="/Framework/js/bootstrap.min.js"></script>
+<script src="/utils/utils.js"></script>
+<script src="/model/jzzl/js/imgReUpload.js"></script>
+</body>
+</html>

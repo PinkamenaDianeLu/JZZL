@@ -189,15 +189,6 @@
     <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
         update FUN_ARCHIVE_FILES
         <set>
-            <if test="scbj != null">
-                SCBJ = #{scbj,jdbcType=DECIMAL},
-            </if>
-            <if test="state != null">
-                STATE = #{state,jdbcType=DECIMAL},
-            </if>
-            <if test="createtime != null">
-                CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-            </if>
             UPDATETIME = SYSDATE,
             <if test="jqbh != null">
                 JQBH = #{jqbh,jdbcType=VARCHAR},
@@ -319,7 +310,7 @@
      AND FILECODE &lt;&gt; #{filecode,jdbcType=VARCHAR}
   </select>
 
-    <select id="updateFileByRecordId" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+    <update id="updateFileByRecordId" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
         UPDATE FUN_ARCHIVE_FILES
         <set>
             UPDATETIME = SYSDATE,
@@ -383,9 +374,9 @@
 
         </set>
         WHERE SCBJ=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
-    </select>
+    </update>
 
-    <select id="updateFileBySeqIdFileCode" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+    <update id="updateFileBySeqIdFileCode" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
         UPDATE FUN_ARCHIVE_FILES
         <set>
             UPDATETIME = SYSDATE,
@@ -450,13 +441,13 @@
         </set>
         WHERE SCBJ=0 AND
          FILECODE= #{filecode,jdbcType=VARCHAR} AND  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
-    </select>
+    </update>
 
 <select id="selectFileMaxOrder" resultType="java.lang.Integer" parameterType="java.lang.Integer">
     SELECT NVL(MAX(THISORDER),0) FROM FUN_ARCHIVE_FILES
     WHERE SCBJ=0
     AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
-    AND ISDELETE=0
+    AND ISDELETE=0 and ISSHOW=0
     AND THISORDER &lt; 9999
 </select>
 </mapper>
