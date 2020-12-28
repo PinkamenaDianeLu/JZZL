@@ -1015,6 +1015,59 @@ var loadArchiveIndex = (function () {
     }
 
     /**
+     * 搜索
+     * @author MrLu
+     * @param  txt 搜索的文本
+     * @createTime  2020/12/28 23:05
+     * @return    |
+     */
+    function searchRecord(txt) {
+        $.post({
+            url: '/ArrangeArchives/recordNamSearch',
+            data: {recordname: txt, seqid: seqid},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+
+                    layer.msg((reV.value.length > 0 ? '为您找到' + reV.value.length + '个结果，已用颜色标注！' : '没有符合条件的文书！'));
+                    for (const reVElement of reV.value) {
+                        $('#dd' + reVElement.id).css('background', '#124eb8')
+                            .click(function () {
+                                $(this).css('background', '#fff');
+                            })
+                        //父级下拉
+                        $('#P' + reVElement.archivetypeid).slideDown(300);
+                    }
+
+                    console.log(reV.value)
+                } else {
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 从基础卷导入新的文书
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/28 19:43
+     * @return    |
+     */
+    function importRecord() {
+        layer.open({
+            icon: 1,
+            type: 2,
+            title: '从基础卷导入',
+            skin: 'layui-layer-lan',
+            maxmin: false,
+            shadeClose: true, //点击遮罩关闭层
+            area: ['1111px', '600px'],
+            content: '/model/jzzl/importRecords.html?seqid=' + seqid
+        });
+    }
+
+    /**
      * 涨进度条
      * @author MrLu
      * @createTime  2020/10/27 11:34
@@ -1037,7 +1090,8 @@ var loadArchiveIndex = (function () {
     _loadArchiveIndex.prototype = {
         loadIndex, loadRecycleBin, reloadButton,
         saveData, restored, getSeqId,
-        getRecordIndexSort, progressBar, delFun, createFilesDiv, createNewRecord
+        getRecordIndexSort, progressBar, delFun,
+        createFilesDiv, createNewRecord, importRecord, searchRecord
     };
     return _loadArchiveIndex;
 })();
@@ -1125,7 +1179,6 @@ $(function () {
                 const seq = reV.value.seq;//最新的整理记录id
                 const sfc = reV.value.sfc;//送检卷信息
                 const isSuspectOrder = 0 === +reV.value.issuspectorder;//基础卷是否为已为嫌疑人排序
-                console.log(isSuspectOrder);
 
                 function loadArchives() {
                     lai.loadIndex(seq.id);//开始加载目录
@@ -1143,6 +1196,36 @@ $(function () {
                 //新创建文书
                 $('#createRecord').click(function () {
                     lai.createNewRecord();
+                })
+
+                function search(mine) {
+                    $('.noSearch').hide();
+                    $('.Search').show();
+                    $(mine).unbind().click(function () {
+                        let txt = $('#searchRecordInput').val();
+                        if (txt) lai.searchRecord(txt);
+                    })
+                }
+
+                //文书搜索
+                $('#searchRecord').click(function () {
+                    //当隐藏时 展示搜索框
+                    search(this);
+                })
+                //取消搜索按钮
+                $('#closeSearch').click(function () {
+                    $('.Search').hide();
+                    $('#searchRecordInput').val('');
+                    $('.noSearch').show();
+                    $('#searchRecord').unbind().click(function () {
+                        search(this);
+                    })
+                })
+
+
+                //从基础卷导入文书/图片
+                $('#importRecord').click(function () {
+                    lai.importRecord();
                 })
 
                 if (isSuspectOrder) {

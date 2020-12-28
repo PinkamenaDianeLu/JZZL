@@ -252,6 +252,11 @@
                 AND ISDELETE &gt;= 1
             </if>
         </if>
+        <if test="notRecordstyle != null">
+            AND recordstyle &lt;&gt; #{notRecordstyle,jdbcType=DECIMAL}
+        </if>
+
+
         ORDER BY THISORDER ASC
     </select>
 

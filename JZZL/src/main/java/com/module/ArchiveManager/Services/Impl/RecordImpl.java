@@ -1,10 +1,12 @@
 package com.module.ArchiveManager.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
+import com.bean.jzgl.Converter.FunArchiveTypeMapper;
 import com.bean.jzgl.Converter.FunCaseInfoMapper;
 import com.bean.jzgl.Converter.SysRecordorderMapper;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.selectObj;
 import com.factory.BaseFactory;
@@ -37,7 +39,10 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     FunSuspectDTOMapper funSuspectDTOMapper;
     @Resource
     FunSuspectRecordDTOMapper funSuspectRecordDTOMapper;
-
+    @Resource
+    FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
+    @Resource
+    FunArchiveFilesDTOMapper funArchiveFilesDTOMapper;
     @Override
     public FunArchiveRecords getFunArchiveRecordsById(Integer id) {
         return FunArchiveRecordsMapper.INSTANCE.pcDTOToPc(funArchiveRecordsDTOMapper.selectByPrimaryKey(id));
@@ -68,6 +73,7 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     public FunArchiveSeqDTO selectBaseArchiveBySeqId(int seqid) {
         return funArchiveSeqDTOMapper.selectBaseArchiveBySeqId(seqid);
     }
+
 
     @Override
     public List<selectObj> selectRecordCodesByAtype(Map<String, Object> map) {
@@ -125,7 +131,27 @@ public class RecordImpl extends BaseFactory implements RecordsService {
         return funSuspectDTOMapper.selectSuspectByRecordid(recordid);
     }
 
+    @Override
+    public List<FunArchiveType> selectArchiveTypeByJqSeq(int seqId) {
+        Map<String, Object> pMap = new HashMap<>();
+        pMap.put("archiveseqid", seqId);
+        return FunArchiveTypeMapper.INSTANCE.pcDTOToPcs(funArchiveTypeDTOMapper.selectArchiveTypeByJqSeq(pMap));
+    }
 
+    @Override
+    public List<FunArchiveRecords> selectRecordsByTypeid(int archivetypeid, int isDelete,int notRecordstyle) {
+        Map<String, Object> pMap = new HashMap<>();
+        pMap.put("archivetypeid", archivetypeid);
+        pMap.put("isdelete", isDelete);
+        pMap.put("notRecordstyle", notRecordstyle);
+
+        return FunArchiveRecordsMapper.INSTANCE.pcDTOToPcs(funArchiveRecordsDTOMapper.selectRecordsByTypeid(pMap));
+    }
+
+    @Override
+    public List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid, Integer isdelete) {
+        return funArchiveFilesDTOMapper.selectRecordFilesByRecordId(archiverecordid,isdelete);
+    }
 
 
 }

@@ -165,6 +165,11 @@ public class RecordComovementImpl implements RecordComovement {
     }
 
     @Override
+    public void moveRecordOrder(int order, String recordUuid) {
+
+    }
+
+    @Override
     public void renameRecord(String newName, String recordUuid) {
 
     }

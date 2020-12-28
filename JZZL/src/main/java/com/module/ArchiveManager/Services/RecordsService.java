@@ -2,6 +2,7 @@ package com.module.ArchiveManager.Services;
 
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.selectObj;
 
@@ -43,7 +44,15 @@ public interface RecordsService {
      * @return  FunArchiveSeqDTO  |
      */
     FunArchiveSeqDTO selectBaseArchive(int caseInfoId);
-    FunArchiveSeqDTO  selectBaseArchiveBySeqId(int seqid);
+    /**
+     * 通过seqid查询这个案件正在活跃的基础卷
+     *
+     * @param seqid
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/28 20:14
+     */
+    FunArchiveSeqDTO selectBaseArchiveBySeqId(int seqid);
     /**
      * 查询一个类型卷中该出现的文书代码
      * @author MrLu
@@ -128,5 +137,35 @@ public interface RecordsService {
      */
     List<FunSuspectDTO> selectSuspectByRecordid(Integer recordid);
 
+    /**
+     * 查询卷类型表
+     *
+     * @param seqId 送检次序id
+     * @return List<FunArchiveTypeDTO>  |
+     * @author MrLu
+     * @createTime 2020/10/8 11:05
+     */
+    List<FunArchiveType> selectArchiveTypeByJqSeq(int seqId);
+    /**
+     * 根据typeid查找文书  根据thisorder排序
+     *
+     * @param archivetypeid typeid
+     * @param isDelete      是否删除
+     * @return List<FunArchiveRecordsDTO> |
+     * @author MrLu
+     * @createTime 2020/10/9 11:33
+     */
+    List<FunArchiveRecords> selectRecordsByTypeid(int archivetypeid, int isDelete,int notRecordstyle);
+
+
+    /**
+     * 通过文书id查找其文书图片（最新版本的）
+     *
+     * @param archiverecordid 文书id
+     * @return FunArchiveFilesDTO  |
+     * @author MrLu
+     * @createTime 2020/10/15 17:58
+     */
+    List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid, Integer isdelete);
 
 }

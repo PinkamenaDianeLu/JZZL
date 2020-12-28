@@ -1,11 +1,11 @@
 package com.module.ArchiveManager.Controllers;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
-import com.bean.jzgl.DTO.FunArchiveSeqDTO;
-import com.bean.jzgl.DTO.FunSuspectRecordDTO;
-import com.bean.jzgl.DTO.SysRecordorderDTO;
+import com.bean.jzgl.DTO.*;
+import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author MrLu
@@ -112,7 +109,7 @@ public class RecordsController extends BaseFactory {
             pJsonObj.put("pageStart", String.valueOf((offset - 1) * limit));
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
             reValue.put("value", recordsService.selectRecordCodesByAtype(pJsonObj));
-            reValue.put("count", ((recordsService.selectRecordCodesByAtypeCount(pJsonObj)+limit-1)/limit));
+            reValue.put("count", ((recordsService.selectRecordCodesByAtypeCount(pJsonObj) + limit - 1) / limit));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,4 +234,84 @@ public class RecordsController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+    /**
+     * 为树形查询基础卷的数据
+     *
+     * @param seqId seqid
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/28 20:07
+     */
+    @RequestMapping(value = "/selectBaseTypeForTree", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "新建文书", operType = OperLog.type.SELECT)
+    public String selectBaseTypeForTree(Integer seqId, Integer nodeId, String parentId) {
+        JSONObject reValue = new JSONObject();
+        try {
+            //获取基础卷seqid
+
+            FunArchiveSeqDTO baseSeq = recordsService.selectBaseArchiveBySeqId(seqId);
+            JSONArray data = new JSONArray();
+            if (null != baseSeq) {
+
+                if (StringUtils.isEmpty(parentId)) {
+                    List<FunArchiveType> archiveTypes = recordsService.selectArchiveTypeByJqSeq(seqId);
+                    for (FunArchiveType thisType :
+                            archiveTypes) {
+                        JSONObject thisTypeJsonObj = new JSONObject();
+                        thisTypeJsonObj.put("id", thisType.getId());
+                        thisTypeJsonObj.put("title", thisType.getRecordtypecn());
+                        thisTypeJsonObj.put("parentId", "0");
+                        thisTypeJsonObj.put("checkArr", "0");
+                        thisTypeJsonObj.put("last", false);
+                        thisTypeJsonObj.put("level", "1");
+                        thisTypeJsonObj.put("children", "[]");
+                        //"children":[]
+                        data.add(thisTypeJsonObj);
+                    }
+
+                } else if ("0".equals(parentId)) {
+                    //当前情况说明为加载二级节点
+                    //查询这个type下的所有文书(抛出系统文书 zl系列的)
+                    for (FunArchiveRecords thisRecord :
+                            recordsService.selectRecordsByTypeid(nodeId, 0,0)) {
+                        JSONObject thisRecordJsonObj = new JSONObject();
+                        thisRecordJsonObj.put("id", thisRecord.getId());
+                        thisRecordJsonObj.put("title", thisRecord.getRecordname());
+                        thisRecordJsonObj.put("parentId", thisRecord.getArchivetypeid());
+                        thisRecordJsonObj.put("checkArr", "0");
+                        thisRecordJsonObj.put("last", false);
+                        thisRecordJsonObj.put("level", "2");
+                        thisRecordJsonObj.put("children", "[]");
+                        data.add(thisRecordJsonObj);
+                    }
+                } else {
+                    //说明此处时加载基础卷下的文书图片
+                    for (FunArchiveFilesDTO thisFile :
+                            recordsService.selectRecordFilesByRecordId(nodeId, 0)) {
+                        JSONObject thisRecordJsonObj = new JSONObject();
+                        thisRecordJsonObj.put("id", thisFile.getId());
+                        thisRecordJsonObj.put("title", thisFile.getFilename());
+                        thisRecordJsonObj.put("parentId", thisFile.getArchiverecordid());
+                        thisRecordJsonObj.put("checkArr", "0");
+                        thisRecordJsonObj.put("last", true);
+                        thisRecordJsonObj.put("level", "3");
+                        data.add(thisRecordJsonObj);
+                    }
+
+                }
+
+                reValue.put("data", data);
+                reValue.put("code", "0");
+            } else {
+                throw new Exception("莫得基础卷啊");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("code", "1");
+        }
+        return reValue.toJSONString();
+    }
 }

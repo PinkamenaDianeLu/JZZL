@@ -65,6 +65,15 @@ public interface RecordComovement {
      * @createTime 2020/12/28 10:14
      */
     void moveFileOrder(int order, String fileCode);
+    
+     /**
+     * 移动文书的顺序
+     * @author MrLu
+     * @param 
+     * @createTime  2020/12/28 19:42
+     * @return    |  
+      */
+    void moveRecordOrder(int order, String recordUuid);
 
 
     /**
