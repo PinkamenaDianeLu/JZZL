@@ -85,7 +85,32 @@ public interface FunArchiveFilesDTOMapper {
      * @return   int |
       */
     int selectFileMaxOrder(int archiverecordid);
+     /**
+     * 根据文件代码更新文件
+     * @author MrLu
+     * @param record
+     * @createTime  2020/12/28 15:11
+     * @return    |
+      */
+   void updateFileByFilecode(FunArchiveFilesDTO record);
 
+    /**
+    * 查询一个seq下是否有重复的filecode
+    * @author MrLu
+    * @param  filecode
+     * @param  archiveseqid
+    * @createTime  2020/12/28 18:19
+    * @return    |
+     */
+   Integer selectRepeatedlyFileCodeBySeqid(@Param("filecode")String filecode,@Param("archiveseqid")int archiveseqid);
 
+    /**
+    * 根据文书和文件代码更新文件的顺序或名称
+    * @author MrLu
+    * @param map {[filename|thisorder],filecode,archiverecordid}
+    * @createTime  2020/12/28 19:03
+    * @return    |
+     */
+   void updateFileOrderByRecord(Map<String,Object> map);
 
 }

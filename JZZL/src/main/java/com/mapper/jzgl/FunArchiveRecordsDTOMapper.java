@@ -153,4 +153,55 @@ public interface FunArchiveRecordsDTOMapper {
      * @return    |
       */
     void updateOrderAdd(int archiveseqid,int archivetypeid,int thisorder);
+
+    /**
+     * 根据文书名称查询
+     *
+     * @param map {recordname 文书名 archiveseqid seqid}
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/25 17:19
+     */
+    List<FunArchiveRecordsDTO> selectRecordbyName(Map<String, Object> map);
+
+
+     /**
+     * 根据uuid查询正在活跃的卷中的文书
+     * @author MrLu
+     * @param
+     * @createTime  2020/12/28 14:37
+     * @return    |
+      */
+    List<FunArchiveRecordsDTO> selectRecordByUuid(String recorduuid);
+
+    FunArchiveRecordsDTO selectRecordByUuidSeq(@Param("recorduuid") String recorduuid,
+                                                     @Param("archiveseqid") Integer archiveseqid);
+
+     /**
+     * 查询该文书的同代码的文书  （活跃的）
+     * @author MrLu
+     * @param  id
+     * @createTime  2020/12/28 14:57
+     * @return    |
+      */
+    List<FunArchiveRecordsDTO> selectSameRecordById(Integer id);
+
+     /**
+     * 根据uuid更新
+     * @author MrLu
+     * @param record
+     * @createTime  2020/12/28 15:04
+     * @return    |
+      */
+    void updateRecordByUuid(FunArchiveRecordsDTO record);
+
+
+     /**
+     * 查询含有某个文件代码的正在活跃的seq中的文书
+     * @author MrLu
+     * @param filecode
+     * @createTime  2020/12/28 18:47
+     * @return    |
+      */
+    List<FunArchiveRecordsDTO> selectActiveRecordByFilecode(String filecode);
 }

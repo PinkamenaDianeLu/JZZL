@@ -1,4 +1,4 @@
-package com.module.SFCensorship.Services.Impl;
+package com.module.ArchiveManager.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunCaseInfoMapper;
@@ -9,7 +9,7 @@ import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.selectObj;
 import com.factory.BaseFactory;
 import com.mapper.jzgl.*;
-import com.module.SFCensorship.Services.RecordsService;
+import com.module.ArchiveManager.Services.RecordsService;
 import com.util.MapFactory;
 import org.springframework.stereotype.Service;
 

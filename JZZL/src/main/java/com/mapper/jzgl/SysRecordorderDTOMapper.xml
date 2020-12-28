@@ -77,4 +77,6 @@
         AND ISACCESSORY = #{isaccessory,jdbcType=DECIMAL}
         AND RECORDSTYLE &lt;&gt; 0
   </select>
+
+
 </mapper>

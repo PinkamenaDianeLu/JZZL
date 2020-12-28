@@ -1,13 +1,16 @@
-package com.module.SFCensorship.Controllers;
+package com.module.ArchiveManager.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
-import com.bean.jzgl.Source.*;
+import com.bean.jzgl.Source.FunArchiveRecords;
+import com.bean.jzgl.Source.FunArchiveSFC;
+import com.bean.jzgl.Source.FunArchiveType;
+import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
-import com.module.SFCensorship.Services.ArrangeArchivesService;
+import com.module.ArchiveManager.Services.ArrangeArchivesService;
 import com.module.SystemManagement.Services.UserService;
 import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,10 +58,10 @@ public class ArrangeArchivesController extends BaseFactory {
         try {
             int sfcId = Integer.parseInt(DecodeUrlP(id));
             JSONObject reV = new JSONObject();
-            FunArchiveSFC thisSfc=arrangeArchivesService.selectFunArchiveSFCById(sfcId);
+            FunArchiveSFC thisSfc = arrangeArchivesService.selectFunArchiveSFCById(sfcId);
             reV.put("sfc", thisSfc);
             reV.put("seq", arrangeArchivesService.selectLastSeqBySfc(sfcId));
-            reV.put("issuspectorder", arrangeArchivesService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid()).getIssuspectorder() );//基础卷是否已经为嫌疑人排序
+            reV.put("issuspectorder", arrangeArchivesService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid()).getIssuspectorder());//基础卷是否已经为嫌疑人排序
             reValue.put("value", reV);
             reValue.put("message", "success");
         } catch (Exception e) {
@@ -348,10 +350,10 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.SELECT)
-    public String loadFilesByFileCodes(String fileOrder, String seqId,String recordId) {
+    public String loadFilesByFileCodes(String fileOrder, String seqId, String recordId) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(fileOrder) || StringUtils.isEmpty(seqId)|| StringUtils.isEmpty(recordId)) {
+            if (StringUtils.isEmpty(fileOrder) || StringUtils.isEmpty(seqId) || StringUtils.isEmpty(recordId)) {
                 throw new Exception("给一个? 自己体会");
             }
             String[] fileOrders = fileOrder.split(",");
@@ -465,9 +467,10 @@ public class ArrangeArchivesController extends BaseFactory {
                 //where 条件
                 fileDto.setFilecode(fileCode);
                 fileDto.setArchiveseqid(seqId);
-                arrangeArchivesService.updateFileByFileCode(fileDto);
                 //更新后面的顺序
-                arrangeArchivesService.updateFileOrder(recordId, order, fileCode);
+                arrangeArchivesService.updateFileOrder(recordId, order-1, fileCode);
+                arrangeArchivesService.updateFileByFileCode(fileDto);
+
             } else {
                 //更新文书
                 Integer prevId = StringUtil.StringToInteger(paramObj.getString("prevId"));//上一个文书的id
@@ -702,6 +705,22 @@ public class ArrangeArchivesController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+
+    @RequestMapping(value = "/recordNamSearch", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "搜索文书", operType = OperLog.type.SELECT)
+    public String recordNamSearch(String recordname, Integer seqid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            reValue.put("value", arrangeArchivesService.selectRecordbyName(recordname, seqid));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
 
     /**
      * 根据嫌疑人顺序生成卷

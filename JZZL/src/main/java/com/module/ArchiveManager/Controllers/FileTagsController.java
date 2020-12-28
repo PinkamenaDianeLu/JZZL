@@ -1,4 +1,4 @@
-package com.module.SFCensorship.Controllers;
+package com.module.ArchiveManager.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -7,7 +7,7 @@ import com.bean.jzgl.DTO.FunArchiveTagsDTO;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
-import com.module.SFCensorship.Services.FileTagsService;
+import com.module.ArchiveManager.Services.FileTagsService;
 import com.module.SystemManagement.Services.UserService;
 import com.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;

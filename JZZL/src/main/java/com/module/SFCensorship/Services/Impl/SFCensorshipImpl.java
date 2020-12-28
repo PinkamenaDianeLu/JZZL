@@ -152,6 +152,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
             r.setAuthorid(record.getAuthorid());
             r.setIsshow(0);
             r.setIsdelete(0);
+            r.setServerip("/");
             r.setFilecode("F" + record.getRecordscode() + "R" + record.getId() + "T" + type.getId());
             insertFunArchiveFilesDTO(r);
         } else {
@@ -163,6 +164,11 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     @Override
     public void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) {
         funArchiveFilesDTOMapper.insert(record);
+    }
+
+    @Override
+    public Integer selectRepeatedlyFileCodeBySeqid(String filecode, int archiveseqid) {
+        return funArchiveFilesDTOMapper.selectRepeatedlyFileCodeBySeqid(filecode,archiveseqid);
     }
 
     @Override

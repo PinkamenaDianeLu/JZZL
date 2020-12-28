@@ -10,9 +10,7 @@ import java.util.Map;
 public interface SysRecordorderDTOMapper {
 
 
-
     SysRecordorderDTO selectByPrimaryKey(Integer id);
-
 
 
     /**
@@ -45,15 +43,19 @@ public interface SysRecordorderDTOMapper {
      */
     List<Integer> selectRecordTypeByArchiveType(int archivetype);
 
-     /**
+    /**
      * 查询一个类型卷中该出现的文书代码
-     * @author MrLu
+     *
      * @param
-     * @createTime  2020/12/22 19:03
-     * @return    |
-      */
-    List<SysRecordorderDTO>  selectRecordCodesByAtype(Map<String,Object> map);
-    Integer selectRecordCodesByAtypeCount(Map<String,Object> map);
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/22 19:03
+     */
+    List<SysRecordorderDTO> selectRecordCodesByAtype(Map<String, Object> map);
+
+    Integer selectRecordCodesByAtypeCount(Map<String, Object> map);
+
+
 
 
 }

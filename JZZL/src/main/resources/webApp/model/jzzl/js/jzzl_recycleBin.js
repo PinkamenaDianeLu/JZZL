@@ -42,10 +42,10 @@ var recycleBin = (function () {
         let thisTypeEle = utils.createElement.createElement({
             tag: 'div', attrs: {
                 id: 'recycleTypeTitle' + thisType.id
-            }, arg: '<i class="u_up"></i><a><p>' + thisType.archivetypecn + '</p>'
+            }, arg: '<i class="u_up"></i><a><p>' + thisType.recordtypecn + '</p>'
         });
         thisTypeEle.addEventListener('click', function () {
-            console.log('点一下收缩或展示' + thisType.archivetypecn)
+            console.log('点一下收缩或展示' + thisType.recordtypecn)
         });
         div.append(thisTypeEle);
         $('#recycleBinArchiveIndex').append(div);

@@ -123,11 +123,11 @@ public class SFCensorshipController extends BaseFactory {
             sFCensorshipService.insertFunArchiveSeq(BaseSeq);
 
             //记录该文书已选择过了
-
+/*
             FunArchiveRecordsDTO uRecord = new FunArchiveRecordsDTO();
             uRecord.setId(recordId);
             uRecord.setPrevid(1);
-            sFCensorshipService.updateFunArchiveRecordById(uRecord);
+            sFCensorshipService.updateFunArchiveRecordById(uRecord);*/
             //创建新建卷
 
             //新的卷就是在复制基础卷
@@ -199,6 +199,8 @@ public class SFCensorshipController extends BaseFactory {
                 thisRecord.setArchivesfcid(newSeq.getArchivesfcid());//送检次序id
                 thisRecord.setArchiveseqid(newSeq.getId());//整理次序id
                 thisRecord.setArchivetypeid(newTypeId);//对应了新的archiveType表id
+                thisRecord.setBaserecordid(thisRecord.getId());//基于的基础卷id
+                thisRecord.setPrevid(thisRecord.getId());
 //                sFCensorshipService.insertFunArchiveRecords(thisRecord, thisType);
                 copyRecordsToNew(thisRecord);
             }
@@ -389,9 +391,9 @@ public class SFCensorshipController extends BaseFactory {
                         thisSuspectRecord.setArchivetypeid(recordTypeIdMap.get(thisOrder.getRecordtype()));//typeid
                         thisSuspectRecord.setArchiveseqid(newSeq.getId());//seqid
                         thisSuspectRecord.setThisorder(i);//顺序
-                        FunSuspectRecordDTO sr=   sFCensorshipService.selectSuspectRecordByRid(thisSuspectRecord.getId());//此时使用原有的id查询
+                        FunSuspectRecordDTO sr = sFCensorshipService.selectSuspectRecordByRid(thisSuspectRecord.getId());//此时使用原有的id查询
                         copyRecordsToNew(thisSuspectRecord);//（copy）
-                        if (null!=sr){
+                        if (null != sr) {
                             //这里应该保证sr不能为空  因为这个文书如果对人但是在嫌疑人文书关联表中没有数据那么就是数据出现错误了  是个问题了
                             //对人文书复制关联表
                             sr.setRecordid(thisSuspectRecord.getId());//注意此时是新的id了
@@ -432,6 +434,12 @@ public class SFCensorshipController extends BaseFactory {
         //查找该文书原有的文件
         for (FunArchiveFilesDTO thisFile :
                 sFCensorshipService.selectRecordFilesByRecordId(oriId, null)) {
+            //判断该文件的uuid是否有重复  如果有的话重新生成uuid  同一个seq下不允许有重复的filecode ！
+            int Repeated = sFCensorshipService.selectRepeatedlyFileCodeBySeqid(thisFile.getFilecode(), newRecord.getArchiveseqid());
+            if (Repeated > 0) {
+                thisFile.setFilecode(UUID.randomUUID().toString());
+            }
+
             thisFile.setArchiveseqid(newRecord.getArchiveseqid());
             thisFile.setArchivesfcid(newRecord.getArchivesfcid());
             thisFile.setArchivetypeid(newRecord.getArchivetypeid());

@@ -101,6 +101,15 @@ public interface SFCensorshipService {
      */
      void insertFunArchiveFilesDTO(FunArchiveFilesDTO record) ;
 
+    /**
+     * 查询一个seq下是否有重复的filecode
+     * @author MrLu
+     * @param  filecode
+     * @param  archiveseqid
+     * @createTime  2020/12/28 18:19
+     * @return    |
+     */
+    Integer selectRepeatedlyFileCodeBySeqid(String filecode,int archiveseqid);
 
        /**
        * 通过id更新文书表

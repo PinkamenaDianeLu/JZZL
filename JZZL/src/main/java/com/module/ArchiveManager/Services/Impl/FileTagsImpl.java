@@ -1,10 +1,10 @@
-package com.module.SFCensorship.Services.Impl;
+package com.module.ArchiveManager.Services.Impl;
 
 import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTagsDTO;
 import com.mapper.jzgl.FunArchiveRecordsDTOMapper;
 import com.mapper.jzgl.FunArchiveTagsDTOMapper;
-import com.module.SFCensorship.Services.FileTagsService;
+import com.module.ArchiveManager.Services.FileTagsService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

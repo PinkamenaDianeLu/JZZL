@@ -1,4 +1,4 @@
-package com.module.SFCensorship.Controllers;
+package com.module.ArchiveManager.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -6,7 +6,7 @@ import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
-import com.module.SFCensorship.Services.FileManipulationService;
+import com.module.ArchiveManager.Services.FileManipulationService;
 import com.module.SystemManagement.Services.UserService;
 import com.util.GlobalUtil;
 import com.util.SftpUtil;
@@ -304,6 +304,7 @@ public class FileManipulationController extends BaseFactory {
             newFile(newRecordFile,newFile);
             newRecordFile.setJqbh(thisRecord.getJqbh());
             newRecordFile.setAjbh(thisRecord.getAjbh());
+            newRecordFile.setFiletype(0);
             newRecordFile.setArchiverecordid(recordId);//所属文书id
             newRecordFile.setArchivetypeid(thisRecord.getArchivetypeid());//文书类型id
             newRecordFile.setFilename(fileName);//文件名称

@@ -40,6 +40,7 @@ public class FunArchiveRecordsDTO {
     private String   recordwh;
     private  Date effectivetime;
     private Integer baserecordid;
+    private String recorduuid;
 
     public Integer getId() {
         return id;
@@ -231,5 +232,13 @@ public class FunArchiveRecordsDTO {
 
     public void setBaserecordid(Integer baserecordid) {
         this.baserecordid = baserecordid;
+    }
+
+    public String getRecorduuid() {
+        return recorduuid;
+    }
+
+    public void setRecorduuid(String recorduuid) {
+        this.recorduuid = recorduuid;
     }
 }

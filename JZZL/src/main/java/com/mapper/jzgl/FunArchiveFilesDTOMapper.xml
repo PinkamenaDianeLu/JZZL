@@ -300,7 +300,7 @@
         WHERE SCBJ=0 AND FILECODE= #{filecode,jdbcType=VARCHAR}
         AND ISSHOW=0 AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
     </select>
-    <select id="updateOrderByRecordId" parameterType="map">
+    <update id="updateOrderByRecordId" parameterType="map">
     UPDATE FUN_ARCHIVE_FILES  SET
      THISORDER=THISORDER+1
     ,UPDATETIME = SYSDATE
@@ -308,7 +308,7 @@
      AND ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
      AND THISORDER &gt;=  #{thisorder,jdbcType=DECIMAL}
      AND FILECODE &lt;&gt; #{filecode,jdbcType=VARCHAR}
-  </select>
+  </update>
 
     <update id="updateFileByRecordId" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
         UPDATE FUN_ARCHIVE_FILES
@@ -440,7 +440,8 @@
 
         </set>
         WHERE SCBJ=0 AND
-         FILECODE= #{filecode,jdbcType=VARCHAR} AND  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+         FILECODE= #{filecode,jdbcType=VARCHAR}
+         AND  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
     </update>
 
 <select id="selectFileMaxOrder" resultType="java.lang.Integer" parameterType="java.lang.Integer">
@@ -450,4 +451,94 @@
     AND ISDELETE=0 and ISSHOW=0
     AND THISORDER &lt; 9999
 </select>
+
+    <update id="updateFileByFilecode" parameterType="com.bean.jzgl.DTO.FunArchiveFilesDTO">
+        UPDATE FUN_ARCHIVE_FILES
+        <set>
+            UPDATETIME = SYSDATE,
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="thisorder != null">
+                THISORDER = #{thisorder,jdbcType=DECIMAL},
+            </if>
+            <if test="archiverecordid != null">
+                ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivetypeid != null">
+                ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+            </if>
+            <if test="filetype != null">
+                FILETYPE = #{filetype,jdbcType=DECIMAL},
+            </if>
+            <if test="fileurl != null">
+                FILEURL = #{fileurl,jdbcType=VARCHAR},
+            </if>
+            <if test="originurl != null">
+                ORIGINURL = #{originurl,jdbcType=VARCHAR},
+            </if>
+            <if test="isdowland != null">
+                ISDOWLAND = #{isdowland,jdbcType=DECIMAL},
+            </if>
+            <if test="filename != null">
+                FILENAME = #{filename,jdbcType=VARCHAR},
+            </if>
+            <if test="archiveseqid != null">
+                ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivesfcid != null">
+                ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+            </if>
+            <if test="isazxt != null">
+                ISAZXT = #{isazxt,jdbcType=DECIMAL},
+            </if>
+            <if test="author != null">
+                AUTHOR = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="authorid != null">
+                AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+            <if test="isshow != null">
+                ISSHOW = #{isshow,jdbcType=DECIMAL},
+            </if>
+            <if test="filecode != null">
+                FILECODE = #{filecode,jdbcType=VARCHAR},
+            </if>
+            <if test="isdelete != null">
+                ISDELETE = #{isdelete,jdbcType=DECIMAL},
+            </if>
+            <if test="serverip != null">
+                SERVERIP =#{serverip,jdbcType=DECIMAL},
+            </if>
+
+        </set>
+        WHERE SCBJ=0 AND FILECODE = #{filecode,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectRepeatedlyFileCodeBySeqid" parameterType="map" resultType="java.lang.Integer">
+        SELECT NVL(count(1),0) FROM  fun_archive_files
+        WHERE    filecode=#{filecode,jdbcType=VARCHAR}
+        AND  archiveseqid=#{archiveseqid,jdbcType=DECIMAL}
+    </select>
+
+    <update id="updateFileOrderByRecord" parameterType="map">
+        update fun_archive_files
+        <set>
+         UPDATETIME = SYSDATE,
+            <if test="thisorder != null">
+                THISORDER = #{thisorder,jdbcType=DECIMAL},
+            </if>
+            <if test="filename != null">
+                FILENAME = #{filename,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where
+        scbj=0
+        and FILECODE=#{filecode,jdbcType=VARCHAR}
+        and ARCHIVERECORDID = #{archiverecordid,jdbcType=DECIMAL}
+    </update>
+
 </mapper>

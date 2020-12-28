@@ -1,4 +1,4 @@
-package com.module.SFCensorship.Controllers;
+package com.module.ArchiveManager.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -6,11 +6,10 @@ import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 import com.bean.jzgl.DTO.FunSuspectRecordDTO;
 import com.bean.jzgl.DTO.SysRecordorderDTO;
-import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.factory.BaseFactory;
-import com.module.SFCensorship.Services.RecordsService;
+import com.module.ArchiveManager.Services.RecordsService;
 import com.module.SystemManagement.Services.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author MrLu
@@ -172,7 +172,6 @@ public class RecordsController extends BaseFactory {
             JSONObject newRecordJsonObj = JSON.parseObject(record);
             int seqId = newRecordJsonObj.getInteger("seqId");//seqid
             FunArchiveSeqDTO thisSeq = recordsService.selectFunArchiveSeqById(seqId);
-
             //查看这个文书代码应有的信息
             SysRecordorderDTO thisRecordOrder = recordsService.selectSysRecordorderDTOById(newRecordJsonObj.getInteger("sysRecordId"));
             Integer suspectId = newRecordJsonObj.getInteger("suspectId");//被选中的嫌疑人id
@@ -190,6 +189,7 @@ public class RecordsController extends BaseFactory {
             newRecordObj.setPrevid(0);
             newRecordObj.setAuthor(userNow.getUsername());
             newRecordObj.setAuthorid(userNow.getId());
+            newRecordObj.setRecorduuid(UUID.randomUUID().toString());
             newRecordObj.setRecordstyle(thisRecordOrder.getRecordstyle());
             newRecordObj.setRecordscode(thisRecordOrder.getRecordcode());
             if (newRecordObj.getThisorder() < 1) {

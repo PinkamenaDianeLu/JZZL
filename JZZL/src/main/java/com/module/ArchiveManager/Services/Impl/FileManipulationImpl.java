@@ -1,8 +1,8 @@
-package com.module.SFCensorship.Services.Impl;
+package com.module.ArchiveManager.Services.Impl;
 
 import com.bean.jzgl.DTO.*;
 import com.mapper.jzgl.*;
-import com.module.SFCensorship.Services.FileManipulationService;
+import com.module.ArchiveManager.Services.FileManipulationService;
 import com.util.MapFactory;
 import org.springframework.stereotype.Service;
 

@@ -26,12 +26,14 @@
         <result column="RECORDWH" jdbcType="VARCHAR" property="recordwh"/>
         <result column="EFFECTIVETIME" jdbcType="TIMESTAMP" property="effectivetime"/>
         <result column="BASERECORDID" jdbcType="DECIMAL" property="baserecordid"/>
+        <result column="RECORDUUID" jdbcType="VARCHAR" property="recorduuid"/>
 
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,ARCHIVESEQID,
      THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
-    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH,EFFECTIVETIME,BASERECORDID
+    ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH,
+    EFFECTIVETIME,BASERECORDID,RECORDUUID
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -74,6 +76,7 @@
             PREVID,
             BASERECORDID,
             EFFECTIVETIME,
+            RECORDUUID,
             <if test="recordstyle != null">
                 RECORDSTYLE,
             </if>
@@ -105,6 +108,7 @@
             #{previd,jdbcType=DECIMAL},
             #{baserecordid,jdbcType=DECIMAL},
             #{effectivetime,jdbcType=TIMESTAMP},
+            #{recorduuid,jdbcType=VARCHAR},
             <if test="recordstyle != null">
                 #{recordstyle,jdbcType=VARCHAR},
             </if>
@@ -117,12 +121,6 @@
         update FUN_ARCHIVE_RECORDS
         <set>
             UPDATETIME = SYSDATE,
-            <if test="scbj != null">
-                SCBJ = #{scbj,jdbcType=DECIMAL},
-            </if>
-            <if test="state != null">
-                STATE = #{state,jdbcType=DECIMAL},
-            </if>
             <if test="jqbh != null">
                 JQBH = #{jqbh,jdbcType=VARCHAR},
             </if>
@@ -138,14 +136,50 @@
             <if test="archivetypeid != null">
                 ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
             </if>
+            <if test="archiveseqid != null">
+                ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivecode != null">
+                ARCHIVECODE = #{archivecode,jdbcType=VARCHAR},
+            </if>
+            <if test="recordstyle != null">
+                RECORDSTYLE = #{recordstyle,jdbcType=DECIMAL},
+            </if>
+            <if test="recordscode != null">
+                RECORDSCODE = #{recordscode,jdbcType=VARCHAR},
+            </if>
             <if test="isdelete != null">
                 ISDELETE = #{isdelete,jdbcType=DECIMAL},
+            </if>
+            <if test="archivesfcid != null">
+                ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+            </if>
+            <if test="isazxt != null">
+                ISAZXT = #{isazxt,jdbcType=DECIMAL},
+            </if>
+            <if test="authorid != null">
+                AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+            <if test="author != null">
+                AUTHOR = #{author,jdbcType=VARCHAR},
             </if>
             <if test="previd != null">
                 PREVID = #{previd,jdbcType=DECIMAL},
             </if>
+            <if test="jcyrecordcode != null">
+                JCYRECORDCODE = #{jcyrecordcode,jdbcType=VARCHAR},
+            </if>
             <if test="recordwh != null">
                 RECORDWH = #{recordwh,jdbcType=VARCHAR},
+            </if>
+            <if test="effectivetime != null">
+                EFFECTIVETIME = #{effectivetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="baserecordid != null">
+                BASERECORDID = #{baserecordid,jdbcType=DECIMAL},
+            </if>
+            <if test="recorduuid != null">
+                RECORDUUID = #{recorduuid,jdbcType=VARCHAR},
             </if>
         </set>
         where ID = #{id,jdbcType=DECIMAL}
@@ -160,7 +194,8 @@
         FROM FUN_SUSPECT_RECORD RE
         WHERE RE.scbj=0 AND RE.SUSPECTID = SUSPECT.ID
         AND RE.RECORDID = records.ID) ) AS SUSPECTNAME
-        FROM FUN_ARCHIVE_RECORDS RECORDS WHERE 1=1 AND SCBJ=0 AND PREVID=0
+        FROM FUN_ARCHIVE_RECORDS RECORDS WHERE 1=1 AND SCBJ=0
+        AND NOT EXISTS (SELECT 1 FROM FUN_ARCHIVE_SFC SFC WHERE SFC.SCBJ=0 AND SFC.BASERECORDID=RECORDS.ID)
         <if test="recordscode != null">
             AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
         </if>
@@ -173,7 +208,12 @@
         AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
     </select>
     <select id="selectRecordsByJqbhCount" resultType="java.lang.Integer" parameterType="java.lang.String">
-        SELECT COUNT(0) FROM FUN_ARCHIVE_RECORDS where 1=1 and scbj=0 AND PREVID=0
+        SELECT COUNT(0) FROM FUN_ARCHIVE_RECORDS RECORDS
+        where 1=1 and scbj=0
+        AND NOT EXISTS
+        (SELECT 1 FROM FUN_ARCHIVE_SFC SFC WHERE
+        SFC.SCBJ=0
+        AND SFC.BASERECORDID=RECORDS.ID)
         <if test="recordscode != null">
             AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
         </if>
@@ -330,14 +370,14 @@
         FROM FUN_ARCHIVE_RECORDS R
         WHERE SCBJ = 0
         <if test="null == suspectid">
-        AND EXISTS (SELECT 1
-        FROM SYS_RECORDORDER S
-        WHERE R.RECORDSCODE = S.RECORDCODE
-        AND S.SCBJ=0
-        AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
-        AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
-        AND S.DEFAULTORDER &lt; #{defaultorder,jdbcType=DECIMAL}
-        )
+            AND EXISTS (SELECT 1
+            FROM SYS_RECORDORDER S
+            WHERE R.RECORDSCODE = S.RECORDCODE
+            AND S.SCBJ=0
+            AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
+            AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+            AND S.DEFAULTORDER &lt; #{defaultorder,jdbcType=DECIMAL}
+            )
         </if>
         <if test="null != suspectid">
             and EXISTS
@@ -354,9 +394,130 @@
         update FUN_ARCHIVE_RECORDS
         set THISORDER=THISORDER+1 where
         scbj=0
-        and  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
-           AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
-            AND THISORDER &gt; #{thisorder,jdbcType=DECIMAL}
-          AND RECORDSTYLE &lt;&gt; 0
+        AND  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        AND THISORDER &gt; #{thisorder,jdbcType=DECIMAL}
+        AND RECORDSTYLE &lt;&gt; 0
     </update>
+
+    <select id="selectRecordbyName" resultMap="BaseResultMap" parameterType="map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_RECORDS
+        WHERE SCBJ = 0
+        AND RECORDNAME LIKE '%'||#{recordname,jdbcType=DECIMAL}||'%'
+        AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+    </select>
+
+    <select id="selectRecordByUuid" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_RECORDS
+        WHERE SCBJ = 0
+        AND RECORDUUID= #{recorduuid,jdbcType=VARCHAR}
+        AND ISACTIVE = 0
+    </select>
+
+    <select id="selectRecordByUuidSeq" resultMap="BaseResultMap" parameterType="map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_RECORDS
+        WHERE scbj=0
+        AND recorduuid = #{recorduuid,jdbcType=VARCHAR}
+        AND archiveseqid = #{archiveseqid,jdbcType=DECIMAL}
+    </select>
+
+    <select id="selectSameRecordById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_RECORDS
+        WHERE SCBJ = 0
+        AND RECORDUUID =
+        (SELECT RECORDUUID FROM FUN_ARCHIVE_RECORDS WHERE ID = #{id,jdbcType=DECIMAL} )
+        AND ISACTIVE = 0
+    </select>
+
+
+    <update id="updateRecordByUuid" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO">
+        update FUN_ARCHIVE_RECORDS
+        <set>
+            UPDATETIME = SYSDATE,
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="thisorder != null">
+                THISORDER = #{thisorder,jdbcType=DECIMAL},
+            </if>
+            <if test="recordname != null">
+                RECORDNAME = #{recordname,jdbcType=VARCHAR},
+            </if>
+            <if test="archivetypeid != null">
+                ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+            </if>
+            <if test="archiveseqid != null">
+                ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+            </if>
+            <if test="archivecode != null">
+                ARCHIVECODE = #{archivecode,jdbcType=VARCHAR},
+            </if>
+            <if test="recordstyle != null">
+                RECORDSTYLE = #{recordstyle,jdbcType=DECIMAL},
+            </if>
+            <if test="recordscode != null">
+                RECORDSCODE = #{recordscode,jdbcType=VARCHAR},
+            </if>
+            <if test="isdelete != null">
+                ISDELETE = #{isdelete,jdbcType=DECIMAL},
+            </if>
+            <if test="archivesfcid != null">
+                ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+            </if>
+            <if test="isazxt != null">
+                ISAZXT = #{isazxt,jdbcType=DECIMAL},
+            </if>
+            <if test="authorid != null">
+                AUTHORID = #{authorid,jdbcType=DECIMAL},
+            </if>
+            <if test="author != null">
+                AUTHOR = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="previd != null">
+                PREVID = #{previd,jdbcType=DECIMAL},
+            </if>
+            <if test="jcyrecordcode != null">
+                JCYRECORDCODE = #{jcyrecordcode,jdbcType=VARCHAR},
+            </if>
+            <if test="recordwh != null">
+                RECORDWH = #{recordwh,jdbcType=VARCHAR},
+            </if>
+            <if test="effectivetime != null">
+                EFFECTIVETIME = #{effectivetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="baserecordid != null">
+                BASERECORDID = #{baserecordid,jdbcType=DECIMAL},
+            </if>
+            <if test="recorduuid != null">
+                RECORDUUID = #{recorduuid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where RECORDUUID = #{recorduuid,jdbcType=DECIMAL}
+
+    </update>
+
+    <select id="selectActiveRecordByFilecode" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fun_archive_records r WHERE r.scbj=0
+        AND EXISTS
+        (SELECT 1 FROM FUN_ARCHIVE_FILES f
+            WHERE f.scbj=0 AND filecode = #{filecode,jdbcType=VARCHAR}
+            AND r.id=f.archiverecordid)
+        AND EXISTS
+        (SELECT 1 FROM FUN_ARCHIVE_SEQ seq
+            WHERE seq.scbj=0 AND seq.isactive=0
+            AND seq.id=r.archiveseqid)
+    </select>
 </mapper>

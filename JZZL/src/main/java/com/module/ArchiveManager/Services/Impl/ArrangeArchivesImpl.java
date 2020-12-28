@@ -1,4 +1,4 @@
-package com.module.SFCensorship.Services.Impl;
+package com.module.ArchiveManager.Services.Impl;
 
 import com.bean.jzgl.Converter.FunArchiveRecordsMapper;
 import com.bean.jzgl.Converter.FunArchiveSFCMapper;
@@ -10,7 +10,7 @@ import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.mapper.jzgl.*;
-import com.module.SFCensorship.Services.ArrangeArchivesService;
+import com.module.ArchiveManager.Services.ArrangeArchivesService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -229,6 +229,14 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     @Override
     public void updateBaseSeqIsNotActive(int archivesfcid) {
         funArchiveSeqDTOMapper.updateBaseSeqIsNotActive(archivesfcid);
+    }
+
+    @Override
+    public List<FunArchiveRecordsDTO> selectRecordbyName(String recordname ,Integer archiveseqid) {
+        Map<String, Object> map=new HashMap<>();
+        map.put("recordname",recordname);
+        map.put("archiveseqid",archiveseqid);
+        return funArchiveRecordsDTOMapper.selectRecordbyName(map);
     }
 
     @Override
