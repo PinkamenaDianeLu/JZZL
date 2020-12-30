@@ -1,6 +1,7 @@
 package com.factory;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.CodeTableMapper;
 import com.config.webSocket.WebSocketMessage;
 import com.enums.Enums;
@@ -30,6 +31,7 @@ public class BaseFactory {
     private SimpMessagingTemplate messagingTemplate;
     @Autowired
     private WebSocketService webSocketService;
+
     /**
      * 解码添加了salt的base64
      *
@@ -168,35 +170,45 @@ public class BaseFactory {
         return Obj;
     }
 
-     /**
+    /**
      * websocket实时发送消息
-     * @author MrLu
+     *
      * @param
-     * @createTime  2020/12/18 9:21
-     * @return    |  
-      */
-    protected void websocketSendMessage(String message,String consigneeIdCard,Enums.messagetype messageType) {
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/18 9:21
+     */
+    protected void websocketSendMessage(String message, String consigneeIdCard, Enums.messagetype messageType) {
         //1.验证发送的用户是否在线
         consigneeIdCard = Optional.ofNullable(consigneeIdCard).orElse("noBody");
         WebSocketMessage messageObj = new WebSocketMessage();
-        boolean isSend=false;
+        boolean isSend = false;
         //判断用户是否在线
-        if (redisOnlineUserTemplate.hasKey(consigneeIdCard)){
+        if (redisOnlineUserTemplate.hasKey(consigneeIdCard)) {
             //发送消息
             messageObj.setMessage(message);//消息内容
             messageObj.setsender("system");//发送人 系统
             messageObj.setreceiver(consigneeIdCard);//发给谁
             messageObj.setMessagetype(messageType.getValue());//发送类型
             messageObj.setSendtime(new Date());//发送时间
-            isSend=true;
+            isSend = true;
             messagingTemplate.convertAndSend("/queues/" + consigneeIdCard, messageObj);
         }
-
-          //记录日志
-        webSocketService.insertWebSocketLog(messageObj,isSend);
-
-
+        //记录日志
+        webSocketService.insertWebSocketLog(messageObj, isSend);
     }
 
+    protected void unlockRecord(String sender, String receiver, Integer sfcid) {
+        //发送消息
+        WebSocketMessage messageObj = new WebSocketMessage();
+        messageObj.setMessage("destroy");//消息内容
+        messageObj.setsender(sender);//发送人 系统
+        messageObj.setreceiver(receiver);//发给谁
+        messageObj.setMessagetype(Enums.messagetype.typeFour.getValue());//发送类型
+        messageObj.setSendtime(new Date());//发送时间
+        messagingTemplate.convertAndSend("/queues/" + receiver + "/" + sfcid, messageObj);
+        webSocketService.insertWebSocketLog(messageObj, true);
+
+    }
 
 }

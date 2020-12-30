@@ -689,7 +689,7 @@ var recordImgLoad = (function () {
                 style: 'display:none',
                 class: 'larimg',
 
-            }, arg: '<img width= "450px" height="576px" src="' + file.serverip + file.fileurl + '">'
+            }, arg: '<img width= "900px" height="1152px" src="' + file.serverip + file.fileurl + '">'
         });
         /////////放大镜效果
         //生成跟随鼠标的小方框
@@ -714,8 +714,8 @@ var recordImgLoad = (function () {
             let topX = e.offsetX;
             mov.style.top = topY + 'px'
             mov.style.left = topX + 'px'
-            largeWrapper.scrollLeft = (topX - 25) * 3;
-            largeWrapper.scrollTop = (topY - 25) * 3;
+            largeWrapper.scrollLeft = (topX - 25) * 6;
+            largeWrapper.scrollTop = (topY - 25) * 6;
 
         }
         front.addEventListener('mouseleave', function () {

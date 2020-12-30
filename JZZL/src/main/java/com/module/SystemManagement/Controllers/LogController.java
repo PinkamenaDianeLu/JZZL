@@ -52,7 +52,7 @@ public class LogController {
 
     private final UserService userServiceByRedis;
     public LogController(LogService logService,
-                         RedisTemplate<String, Serializable> redisCSTemplate,
+                         @Qualifier("redisCSTemplate")  RedisTemplate<String, Serializable> redisCSTemplate,
                          RedisTemplate<String, Object> redisCCTemplate,
                          RedisTemplate<String, Object> redisOnlineUserTemplate,
                          @Qualifier("UserService") UserService userService,
@@ -111,9 +111,9 @@ public class LogController {
                 //上缴session 在redis中的对应id
                 userSession.setUserRedisId(UserRedisId);
                 //上缴redis一个序列化的
-                redisCSTemplate.opsForValue().set(UserRedisId, sysUserNow, 420, TimeUnit.SECONDS);
+                redisCSTemplate.opsForValue().set(UserRedisId, sysUserNow, 900, TimeUnit.SECONDS);
                 //记录在线用户  key：身份证号   value 登录时间  持续时间600s
-                redisOnlineUserTemplate.opsForValue().set(sysUserNow.getUsername(), new Date(), 420, TimeUnit.SECONDS);
+                redisOnlineUserTemplate.opsForValue().set(sysUserNow.getUsername(), new Date(), 900, TimeUnit.SECONDS);
 
                 //记录登录日志
                 saveLoginLog(sysUserNow);

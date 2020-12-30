@@ -6,7 +6,7 @@
  */
 
 $(function () {
-    const seqId = utils.getUrlPar('seqid');//需要上传的seqid
+  const seqId = utils.getUrlPar('seqid');//需要上传的seqid
     layui.extend({
         dtree: '/Framework/layui/dtree/dtree'
     }).use(['layer', 'table', 'code' ,'util', 'dtree', 'form'], function () {

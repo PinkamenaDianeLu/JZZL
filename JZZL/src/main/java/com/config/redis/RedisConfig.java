@@ -35,14 +35,15 @@ import java.lang.reflect.Method;
  */
 @Configuration
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-public class RedisConfig  extends CachingConfigurerSupport {
-     /**
+public class RedisConfig extends CachingConfigurerSupport {
+    /**
      * @author MrLu
-     * @createTime  2020/4/28 23:34
-     * @describe  将定义新的模板使用Serializable缓存数据在redis上 缓存位置： session
+     * @createTime 2020/4/28 23:34
+     * @describe 将定义新的模板使用Serializable缓存数据在redis上 缓存位置： session
      * @version 1.0
-      */
+     */
     @Bean
+    @Qualifier("redisCSTemplate")
     public RedisTemplate<String, Serializable> redisCSTemplate(@Qualifier("createSessionLettuceConnectionFactory") @Autowired LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Serializable> template = new RedisTemplate<>();
         template.setKeySerializer(new StringRedisSerializer());
@@ -51,44 +52,63 @@ public class RedisConfig  extends CachingConfigurerSupport {
         return template;
     }
 
-     /**
+    /**
      * @author MrLu
-     * @createTime  2020/4/28 23:55
+     * @createTime 2020/4/28 23:55
      * @describe 将定义的List缓存在redis上 缓存位置： session
      * @version 1.0
-      */
+     */
     @Bean
     public RedisTemplate<String, Object> redisCLTemplate(@Qualifier("createSessionLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
-        initDomainRedisTemplate(redisTemplate,cf);
+        initDomainRedisTemplate(redisTemplate, cf);
         return redisTemplate;
     }
 
 
-     /**
+    /**
      * 将定义的Map缓存在redis上 缓存位置： cache
+     *
+     * @return RedisTemplate<String, Object>  |
      * @author MrLu
-     * @createTime  2020/9/29 10:24
-     * @return  RedisTemplate<String, Object>  |
-      */
+     * @createTime 2020/9/29 10:24
+     */
     @Bean
     public RedisTemplate<String, Object> redisCCTemplate(@Qualifier("createCacheLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        initDomainRedisTemplate(redisTemplate,cf);
+        initDomainRedisTemplate(redisTemplate, cf);
+        return redisTemplate;
+    }
+
+    /**
+     * 将用户记录再在线用户上 缓存位置： onlineUsers
+     *
+     * @return RedisTemplate<String, Object>  | <用户username,登录时间>
+     * @author MrLu
+     * @createTime 2020/12/18 9:29
+     */
+    @Bean
+    public RedisTemplate<String, Object> redisOnlineUserTemplate(@Qualifier("createOnlineUserLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        initDomainRedisTemplate(redisTemplate, cf);
         return redisTemplate;
     }
 
      /**
-     * 将用户记录再在线用户上 缓存位置： onlineUsers
+     * 在redis上记载被占用的案件
      * @author MrLu
-     * @createTime  2020/12/18 9:29
-      * @return  RedisTemplate<String, Object>  | <用户username,登录时间>
+     * @param 
+     * @createTime  2020/12/29 10:54
+     * @return    |  
       */
-    @Bean
-    public RedisTemplate<String, Object> redisOnlineUserTemplate(@Qualifier("createOnlineUserLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        initDomainRedisTemplate(redisTemplate,cf);
-        return redisTemplate;
+     @Bean
+     @Qualifier("redisCasesAreOccupiedTemplate")
+     public RedisTemplate<String, Serializable> redisCasesAreOccupiedTemplate(@Qualifier("createCasesAreOccupiedLettuceConnectionFactory") @Autowired RedisConnectionFactory cf) {
+        RedisTemplate<String, Serializable> template = new RedisTemplate<>();
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        template.setConnectionFactory(cf);
+        return template;
     }
 
 
@@ -99,7 +119,6 @@ public class RedisConfig  extends CachingConfigurerSupport {
         redisTemplate.setConnectionFactory(cf);
         redisTemplate.afterPropertiesSet();
     }
-
 
 
     @Bean
@@ -135,8 +154,8 @@ public class RedisConfig  extends CachingConfigurerSupport {
     }
 
 
-    @CacheEvict(allEntries = true, cacheNames = { "manufacturedGood", "rawMaterial"})
-    @Scheduled(fixedDelay = 60*1000)
+    @CacheEvict(allEntries = true, cacheNames = {"manufacturedGood", "rawMaterial"})
+    @Scheduled(fixedDelay = 60 * 1000)
     public void cacheEvict() {
     }
 

@@ -33,5 +33,13 @@ public class UserSession    {
         this.userRedisPerms = userRedisPerms;
     }
 
+    private Integer occupyCaseinInfoId;
 
+    public Integer getOccupyCaseinInfoId() {
+        return occupyCaseinInfoId;
+    }
+
+    public void setOccupyCaseinInfoId(Integer occupyCaseinInfoId) {
+        this.occupyCaseinInfoId = occupyCaseinInfoId;
+    }
 }

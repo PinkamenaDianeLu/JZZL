@@ -307,7 +307,8 @@ public class Enums {
          typeZero(0, "智能整理"),
          typeOne(1, "文件打包"),
          typeTwo(2, "打包发送"),
-         typeThree(3, "其它");
+         typeThree(3, "其它"),
+         typeFour(4, "解锁案件");
          messagetype(int value, String name) {
              this.value = value;
              this.name = name;

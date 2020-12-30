@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
-import com.bean.jzgl.Source.FunArchiveRecords;
-import com.bean.jzgl.Source.FunArchiveSFC;
-import com.bean.jzgl.Source.FunArchiveType;
-import com.bean.jzgl.Source.SysUser;
+import com.bean.jzgl.Source.*;
 import com.config.annotations.OperLog;
+import com.config.annotations.recordTidy;
+import com.config.webSocket.WebSocketMessage;
+import com.enums.Enums;
 import com.factory.BaseFactory;
 import com.module.ArchiveManager.Services.ArrangeArchivesService;
 import com.module.SystemManagement.Services.UserService;
@@ -16,12 +16,17 @@ import com.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author MrLu
@@ -34,11 +39,15 @@ public class ArrangeArchivesController extends BaseFactory {
     private final String operModul = "ArrangeArchives";
     private final ArrangeArchivesService arrangeArchivesService;
     private final UserService userServiceByRedis;
+    private final RedisTemplate<String, Serializable> redisCasesAreOccupiedTemplate;
 
     @Autowired
-    public ArrangeArchivesController(ArrangeArchivesService arrangeArchivesService, @Qualifier("UserServiceByRedis") UserService userServiceByRedis) {
+    public ArrangeArchivesController(ArrangeArchivesService arrangeArchivesService,
+                                     @Qualifier("UserServiceByRedis") UserService userServiceByRedis,
+                                     @Qualifier("redisCasesAreOccupiedTemplate") RedisTemplate<String, Serializable> redisCasesAreOccupiedTemplate) {
         this.arrangeArchivesService = arrangeArchivesService;
         this.userServiceByRedis = userServiceByRedis;
+        this.redisCasesAreOccupiedTemplate = redisCasesAreOccupiedTemplate;
     }
 
     /**
@@ -62,6 +71,34 @@ public class ArrangeArchivesController extends BaseFactory {
             reV.put("sfc", thisSfc);
             reV.put("seq", arrangeArchivesService.selectLastSeqBySfc(sfcId));
             reV.put("issuspectorder", arrangeArchivesService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid()).getIssuspectorder());//基础卷是否已经为嫌疑人排序
+            SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+            //判断是否有人占用这个案件
+            System.out.print(thisSfc.getCaseinfoid());
+            if (redisCasesAreOccupiedTemplate.hasKey("C" + thisSfc.getCaseinfoid())) {
+                //有人占用
+                CasesAreOccupied cao = (CasesAreOccupied) redisCasesAreOccupiedTemplate.opsForValue().get("C" + thisSfc.getCaseinfoid());
+                //判断小丑是不是我自己
+                if (userNow.getId().equals(cao.getUserid()) && thisSfc.getId().equals(cao.getSfcid())) {
+                    //小丑竟是我自己   我搞我自己就不算占用了把
+                    reV.put("caseStatus", "0");
+                } else {
+                    reV.put("caseStatus", cao);
+                }
+
+            } else {
+                //占用
+                CasesAreOccupied cao = new CasesAreOccupied();
+                cao.setOccupiedTime(new Date());
+                cao.setUsername(userNow.getUsername());
+                cao.setSfcid(thisSfc.getId());
+                cao.setSfcname(thisSfc.getArchivename());
+                cao.setUserid(userNow.getId());
+                cao.setCaseinfid(thisSfc.getCaseinfoid());
+                cao.setXm(userNow.getXm());
+                redisCasesAreOccupiedTemplate.opsForValue().set("C" + thisSfc.getCaseinfoid(), cao, 900, TimeUnit.SECONDS);
+                //返回状态为非只读
+                reV.put("caseStatus", "0");
+            }
             reValue.put("value", reV);
             reValue.put("message", "success");
         } catch (Exception e) {
@@ -70,6 +107,30 @@ public class ArrangeArchivesController extends BaseFactory {
         }
         return reValue.toJSONString();
     }
+
+    @RequestMapping(value = "/unlockReocrd", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "解锁文书", operType = OperLog.type.UPDATE)
+    public String unlockReocrd(Integer sfcid, String username,Integer caseinfoid) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtil.isEmptyAll(username)) {
+                throw new Exception("西内！");
+            }
+            //1.验证发送的用户是否在线
+            SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+            //发送导弹  Biu
+            unlockRecord(userNow.getXm(), username, sfcid);
+            redisCasesAreOccupiedTemplate.delete("C"+caseinfoid);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
 
     /**
      * 通过送检记录id查询文书目录
@@ -111,6 +172,7 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "得到文书目录(具体文书)", operType = OperLog.type.SELECT)
+    @recordTidy
     public String getRecordsIndex(String id, String isDelete) {
         JSONObject reValue = new JSONObject();
         try {
@@ -147,6 +209,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/selectFilesByRecordId", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "查询文书下的所有文件", operType = OperLog.type.SELECT)
     public String selectFilesByRecordId(String recordid) {
         JSONObject reValue = new JSONObject();
@@ -174,6 +237,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/createNewSeq", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "保存卷整理顺序", operType = OperLog.type.INSERT)
     public String createNewSeq(Integer seqid) {
         JSONObject reValue = new JSONObject();
@@ -210,6 +274,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/saveArchiveIndexSortByType", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "保存卷整理顺序", operType = OperLog.type.INSERT)
     public String saveArchiveIndexSortByType(String saveData, String typeid, String seqid) {
         JSONObject reValue = new JSONObject();
@@ -282,6 +347,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/saveRecycleIndexSortByType", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "保存卷整理顺序中被删除的文书", operType = OperLog.type.INSERT)
     public String saveRecycleIndexSortByType(String saveData, String newTypeid) {
         JSONObject reValue = new JSONObject();
@@ -349,6 +415,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/loadFilesByFileCodes", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.SELECT)
     public String loadFilesByFileCodes(String fileOrder, String seqId, String recordId) {
         JSONObject reValue = new JSONObject();
@@ -379,6 +446,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/loadFilesByFileCode", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "通过文件代码查询文件", operType = OperLog.type.SELECT)
     public String loadFilesByFileCode(String filecode, String recordid) {
         JSONObject reValue = new JSONObject();
@@ -407,6 +475,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/createRecordByRecordId", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "根据文书id生成文书并加载全部文件", operType = OperLog.type.SELECT)
     public String createRecordByRecordId(String recordid) {
         JSONObject reValue = new JSONObject();
@@ -439,6 +508,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/saveDateOnTime", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "实时保存移动的顺序", operType = OperLog.type.UPDATE)
     public String saveDateOnTime(String paramjson) {
         JSONObject reValue = new JSONObject();
@@ -468,7 +538,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 fileDto.setFilecode(fileCode);
                 fileDto.setArchiveseqid(seqId);
                 //更新后面的顺序
-                arrangeArchivesService.updateFileOrder(recordId, order-1, fileCode);
+                arrangeArchivesService.updateFileOrder(recordId, order - 1, fileCode);
                 arrangeArchivesService.updateFileByFileCode(fileDto);
 
             } else {
@@ -515,6 +585,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/saveDeleteDateOnTime", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "实时保存对文书文件的删除", operType = OperLog.type.UPDATE)
     public String saveDeleteDateOnTime(String paramjson) {
         JSONObject reValue = new JSONObject();
@@ -573,6 +644,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/saveRestoreDateOnTime", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "实时还原被删除的文书文件", operType = OperLog.type.UPDATE)
     public String saveRestoreDateOnTime(String paramjson) {
         JSONObject reValue = new JSONObject();
@@ -639,6 +711,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/saveReNameDateOnTime", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "实时重命名文书文件", operType = OperLog.type.UPDATE)
     public String saveReNameDateOnTime(String paramjson) {
         JSONObject reValue = new JSONObject();
@@ -672,7 +745,6 @@ public class ArrangeArchivesController extends BaseFactory {
     }
 
 
-
     /**
      * 更新送检卷是否已为人排序字段
      *
@@ -685,6 +757,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/updateArchiveSfcIssuspectorder", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "更新送检卷是否已为人排序字段", operType = OperLog.type.SELECT)
     public String updateArchiveSfcIssuspectorder(String issuspectorder, String sfcid) {
         JSONObject reValue = new JSONObject();
@@ -710,6 +783,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/recordNamSearch", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "搜索文书", operType = OperLog.type.SELECT)
     public String recordNamSearch(String recordname, Integer seqid) {
         JSONObject reValue = new JSONObject();
@@ -747,6 +821,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @RequestMapping(value = "/createArchiveBySuspectOrder", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "根据嫌疑人顺序生成卷", operType = OperLog.type.SELECT)
     public String createArchiveBySuspectOrder(String suspectorder, String seqid, String recordtypeid) {
         JSONObject reValue = new JSONObject();

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
+import com.config.annotations.recordTidy;
 import com.factory.BaseFactory;
 import com.module.ArchiveManager.Services.FileManipulationService;
 import com.module.SystemManagement.Services.UserService;
@@ -51,7 +52,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/loadArchiveCover", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "查询文书封皮信息", operType = OperLog.type.SELECT)
     public String loadArchiveCover(String fileId) {
         JSONObject reValue = new JSONObject();
@@ -81,7 +82,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/initializationCoverMessage", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "初始化案件封皮信息", operType = OperLog.type.SELECT)
     public String initializationCoverMessage(String sfcId, String recordId) {
         JSONObject reValue = new JSONObject();
@@ -123,7 +124,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/saveCover", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "保存卷宗封皮信息", operType = OperLog.type.InsertOrUpdate)
     public String saveCover(String coverid, String fileid, String cover) {
         JSONObject reValue = new JSONObject();
@@ -173,7 +174,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/createRecycleRecordByFiles", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "按照文件创建回收站文书", operType = OperLog.type.SELECT)
     public String createRecycleRecordByFiles(String filecodes, String recordid) {
         JSONObject reValue = new JSONObject();
@@ -207,7 +208,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/saveFunArchiveRecordindex", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "保存文书目录", operType = OperLog.type.InsertOrUpdate)
     public String saveFunArchiveRecordindex(String fileid, String indexinfo, String indexid) {
         JSONObject reValue = new JSONObject();
@@ -258,7 +259,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/selectFunArchiveRecordindexByType", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "查找文书类型下的文书目录信息", operType = OperLog.type.SELECT)
     public String selectFunArchiveRecordindexByType(String archiveseqid, String archivetypeid) {
         JSONObject reValue = new JSONObject();
@@ -291,7 +292,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/addUpLoadRecordFile", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "添加上传图片", operType = OperLog.type.INSERT)
     public String addUpLoadRecordFile(String fileName, String fileOrder,
                                       Integer recordId, Integer maxOrder,
@@ -324,7 +325,7 @@ public class FileManipulationController extends BaseFactory {
 
     @RequestMapping(value = "/upLoadRecordFiles", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "上传图片", operType = OperLog.type.INSERT)
     public String upLoadRecordFiles(String fileName, String fileOrder,
                                     String recordid,
@@ -346,6 +347,7 @@ public class FileManipulationController extends BaseFactory {
                 newRecordFile.setFilename(fileName);//文件名称
                 newRecordFile.setArchiveseqid(thisRecord.getArchiveseqid());//seq
                 newRecordFile.setArchivesfcid(thisRecord.getArchivesfcid());//sfc
+                newRecordFile.setFiletype(0);
 
                 fileManipulationService.insertFunArchiveFilesDTO(newRecordFile);
                 reValue.put("message", "success");
@@ -362,7 +364,7 @@ public class FileManipulationController extends BaseFactory {
 
     @RequestMapping(value = "/selectFileByFileId", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "按照id查询文件", operType = OperLog.type.SELECT)
     public String selectFileByFileId(Integer fileid) {
         JSONObject reValue = new JSONObject();
@@ -381,7 +383,7 @@ public class FileManipulationController extends BaseFactory {
 
     @RequestMapping(value = "/reUpLoadFile", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "重新上传图片", operType = OperLog.type.UPDATE)
     public String reUpLoadFile(Integer fileId,
                                @RequestParam("newFile") MultipartFile newFile) {
@@ -414,7 +416,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/selectArchiveRecordPage", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "文书分页查询", operType = OperLog.type.SELECT)
     public Map<String, Object> selectArchiveRecordPage(Integer offset, Integer limit, String params) {
         Map<String, Object> reMap = new HashMap<>();
@@ -442,7 +444,7 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/moveFiles", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "按照文书代码移动文件至所属文书", operType = OperLog.type.SELECT)
     public String moveFiles(String fileOrder, String seqId, String recordid, String orirecordid) {
         JSONObject reValue = new JSONObject();

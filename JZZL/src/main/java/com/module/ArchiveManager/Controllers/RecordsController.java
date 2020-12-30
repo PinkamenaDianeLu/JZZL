@@ -8,6 +8,7 @@ import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
+import com.config.annotations.recordTidy;
 import com.factory.BaseFactory;
 import com.module.ArchiveManager.Services.RecordsService;
 import com.module.SystemManagement.Services.UserService;
@@ -43,7 +44,7 @@ public class RecordsController extends BaseFactory {
 
     @RequestMapping(value = "/getFunArchiveRecordsById", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "通过id查询文书", operType = OperLog.type.SELECT)
     public String getFunArchiveRecordsById(Integer id) {
         JSONObject reValue = new JSONObject();
@@ -67,7 +68,7 @@ public class RecordsController extends BaseFactory {
      */
     @RequestMapping(value = "/selectRecordsByJqbhPage", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "文书分页查询", operType = OperLog.type.SELECT)
     public Map<String, Object> selectRecordsByJqbhPage(Integer offset, Integer limit, String params) {
         Map<String, Object> reMap = new HashMap<>();
@@ -96,7 +97,7 @@ public class RecordsController extends BaseFactory {
 
     @RequestMapping(value = "/getRecordCords", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "获取对应卷的文书代码", operType = OperLog.type.SELECT)
     public String getRecordCords(Integer offset, Integer limit, String params) {
         JSONObject reValue = new JSONObject();
@@ -129,7 +130,7 @@ public class RecordsController extends BaseFactory {
      */
     @RequestMapping(value = "/selectRecordTypeSuspectByRid", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "判断文书查询该案件的嫌疑人", operType = OperLog.type.SELECT)
     public String selectRecordTypeSuspectByRid(Integer recordtypeid, Integer seqId) {
         JSONObject reValue = new JSONObject();
@@ -161,7 +162,7 @@ public class RecordsController extends BaseFactory {
 
     @RequestMapping(value = "/createNewRecord", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "新建文书", operType = OperLog.type.INSERT)
     public String createNewRecord(String record) {
         JSONObject reValue = new JSONObject();
@@ -244,7 +245,7 @@ public class RecordsController extends BaseFactory {
      */
     @RequestMapping(value = "/selectBaseTypeForTree", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "新建文书", operType = OperLog.type.SELECT)
     public String selectBaseTypeForTree(Integer seqId, Integer nodeId, String parentId) {
         JSONObject reValue = new JSONObject();

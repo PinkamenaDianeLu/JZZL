@@ -1178,6 +1178,41 @@ $(function () {
             if ('success' === reV.message) {
                 const seq = reV.value.seq;//最新的整理记录id
                 const sfc = reV.value.sfc;//送检卷信息
+                const caseStatus = reV.value.caseStatus;//送检卷信息
+                if ("0" !== caseStatus) {
+                    layer.msg('当前案件处于只读状态！');
+                    $('#recordStatusMessage').html('当前案件处于只读状态！正在由用户：' + caseStatus.xm + "对" + caseStatus.sfcname + "进行编辑")
+                    let unLock = utils.createElement.createElement({
+                        tag: 'a',
+                        arg: '解锁'
+                    })
+                    //解锁
+                    unLock.addEventListener('click', function () {
+                        if (confirm('此操作将强制关闭对方页面，是否继续？')) {
+                            $.post({
+                                url: '/ArrangeArchives/unlockReocrd',
+                                data: {
+                                    sfcid: caseStatus.sfcid,
+                                    username: caseStatus.username,
+                                    caseinfoid: caseStatus.caseinfid
+                                },
+                                success: (re) => {
+                                    const reV = JSON.parse(re);
+                                    if ('success' === reV.message) {
+                                        location.reload();
+                                    } else {
+                                        layer.alert('解锁失败');
+                                    }
+                                }
+                            });
+                        }
+                    })
+                    $('#recordStatusMessage').append(unLock);
+
+                } else {
+                    //非只读状态 此时后台已经将该页面记载在redis上了  此时订阅websocket
+                    let rwc = new recordWebSocket(sessionStorage.username, sfc.id);
+                }
                 const isSuspectOrder = 0 === +reV.value.issuspectorder;//基础卷是否为已为嫌疑人排序
 
                 function loadArchives() {
@@ -1188,7 +1223,7 @@ $(function () {
                 }
 
                 //拍摄快照按钮
-                $('#saveData').click(function () {
+                $('#snapshot').click(function () {
                     if (confirm('确定完成整理？')) {
                         lai.saveData();
                     }
@@ -1221,7 +1256,6 @@ $(function () {
                         search(this);
                     })
                 })
-
 
                 //从基础卷导入文书/图片
                 $('#importRecord').click(function () {

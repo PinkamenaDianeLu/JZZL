@@ -283,7 +283,7 @@
         select * from ( SELECT A.*, ROWNUM RUM FROM (
         select
         <include refid="Base_Column_List"/>
-        ,(SELECT ARCHIVETYPECN FROM Fun_Archive_Type WHERE ID = r.archivetypeid ) typename
+        ,(SELECT RECORDTYPECN FROM Fun_Archive_Type WHERE ID = r.archivetypeid ) typename
         from FUN_ARCHIVE_RECORDS r
         where 1=1 and scbj=0
         <if test="null != archivetypeid">
@@ -374,6 +374,8 @@
         <include refid="Base_Column_List"/>
         FROM FUN_ARCHIVE_RECORDS R
         WHERE SCBJ = 0
+        AND EXISTS (SELECT 1 FROM fun_archive_type TYPE WHERE TYPE.ID=r.archivetypeid AND
+        type.Recordtype=#{recordtype,jdbcType=DECIMAL})
         <if test="null == suspectid">
             AND EXISTS (SELECT 1
             FROM SYS_RECORDORDER S
@@ -518,11 +520,11 @@
         FROM fun_archive_records r WHERE r.scbj=0
         AND EXISTS
         (SELECT 1 FROM FUN_ARCHIVE_FILES f
-            WHERE f.scbj=0 AND filecode = #{filecode,jdbcType=VARCHAR}
-            AND r.id=f.archiverecordid)
+        WHERE f.scbj=0 AND filecode = #{filecode,jdbcType=VARCHAR}
+        AND r.id=f.archiverecordid)
         AND EXISTS
         (SELECT 1 FROM FUN_ARCHIVE_SEQ seq
-            WHERE seq.scbj=0 AND seq.isactive=0
-            AND seq.id=r.archiveseqid)
+        WHERE seq.scbj=0 AND seq.isactive=0
+        AND seq.id=r.archiveseqid)
     </select>
 </mapper>

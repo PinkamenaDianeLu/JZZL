@@ -6,6 +6,7 @@ import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.DTO.FunArchiveTagsDTO;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
+import com.config.annotations.recordTidy;
 import com.factory.BaseFactory;
 import com.module.ArchiveManager.Services.FileTagsService;
 import com.module.SystemManagement.Services.UserService;
@@ -48,7 +49,7 @@ public class FileTagsController extends BaseFactory {
      */
     @RequestMapping(value = "/createNewTags", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "创建新的标签", operType = OperLog.type.INSERT)
     public String createNewTags(String tag) {
         JSONObject reValue = new JSONObject();
@@ -86,7 +87,7 @@ public class FileTagsController extends BaseFactory {
      */
     @RequestMapping(value = "/selectArchiveTags", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody
+    @ResponseBody    @recordTidy
     @OperLog(operModul = operModul, operDesc = "查询文件的标签", operType = OperLog.type.SELECT)
     public String selectArchiveTags(String archiveseqid, String filecode) {
         JSONObject reValue = new JSONObject();

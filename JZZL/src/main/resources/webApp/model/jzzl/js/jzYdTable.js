@@ -154,7 +154,7 @@ $(function () {
                     let thisTab = utils.createElement.createElement({
                         tag: 'li', attrs: {
                             id: thisType.id
-                        }, arg: '<a data-toggle="tab">' + thisType.archivetypecn + '</a>'
+                        }, arg: '<a data-toggle="tab">' + thisType.recordtypecn + '</a>'
                     });
                     //添加搜索方法
                     thisTab.addEventListener('click', function () {

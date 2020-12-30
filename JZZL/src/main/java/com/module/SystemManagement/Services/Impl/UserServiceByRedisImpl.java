@@ -4,6 +4,7 @@ import com.bean.jzgl.Source.SysUser;
 import com.config.session.UserSession;
 import com.module.SystemManagement.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,8 @@ public class UserServiceByRedisImpl implements UserService {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
     @Autowired
-    RedisTemplate<String, Serializable> redisSerializableTemplate;
+    @Qualifier("redisCSTemplate")
+    RedisTemplate<String, Serializable> redisCSTemplate;
     @Autowired
     RedisTemplate<String, Object> redisCLTemplate;
     @Autowired
@@ -36,7 +38,7 @@ public class UserServiceByRedisImpl implements UserService {
         String userUUid= Optional.ofNullable(VKey).orElse(userSession.getUserRedisId());
         if (null!=userUUid){
             //不为空  有用户登录
-            return (SysUser) redisSerializableTemplate.opsForValue().get(userSession.getUserRedisId());
+            return (SysUser) redisCSTemplate.opsForValue().get(userSession.getUserRedisId());
         }else {
             //没人登录 返回null
             return null;

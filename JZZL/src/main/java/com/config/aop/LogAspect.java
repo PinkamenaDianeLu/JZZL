@@ -110,7 +110,7 @@ public class LogAspect {
                 record.setOperator(userNow.getIdcardnumber());
                 record.setSysusername(userNow.getUsername());
                 //更新在线用户
-                userServiceByRedis.touchUserNow(420,userNow.getUsername());
+                userServiceByRedis.touchUserNow(900,userNow.getUsername());
             }else {
                 //未登录的用户
                 record.setSysuserid(-1);//用户id
@@ -120,7 +120,7 @@ public class LogAspect {
 
 
             //TODO MrLu 2020/11/26   记得打开记日志
-           // logService.insertLog(record);
+            logService.insertLog(record);
         } catch (Exception e) {
             System.err.println("Aop日志出现了大问题！");
             e.printStackTrace();
