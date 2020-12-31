@@ -112,4 +112,21 @@ public class FileManipulationImpl implements FileManipulationService {
 
     }
 
+    @Override
+    public void updateOrderByRecordId(int archiverecordid,int thisorder,String filecode) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("archiverecordid",archiverecordid);
+        map.put("thisorder",thisorder);
+        map.put("filecode",filecode);
+        funArchiveFilesDTOMapper.updateOrderByRecordId(map);
+    }
+
+    @Override
+    public FunArchiveFilesDTO selectFilesByFileCode(int archiverecordid,String filecode) {
+        Map<String,Object> map=new HashMap<>();
+        map.put("archiverecordid",archiverecordid);
+        map.put("filecode",filecode);
+        return funArchiveFilesDTOMapper.selectFilesByFileCode(map);
+    }
+
 }

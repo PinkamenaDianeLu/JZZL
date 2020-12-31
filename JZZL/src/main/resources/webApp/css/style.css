@@ -101,7 +101,10 @@ table th,table td{text-align: center; font-size: 14px;}
 .left_title a i.delete{ background-position:-40px -50px;}
 .left_title a i.history{ background-position:-640px -50px;}
 .left_title a i.searchBtn{ background-position:-680px -50px;}
-
+.left_title a i.closes{ background-position:-880px -50px;}/*关闭*/
+.l_nav .v1 .v2.search p{ background: #efa95b; }
+.l_nav .v2.search:after{ background: #fff; }
+.l_nav .v2.search p a{color: #fff;}
 
 .left_text,.right_text{position: relative; height: 100%; width: 100%; overflow-y:auto; overflow-x: hidden; background: #fff;}
 .left_text{ padding: 10px;}
@@ -227,6 +230,7 @@ table th,table td{text-align: center; font-size: 14px;}
 .layui-layer-lan .layui-layer-title{ background: #124eb8; font-size: 16px; height: 50px; line-height: 50px;}
 
 .top10{ margin-top: 10px;}
+.img_t .active:before{content: "\e013"; display: inline-block; position: absolute;bottom:10px; left:10px; border-radius:5px; width: 30px; height: 30px; background: #488ed8; color: #fff;font-family: 'Glyphicons Halflings';font-style: normal;font-weight: 400;line-height: 30px; -webkit-font-smoothing: antialiased;}
 /**Mrlu 添加**/
 .leftsideCliked {
     background-color: #2980d7;

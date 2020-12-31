@@ -10,6 +10,8 @@ var recycleBin = (function () {
     let recycleRecordsMap;//
     let archiveIndex;//loadArchiveIndex实例
     let recordImgLoadObj;//图片加载对象
+    let viewModel;//显示模式  true 正常 false 只读模式
+
     function loadIndex(id) {
         seqid = id;
         $.post({
@@ -110,7 +112,10 @@ var recycleBin = (function () {
             recordname: record.recordname,
             recordscode: record.recordscode
         });//缓存信息
-        p.append(createButtons(key));//加载按钮
+        if (viewModel) {
+            p.append(createButtons(key));//加载按钮
+        }
+
         //加载文书目录
         createFileIndex(thisRecord.files, p);
         //点击显示对应图片
@@ -160,7 +165,9 @@ var recycleBin = (function () {
             loadFileImg(div, thisFile.archiverecordid);
             event.stopPropagation();
         })
-        p.append(createButtons(key));
+        if (viewModel) {
+            p.append(createButtons(key));
+        }
         div.append(p);
         return div;
     }
@@ -243,7 +250,7 @@ var recycleBin = (function () {
                 //有此文书啦
                 $.post({
                     url: '/ArrangeArchives/loadFilesByFileCodes',
-                    data: {fileOrder: fileCodes,seqId:seqid,recordId},
+                    data: {fileOrder: fileCodes, seqId: seqid, recordId},
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {
@@ -261,7 +268,7 @@ var recycleBin = (function () {
                 //没有文书 新建文书目录再append
                 $.post({
                     url: '/FileManipulation/createRecycleRecordByFiles',
-                    data: {filecodes: fileCodes,recordid:recordId},
+                    data: {filecodes: fileCodes, recordid: recordId},
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {
@@ -297,7 +304,7 @@ var recycleBin = (function () {
             //删除自己
             thisRecord.remove();
             recycleRecordsMap.delete(ddId);
-            saveRestoreDateOnTime(ddId,null);
+            saveRestoreDateOnTime(ddId, null);
         } else {
             //还原单个文件
             thisRecord = thisRecord.parent().parent('.v2');//变成文书
@@ -319,14 +326,15 @@ var recycleBin = (function () {
         }
 
     }
-     /**
+
+    /**
      * 实时还原
      * @author MrLu
      * @param recordId 文书id
-      * @param fileCode 文件代码
+     * @param fileCode 文件代码
      * @createTime  2020/11/5 15:41
      * @return    |
-      */
+     */
     function saveRestoreDateOnTime(recordId, fileCode) {
         const restoreObj = function () {
             this.recordid = recordId;//被移动的或被移动到的文书id
@@ -345,7 +353,6 @@ var recycleBin = (function () {
             }
         });
     }
-
 
 
     /**
@@ -389,29 +396,30 @@ var recycleBin = (function () {
             console.log('回收站：')
             console.log(saveData)
 
-               $.post({
-                   url: '/ArrangeArchives/saveRecycleIndexSortByType',
-                   data: {
-                       saveData: JSON.stringify(saveData),
-                       newTypeid: newTypeId,
-                   },
-                   success: (re) => {
-                       const reV = JSON.parse(re);
-                       if ('success' === reV.message) {
-                           archiveIndex.progressBar();//进度条前进
-                           console.log('回收站保存成功')
-                       } else {
-                           console.log('回收站保存失败：'+oriTypeId)
-                       }
-                   }
-               });
+            $.post({
+                url: '/ArrangeArchives/saveRecycleIndexSortByType',
+                data: {
+                    saveData: JSON.stringify(saveData),
+                    newTypeid: newTypeId,
+                },
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        archiveIndex.progressBar();//进度条前进
+                        console.log('回收站保存成功')
+                    } else {
+                        console.log('回收站保存失败：' + oriTypeId)
+                    }
+                }
+            });
         } else {
 
             archiveIndex.progressBar();
         }
     }
 
-    let _recycleBin = function (lai) {
+    let _recycleBin = function (lai, viewModelP) {
+        viewModel = viewModelP;
         if (!lai) {
             throw '未传入loadArchiveIndex实例，回收站功能无法加载！';
         }

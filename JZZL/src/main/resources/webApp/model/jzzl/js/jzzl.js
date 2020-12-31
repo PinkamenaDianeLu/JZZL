@@ -19,8 +19,10 @@ var loadArchiveIndex = (function () {
     let recordImgLoadObj;//图片加载对象
     let loadProgress;//加载进度
     let progressLength = 0;//进度条进度
+    let viewModel;//显示模式  true 正常 false 只读模式
 
-    function loadIndex(id) {
+    function loadIndex(id, viewModelP=true) {
+        viewModel = viewModelP;
         seqid = id;
         $.post({
             url: '/ArrangeArchives/getArchiveIndex',
@@ -78,84 +80,86 @@ var loadArchiveIndex = (function () {
      * @createTime  2020/10/17 18:38
      */
     function sortList(zoneClass) {
-        $("." + zoneClass).sortable({
-            delay: 50, cursor: 'move',
-            scroll: true, scrollSensitivity: 10,
-            activate: function (event, ui) {
-                if ($(ui.item).hasClass('v2')) {
-                    //在拖拽文书时收起所有文书内的文件目录
-                    $('.fileSortZone').hide();
-                }
-            },
-            // revert: true,//整个动画
-            update: function (event, ui) {//拖拽后位置变化
-                //重新加载四个按钮
-                let PDiv = ui.item.siblings();
-                reloadButton(PDiv.first());
-                reloadButton(PDiv.last());
-                reloadButton(ui.item);
-                //判断被拖拽的文件类型
-                if ('fileSortZone' === zoneClass) {
-                    //如果是文件图片
-                    let recordId = $(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
-                    let eleB;//文件代码
-                    let operation = ($(ui.item).index() > 0);//判断是否是第一个
-                    if (operation) {
-                        eleB = $(ui.item).prev('.v3');
-                        operation = 'after';
+        if (viewModel) {
+            $("." + zoneClass).sortable({
+                delay: 50, cursor: 'move',
+                scroll: true, scrollSensitivity: 10,
+                activate: function (event, ui) {
+                    if ($(ui.item).hasClass('v2')) {
+                        //在拖拽文书时收起所有文书内的文件目录
+                        $('.fileSortZone').hide();
+                    }
+                },
+                // revert: true,//整个动画
+                update: function (event, ui) {//拖拽后位置变化
+                    //重新加载四个按钮
+                    let PDiv = ui.item.siblings();
+                    reloadButton(PDiv.first());
+                    reloadButton(PDiv.last());
+                    reloadButton(ui.item);
+                    //判断被拖拽的文件类型
+                    if ('fileSortZone' === zoneClass) {
+                        //如果是文件图片
+                        let recordId = $(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
+                        let eleB;//文件代码
+                        let operation = ($(ui.item).index() > 0);//判断是否是第一个
+                        if (operation) {
+                            eleB = $(ui.item).prev('.v3');
+                            operation = 'after';
+                        } else {
+                            eleB = $(ui.item).next('.v3');
+                            operation = 'before';
+                        }
+                        //对应的图片也移动位置
+                        imgOrderMove(recordId, $(ui.item), eleB, operation);
+                        // 被拖拽后重新加载点击事件
+                        $(ui.item).unbind().click(function () {
+                            loadFileImg(this, $(this).parent().parent().attr('id').replace('dd', ''));
+                        })
+
+                        let thisFile = filesMap.get($(ui.item).attr('id'));
+                        console.log(event.originalPosition)
+                        //实时更新文件顺序
+                        saveDateOnTime(recordId
+                            , recordsMap.get('dd' + recordId).archivetypeid
+                            , thisFile.filecode
+                            , $(ui.item).prev().attr('id')
+                        );
                     } else {
-                        eleB = $(ui.item).next('.v3');
-                        operation = 'before';
+                        console.log('更新文书');
+                        let thisRecord = recordsMap.get($(ui.item).attr('id'));
+                        //实时更新文书顺序
+                        saveDateOnTime(thisRecord.id
+                            , $(ui.item).parent().parent('.v1').attr('id')
+                            , null, $(ui.item).prev().attr('id'));
                     }
-                    //对应的图片也移动位置
-                    imgOrderMove(recordId, $(ui.item), eleB, operation);
-                    // 被拖拽后重新加载点击事件
-                    $(ui.item).unbind().click(function () {
-                        loadFileImg(this, $(this).parent().parent().attr('id').replace('dd', ''));
-                    })
-
-                    let thisFile = filesMap.get($(ui.item).attr('id'));
-                    console.log(event.originalPosition)
-                    //实时更新文件顺序
-                    saveDateOnTime(recordId
-                        , recordsMap.get('dd' + recordId).archivetypeid
-                        , thisFile.filecode
-                        , $(ui.item).prev().attr('id')
-                    );
-                } else {
-                    console.log('更新文书');
-                    let thisRecord = recordsMap.get($(ui.item).attr('id'));
-                    //实时更新文书顺序
-                    saveDateOnTime(thisRecord.id
-                        , $(ui.item).parent().parent('.v1').attr('id')
-                        , null, $(ui.item).prev().attr('id'));
-                }
-            }, receive: function (event, ui) {
-                //跨文书移动
-                if ('fileSortZone' !== zoneClass) {
-                    return;
-                }
-                //判断是其他文书移动至正在看的文书还是正在看的文书移动至其他文书
-                let recordId = $(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
-                let fileObj = filesMap.get($(ui.item).attr('id'));
-                let fileCode = fileObj.filecode;//文件代码
-                if (+recordId === +recordImgLoadObj.getRecordId()) {
-                    //其他文书移动至正在看 时
-                    let operation = ($(ui.item).index() > 0);//判断是否是第一个
-                    let prevFileCode = null;
-                    if (operation) {
-                        prevFileCode = $(ui.item).prev('.v3').attr('id').replace('fileIndex', '')
+                }, receive: function (event, ui) {
+                    //跨文书移动
+                    if ('fileSortZone' !== zoneClass) {
+                        return;
                     }
+                    //判断是其他文书移动至正在看的文书还是正在看的文书移动至其他文书
+                    let recordId = $(ui.item).parent().parent().attr('id').replace('dd', '');//文书id
+                    let fileObj = filesMap.get($(ui.item).attr('id'));
+                    let fileCode = fileObj.filecode;//文件代码
+                    if (+recordId === +recordImgLoadObj.getRecordId()) {
+                        //其他文书移动至正在看 时
+                        let operation = ($(ui.item).index() > 0);//判断是否是第一个
+                        let prevFileCode = null;
+                        if (operation) {
+                            prevFileCode = $(ui.item).prev('.v3').attr('id').replace('fileIndex', '')
+                        }
 
-                    recordImgLoadObj.fileMoveIn(fileObj.archiverecordid, fileCode, prevFileCode, operation);
-                } else {
-                    //正在看的文书移动至其他文书
-                    recordImgLoadObj.fileMoveOut(fileCode)
-                }
-            },
-            connectWith: "." + zoneClass,//允许跨文书拖拽
+                        recordImgLoadObj.fileMoveIn(fileObj.archiverecordid, fileCode, prevFileCode, operation);
+                    } else {
+                        //正在看的文书移动至其他文书
+                        recordImgLoadObj.fileMoveOut(fileCode)
+                    }
+                },
+                connectWith: "." + zoneClass,//允许跨文书拖拽
 
-        }).disableSelection();
+            }).disableSelection();
+        }
     }
 
     /**
@@ -262,10 +266,11 @@ var loadArchiveIndex = (function () {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
             });
             recordImgLoadObj = recordImgLoad({
+                isReadOnlyP:viewModel,
                 recordIdP: record.id,
                 fileOrder: fileOrder,
                 callback: function () {
-                    recordImgLoadObj.loadBtn();
+                    // recordImgLoadObj.loadBtn();
                 }
             });
         });
@@ -354,6 +359,7 @@ var loadArchiveIndex = (function () {
             });
             //点击另一个文书的图片  加载另一个文书
             recordImgLoadObj = recordImgLoad({
+                isReadOnlyP:viewModel,
                 recordIdP: recordId,
                 fileOrder: fileOrder,
                 callback: function () {
@@ -399,7 +405,7 @@ var loadArchiveIndex = (function () {
         const thisRecord = recordsMap.get(ddId);
         let div = document.createElement('span');
         //判断卷类型
-        if ((!thisRecord) || !('ZL001' === thisRecord.recordscode || 'ZL003' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode)) {
+        if (viewModel&&((!thisRecord) || !('ZL001' === thisRecord.recordscode || 'ZL003' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode))) {
             //封皮//封底  没有操作按钮
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
@@ -1031,9 +1037,9 @@ var loadArchiveIndex = (function () {
 
                     layer.msg((reV.value.length > 0 ? '为您找到' + reV.value.length + '个结果，已用颜色标注！' : '没有符合条件的文书！'));
                     for (const reVElement of reV.value) {
-                        $('#dd' + reVElement.id).css('background', '#124eb8')
+                        $('#dd' + reVElement.id).addClass('search')
                             .click(function () {
-                                $(this).css('background', '#fff');
+                                $(this).removeClass('search');
                             })
                         //父级下拉
                         $('#P' + reVElement.archivetypeid).slideDown(300);
@@ -1179,11 +1185,16 @@ $(function () {
                 const seq = reV.value.seq;//最新的整理记录id
                 const sfc = reV.value.sfc;//送检卷信息
                 const caseStatus = reV.value.caseStatus;//送检卷信息
+                let viewModel = true;
                 if ("0" !== caseStatus) {
+                    viewModel = false;
                     layer.msg('当前案件处于只读状态！');
-                    $('#recordStatusMessage').html('当前案件处于只读状态！正在由用户：' + caseStatus.xm + "对" + caseStatus.sfcname + "进行编辑")
+                    $('#recordStatusMessage').html('当前案件处于只读状态！正在由用户：' + caseStatus.xm + "对《" + caseStatus.sfcname + "》进行编辑")
                     let unLock = utils.createElement.createElement({
                         tag: 'a',
+                        attrs: {
+                            style: 'color: #0b3786; background: #fff;line-height: 20px; display: inline-block; padding: 2px 10px; margin-left: 10px; border-right: 5px;'
+                        },
                         arg: '解锁'
                     })
                     //解锁
@@ -1209,15 +1220,16 @@ $(function () {
                     })
                     $('#recordStatusMessage').append(unLock);
 
+
                 } else {
                     //非只读状态 此时后台已经将该页面记载在redis上了  此时订阅websocket
                     let rwc = new recordWebSocket(sessionStorage.username, sfc.id);
                 }
                 const isSuspectOrder = 0 === +reV.value.issuspectorder;//基础卷是否为已为嫌疑人排序
 
-                function loadArchives() {
-                    lai.loadIndex(seq.id);//开始加载目录
-                    let rcb = new recycleBin(lai);//加载回收站部分
+                function loadArchives(viewModel) {
+                    lai.loadIndex(seq.id, viewModel);//开始加载目录
+                    let rcb = new recycleBin(lai, viewModel);//加载回收站部分
                     rcb.loadIndex(seq.id);//回收站目录加载
                     lai.loadRecycleBin(rcb);
                 }
@@ -1230,7 +1242,11 @@ $(function () {
                 });
                 //新创建文书
                 $('#createRecord').click(function () {
-                    lai.createNewRecord();
+                    if (viewModel) {
+                        lai.createNewRecord();
+                    } else {
+                        layer.msg('当前案件处于只读状态！');
+                    }
                 })
 
                 function search(mine) {
@@ -1252,6 +1268,7 @@ $(function () {
                     $('.Search').hide();
                     $('#searchRecordInput').val('');
                     $('.noSearch').show();
+                    // $('.search').removeClass('search');
                     $('#searchRecord').unbind().click(function () {
                         search(this);
                     })
@@ -1259,7 +1276,15 @@ $(function () {
 
                 //从基础卷导入文书/图片
                 $('#importRecord').click(function () {
-                    lai.importRecord();
+                    if (viewModel) {
+                        if (0 === sfc.archivetype) {
+                            layer.alert('当前文书为基础卷！勿需导入');
+                        } else {
+                            lai.importRecord();
+                        }
+                    } else {
+                        layer.msg('当前案件处于只读状态！');
+                    }
                 })
 
                 if (isSuspectOrder) {
@@ -1267,7 +1292,7 @@ $(function () {
                     window.close();
                 } else {
                     //不需要选人了 直接加载好了
-                    loadArchives()
+                    loadArchives(viewModel)
                 }
             } else {
                 console.error('未能获取到创建卷信息！');

@@ -521,8 +521,10 @@ public class ArrangeArchivesController extends BaseFactory {
 
             String fileCode = paramObj.getString("filecode");
             if (StringUtils.isNotEmpty(fileCode)) {
+                //再不会再左侧目录位置更新文件的顺序了
+                //下面的逻辑可能是错误的  再次开放请检查一下
 
-                String prevFileCode = paramObj.getString("prevId");//上一个文件的文书代码
+            /*    String prevFileCode = paramObj.getString("prevId");//上一个文件的文书代码
                 if (StringUtils.isNotEmpty(prevFileCode)) {
                     FunArchiveFilesDTO prevFile = arrangeArchivesService.selectFilesByFileCode(prevFileCode, recordId);
                     order = prevFile.getThisorder() + 1;
@@ -539,7 +541,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 fileDto.setArchiveseqid(seqId);
                 //更新后面的顺序
                 arrangeArchivesService.updateFileOrder(recordId, order - 1, fileCode);
-                arrangeArchivesService.updateFileByFileCode(fileDto);
+                arrangeArchivesService.updateFileByFileCode(fileDto);*/
 
             } else {
                 //更新文书

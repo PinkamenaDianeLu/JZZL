@@ -282,13 +282,14 @@ public class RecordsController extends BaseFactory {
                         thisRecordJsonObj.put("title", thisRecord.getRecordname());
                         thisRecordJsonObj.put("parentId", thisRecord.getArchivetypeid());
                         thisRecordJsonObj.put("checkArr", "0");
-                        thisRecordJsonObj.put("last", false);
+                        thisRecordJsonObj.put("last", true);
                         thisRecordJsonObj.put("level", "2");
                         thisRecordJsonObj.put("children", "[]");
                         data.add(thisRecordJsonObj);
                     }
                 } else {
                     //说明此处时加载基础卷下的文书图片
+                    //郝哥说不要第三级了 嘤嘤嘤
                     for (FunArchiveFilesDTO thisFile :
                             recordsService.selectRecordFilesByRecordId(nodeId, 0)) {
                         JSONObject thisRecordJsonObj = new JSONObject();

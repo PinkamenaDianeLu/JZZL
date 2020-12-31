@@ -52,7 +52,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/loadArchiveCover", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "查询文书封皮信息", operType = OperLog.type.SELECT)
     public String loadArchiveCover(String fileId) {
         JSONObject reValue = new JSONObject();
@@ -82,7 +83,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/initializationCoverMessage", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "初始化案件封皮信息", operType = OperLog.type.SELECT)
     public String initializationCoverMessage(String sfcId, String recordId) {
         JSONObject reValue = new JSONObject();
@@ -124,7 +126,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/saveCover", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "保存卷宗封皮信息", operType = OperLog.type.InsertOrUpdate)
     public String saveCover(String coverid, String fileid, String cover) {
         JSONObject reValue = new JSONObject();
@@ -174,7 +177,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/createRecycleRecordByFiles", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "按照文件创建回收站文书", operType = OperLog.type.SELECT)
     public String createRecycleRecordByFiles(String filecodes, String recordid) {
         JSONObject reValue = new JSONObject();
@@ -208,7 +212,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/saveFunArchiveRecordindex", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "保存文书目录", operType = OperLog.type.InsertOrUpdate)
     public String saveFunArchiveRecordindex(String fileid, String indexinfo, String indexid) {
         JSONObject reValue = new JSONObject();
@@ -259,7 +264,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/selectFunArchiveRecordindexByType", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "查找文书类型下的文书目录信息", operType = OperLog.type.SELECT)
     public String selectFunArchiveRecordindexByType(String archiveseqid, String archivetypeid) {
         JSONObject reValue = new JSONObject();
@@ -292,7 +298,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/addUpLoadRecordFile", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "添加上传图片", operType = OperLog.type.INSERT)
     public String addUpLoadRecordFile(String fileName, String fileOrder,
                                       Integer recordId, Integer maxOrder,
@@ -302,7 +309,7 @@ public class FileManipulationController extends BaseFactory {
             FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(recordId);
             //将文件上传记录保存至数据库
             FunArchiveFilesDTO newRecordFile = new FunArchiveFilesDTO();
-            newFile(newRecordFile,newFile);
+            newFile(newRecordFile, newFile);
             newRecordFile.setJqbh(thisRecord.getJqbh());
             newRecordFile.setAjbh(thisRecord.getAjbh());
             newRecordFile.setFiletype(0);
@@ -325,7 +332,8 @@ public class FileManipulationController extends BaseFactory {
 
     @RequestMapping(value = "/upLoadRecordFiles", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "上传图片", operType = OperLog.type.INSERT)
     public String upLoadRecordFiles(String fileName, String fileOrder,
                                     String recordid,
@@ -334,11 +342,11 @@ public class FileManipulationController extends BaseFactory {
         try {
             //如果有附件的 触发附件上传
             if (null != newFile) {
-            int recordId = Integer.parseInt(recordid);
+                int recordId = Integer.parseInt(recordid);
                 FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(recordId);
                 FunArchiveFilesDTO newRecordFile = new FunArchiveFilesDTO();
                 //上传文件
-                newFile(newRecordFile,newFile);
+                newFile(newRecordFile, newFile);
                 newRecordFile.setJqbh(thisRecord.getJqbh());
                 newRecordFile.setAjbh(thisRecord.getAjbh());
                 newRecordFile.setThisorder(Integer.parseInt(fileOrder));//文件的顺序
@@ -364,7 +372,8 @@ public class FileManipulationController extends BaseFactory {
 
     @RequestMapping(value = "/selectFileByFileId", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "按照id查询文件", operType = OperLog.type.SELECT)
     public String selectFileByFileId(Integer fileid) {
         JSONObject reValue = new JSONObject();
@@ -383,7 +392,8 @@ public class FileManipulationController extends BaseFactory {
 
     @RequestMapping(value = "/reUpLoadFile", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "重新上传图片", operType = OperLog.type.UPDATE)
     public String reUpLoadFile(Integer fileId,
                                @RequestParam("newFile") MultipartFile newFile) {
@@ -391,7 +401,7 @@ public class FileManipulationController extends BaseFactory {
         try {
             FunArchiveFilesDTO oriFile = fileManipulationService.selectFunArchiveFilesDTOById(fileId);
             //把原有的干了
-            oriFile.setIsshow(oriFile.getIsshow()+1);
+            oriFile.setIsshow(oriFile.getIsshow() + 1);
             fileManipulationService.updateFunArchiveFileDTO(oriFile);
             //传新的  夺舍它
             newFile(oriFile, newFile);//上传个新的 并对原有值做操作
@@ -416,7 +426,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/selectArchiveRecordPage", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "文书分页查询", operType = OperLog.type.SELECT)
     public Map<String, Object> selectArchiveRecordPage(Integer offset, Integer limit, String params) {
         Map<String, Object> reMap = new HashMap<>();
@@ -444,7 +455,8 @@ public class FileManipulationController extends BaseFactory {
      */
     @RequestMapping(value = "/moveFiles", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "按照文书代码移动文件至所属文书", operType = OperLog.type.SELECT)
     public String moveFiles(String fileOrder, String seqId, String recordid, String orirecordid) {
         JSONObject reValue = new JSONObject();
@@ -506,6 +518,48 @@ public class FileManipulationController extends BaseFactory {
         oriFile.setIsazxt(1);//是否来自案宗 不是
         oriFile.setFileurl("/" + uploadFile + "/" + osFileName);//图片路径
         oriFile.setOriginurl(jdlj);//服务器上的路径
+    }
 
+
+     /**
+     * 更改文书内的文件顺序
+     * @author MrLu
+     * @param paramjson
+     * @createTime  2020/12/31 9:52
+     * @return    |
+      */
+    @RequestMapping(value = "/changeFileOrderOnTime", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @recordTidy
+    @OperLog(operModul = operModul, operDesc = "更改文书内的文件顺序", operType = OperLog.type.SELECT)
+    public String changeFileOrderOnTime(String paramjson) {
+        JSONObject reValue = new JSONObject();
+        try {
+            JSONObject paramJsonObj = JSONObject.parseObject(paramjson);
+            String fileCode = paramJsonObj.getString("fileCode");
+            Integer fileOrder = paramJsonObj.getInteger("fileOrder");
+            Integer recordId = paramJsonObj.getInteger("recordId");
+            Integer seqId = paramJsonObj.getInteger("seqId");
+            if (fileOrder>0){
+                String prevFileCode = paramJsonObj.getString("prevFileCode");
+                FunArchiveFilesDTO prevFile=  fileManipulationService.selectFilesByFileCode(recordId,prevFileCode);
+                fileOrder=prevFile.getThisorder()+1;
+            }
+            //再往后的所有顺序+1
+            fileManipulationService.updateOrderByRecordId(recordId,fileOrder,fileCode);
+            //自己顺序改为对应数
+            FunArchiveFilesDTO record =new FunArchiveFilesDTO();
+            record.setFilecode(fileCode);
+            record.setThisorder(fileOrder);
+            record.setArchiveseqid(seqId);
+
+            fileManipulationService.updateFileByFileCode(record);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
     }
 }

@@ -156,4 +156,24 @@ public interface FileManipulationService {
       */
     void updateFunArchiveFileDTO(FunArchiveFilesDTO record);
 
+    /**
+     * 将一个文书内顺序大于该值的文件顺序+1
+     * @author MrLu
+
+     * @createTime  2020/11/2 16:47
+     * @return   void |
+     */
+    void updateOrderByRecordId(int archiverecordid,int thisorder,String filecode);
+
+    /**
+     * 根据文书代码找到正在显示的文书
+     * @author MrLu
+     * @param  filecode:文件代码,
+     * @param  archiverecordid:文书id}
+     * @createTime  2020/10/22 9:32
+     * @return  FunArchiveFilesDTO  |
+     */
+    FunArchiveFilesDTO selectFilesByFileCode(int archiverecordid,String filecode);
+
+
 }
