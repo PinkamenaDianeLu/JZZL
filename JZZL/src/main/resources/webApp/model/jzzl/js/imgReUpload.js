@@ -2,13 +2,13 @@
  * @author Mrlu
  * @createTime 2020/12/25
  * @url webApp.model.jzzl.js
- * @describe
+ * @describe 图片重新上传
  */
 
 
 $(function () {
     const fileId = utils.getUrlPar('fileId');
-    console.log(fileId)
+    const fileCode = utils.getUrlPar('fileCode');
 
     $.post({
         url: '/FileManipulation/selectFileByFileId',
@@ -72,6 +72,7 @@ $(function () {
             if (isCool) {
                 $('#newImg').attr('src', window.URL.createObjectURL(thisImg));
                 $('#jia').remove();
+                $('#newImg').show();
                 $('#reUploadBtn').unbind().click(function () {
                     console.log(thisImg);
                     let formData = new FormData();
@@ -87,6 +88,11 @@ $(function () {
                             const reV = JSON.parse(re);
                             if ("success" === reV.message) {
                                 layer.msg('替换成功！');
+                                //替换父页面
+                                // parent.$('#frontImg'+fileCode).attr('src',reV.value);
+                                parent.$('#front'+fileCode).find('img').attr('src',reV.value);
+                                parent.$('#thumbnail'+fileCode).find('img').attr('src',reV.value);
+                                parent.$('#bigImg'+fileCode).find('img').attr('src',reV.value);
                                 //自我关闭
                                 const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                                 parent.layer.close(index);
@@ -101,4 +107,4 @@ $(function () {
     }
 
 
-})
+});

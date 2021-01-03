@@ -182,7 +182,13 @@ public class RecordsController extends BaseFactory {
                     thisRecordOrder.getDefaultorder(),
                     seqId,
                     suspectId);
+            if (null==newRecordObj){
+                //这种现象有记录出现在选人文书中
+                throw new Exception("该文书代码无法匹配上一个文书");
+
+            }
             newRecordObj.setRecordname(newRecordJsonObj.getString("recordName"));
+            int prevRid=newRecordObj.getId();//查找出的文书的id
             newRecordObj.setRecordwh(newRecordJsonObj.getString("recordWh"));//recordWh
             newRecordObj.setPrevid(0);
             newRecordObj.setAuthor(userNow.getUsername());
@@ -201,15 +207,20 @@ public class RecordsController extends BaseFactory {
             newRecordObj.setEffectivetime(new Date());
             newRecordObj.setIsdelete(0);
             newRecordObj.setIsazxt(1);
+            //后面的所有文书顺序+1
+            recordsService.updateOrderAdd(seqId,
+                    newRecordObj.getArchivetypeid()
+                    , newRecordObj.getThisorder());
+            //插入该文书
             recordsService.insertFunArchiveRecords(newRecordObj);
-            //对人文书  - 插入 fun_suspect_record 表
-            //人是肯定有的   区别在于是否有相同的文书
-            //有相同的文书  查询出来复制+1
-            //没有相同的文书 找人
+
 
             //插入
             if (null != suspectId && suspectId > 0) {
                 //插入嫌疑人文书顺序表
+                //对人文书  - 插入 fun_suspect_record 表
+                //人是肯定有的   区别在于是否有相同的文书
+                //有相同的文书  查询出来复制+1 没有相同的文书 找人
                 FunSuspectRecordDTO suspectRecord = new FunSuspectRecordDTO();
                 suspectRecord.setJqbh(newRecordObj.getJqbh());
                 suspectRecord.setCaseinfoid(thisSeq.getCaseinfoid());
@@ -220,13 +231,9 @@ public class RecordsController extends BaseFactory {
                 suspectRecord.setRecordtype(thisRecordOrder.getRecordtype());
                 recordsService.insertSuspectRecord(suspectRecord);
             }
-//查询该文书信息
-            //查询该文书是否存在与这本卷  如果存在放在他后买你
-            //后面的所有文书顺序+1
-            recordsService.updateOrderAdd(seqId,
-                    newRecordObj.getArchivetypeid()
-                    , newRecordObj.getThisorder());
-            reValue.put("value", newRecordObj.getId());//返回新创建的文书id
+
+            reValue.put("prevRId", prevRid);//返回新创建的文书id
+            reValue.put("value", newRecordObj);//返回新创建的文书id
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

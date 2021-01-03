@@ -90,7 +90,7 @@ var recycleBin = (function () {
      * @return    |
      */
     function createRecordDiv(thisRecord, isdelete) {
-        let record = thisRecord.record;
+        let record = thisRecord;
         if (!record) {
             throw  '(回收站)无文书信息，无法加载该文书！！';
         }
@@ -117,7 +117,7 @@ var recycleBin = (function () {
         }
 
         //加载文书目录
-        createFileIndex(thisRecord.files, p);
+        // createFileIndex(thisRecord.files, p);
         //点击显示对应图片
         $(p).unbind().click(function () {
             //加载文书图片 按照子标签的顺序加载

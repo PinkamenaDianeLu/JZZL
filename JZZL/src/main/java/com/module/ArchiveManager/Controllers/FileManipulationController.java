@@ -320,7 +320,7 @@ public class FileManipulationController extends BaseFactory {
             newRecordFile.setArchivesfcid(thisRecord.getArchivesfcid());//sfc
             newRecordFile.setThisorder(maxOrder + Integer.parseInt(fileOrder) + 1);//文件的顺序
             fileManipulationService.insertFunArchiveFilesDTO(newRecordFile);
-
+            reValue.put("value", newRecordFile);
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -406,7 +406,7 @@ public class FileManipulationController extends BaseFactory {
             //传新的  夺舍它
             newFile(oriFile, newFile);//上传个新的 并对原有值做操作
             fileManipulationService.insertFunArchiveFilesDTO(oriFile);
-
+            reValue.put("value", oriFile.getServerip()+oriFile.getFileurl());
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

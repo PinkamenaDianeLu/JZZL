@@ -181,14 +181,14 @@ public class ArrangeArchivesController extends BaseFactory {
             }
             int isdelete = Integer.parseInt(isDelete);
             JSONArray records = new JSONArray();
-            for (FunArchiveRecords thisRecord :
+      /*      for (FunArchiveRecords thisRecord :
                     arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), isdelete)) {
                 JSONObject record = new JSONObject();
                 record.put("record", thisRecord);
                 record.put("files", arrangeArchivesService.selectRecordFilesByRecordId(thisRecord.getId(), isdelete));
                 records.add(record);
-            }
-            reValue.put("value", records);
+            }*/
+            reValue.put("value", arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), isdelete));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -433,7 +433,33 @@ public class ArrangeArchivesController extends BaseFactory {
         }
         return reValue.toJSONString();
     }
-
+    /**
+     * 按照文书id查询可看的文件
+     *
+     * @return String  |
+     * @author MrLu
+     * @createTime 2020/10/15 18:17
+     */
+    @RequestMapping(value = "/loadFilesByRecord", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @recordTidy
+    @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.SELECT)
+    public String loadFilesByRecord( String seqId, String recordId) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(seqId) || StringUtils.isEmpty(recordId)) {
+                throw new Exception("给一个? 自己体会");
+            }
+            //该文书没有图片了
+            reValue.put("value", arrangeArchivesService.selectRecordFilesByRecordId(StringUtil.StringToInteger(recordId), 0));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
 
     /**
      * 通过文件代码查询文件

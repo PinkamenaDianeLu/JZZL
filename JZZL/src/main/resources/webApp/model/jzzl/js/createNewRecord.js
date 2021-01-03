@@ -185,11 +185,15 @@ var dropUpload = (function () {
                         pDiv.find('.thumbnailMsg').html('上传成功');
                         //刷新父页面
                         // parent.dqfxpgbgOut.reFreshTk();
-                        // layer.msg('提交成功');
+                        //
                         files.delete(item[1].keyForInput);
-                        //自我关闭
-                        /*   const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                           parent.layer.close(index);*/
+                        if (files.size===0){
+                            layer.msg('创建成功！');
+                            //自我关闭
+                               const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                               parent.layer.close(index);
+                        }
+
                     }
                 }
             })
@@ -304,19 +308,21 @@ var searchSelect = (function () {
                                             class: 'suspectTr'
                                         },
                                         arg: '<td>' + thisSuspect.suspectname + '</td><td>' + thisSuspect.suspectidcard + '</td>'
-                                    })
+                                    });
                                     s.addEventListener('click', function () {
                                         //选择该人
                                         $('#suspectName').val(thisSuspect.suspectname);
                                         $('#suspectId').val(thisSuspect.id);
 
-                                    })
+                                    });
                                     $(f).append(s);
                                 }
                                 $('#suspectDiv').show();
                                 $('#suspectTable').append(f)
                             } else {
                                 $('#suspectDiv').hide();
+                                $('#suspectName').val('');
+                                $('#suspectId').val('');
                             }
                         }
 
@@ -371,6 +377,12 @@ var createNewRecord = (function () {
         return newRecord;
     }
 
+    /**
+     * 保存
+     * @author MrLu
+     * @param  zl 拖拽域对象
+     * @createTime  2021/1/3 12:20
+     */
     function saveRecord(zl) {
         if ($('#thumbnailZone').find('.redThumbnail').length > 0) {
             layer.alert('红色边框的图片无法上传，请删除后重试！')
@@ -386,9 +398,10 @@ var createNewRecord = (function () {
             }).then(response => {
                 const reV = response.data;
                 if ('success' === reV.message) {
-                    const recordId = reV.value;
-                    console.log(recordId)
-                    zl.upload(recordId);
+                    const record = reV.value;
+                    console.log(record);
+                    zl.upload(record.id);
+                    parent.lai.addRecord(record,reV.prevRId);
                 } else {
                     console.error('新建文书失败');
                 }
@@ -406,10 +419,10 @@ var createNewRecord = (function () {
 
     _createNewRecord.prototype = {
         saveRecord
-    }
+    };
     return _createNewRecord;
 
-})()
+})();
 
 
 $(function () {

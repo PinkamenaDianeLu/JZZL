@@ -10,14 +10,14 @@ var recordImgLoad = (function () {
     let checkFile = new Set();//复选功能中被选中的文件的filecode数组
     let imgMap = new Map();//文书图片
     let isReadOnly;//是否只读 true 不是  false 只读
-    let focusImg;//焦点图
+    let focusImg;//焦点图 大图模式下正在看的图
     let colorList = ['#FFA500',
         '#40E0D0',
         '#F08080',
         '#FF4500',
         '#1E90FF',
         '#11b121',
-        '#4d1f53']
+        '#4d1f53'];
 
     /**
      * 查询文书的图片数据
@@ -28,14 +28,14 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/15 18:31
      */
     function loadFilesByRecord(recordId, fileOrder, callback) {
-        if (fileOrder.length <= 0) {
-            layer.alert('该文书下没有发现文书图片！');
-            return;
-        }
+        // if (fileOrder.length <= 0) {
+        //     layer.alert('该文书下没有发现文书图片！');
+        //     return;
+        // }
         $.post({
-            url: '/ArrangeArchives/loadFilesByFileCodes',
+            url: '/ArrangeArchives/loadFilesByRecord',
             data: {
-                fileOrder: fileOrder.join(','),
+                // fileOrder: fileOrder.join(','),
                 seqId: parent.lai.getSeqId(),
                 recordId
             },
@@ -84,7 +84,7 @@ var recordImgLoad = (function () {
                             let scrollTopValue = +document.getElementById('ImgBigDiv').scrollTop;
                             let proportionValue = +$('#proportion').val();
                             scrollTopValue = (scrollTopValue - 50) / (1467 * proportionValue * 0.01);
-                            let pageCountNow = +scrollTopValue.toFixed(0) + 1
+                            let pageCountNow = +scrollTopValue.toFixed(0) + 1;
                             if (pageCountNow > imgMap.size) {
                                 pageCountNow = imgMap.size;
                             }
@@ -103,7 +103,7 @@ var recordImgLoad = (function () {
 
 
                         //跳转至区域
-                        $('#pageSum').html('/' + i);// 总页数
+                        $('#pageSum').html('/'+i);// 总页数
                         $('#jumpToPage').val(1);//跳到哪（赋值1 默认显示第一页）
                         /*********************为功能区按钮添加方法******************************/
                         //切换视图按钮
@@ -119,7 +119,7 @@ var recordImgLoad = (function () {
                     }
                     callback();//回调方法
                 } else {
-                    console.error('文书图片加载错误' + fileOrder.join(','));
+                    console.error('文书图片加载错误' );
                     layer.alert('图片加载失败！');
                 }
             }
@@ -214,7 +214,7 @@ var recordImgLoad = (function () {
                     maxmin: false,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['1000px', '700px'],
-                    content: '/model/jzzl/imgReUpload.html?fileId=' + imgMap.get(thisFileCode).id
+                    content: '/model/jzzl/imgReUpload.html?fileId=' + imgMap.get(thisFileCode).id+'&fileCode='+thisFileCode
                 });
             } else {
                 layer.alert('请选择需要重新上传的图片');
@@ -287,6 +287,10 @@ var recordImgLoad = (function () {
             }
         });
         //图片详细按钮
+        /**
+        * @description
+        * @log  2020/11/11 13:56  MrLu  已经没这个功能了
+         **/
         $('#imgInfoBtn').unbind().click(function () {
             layer.open({
                 icon: 1,
@@ -424,8 +428,6 @@ var recordImgLoad = (function () {
                     if (fileOrder > 0) {
                         prevFileCode = $(ui.item).prev('.frontDiv').attr('id').replace('front', '');
                     }
-                    console.log(fileOrder)
-                    console.log($(ui.item).prev('.frontDiv'))
                     saveFileOrderOnTime(
                         fileCode, prevFileCode
                         , fileOrder
@@ -436,6 +438,14 @@ var recordImgLoad = (function () {
 
     }
 
+     /**
+     * 实时保存顺序
+     * @author MrLu
+     * @param fileCode 文件代码
+      * @param prevFileCode 用于定位的上一个文件代码 当被动到第一个时 该参数为null
+      * @param fileOrder 文件的位置
+     * @createTime  2021/1/1 13:57
+      */
     function saveFileOrderOnTime(fileCode, prevFileCode, fileOrder) {
         const updateObj = function () {
             this.recordId = recordId;//被移动的或被移动到的文书id
@@ -679,8 +689,6 @@ var recordImgLoad = (function () {
      * @return    |
      */
     function orderMove(eleAid, eleBid, operation) {
-        console.log(eleAid);
-        console.log(eleBid);
         //要移动的元素有 thumbnail  bigImg
         let thumbnailA = $('#thumbnail' + eleAid),
             bigImgA = $('#bigImg' + eleAid);
@@ -853,6 +861,8 @@ var recordImgLoad = (function () {
             imgMap = new Map();
             checkFile = new Set();
             isReadOnly = isReadOnlyP;
+            //查询该文书下的文书图片
+
             loadFilesByRecord(recordId, fileOrder, callback)
         } else {
 
@@ -865,7 +875,7 @@ var recordImgLoad = (function () {
         }
 
     };
-    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn, loadBtn}
+    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn, loadBtn,loadThumbnail,loadImgs,loadFrontImg}
     return _recordImgLoad;
 
 })();

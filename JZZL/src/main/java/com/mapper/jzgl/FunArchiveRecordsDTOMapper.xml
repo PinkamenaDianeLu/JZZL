@@ -403,7 +403,7 @@
         scbj=0
         AND  ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
         AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
-        AND THISORDER &gt; #{thisorder,jdbcType=DECIMAL}
+        AND THISORDER &gt;= #{thisorder,jdbcType=DECIMAL}
         AND RECORDSTYLE &lt;&gt; 0
     </update>
 

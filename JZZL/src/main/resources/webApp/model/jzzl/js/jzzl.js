@@ -21,7 +21,7 @@ var loadArchiveIndex = (function () {
     let progressLength = 0;//进度条进度
     let viewModel;//显示模式  true 正常 false 只读模式
 
-    function loadIndex(id, viewModelP=true) {
+    function loadIndex(id, viewModelP = true) {
         viewModel = viewModelP;
         seqid = id;
         $.post({
@@ -232,10 +232,10 @@ var loadArchiveIndex = (function () {
      * @return  HTMLDivElement  |
      */
     function createRecordDiv(thisRecord, indexing) {
-        if (!thisRecord.record.id) {
+        if (!thisRecord.id) {
             throw  '文书id未获取，无法加载该文书！！';
         }
-        let record = thisRecord.record;
+        let record = thisRecord;
         let key = 'dd' + record.id;
         let div = utils.createElement.createElement({
             tag: 'div', attrs: {
@@ -250,7 +250,7 @@ var loadArchiveIndex = (function () {
         //点击文书名收缩或显示文书内的文件
         p.addEventListener('click', function () {
             $(this).next('.fileSortZone').slideToggle(300);
-        })
+        });
 
         //文书缓存至recordsMap  此行必须在createButtons()方法上
         recordsMap.set(key, record);//缓存信息
@@ -258,7 +258,7 @@ var loadArchiveIndex = (function () {
         p.append(createButtons(key, indexing));
         div.append(p);
         //加载文书目录
-        div.append(createFileIndex(thisRecord.files));
+        // div.append(createFileIndex(thisRecord.files));
         //点击显示对应图片
         p.addEventListener('click', function () {
             //加载文书图片 按照子标签的顺序加载
@@ -266,7 +266,7 @@ var loadArchiveIndex = (function () {
                 return $(thisFileIndex).attr('id').replace('fileIndex', '');
             });
             recordImgLoadObj = recordImgLoad({
-                isReadOnlyP:viewModel,
+                isReadOnlyP: viewModel,
                 recordIdP: record.id,
                 fileOrder: fileOrder,
                 callback: function () {
@@ -359,7 +359,7 @@ var loadArchiveIndex = (function () {
             });
             //点击另一个文书的图片  加载另一个文书
             recordImgLoadObj = recordImgLoad({
-                isReadOnlyP:viewModel,
+                isReadOnlyP: viewModel,
                 recordIdP: recordId,
                 fileOrder: fileOrder,
                 callback: function () {
@@ -397,7 +397,7 @@ var loadArchiveIndex = (function () {
      * 创建下面那四个按钮
      * @author MrLu
      * @param ddId recordsMap的key
-     * @param indexing
+     * @param indexing  这里 index中的 i<=2 将不会触发向上一个按钮 f=i+2 将不会触发向下一个按钮
      * @createTime  2020/10/10 9:52
      * @return  HTMLDivElement  |
      */
@@ -405,7 +405,7 @@ var loadArchiveIndex = (function () {
         const thisRecord = recordsMap.get(ddId);
         let div = document.createElement('span');
         //判断卷类型
-        if (viewModel&&((!thisRecord) || !('ZL001' === thisRecord.recordscode || 'ZL003' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode))) {
+        if (viewModel && ((!thisRecord) || !('ZL001' === thisRecord.recordscode || 'ZL003' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode))) {
             //封皮//封底  没有操作按钮
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
@@ -431,6 +431,7 @@ var loadArchiveIndex = (function () {
             //此参数有值说明为首次加载
             if (2 >= indexing.i) {
                 //未除了封皮和卷目录以外第一个文书
+                console.log(indexing.i)
                 haveFun = false;
             }
         } else {
@@ -469,6 +470,7 @@ var loadArchiveIndex = (function () {
             //此参数有值说明为首次加载
             if (indexing.f === (indexing.i + 2)) {
                 //未除了封皮以外第一个文书
+                console.log(indexing.f)
                 haveFun = false;
             }
         } else {
@@ -1089,6 +1091,100 @@ var loadArchiveIndex = (function () {
         }
     }
 
+    /**
+     * 返回当前的文书图片对象
+     * @author MrLu
+     * @createTime  2021/1/1 14:44
+     * @return   Object |  recordImgLoadObj
+     */
+    function getRecordImgLoadObj() {
+        return recordImgLoadObj;
+    }
+
+    /**
+     * 改变文书左侧目录的字体颜色，并且一碰就没
+     * @author MrLu
+     * @param recordId 文书id
+     * @param colour 颜色
+     * @createTime  2021/1/1 16:26
+     * @return    |
+     */
+    function changeRecordNameColour(recordId, colour) {
+        $('#dd' + recordId).find('.recordname').mouseover(function () {
+            console.log('鼠标移上来惹！');
+            $(this).removeAttr('css').unbind('mouseover');
+        }).css('color', colour);
+    }
+
+    /**
+     * 添加新的文书
+     * @author MrLu
+     * @param thisRecord  新生成的文书
+     * @param prevRId  上一个的文书id
+     * @createTime  2021/1/1 17:03
+     * @return    |
+     */
+    function addRecord(thisRecord, prevRId) {
+
+        const prevRecord= recordsMap.get('dd' + prevRId);
+        let recordSortZone=$('#P' + thisRecord.archivetypeid).find('.recordSortZone');
+        if ('ZL003'===prevRecord.recordscode){
+            //上一个是卷目录  是该卷类型的第一个呢  牙白得死内！
+            let indexing = {
+                i: 1,
+                f: 999,
+            };
+            const thisDD = createRecordDiv(thisRecord,indexing);
+            let firstRecord = recordSortZone.find('.v2').first();//取出原第一个
+            recordSortZone.prepend(thisDD);
+            reloadButton(firstRecord);//将原第一个元素的按钮重新加载
+        }else {
+            //此时只需要主意自己和上一个即可
+            let indexing = {
+                i: 3,
+                f: 5,
+            };
+            //创建一个上一个和下一个都有的
+            const thisDD = createRecordDiv(thisRecord,indexing);
+            let prev=$('#dd' + prevRId);
+            prev.after(thisDD);
+            let lastRecord =recordSortZone.find('.v2').last();
+            reloadButton(prev);//将上一个元素的按钮重新加载
+            reloadButton(lastRecord);//将最后一个元素的按钮重新加载
+        }
+        changeRecordNameColour(thisRecord.id,'#36ff25');
+
+
+
+  /*      const thisDD = createRecordDiv(thisRecord);
+        console.log(thisDD);
+        //我用id选择器选出来个数组？   太迷幻了吧
+        changeRecordNameColour(thisRecord.id,'#36ff25');
+        let lastRecord = $('#P' + thisRecord.archivetypeid).find('.recordSortZone').find('.v2').last();
+        let firstRecord = $('#P' + thisRecord.archivetypeid).find('.recordSortZone').find('.v2').first();
+        console.log(firstRecord)
+        console.log(lastRecord)
+        console.log(prev)
+        reloadButton(lastRecord);//将最后一个元素的按钮重新加载
+        reloadButton(firstRecord);//将第一个元素的按钮重新加载
+        reloadButton(prev);//将上一个元素的按钮重新加载
+*/
+
+
+        /*
+        * 
+        *    let thisRecord = reV.value;
+                        const typeId = thisRecord.record.archivetypeid;
+                        let lastRecord = $('#P' + typeId).find('.recordSortZone').find('.v2').last()
+                        let thisRecordDiv = createRecordDiv(thisRecord, fileIndexing)//createRecordIndex方法接受数组 所以要把该文书对象放入一个数组中
+                        lastRecord.after(thisRecordDiv)
+                        reloadButton(lastRecord);//重新加载最后一个文书的按钮
+                        reloadButton($(thisRecordDiv));
+
+        * */
+    }
+
+
     function _loadArchiveIndex() {
         console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=开始加载-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
     }
@@ -1097,7 +1193,8 @@ var loadArchiveIndex = (function () {
         loadIndex, loadRecycleBin, reloadButton,
         saveData, restored, getSeqId,
         getRecordIndexSort, progressBar, delFun,
-        createFilesDiv, createNewRecord, importRecord, searchRecord
+        createFilesDiv, createNewRecord, importRecord, searchRecord,
+        getRecordImgLoadObj, changeRecordNameColour, addRecord
     };
     return _loadArchiveIndex;
 })();

@@ -117,7 +117,7 @@ var dropUpload = (function () {
         //添加删除方法
         delDiv.addEventListener("click", function () {
             removeOne(key);
-        })
+        });
         pDiv.append(imgDiv);
         pDiv.append(inputDiv);
         pDiv.append(msgDiv);
@@ -154,17 +154,24 @@ var dropUpload = (function () {
      * @createTime  2020/11/1 17:12
      * @return    |
      */
-    function upload(recordId,maxOrder) {
+    function upload(recordId, maxOrder) {
         if ($('#thumbnailZone').find('.redThumbnail').length > 0) {
             layer.alert('红色边框的图片无法上传，请删除后重试！')
         } else {
             const iterator1 = files[Symbol.iterator]();
-            let overSize=files.size;
+            let overSize = files.size;
+            let thumbnailCDF = $(document.createDocumentFragment());//创建一个存放上传后文件的虚拟dom节点
+            let ImgBigCDF = $(document.createDocumentFragment());//创建一个存放上传后文件的虚拟dom节点
+            let frontCDF = $(document.createDocumentFragment());//创建一个存放上传后文件的虚拟dom节点
+            let newImgAry = [];
+            let rlo = parent.lai.getRecordImgLoadObj();//获取当前的文书图片对象
+            let pageSum = +parent.$('#pageSum').html().replace('/', '');
             for (const item of iterator1) {
                 let formData = new FormData();
                 let pDiv = $('#' + item[0]);
+                let fileOrder = pDiv.index();//相对于这次上传的顺序
                 formData.append('fileName', pDiv.find('input').val());//文件名称
-                formData.append('fileOrder', pDiv.index());//文件的顺序
+                formData.append('fileOrder', fileOrder);//文件的顺序
                 formData.append('newFile', item[1]);//文件本身
                 formData.append('recordId', recordId);//文件所属文书的id
                 formData.append('maxOrder', maxOrder);//文件所属文书的id
@@ -178,17 +185,33 @@ var dropUpload = (function () {
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ("success" === reV.message) {
-                            pDiv.find('.thumbnailMsg').html('上传成功');
+                            pDiv.find('.thumbnailMsg').html('上传成功').css('color', 'green');
                             overSize--;
                             //刷新父页面
                             files.delete(item[1].keyForInput);
-                            if (0===overSize){
+                            const newImgObj = reV.value;//得到新创建的文书图片
+                            newImgAry[fileOrder] = reV.value;//将上传后的文书放到对应的位置去
+                            if (0 === overSize) {
                                 layer.msg('全部上传成功！');
+                                for (const thisFile of newImgAry) {
+                                    if (thisFile) {
+                                        //创建对应的组件
+                                        thumbnailCDF.append(rlo.loadThumbnail(thisFile, 999));// loadThumbnail 是必须要有的 因为这个方法会将filecode存储到map中  999是假数 这里传的数字大于1即可
+                                        ImgBigCDF.append(rlo.loadImgs(thisFile));
+                                        frontCDF.append(rlo.loadFrontImg(thisFile));
+                                        parent.$('#pageSum').html('/' + (pageSum + 1));// 总页数
+                                    }
+                                }
+                                parent.$('#thumbnailDiv').append(thumbnailCDF);
+                                parent.$('#ImgBigDiv').append(ImgBigCDF);
+                                parent.$('#frontImg').append(frontCDF);//加载平铺图
+
                                 //自我关闭
                                 const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                                 parent.layer.close(index);
                             }
-                        }else {
+                        } else {
+                            newImgAry[pDiv.index()] = null;
                             pDiv.find('.thumbnailMsg').html('上传失败');
                         }
                     }
@@ -223,7 +246,6 @@ var dropUpload = (function () {
 $(function () {
 
 
-
     const recordId = utils.getUrlPar('recordId');
     const maxOrder = utils.getUrlPar('maxOrder');
     console.log(maxOrder);
@@ -232,10 +254,10 @@ $(function () {
 
     $('#submit-all').click(function () {
         $(this).unbind();//防止重复点击
-        zl.upload(recordId,maxOrder);
+        zl.upload(recordId, maxOrder);
     });
     $('#removeAll').click(function () {
         zl.allRemove();
     });
 
-})
+});

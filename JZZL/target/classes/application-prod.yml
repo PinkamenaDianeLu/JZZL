@@ -1,4 +1,4 @@
-# 生产环境使用（在家使用）
+# 开发环境使用
 spring:
   datasource:
     jzgl:
@@ -42,9 +42,13 @@ spring:
   output:
     ansi:
       enabled: always
+  freemarker:
+    cache: false
   redis:
     cacheDatabase: 0
     sessionDatabase: 1
+    onlineUsers: 2
+    casesAreOccupied: 3
     host: 192.168.52.16
     port: 6379
     password: tljj2020
@@ -55,7 +59,7 @@ spring:
         max-idle: 5
         max-wait: 5
         min-idle: 0
-      shutdown-timeout: 10000
+      shutdown-timeout: 10
 
   resources:
     static-locations: classpath:webApp/,classpath:static/
