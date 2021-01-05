@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.zfba.XtWjflbMapper">
+  <resultMap id="BaseResultMap" type="com.bean.zfba.XtWjflb">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
+    <result column="GLID" jdbcType="DECIMAL" property="glid" />
+    <result column="WJBM" jdbcType="VARCHAR" property="wjbm" />
+    <result column="WJBID" jdbcType="DECIMAL" property="wjbid" />
+    <result column="WJDM" jdbcType="VARCHAR" property="wjdm" />
+    <result column="WJZW" jdbcType="VARCHAR" property="wjzw" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="JLRXM" jdbcType="VARCHAR" property="jlrxm" />
+    <result column="JLRGMSFHM" jdbcType="VARCHAR" property="jlrgmsfhm" />
+    <result column="JLRGAJGJGDM" jdbcType="VARCHAR" property="jlrgajgjgdm" />
+    <result column="JLRGAJGMC" jdbcType="VARCHAR" property="jlrgajgmc" />
+    <result column="FSRGMSFHM" jdbcType="VARCHAR" property="fsrgmsfhm" />
+    <result column="CYRGMSFHM" jdbcType="VARCHAR" property="cyrgmsfhm" />
+    <result column="JLSJ" jdbcType="TIMESTAMP" property="jlsj" />
+    <result column="GXSJ" jdbcType="TIMESTAMP" property="gxsj" />
+    <result column="WJZT" jdbcType="DECIMAL" property="wjzt" />
+    <result column="DYDM" jdbcType="VARCHAR" property="dydm" />
+    <result column="DYLX" jdbcType="VARCHAR" property="dylx" />
+    <result column="SFAZXT" jdbcType="VARCHAR" property="sfazxt" />
+    <result column="OLDID" jdbcType="VARCHAR" property="oldid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, JQBH, GLID, WJBM, WJBID, WJDM, WJZW, SCBJ, JLRXM, JLRGMSFHM, JLRGAJGJGDM, JLRGAJGMC, 
+    FSRGMSFHM, CYRGMSFHM, JLSJ, GXSJ, WJZT, DYDM, DYLX, SFAZXT, OLDID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from XT_WJFLB
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectRecordBySuspect" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    from XT_WJFLB
+    WHERE SCBJ=0
+    AND JQBH = #{jqbh,jdbcType=VARCHAR}
+    AND DYDM = #{dydm,jdbcType=VARCHAR}
+    order by id desc
+  </select>
+
+  <select id="selectRecordNoSuspect" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" />
+    from XT_WJFLB
+    WHERE SCBJ=0
+    AND JQBH = #{jqbh,jdbcType=VARCHAR}
+    AND DYDM IS NULL
+    AND DYLX &lt;&gt; 1
+    order by id desc
+  </select>
+</mapper>

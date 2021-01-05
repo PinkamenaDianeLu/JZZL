@@ -274,15 +274,7 @@ public interface ArrangeArchivesService {
     void updateSuspectDefaultOrder(FunSuspectDTO record);
 
 
-    /**
-     * 通过文书id查询文书的相关人
-     *
-     * @param recordid 文书id
-     * @return List<FunSuspectRecordDTO>   |
-     * @author MrLu
-     * @createTime 2020/11/25 17:40
-     */
-    List<FunSuspectDTO> selectSuspectByRecordid(Integer recordid);
+
 
 
     /**

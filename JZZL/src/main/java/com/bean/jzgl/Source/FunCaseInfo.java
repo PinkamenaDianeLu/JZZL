@@ -27,7 +27,7 @@ public class FunCaseInfo {
 
     private Enums.CaseType casetype;
 
-    private Integer casestage;
+    private String casestage;
 
     private String caseclass;
 
@@ -139,11 +139,11 @@ public class FunCaseInfo {
         this.casetype = casetype;
     }
 
-    public Integer getCasestage() {
+    public String getCasestage() {
         return casestage;
     }
 
-    public void setCasestage(Integer casestage) {
+    public void setCasestage(String casestage) {
         this.casestage = casestage;
     }
 

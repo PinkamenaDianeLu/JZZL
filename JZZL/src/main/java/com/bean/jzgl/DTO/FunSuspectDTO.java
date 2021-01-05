@@ -29,7 +29,7 @@ public class FunSuspectDTO {
 
     private Integer suspectstate;
 
-    private Integer recordid;
+    private String suspectcode;
 
     private Integer defaultorder;
 
@@ -137,13 +137,6 @@ public class FunSuspectDTO {
         this.suspectstate = suspectstate;
     }
 
-    public Integer getRecordid() {
-        return recordid;
-    }
-
-    public void setRecordid(Integer recordid) {
-        this.recordid = recordid;
-    }
 
     public Integer getDefaultorder() {
         return defaultorder;
@@ -151,5 +144,13 @@ public class FunSuspectDTO {
 
     public void setDefaultorder(Integer defaultorder) {
         this.defaultorder = defaultorder;
+    }
+
+    public String getSuspectcode() {
+        return suspectcode;
+    }
+
+    public void setSuspectcode(String suspectcode) {
+        this.suspectcode = suspectcode;
     }
 }

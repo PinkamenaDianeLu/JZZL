@@ -87,4 +87,120 @@ public class EnumSoft {
             return name;
         }
     }
+
+     /**
+     * 卷类型
+     * @author MrLu
+     * @createTime  2021/1/5 16:50
+     * @return    |
+      */
+    public enum archivetype {
+        CSJ(-1,"原始卷"),
+        JCJ(0,"基础卷"),
+        BCJCJ(7,"补充侦查工作卷"),
+        TQPBJ(8,"提请批捕卷"),
+        YSQSJ(9,"移送起诉卷"),
+        OTHERS(10,"可能会有别卷");
+
+        archivetype(int value,String name) {
+            this.value=value;
+            this.name=name;
+        }
+        private int value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        @Override
+        public String toString(){
+            return name;
+        }
+    }
+
+     /**
+     * 文书类型
+     * @author MrLu
+     * @createTime  2021/1/5 17:30
+     * @return    |
+      */
+    public enum recordtype {
+        CSJ(-1,"原始卷"),
+        SSWSJ(1,"诉讼文书卷"),
+        ZJCLJ(2,"证据材料卷"),
+        BCZCJ(3,"补充侦查卷");
+
+        recordtype(int value,String name) {
+            this.value=value;
+            this.name=name;
+        }
+        private int value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        @Override
+        public String toString(){
+            return name;
+        }
+    }
+
+    public enum recordstyle {
+        DRWS(1,"对人文书"),
+        DEWS(2,"对案文书"),
+        XTWS(0,"无针对性的系统文书");
+
+        recordstyle(int value,String name) {
+            this.value=value;
+            this.name=name;
+        }
+        private int value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue(int value) {
+            this.value = value;
+        }
+        @Override
+        public String toString(){
+            return name;
+        }
+    }
+
 }

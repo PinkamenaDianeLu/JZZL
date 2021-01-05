@@ -6,6 +6,7 @@ package com.util;/**
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -75,5 +76,11 @@ public class StringUtil {
             }
         }
         return t;
+    }
+
+    public static  String createSfcNumber(String dw){
+
+        return "E"+dw+System.currentTimeMillis()+UUID.randomUUID().toString().substring(0,8);
+
     }
 }

@@ -185,10 +185,6 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
         return funArchiveSFCDTOMapper.selectByPrimaryKey(sfcId);
     }
 
-    @Override
-    public List<FunSuspectDTO> selectSuspectByRecordid(Integer recordid) {
-        return funSuspectDTOMapper.selectSuspectByRecordid(recordid);
-    }
 
     @Override
     public List<FunArchiveRecordsDTO> selectRecordsBySuspect(Integer suspectid,Integer recordtype,Integer archiveseqid,Integer archivetype) {

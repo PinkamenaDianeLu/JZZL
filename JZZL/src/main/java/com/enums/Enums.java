@@ -56,8 +56,9 @@ public class Enums {
      */
     public enum PersonType {
         PRIMARY(0, "主办人"),//主办人
-        SECONDARY(1, "辅办人");//副办人
-
+        SECONDARY(1, "辅办人"),//副办人
+        LEADER(2, "部门领导"),
+        LEGAL(3,"法治科") ;//副办人
         PersonType(int value, String name) {
             this.value = value;
             this.name = name;

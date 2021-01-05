@@ -25,6 +25,11 @@ public class SysUserDTO {
 
     private String xm;
 
+    private  String agencyname;
+    private  String agencycode;
+    private  Integer oriid;
+
+
     public Integer getId() {
         return id;
     }
@@ -111,5 +116,29 @@ public class SysUserDTO {
 
     public void setXm(String xm) {
         this.xm = xm == null ? null : xm.trim();
+    }
+
+    public String getAgencyname() {
+        return agencyname;
+    }
+
+    public void setAgencyname(String agencyname) {
+        this.agencyname = agencyname;
+    }
+
+    public String getAgencycode() {
+        return agencycode;
+    }
+
+    public void setAgencycode(String agencycode) {
+        this.agencycode = agencycode;
+    }
+
+    public Integer getOriid() {
+        return oriid;
+    }
+
+    public void setOriid(Integer oriid) {
+        this.oriid = oriid;
     }
 }

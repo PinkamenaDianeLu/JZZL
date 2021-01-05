@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.zfba.XtBarbMapper">
+  <resultMap id="BaseResultMap" type="com.bean.zfba.XtBarb">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
+    <result column="WJBM" jdbcType="VARCHAR" property="wjbm" />
+    <result column="WJBID" jdbcType="DECIMAL" property="wjbid" />
+    <result column="BARGMSFHM" jdbcType="VARCHAR" property="bargmsfhm" />
+    <result column="BARXM" jdbcType="VARCHAR" property="barxm" />
+    <result column="BARGAJGJGDM" jdbcType="VARCHAR" property="bargajgjgdm" />
+    <result column="BARGAJGMC" jdbcType="VARCHAR" property="bargajgmc" />
+    <result column="SFZBZCY" jdbcType="DECIMAL" property="sfzbzcy" />
+    <result column="SFZB" jdbcType="DECIMAL" property="sfzb" />
+    <result column="ZPLX" jdbcType="DECIMAL" property="zplx" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="GXSJ" jdbcType="TIMESTAMP" property="gxsj" />
+    <result column="LXDH" jdbcType="VARCHAR" property="lxdh" />
+    <result column="DWLXDH" jdbcType="VARCHAR" property="dwlxdh" />
+    <result column="OLDID" jdbcType="DECIMAL" property="oldid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, JQBH, WJBM, WJBID, BARGMSFHM, BARXM, BARGAJGJGDM, BARGAJGMC, SFZBZCY, SFZB, ZPLX, 
+    SCBJ, GXSJ, LXDH, DWLXDH, OLDID
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from XT_BARB
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <insert id="insert" parameterType="com.bean.zfba.XtBarb">
+    insert into XT_BARB (ID, JQBH, WJBM, 
+      WJBID, BARGMSFHM, BARXM, 
+      BARGAJGJGDM, BARGAJGMC, SFZBZCY, 
+      SFZB, ZPLX, SCBJ, GXSJ, 
+      LXDH, DWLXDH, OLDID
+      )
+    values (#{id,jdbcType=DECIMAL}, #{jqbh,jdbcType=VARCHAR}, #{wjbm,jdbcType=VARCHAR}, 
+      #{wjbid,jdbcType=DECIMAL}, #{bargmsfhm,jdbcType=VARCHAR}, #{barxm,jdbcType=VARCHAR}, 
+      #{bargajgjgdm,jdbcType=VARCHAR}, #{bargajgmc,jdbcType=VARCHAR}, #{sfzbzcy,jdbcType=DECIMAL}, 
+      #{sfzb,jdbcType=DECIMAL}, #{zplx,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{gxsj,jdbcType=TIMESTAMP}, 
+      #{lxdh,jdbcType=VARCHAR}, #{dwlxdh,jdbcType=VARCHAR}, #{oldid,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.bean.zfba.XtBarb">
+    insert into XT_BARB
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="jqbh != null">
+        JQBH,
+      </if>
+      <if test="wjbm != null">
+        WJBM,
+      </if>
+      <if test="wjbid != null">
+        WJBID,
+      </if>
+      <if test="bargmsfhm != null">
+        BARGMSFHM,
+      </if>
+      <if test="barxm != null">
+        BARXM,
+      </if>
+      <if test="bargajgjgdm != null">
+        BARGAJGJGDM,
+      </if>
+      <if test="bargajgmc != null">
+        BARGAJGMC,
+      </if>
+      <if test="sfzbzcy != null">
+        SFZBZCY,
+      </if>
+      <if test="sfzb != null">
+        SFZB,
+      </if>
+      <if test="zplx != null">
+        ZPLX,
+      </if>
+      <if test="scbj != null">
+        SCBJ,
+      </if>
+      <if test="gxsj != null">
+        GXSJ,
+      </if>
+      <if test="lxdh != null">
+        LXDH,
+      </if>
+      <if test="dwlxdh != null">
+        DWLXDH,
+      </if>
+      <if test="oldid != null">
+        OLDID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="jqbh != null">
+        #{jqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="wjbm != null">
+        #{wjbm,jdbcType=VARCHAR},
+      </if>
+      <if test="wjbid != null">
+        #{wjbid,jdbcType=DECIMAL},
+      </if>
+      <if test="bargmsfhm != null">
+        #{bargmsfhm,jdbcType=VARCHAR},
+      </if>
+      <if test="barxm != null">
+        #{barxm,jdbcType=VARCHAR},
+      </if>
+      <if test="bargajgjgdm != null">
+        #{bargajgjgdm,jdbcType=VARCHAR},
+      </if>
+      <if test="bargajgmc != null">
+        #{bargajgmc,jdbcType=VARCHAR},
+      </if>
+      <if test="sfzbzcy != null">
+        #{sfzbzcy,jdbcType=DECIMAL},
+      </if>
+      <if test="sfzb != null">
+        #{sfzb,jdbcType=DECIMAL},
+      </if>
+      <if test="zplx != null">
+        #{zplx,jdbcType=DECIMAL},
+      </if>
+      <if test="scbj != null">
+        #{scbj,jdbcType=DECIMAL},
+      </if>
+      <if test="gxsj != null">
+        #{gxsj,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lxdh != null">
+        #{lxdh,jdbcType=VARCHAR},
+      </if>
+      <if test="dwlxdh != null">
+        #{dwlxdh,jdbcType=VARCHAR},
+      </if>
+      <if test="oldid != null">
+        #{oldid,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectZbrByJqbh" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" /> FROM
+    xt_barb WHERE  scbj=0
+     AND jqbh=#{jqbh,jdbcType=VARCHAR} AND sfzbzcy=0 and rownum=1 order by id desc
+  </select>
+
+  <select id="selectFbrByJqbh" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" /> FROM
+    xt_barb WHERE  scbj=0
+    AND jqbh=#{jqbh,jdbcType=VARCHAR} AND sfzbzcy &lt;&gt; 0
+  </select>
+</mapper>

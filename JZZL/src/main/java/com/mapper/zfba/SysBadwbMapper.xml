@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.zfba.SysBadwbMapper">
+
+  <resultMap id="BaseResultMap" type="com.bean.zfba.SysBadwb">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
+    <result column="GLID" jdbcType="DECIMAL" property="glid" />
+    <result column="BADWZW" jdbcType="VARCHAR" property="badwzw" />
+    <result column="BADWDM" jdbcType="VARCHAR" property="badwdm" />
+    <result column="SFZB" jdbcType="DECIMAL" property="sfzb" />
+    <result column="LB" jdbcType="DECIMAL" property="lb" />
+    <result column="GXSJ" jdbcType="TIMESTAMP" property="gxsj" />
+    <result column="GXRXM" jdbcType="VARCHAR" property="gxrxm" />
+    <result column="GXRGMSFHM" jdbcType="VARCHAR" property="gxrgmsfhm" />
+    <result column="SFSAZX" jdbcType="DECIMAL" property="sfsazx" />
+    <result column="JLRXM" jdbcType="VARCHAR" property="jlrxm" />
+    <result column="JLRGMSFHM" jdbcType="VARCHAR" property="jlrgmsfhm" />
+    <result column="JLRGAJGJGDM" jdbcType="VARCHAR" property="jlrgajgjgdm" />
+    <result column="JLRGAJGMC" jdbcType="VARCHAR" property="jlrgajgmc" />
+    <result column="JLSJ" jdbcType="TIMESTAMP" property="jlsj" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="SFAZXT" jdbcType="VARCHAR" property="sfazxt" />
+    <result column="OLDID" jdbcType="VARCHAR" property="oldid" />
+    <result column="BADWDM1" jdbcType="VARCHAR" property="badwdm1" />
+    <result column="BADWDM2" jdbcType="VARCHAR" property="badwdm2" />
+    <result column="BADWDM3" jdbcType="VARCHAR" property="badwdm3" />
+    <result column="BADWDM4" jdbcType="VARCHAR" property="badwdm4" />
+    <result column="BADWDM5" jdbcType="VARCHAR" property="badwdm5" />
+    <result column="BADWDM6" jdbcType="VARCHAR" property="badwdm6" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, JQBH, GLID, BADWZW, BADWDM, SFZB, LB, GXSJ, GXRXM, GXRGMSFHM, SFSAZX, JLRXM, 
+    JLRGMSFHM, JLRGAJGJGDM, JLRGAJGMC, JLSJ, SCBJ, SFAZXT, OLDID, BADWDM1, BADWDM2, BADWDM3, 
+    BADWDM4, BADWDM5, BADWDM6
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from XT_BADWB
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectZbdwByJqbn" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from XT_BADWB where scbj=0
+    AND jqbh=#{jqbh,jdbcType=VARCHAR}
+    AND sfzb=0 and rownum=1 order by id desc
+  </select>
+</mapper>

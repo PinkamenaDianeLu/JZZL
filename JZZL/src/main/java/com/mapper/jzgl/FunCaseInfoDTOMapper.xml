@@ -13,7 +13,7 @@
     <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
     <result column="CASESTATE" jdbcType="DECIMAL" property="casestate" />
     <result column="CASETYPE" jdbcType="DECIMAL" property="casetype" />
-    <result column="CASESTAGE" jdbcType="DECIMAL" property="casestage" />
+    <result column="CASESTAGE" jdbcType="VARCHAR" property="casestage" />
     <result column="CASECLASS" jdbcType="VARCHAR" property="caseclass" />
     <result column="CASECLASSCN" jdbcType="VARCHAR" property="caseclasscn" />
     <result column="BARXM" jdbcType="VARCHAR" property="barxm" />
@@ -38,59 +38,29 @@
     where ID = #{id,jdbcType=DECIMAL}
   </select>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunCaseInfoDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_CASE_INFO_ID.nextval from dual
+    </selectKey>
     insert into FUN_CASE_INFO
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         ID,
-      </if>
-      <if test="scbj != null">
         SCBJ,
-      </if>
-      <if test="state != null">
         STATE,
-      </if>
-      <if test="createtime != null">
         CREATETIME,
-      </if>
-      <if test="updatetime != null">
         UPDATETIME,
-      </if>
-      <if test="jqbh != null">
         JQBH,
-      </if>
-      <if test="ajbh != null">
         AJBH,
-      </if>
-      <if test="casename != null">
         CASENAME,
-      </if>
-      <if test="sfcnumber != null">
         SFCNUMBER,
-      </if>
-      <if test="casestate != null">
         CASESTATE,
-      </if>
-      <if test="casetype != null">
         CASETYPE,
-      </if>
-      <if test="casestage != null">
         CASESTAGE,
-      </if>
-      <if test="caseclass != null">
         CASECLASS,
-      </if>
-      <if test="caseclasscn != null">
         CASECLASSCN,
-      </if>
-      <if test="barxm != null">
         BARXM,
-      </if>
-      <if test="barsysuserid != null">
         BARSYSUSERID,
-      </if>
-      <if test="baridcard != null">
         BARIDCARD,
-      </if>
       <if test="badwdwdm != null">
         BADWDWDM,
       </if>
@@ -111,57 +81,20 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="scbj != null">
-        #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jqbh != null">
+     0,0,sysdate,sysdate,
         #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
         #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="casename != null">
         #{casename,jdbcType=VARCHAR},
-      </if>
-      <if test="sfcnumber != null">
         #{sfcnumber,jdbcType=VARCHAR},
-      </if>
-      <if test="casestate != null">
         #{casestate,jdbcType=DECIMAL},
-      </if>
-      <if test="casetype != null">
         #{casetype,jdbcType=DECIMAL},
-      </if>
-      <if test="casestage != null">
-        #{casestage,jdbcType=DECIMAL},
-      </if>
-      <if test="caseclass != null">
+        #{casestage,jdbcType=VARCHAR},
         #{caseclass,jdbcType=VARCHAR},
-      </if>
-      <if test="caseclasscn != null">
         #{caseclasscn,jdbcType=VARCHAR},
-      </if>
-      <if test="barxm != null">
         #{barxm,jdbcType=VARCHAR},
-      </if>
-      <if test="barsysuserid != null">
         #{barsysuserid,jdbcType=DECIMAL},
-      </if>
-      <if test="baridcard != null">
         #{baridcard,jdbcType=VARCHAR},
-      </if>
       <if test="badwdwdm != null">
         #{badwdwdm,jdbcType=VARCHAR},
       </if>
@@ -216,7 +149,7 @@
         CASETYPE = #{casetype,jdbcType=DECIMAL},
       </if>
       <if test="casestage != null">
-        CASESTAGE = #{casestage,jdbcType=DECIMAL},
+        CASESTAGE = #{casestage,jdbcType=VARCHAR},
       </if>
       <if test="caseclass != null">
         CASECLASS = #{caseclass,jdbcType=VARCHAR},

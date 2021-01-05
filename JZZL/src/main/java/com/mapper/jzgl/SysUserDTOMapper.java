@@ -9,6 +9,9 @@ public interface SysUserDTOMapper {
     int insertSelective(SysUserDTO record);
 
     SysUserDTO selectByPrimaryKey(Integer id);
+    SysUserDTO selectJzUserByAzId(Integer oriid);
+    SysUserDTO selectJzUserByIdCard(String idcard);
+    SysUserDTO selectByOriId(Integer oriid);
 
     int updateByPrimaryKeySelective(SysUserDTO record);
 

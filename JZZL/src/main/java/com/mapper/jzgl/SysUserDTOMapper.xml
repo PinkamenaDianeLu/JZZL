@@ -13,10 +13,13 @@
     <result column="PHONE" jdbcType="VARCHAR" property="phone" />
     <result column="IDCARDNUMBER" jdbcType="VARCHAR" property="idcardnumber" />
     <result column="XM" jdbcType="VARCHAR" property="xm" />
+    <result column="AGENCYNAME" jdbcType="VARCHAR" property="agencyname" />
+    <result column="AGENCYCODE" jdbcType="VARCHAR" property="agencycode" />
+    <result column="ORIID" jdbcType="DECIMAL" property="oriid" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, USERNAME, PASSWORD, ORIGIN, PHONE, IDCARDNUMBER, 
-    XM
+    XM,AGENCYNAME,AGENCYCODE,ORIID
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -24,77 +27,71 @@
     from SYS_USER
     where ID = #{id,jdbcType=DECIMAL}
   </select>
+
+  <select id="selectJzUserByAzId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from SYS_USER
+    where scbj=0 and  ORIID = #{oriid,jdbcType=DECIMAL} and rownum=1
+    order by id desc
+  </select>
+  <select id="selectJzUserByIdCard" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from SYS_USER
+    where scbj=0
+    and   IDCARDNUMBER = #{idcard,jdbcType=DECIMAL} and rownum=1
+    order by id desc
+  </select>
+  <select id="selectByOriId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from SYS_USER
+    where  scbj=0 and ORIID = #{oriid,jdbcType=DECIMAL}
+  </select>
   <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.SysUserDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_SYS_USER_ID.nextval from dual
+    </selectKey>
     insert into SYS_USER
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
         ID,
-      </if>
-      <if test="scbj != null">
         SCBJ,
-      </if>
-      <if test="state != null">
         STATE,
-      </if>
-      <if test="createtime != null">
         CREATETIME,
-      </if>
-      <if test="updatetime != null">
         UPDATETIME,
-      </if>
-      <if test="username != null">
         USERNAME,
-      </if>
       <if test="password != null">
         PASSWORD,
       </if>
-      <if test="origin != null">
         ORIGIN,
-      </if>
       <if test="phone != null">
         PHONE,
       </if>
-      <if test="idcardnumber != null">
         IDCARDNUMBER,
-      </if>
-      <if test="xm != null">
         XM,
-      </if>
+        AGENCYNAME,
+        AGENCYCODE,ORIID
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="scbj != null">
-        #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="username != null">
+      #{id,jdbcType=DECIMAL},
+       0,
+       0,
+      sysdate,
+       sysdate,
         #{username,jdbcType=VARCHAR},
-      </if>
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
-      <if test="origin != null">
         #{origin,jdbcType=VARCHAR},
-      </if>
       <if test="phone != null">
         #{phone,jdbcType=VARCHAR},
       </if>
-      <if test="idcardnumber != null">
         #{idcardnumber,jdbcType=VARCHAR},
-      </if>
-      <if test="xm != null">
         #{xm,jdbcType=VARCHAR},
-      </if>
+        #{agencyname,jdbcType=VARCHAR},
+        #{agencycode,jdbcType=VARCHAR},  #{oriid,jdbcType=DECIMAL},
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.SysUserDTO">
@@ -129,6 +126,12 @@
       </if>
       <if test="xm != null">
         XM = #{xm,jdbcType=VARCHAR},
+      </if>
+      <if test="agencycode != null">
+        AGENCYCODE = #{agencycode,jdbcType=VARCHAR},
+      </if>
+      <if test="agencyname != null">
+        AGENCYNAME = #{agencyname,jdbcType=VARCHAR},
       </if>
     </set>
     where ID = #{id,jdbcType=DECIMAL}

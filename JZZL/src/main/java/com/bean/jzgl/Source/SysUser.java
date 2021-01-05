@@ -25,6 +25,8 @@ public class SysUser implements Serializable {
     private String idcardnumber;
 
     private String xm;
+    private  String agencyname;
+    private  String agencycode;
 
     @Override
     public String toString() {
@@ -37,9 +39,11 @@ public class SysUser implements Serializable {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", origin='" + origin + '\'' +
-                ", phone=" + phone +
+                ", phone='" + phone + '\'' +
                 ", idcardnumber='" + idcardnumber + '\'' +
                 ", xm='" + xm + '\'' +
+                ", agencyname='" + agencyname + '\'' +
+                ", agencycode='" + agencycode + '\'' +
                 '}';
     }
 
@@ -129,5 +133,21 @@ public class SysUser implements Serializable {
 
     public void setXm(String xm) {
         this.xm = xm;
+    }
+
+    public String getAgencyname() {
+        return agencyname;
+    }
+
+    public void setAgencyname(String agencyname) {
+        this.agencyname = agencyname;
+    }
+
+    public String getAgencycode() {
+        return agencycode;
+    }
+
+    public void setAgencycode(String agencycode) {
+        this.agencycode = agencycode;
     }
 }

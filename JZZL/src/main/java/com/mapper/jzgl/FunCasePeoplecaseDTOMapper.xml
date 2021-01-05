@@ -1,255 +1,200 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.jzgl.FunCasePeoplecaseDTOMapper">
-  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunCasePeoplecaseDTO">
-    <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
-    <result column="STATE" jdbcType="DECIMAL" property="state" />
-    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
-    <result column="IDCARD" jdbcType="VARCHAR" property="idcard" />
-    <result column="NAME" jdbcType="VARCHAR" property="name" />
-    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
-    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="PERSONTYPE" jdbcType="DECIMAL" property="persontype" />
-    <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
-    <result column="CASENAME" jdbcType="VARCHAR" property="casename" />
-    <result column="CASEINFOID" jdbcType="DECIMAL" property="caseinfoid" />
-    <result column="CASETYPE" jdbcType="DECIMAL" property="casetype" />
-    <result column="SYSUSERID" jdbcType="DECIMAL" property="sysuserid" />
-    <result column="BARXM" jdbcType="VARCHAR" property="barxm" />
-    <result column="BARSYSUSERID" jdbcType="DECIMAL" property="barsysuserid" />
-    <result column="BARIDCARD" jdbcType="VARCHAR" property="baridcard" />
-    <result column="BADWDWDM" jdbcType="VARCHAR" property="badwdwdm" />
-    <result column="BADWDWMC" jdbcType="VARCHAR" property="badwdwmc" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunCasePeoplecaseDTO">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="SCBJ" jdbcType="DECIMAL" property="scbj"/>
+        <result column="STATE" jdbcType="DECIMAL" property="state"/>
+        <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
+        <result column="IDCARD" jdbcType="VARCHAR" property="idcard"/>
+        <result column="NAME" jdbcType="VARCHAR" property="name"/>
+        <result column="JQBH" jdbcType="VARCHAR" property="jqbh"/>
+        <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
+        <result column="PERSONTYPE" jdbcType="DECIMAL" property="persontype"/>
+        <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber"/>
+        <result column="CASENAME" jdbcType="VARCHAR" property="casename"/>
+        <result column="CASEINFOID" jdbcType="DECIMAL" property="caseinfoid"/>
+        <result column="CASETYPE" jdbcType="DECIMAL" property="casetype"/>
+        <result column="SYSUSERID" jdbcType="DECIMAL" property="sysuserid"/>
+        <result column="BARXM" jdbcType="VARCHAR" property="barxm"/>
+        <result column="BARSYSUSERID" jdbcType="DECIMAL" property="barsysuserid"/>
+        <result column="BARIDCARD" jdbcType="VARCHAR" property="baridcard"/>
+        <result column="BADWDWDM" jdbcType="VARCHAR" property="badwdwdm"/>
+        <result column="BADWDWMC" jdbcType="VARCHAR" property="badwdwmc"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, IDCARD, NAME, JQBH, AJBH, PERSONTYPE, SFCNUMBER, 
     CASENAME, CASEINFOID, SYSUSERID, BARXM, BARSYSUSERID, BARIDCARD, BADWDWDM, BADWDWMC,CASETYPE
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from FUN_CASE_PEOPLECASE
-    where ID = #{id,jdbcType=DECIMAL}
-  </select>
-  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunCasePeoplecaseDTO">
-    insert into FUN_CASE_PEOPLECASE
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        ID,
-      </if>
-      <if test="scbj != null">
-        SCBJ,
-      </if>
-      <if test="state != null">
-        STATE,
-      </if>
-      <if test="createtime != null">
-        CREATETIME,
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME,
-      </if>
-      <if test="idcard != null">
-        IDCARD,
-      </if>
-      <if test="name != null">
-        NAME,
-      </if>
-      <if test="jqbh != null">
-        JQBH,
-      </if>
-      <if test="ajbh != null">
-        AJBH,
-      </if>
-      <if test="persontype != null">
-        PERSONTYPE,
-      </if>
-      <if test="sfcnumber != null">
-        SFCNUMBER,
-      </if>
-      <if test="casename != null">
-        CASENAME,
-      </if>
-      <if test="caseinfoid != null">
-        CASEINFOID,
-      </if>
-      <if test="sysuserid != null">
-        SYSUSERID,
-      </if>
-      <if test="barxm != null">
-        BARXM,
-      </if>
-      <if test="barsysuserid != null">
-        BARSYSUSERID,
-      </if>
-      <if test="baridcard != null">
-        BARIDCARD,
-      </if>
-      <if test="badwdwdm != null">
-        BADWDWDM,
-      </if>
-      <if test="badwdwmc != null">
-        BADWDWMC,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=DECIMAL},
-      </if>
-      <if test="scbj != null">
-        #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="idcard != null">
-        #{idcard,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="jqbh != null">
-        #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
-        #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="persontype != null">
-        #{persontype,jdbcType=DECIMAL},
-      </if>
-      <if test="sfcnumber != null">
-        #{sfcnumber,jdbcType=VARCHAR},
-      </if>
-      <if test="casename != null">
-        #{casename,jdbcType=VARCHAR},
-      </if>
-      <if test="caseinfoid != null">
-        #{caseinfoid,jdbcType=DECIMAL},
-      </if>
-      <if test="sysuserid != null">
-        #{sysuserid,jdbcType=DECIMAL},
-      </if>
-      <if test="barxm != null">
-        #{barxm,jdbcType=VARCHAR},
-      </if>
-      <if test="barsysuserid != null">
-        #{barsysuserid,jdbcType=DECIMAL},
-      </if>
-      <if test="baridcard != null">
-        #{baridcard,jdbcType=VARCHAR},
-      </if>
-      <if test="badwdwdm != null">
-        #{badwdwdm,jdbcType=VARCHAR},
-      </if>
-      <if test="badwdwmc != null">
-        #{badwdwmc,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunCasePeoplecaseDTO">
-    update FUN_CASE_PEOPLECASE
-    <set>
-      <if test="scbj != null">
-        SCBJ = #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        STATE = #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="idcard != null">
-        IDCARD = #{idcard,jdbcType=VARCHAR},
-      </if>
-      <if test="name != null">
-        NAME = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="jqbh != null">
-        JQBH = #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
-        AJBH = #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="persontype != null">
-        PERSONTYPE = #{persontype,jdbcType=DECIMAL},
-      </if>
-      <if test="sfcnumber != null">
-        SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
-      </if>
-      <if test="casename != null">
-        CASENAME = #{casename,jdbcType=VARCHAR},
-      </if>
-      <if test="caseinfoid != null">
-        CASEINFOID = #{caseinfoid,jdbcType=DECIMAL},
-      </if>
-      <if test="sysuserid != null">
-        SYSUSERID = #{sysuserid,jdbcType=DECIMAL},
-      </if>
-      <if test="barxm != null">
-        BARXM = #{barxm,jdbcType=VARCHAR},
-      </if>
-      <if test="barsysuserid != null">
-        BARSYSUSERID = #{barsysuserid,jdbcType=DECIMAL},
-      </if>
-      <if test="baridcard != null">
-        BARIDCARD = #{baridcard,jdbcType=VARCHAR},
-      </if>
-      <if test="badwdwdm != null">
-        BADWDWDM = #{badwdwdm,jdbcType=VARCHAR},
-      </if>
-      <if test="badwdwmc != null">
-        BADWDWMC = #{badwdwmc,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where ID = #{id,jdbcType=DECIMAL}
-  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_CASE_PEOPLECASE
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
+    <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunCasePeoplecaseDTO">
+        <selectKey resultType="INTEGER" order="BEFORE"
+                   keyProperty="id">
+            select SEQ_FUN_CASE_PEOPLECASE_ID.nextval from dual
+        </selectKey>
+        insert into FUN_CASE_PEOPLECASE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            SCBJ,
+            STATE,
+            CREATETIME,
+            UPDATETIME,
+            IDCARD,
+            NAME,
+            JQBH,
+            AJBH,
+            PERSONTYPE,
+            SFCNUMBER,
+            CASENAME,
+            CASEINFOID,
+            SYSUSERID,
+            <if test="barxm != null">
+                BARXM,
+            </if>
+            <if test="barsysuserid != null">
+                BARSYSUSERID,
+            </if>
+            <if test="baridcard != null">
+                BARIDCARD,
+            </if>
+            <if test="badwdwdm != null">
+                BADWDWDM,
+            </if>
+            <if test="badwdwmc != null">
+                BADWDWMC,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id,jdbcType=DECIMAL},
+            0,0,sysdate,sysdate,
+            #{idcard,jdbcType=VARCHAR},
+            #{name,jdbcType=VARCHAR},
+            #{jqbh,jdbcType=VARCHAR},
+            #{ajbh,jdbcType=VARCHAR},
+            #{persontype,jdbcType=DECIMAL},
+            #{sfcnumber,jdbcType=VARCHAR},
+            #{casename,jdbcType=VARCHAR},
+            #{caseinfoid,jdbcType=DECIMAL},
+            #{sysuserid,jdbcType=DECIMAL},
+            <if test="barxm != null">
+                #{barxm,jdbcType=VARCHAR},
+            </if>
+            <if test="barsysuserid != null">
+                #{barsysuserid,jdbcType=DECIMAL},
+            </if>
+            <if test="baridcard != null">
+                #{baridcard,jdbcType=VARCHAR},
+            </if>
+            <if test="badwdwdm != null">
+                #{badwdwdm,jdbcType=VARCHAR},
+            </if>
+            <if test="badwdwmc != null">
+                #{badwdwmc,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunCasePeoplecaseDTO">
+        update FUN_CASE_PEOPLECASE
+        <set>
+            <if test="scbj != null">
+                SCBJ = #{scbj,jdbcType=DECIMAL},
+            </if>
+            <if test="state != null">
+                STATE = #{state,jdbcType=DECIMAL},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="idcard != null">
+                IDCARD = #{idcard,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                NAME = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="persontype != null">
+                PERSONTYPE = #{persontype,jdbcType=DECIMAL},
+            </if>
+            <if test="sfcnumber != null">
+                SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="casename != null">
+                CASENAME = #{casename,jdbcType=VARCHAR},
+            </if>
+            <if test="caseinfoid != null">
+                CASEINFOID = #{caseinfoid,jdbcType=DECIMAL},
+            </if>
+            <if test="sysuserid != null">
+                SYSUSERID = #{sysuserid,jdbcType=DECIMAL},
+            </if>
+            <if test="barxm != null">
+                BARXM = #{barxm,jdbcType=VARCHAR},
+            </if>
+            <if test="barsysuserid != null">
+                BARSYSUSERID = #{barsysuserid,jdbcType=DECIMAL},
+            </if>
+            <if test="baridcard != null">
+                BARIDCARD = #{baridcard,jdbcType=VARCHAR},
+            </if>
+            <if test="badwdwdm != null">
+                BADWDWDM = #{badwdwdm,jdbcType=VARCHAR},
+            </if>
+            <if test="badwdwmc != null">
+                BADWDWMC = #{badwdwmc,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
 
-  <select id="selectPeopleCaseByUseridPage" parameterType="java.lang.Integer"  resultType="map">
-    select * from ( SELECT A.*, ROWNUM RUM FROM (
-    select
-    <include refid="Base_Column_List"/>,
-    (select count(0) from fun_archive_sfc aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) submitcount
-    from FUN_CASE_PEOPLECASE pcase where 1=1 and scbj=0
-    <if test="null != jqbh and jqbh!=''">
-      AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
-    </if>
-    <if test="null != ajbh and ajbh!=''">
-      AND AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
-    </if>
+    <select id="selectPeopleCaseByUseridPage" parameterType="java.lang.Integer" resultType="map">
+        select * from ( SELECT A.*, ROWNUM RUM FROM (
+        select
+        <include refid="Base_Column_List"/>,
+        (select count(0) from fun_archive_sfc aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) submitcount
+        from FUN_CASE_PEOPLECASE pcase where 1=1 and scbj=0
+        <if test="null != jqbh and jqbh!=''">
+            AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != ajbh and ajbh!=''">
+            AND AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
+        </if>
 
-    <if test="null != casetype and casetype!=''">
-      AND CASETYPE LIKE #{casetype,jdbcType=DECIMAL}
-    </if>
-    AND  SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
-    order by id desc
-    ) A )
-    WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
-    AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
-  </select>
+        <if test="null != casetype and casetype!=''">
+            AND CASETYPE LIKE #{casetype,jdbcType=DECIMAL}
+        </if>
+        AND SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
+        order by id desc
+        ) A )
+        WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
+        AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
+    </select>
 
-  <select id="selectPeopleCaseByUseridCount" resultType="java.lang.Integer" parameterType="map">
-    select count(0) from
-     FUN_CASE_PEOPLECASE pcase where 1=1 and scbj=0
-    <if test="null != jqbh and jqbh!=''">
-      AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
-    </if>
-    <if test="null != ajbh and ajbh!=''">
-      AND AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
-    </if>
-    <if test="null != casetype and casetype!=''">
-      AND CASETYPE LIKE #{casetype,jdbcType=DECIMAL}
-    </if>
-    AND  SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
-  </select>
+    <select id="selectPeopleCaseByUseridCount" resultType="java.lang.Integer" parameterType="map">
+        select count(0) from
+        FUN_CASE_PEOPLECASE pcase where 1=1 and scbj=0
+        <if test="null != jqbh and jqbh!=''">
+            AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != ajbh and ajbh!=''">
+            AND AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != casetype and casetype!=''">
+            AND CASETYPE LIKE #{casetype,jdbcType=DECIMAL}
+        </if>
+        AND SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
+    </select>
 </mapper>

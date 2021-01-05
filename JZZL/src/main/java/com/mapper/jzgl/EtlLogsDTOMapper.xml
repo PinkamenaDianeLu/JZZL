@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.EtlLogsDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.EtlLogsDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="ISSUCCESS" jdbcType="DECIMAL" property="issuccess" />
+    <result column="MESSAGE" jdbcType="VARCHAR" property="message" />
+    <result column="SYSTEMNAME" jdbcType="VARCHAR" property="systemname" />
+    <result column="TABLENAME" jdbcType="VARCHAR" property="tablename" />
+    <result column="LASTPKNAME" jdbcType="VARCHAR" property="lastpkname" />
+    <result column="LASTPKSTRVALUE" jdbcType="VARCHAR" property="lastpkstrvalue" />
+    <result column="STARTTIME" jdbcType="TIMESTAMP" property="starttime" />
+    <result column="ENDTIME" jdbcType="TIMESTAMP" property="endtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, ISSUCCESS, MESSAGE, SYSTEMNAME, TABLENAME, 
+    LASTPKNAME, LASTPKSTRVALUE, STARTTIME, ENDTIME
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ETL_LOGS
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <insert id="insert" parameterType="com.bean.jzgl.DTO.EtlLogsDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_ETL_LOGS_ID.nextval from dual
+    </selectKey>
+    insert into ETL_LOGS (ID, SCBJ, STATE, 
+      CREATETIME, UPDATETIME, ISSUCCESS, 
+      MESSAGE, SYSTEMNAME, TABLENAME, 
+      LASTPKNAME, LASTPKSTRVALUE, STARTTIME, 
+      ENDTIME)
+    values (#{id,jdbcType=DECIMAL}, 0,0,
+      sysdate, sysdate, #{issuccess,jdbcType=DECIMAL},
+      #{message,jdbcType=VARCHAR}, #{systemname,jdbcType=VARCHAR}, #{tablename,jdbcType=VARCHAR}, 
+      #{lastpkname,jdbcType=VARCHAR}, #{lastpkstrvalue,jdbcType=VARCHAR},  #{starttime,jdbcType=TIMESTAMP},
+      sysdate)
+  </insert>
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.EtlLogsDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_ETL_LOGS_ID.nextval from dual
+    </selectKey>
+    insert into ETL_LOGS
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        ID,
+        SCBJ,
+        STATE,
+        CREATETIME,
+        UPDATETIME,
+      <if test="issuccess != null">
+        ISSUCCESS,
+      </if>
+      <if test="message != null">
+        MESSAGE,
+      </if>
+      <if test="systemname != null">
+        SYSTEMNAME,
+      </if>
+      <if test="tablename != null">
+        TABLENAME,
+      </if>
+      <if test="lastpkname != null">
+        LASTPKNAME,
+      </if>
+      <if test="lastpkstrvalue != null">
+        LASTPKSTRVALUE,
+      </if>
+      <if test="starttime != null">
+        STARTTIME,
+      </if>
+      <if test="endtime != null">
+        ENDTIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      #{id,jdbcType=DECIMAL}, 0,0,
+      sysdate, sysdate,
+      <if test="issuccess != null">
+        #{issuccess,jdbcType=DECIMAL},
+      </if>
+      <if test="message != null">
+        #{message,jdbcType=VARCHAR},
+      </if>
+      <if test="systemname != null">
+        #{systemname,jdbcType=VARCHAR},
+      </if>
+      <if test="tablename != null">
+        #{tablename,jdbcType=VARCHAR},
+      </if>
+      <if test="lastpkname != null">
+        #{lastpkname,jdbcType=VARCHAR},
+      </if>
+      <if test="lastpkstrvalue != null">
+        #{lastpkstrvalue,jdbcType=VARCHAR},
+      </if>
+      <if test="starttime != null">
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null">
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+</mapper>

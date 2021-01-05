@@ -161,4 +161,14 @@ public class testg {
         int i=0;
         System.out.println(i++);
     }
+    @Test
+    public  void uuidSfc(){
+        //52516724
+        //62cdcd78
+        System.out.println("E230106"+System.currentTimeMillis()+UUID.randomUUID().toString().substring(0,8));
+    }
+
+
+
+
 }

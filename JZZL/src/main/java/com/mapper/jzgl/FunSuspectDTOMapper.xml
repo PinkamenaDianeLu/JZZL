@@ -15,12 +15,12 @@
     <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
     <result column="CASETYPE" jdbcType="DECIMAL" property="casetype" />
     <result column="SUSPECTSTATE" jdbcType="DECIMAL" property="suspectstate" />
-    <result column="RECORDID" jdbcType="DECIMAL" property="recordid" />
     <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder" />
+    <result column="SUSPECTCODE" jdbcType="VARCHAR" property="suspectcode" />
   </resultMap>
   <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, SUSPECTIDCARD, SUSPECTNAME, JQBH, AJBH,
-    CASEINFOID, SFCNUMBER, CASETYPE, SUSPECTSTATE, RECORDID, DEFAULTORDER
+    CASEINFOID, SFCNUMBER, CASETYPE, SUSPECTSTATE, DEFAULTORDER,SUSPECTCODE
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -40,32 +40,18 @@
         STATE,
         CREATETIME,
         UPDATETIME,
-      <if test="suspectidcard != null">
         SUSPECTIDCARD,
-      </if>
-      <if test="suspectname != null">
         SUSPECTNAME,
-      </if>
-      <if test="jqbh != null">
         JQBH,
-      </if>
-      <if test="ajbh != null">
         AJBH,
-      </if>
-      <if test="caseinfoid != null">
         CASEINFOID,
-      </if>
-      <if test="sfcnumber != null">
         SFCNUMBER,
-      </if>
+      SUSPECTCODE
       <if test="casetype != null">
         CASETYPE,
       </if>
       <if test="suspectstate != null">
         SUSPECTSTATE,
-      </if>
-      <if test="recordid != null">
-        RECORDID,
       </if>
       <if test="defaultorder != null">
         DEFAULTORDER,
@@ -77,32 +63,18 @@
         0,
         SYSDATE,
       SYSDATE,
-      <if test="suspectidcard != null">
         #{suspectidcard,jdbcType=VARCHAR},
-      </if>
-      <if test="suspectname != null">
         #{suspectname,jdbcType=VARCHAR},
-      </if>
-      <if test="jqbh != null">
         #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
         #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="caseinfoid != null">
         #{caseinfoid,jdbcType=DECIMAL},
-      </if>
-      <if test="sfcnumber != null">
         #{sfcnumber,jdbcType=VARCHAR},
-      </if>
+      #{suspectcode,jdbcType=VARCHAR},
       <if test="casetype != null">
         #{casetype,jdbcType=DECIMAL},
       </if>
       <if test="suspectstate != null">
         #{suspectstate,jdbcType=DECIMAL},
-      </if>
-      <if test="recordid != null">
-        #{recordid,jdbcType=DECIMAL},
       </if>
       <if test="defaultorder != null">
         #{defaultorder,jdbcType=DECIMAL},
@@ -142,9 +114,6 @@
       </if>
       <if test="suspectstate != null">
         SUSPECTSTATE = #{suspectstate,jdbcType=DECIMAL},
-      </if>
-      <if test="recordid != null">
-        RECORDID = #{recordid,jdbcType=DECIMAL},
       </if>
       <if test="defaultorder != null">
         DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
