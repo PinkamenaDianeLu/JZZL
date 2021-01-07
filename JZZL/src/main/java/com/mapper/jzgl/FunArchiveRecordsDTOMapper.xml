@@ -27,13 +27,14 @@
         <result column="EFFECTIVETIME" jdbcType="TIMESTAMP" property="effectivetime"/>
         <result column="BASERECORDID" jdbcType="DECIMAL" property="baserecordid"/>
         <result column="RECORDUUID" jdbcType="VARCHAR" property="recorduuid"/>
-
+        <result column="WJBM" jdbcType="VARCHAR" property="wjbm"/>
+        <result column="WJBID" jdbcType="DECIMAL" property="wjbid"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,ARCHIVESEQID,
      THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
     ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH,
-    EFFECTIVETIME,BASERECORDID,RECORDUUID
+    EFFECTIVETIME,BASERECORDID,RECORDUUID,WJBID,WJBM
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -77,6 +78,8 @@
             BASERECORDID,
             EFFECTIVETIME,
             RECORDUUID,
+            WJBM,
+            WJBID,
             <if test="recordstyle != null">
                 RECORDSTYLE,
             </if>
@@ -109,6 +112,8 @@
             #{baserecordid,jdbcType=DECIMAL},
             #{effectivetime,jdbcType=TIMESTAMP},
             #{recorduuid,jdbcType=VARCHAR},
+            #{wjbm,jdbcType=VARCHAR},
+            #{wjbid,jdbcType=DECIMAL},
             <if test="recordstyle != null">
                 #{recordstyle,jdbcType=VARCHAR},
             </if>
@@ -346,6 +351,20 @@
         WHERE SCBJ=0
         AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
         AND recordtype= #{recordtype,jdbcType=DECIMAL} )
+        ORDER BY EFFECTIVETIME ASC
+    </select>
+
+    <select id="selectRecordByOriRecord" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from FUN_ARCHIVE_RECORDS
+        where SCBJ=0
+        AND RECORDSCODE = #{recordscode,jdbcType=VARCHAR}
+        AND archivetypeid =
+        (SELECT ID FROM fun_archive_type
+        WHERE SCBJ=0
+        AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+         )
         ORDER BY EFFECTIVETIME ASC
     </select>
 

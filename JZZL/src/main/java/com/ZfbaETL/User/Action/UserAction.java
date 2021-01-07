@@ -32,7 +32,7 @@ public class UserAction implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        ImportUsers();
+//        ImportUsers();
 //        UpdateUsers();
     }
 
@@ -81,7 +81,6 @@ public class UserAction implements CommandLineRunner {
                     ignored.printStackTrace();
                     //插入失败日志
                     baseServer.insertErrorLog(record, ignored.getMessage(), thisUser.getId() + "");
-                    continue;
                 }
 
             }

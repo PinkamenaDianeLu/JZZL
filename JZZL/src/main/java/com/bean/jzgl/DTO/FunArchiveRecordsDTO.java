@@ -41,6 +41,8 @@ public class FunArchiveRecordsDTO {
     private  Date effectivetime;
     private Integer baserecordid;
     private String recorduuid;
+    private Integer wjbid;
+    private String wjbm;
 
     public Integer getId() {
         return id;
@@ -240,5 +242,21 @@ public class FunArchiveRecordsDTO {
 
     public void setRecorduuid(String recorduuid) {
         this.recorduuid = recorduuid;
+    }
+
+    public Integer getWjbid() {
+        return wjbid;
+    }
+
+    public void setWjbid(Integer wjbid) {
+        this.wjbid = wjbid;
+    }
+
+    public String getWjbm() {
+        return wjbm;
+    }
+
+    public void setWjbm(String wjbm) {
+        this.wjbm = wjbm;
     }
 }

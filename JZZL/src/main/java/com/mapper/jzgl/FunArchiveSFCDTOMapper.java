@@ -44,4 +44,13 @@ public interface FunArchiveSFCDTOMapper {
      * @return    |
       */
     FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid);
+
+     /**
+     * 查询新的原始卷
+     * @author MrLu
+     * @param id 大于某个id
+     * @createTime  2021/1/6 14:12
+     * @return    |
+      */
+    List<FunArchiveSFCDTO>  selectNewOriginArchive(Integer id);
 }

@@ -120,8 +120,16 @@ public interface FunArchiveRecordsDTOMapper {
     List<FunArchiveRecordsDTO>  selectReocrdBySeqRcode(@Param("archiveseqid") Integer archiveseqid,
                                                        @Param("recordscode") String recordscode,
                                                        @Param("recordtype") Integer recordtype);
-
-
+    /**
+     *  查询原始卷次序下对应文书代码的文书
+     * @author MrLu
+     * @param archiveseqid
+     * @param recordscode 文书代码
+     * @createTime  2020/12/15 14:31
+     * @return    |
+     */
+    List<FunArchiveRecordsDTO>  selectRecordByOriRecord(@Param("archiveseqid") Integer archiveseqid,
+                            @Param("recordscode") String recordscode);
     /**
      * 查某个卷下某个类型对某个人的文书  按照顺序排序
      *

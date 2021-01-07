@@ -28,10 +28,6 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/15 18:31
      */
     function loadFilesByRecord(recordId, fileOrder, callback) {
-        // if (fileOrder.length <= 0) {
-        //     layer.alert('该文书下没有发现文书图片！');
-        //     return;
-        // }
         $.post({
             url: '/ArrangeArchives/loadFilesByRecord',
             data: {
@@ -341,6 +337,7 @@ var recordImgLoad = (function () {
      * @return    |
      */
     function zoomImg(proportionValue) {
+
         $('.bigImg').attr('width', 957 * proportionValue + 'px');
         $('.bigImg').attr('height', 1467 * proportionValue + 'px');
 
@@ -618,7 +615,7 @@ var recordImgLoad = (function () {
         let bigImg = utils.createElement.createElement({
             tag: 'img', attrs: {
                 src: file.serverip + file.fileurl,
-                class: 'img_text',
+                class: 'img_text bigImg',
                 width: width + 'px', height: height + 'px'
             }
         });

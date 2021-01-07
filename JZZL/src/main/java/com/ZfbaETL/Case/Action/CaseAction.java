@@ -35,8 +35,7 @@ public class CaseAction implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        ImportCases();
-//        UpdateUsers();
+//        ImportCases();
     }
 
     /**
@@ -49,6 +48,7 @@ public class CaseAction implements CommandLineRunner {
      */
     public void ImportCases() {
         EtlTablelogDTO lastV = baseServer.selectLastValue("XT_AJXXB", "ID");
+
         List<XtAjxxb> cases = caseServer.selectNewCase(lastV.getLastpknumvalue());
         EtlLogsDTO record = new EtlLogsDTO();
         record.setSystemname(lastV.getSystemname());
@@ -124,6 +124,7 @@ public class CaseAction implements CommandLineRunner {
                 lastV.setLastpknumvalue(thisCase.getId());
                 baseServer.updateLastValue(lastV);
                 insertCount++;
+                record.setLastpkstrvalue(thisCase.getId() + "");
             } catch (Exception ignored) {
                 ignored.printStackTrace();
                 baseServer.insertErrorLog(record, ignored.getMessage(), thisCase.getId() + "");
@@ -185,6 +186,7 @@ public class CaseAction implements CommandLineRunner {
             newSuspectDTO.setCasetype(newCaseInfo.getCasetype());
             newSuspectDTO.setSuspectstate(thisXyr.getQzcszt());
             newSuspectDTO.setDefaultorder(i++);
+            newSuspectDTO.setSuspectcode(thisXyr.getXyrbh());
             caseServer.insertNewSuspect(newSuspectDTO);
             //抽取对应文书并建立文书与人的关系
             createRecordsSuspect(newType, newSuspectDTO, newCaseInfo);
@@ -200,7 +202,7 @@ public class CaseAction implements CommandLineRunner {
      * @author MrLu
      * @createTime 2021/1/5 16:36
      */
-    private FunArchiveTypeDTO crateArchive(FunCaseInfoDTO newCaseInfo) {
+    private FunArchiveTypeDTO crateArchive(FunCaseInfoDTO newCaseInfo) throws Exception {
         //创建初始卷
         //1.sfc
         FunArchiveSFCDTO newSfc = new FunArchiveSFCDTO();
@@ -233,7 +235,7 @@ public class CaseAction implements CommandLineRunner {
         newSeq.setAuthorid(0);
         newSeq.setPrevid(0);
         newSeq.setBaserecordid(0);
-        newSeq.setIsactive(0);//不是正在被使用的
+        newSeq.setIsactive(1);//不是正在被使用的
         archiveService.createNewSeq(newSeq);
         //3.新建type
 
@@ -261,7 +263,7 @@ public class CaseAction implements CommandLineRunner {
      * @author MrLu
      * @createTime 2021/1/5 17:12
      */
-    private void createRecordsNoSuspect(FunArchiveTypeDTO newType) {
+    private void createRecordsNoSuspect(FunArchiveTypeDTO newType)throws Exception {
         //查询不对人的
 
         List<XtWjflb> Records = archiveService.selectRecordNoSuspect(newType.getJqbh());
@@ -289,11 +291,14 @@ public class CaseAction implements CommandLineRunner {
             newRecord.setEffectivetime(thisR.getJlsj());
             newRecord.setBaserecordid(0);
             newRecord.setRecorduuid(UUID.randomUUID().toString());
+            newRecord.setWjbm(thisR.getWjbm());//文件表名
+            newRecord.setWjbid(thisR.getWjbid());//文件表id
             archiveService.createNewRecord(newRecord);
+            createFiles(newRecord);
         }
     }
 
-    private void createRecordsSuspect(FunArchiveTypeDTO newType, FunSuspectDTO newSuspect, FunCaseInfoDTO newCaseInfo) {
+    private void createRecordsSuspect(FunArchiveTypeDTO newType, FunSuspectDTO newSuspect, FunCaseInfoDTO newCaseInfo)throws Exception {
         //查询对人的
 
         List<XtWjflb> SusRecords = archiveService.selectRecordBySuspect(newType.getJqbh(), newSuspect.getSuspectcode());
@@ -321,6 +326,8 @@ public class CaseAction implements CommandLineRunner {
             newRecord.setEffectivetime(thisR.getJlsj());
             newRecord.setBaserecordid(0);
             newRecord.setRecorduuid(UUID.randomUUID().toString());
+            newRecord.setWjbm(thisR.getWjbm());//文件表名
+            newRecord.setWjbid(thisR.getWjbid());//文件表id
             archiveService.createNewRecord(newRecord);
             //插入嫌疑人文书关系表
             FunSuspectRecordDTO newSR = new FunSuspectRecordDTO();
@@ -332,10 +339,55 @@ public class CaseAction implements CommandLineRunner {
             newSR.setRecordid(newRecord.getId());
             newSR.setRecordtype(newType.getRecordtype());//文书类型
             archiveService.createNewSR(newSR);
-
+            createFiles(newRecord);
         }
 
     }
+
+    /**
+     * 抽取文书的文件
+     *
+     * @param
+     * @return |
+     * @author MrLu
+     * @createTime 2021/1/6 10:16
+     */
+    private void createFiles(FunArchiveRecordsDTO newRecord)throws Exception {
+        List<WjWjdz> wjdzs = archiveService.selectWjdzByBmBid(newRecord.getWjbid(), newRecord.getWjbm());
+        int i=0;
+        for (WjWjdz thisWjdz :
+                wjdzs) {
+            FunArchiveFilesDTO newFile = new FunArchiveFilesDTO();
+            newFile.setJqbh(newRecord.getJqbh());
+            newFile.setAjbh(newRecord.getAjbh());
+            if (null!=thisWjdz.getXh()){
+                i=thisWjdz.getXh()+i;
+                newFile.setThisorder(i);
+            }else {
+                newFile.setThisorder(i++);
+            }
+
+            newFile.setArchiverecordid(newRecord.getId());
+            newFile.setArchivetypeid(newRecord.getArchivetypeid());
+            newFile.setFiletype(0);//标准文书
+            newFile.setFileurl(thisWjdz.getWjdz());
+            newFile.setOriginurl(thisWjdz.getWjdz());
+            newFile.setIsdowland(0);
+            newFile.setFilename(thisWjdz.getWjzw());
+            newFile.setArchiveseqid(newRecord.getArchiveseqid());
+            newFile.setArchivesfcid(newRecord.getArchivesfcid());
+            newFile.setIsazxt(0);
+            newFile.setAuthor("系统抽取");
+            newFile.setAuthorid(0);
+            newFile.setIsshow(0);
+            newFile.setFilecode(UUID.randomUUID().toString());
+            newFile.setIsdelete(0);
+            newFile.setServerip("http://192.168.1.135:8080");
+
+            archiveService.createFils(newFile);
+        }
+    }
+
 }
 
 

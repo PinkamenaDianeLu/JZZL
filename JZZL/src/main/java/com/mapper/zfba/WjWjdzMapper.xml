@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.zfba.WjWjdzMapper">
+  <resultMap id="BaseResultMap" type="com.bean.zfba.WjWjdz">
+    <result column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="JZFL" jdbcType="VARCHAR" property="jzfl" />
+    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
+    <result column="WSGL" jdbcType="VARCHAR" property="wsgl" />
+    <result column="WJBM" jdbcType="VARCHAR" property="wjbm" />
+    <result column="WJBID" jdbcType="DECIMAL" property="wjbid" />
+    <result column="WJDM" jdbcType="VARCHAR" property="wjdm" />
+    <result column="WJZW" jdbcType="VARCHAR" property="wjzw" />
+    <result column="WJDZ" jdbcType="VARCHAR" property="wjdz" />
+    <result column="XH" jdbcType="DECIMAL" property="xh" />
+    <result column="YM" jdbcType="DECIMAL" property="ym" />
+    <result column="JLSJ" jdbcType="TIMESTAMP" property="jlsj" />
+    <result column="GXSJ" jdbcType="TIMESTAMP" property="gxsj" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="SFBZJ" jdbcType="VARCHAR" property="sfbzj" />
+    <result column="JZSJBID" jdbcType="DECIMAL" property="jzsjbid" />
+    <result column="UUID" jdbcType="VARCHAR" property="uuid" />
+    <result column="FJCBID" jdbcType="DECIMAL" property="fjcbid" />
+    <result column="SFAZXT" jdbcType="VARCHAR" property="sfazxt" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID,JZFL,JQBH,WSGL,WJBM,WJBID,WJDM,WJZW,WJDZ,XH,YM,JLSJ,GXSJ,SCBJ,SFBZJ,JZSJBID,UUID,FJCBID,SFAZXT
+ </sql>
+
+  <select id="selectWjdzByBmBid" parameterType="map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from wj_wjdz
+    where  scbj= 0
+    and WJBID = #{wjbid,jdbcType=VARCHAR}
+    and WJBM = #{wjbm,jdbcType=DECIMAL}
+  </select>
+</mapper>

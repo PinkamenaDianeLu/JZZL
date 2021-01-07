@@ -6,22 +6,22 @@
  */
 
 $(function () {
-  const seqId = utils.getUrlPar('seqid');//需要上传的seqid
+    const seqId = utils.getUrlPar('seqid');//需要上传的seqid
     layui.extend({
         dtree: '/Framework/layui/dtree/dtree'
-    }).use(['layer', 'table', 'code' ,'util', 'dtree', 'form'], function () {
+    }).use(['layer', 'table', 'code', 'util', 'dtree', 'form'], function () {
         var element = layui.element,
             layer = layui.layer,
             table = layui.table,
             util = layui.util,
             dtree = layui.dtree,
             form = layui.form;
-      //  初始化树
+        //  初始化树
         dtree.render({
             elem: "#RecordTree",
             url: "/Records/selectBaseTypeForTree",
             request: {"seqId": seqId},//参数
-             none:'无数据',
+            none: '无数据',
             checkbar: true,
             initLevel: 1,  // 指定初始展开节点级别
             icon: "-1", // 隐藏二级图标
@@ -29,8 +29,12 @@ $(function () {
             method: "post",
             dataStyle: "layuiStyle",  //使用layui风格的数据格式
             dataFormat: "list",  //配置data的风格为list
-            width: "100%",
+            width: "100%"
 
+        });
+        dtree.on("chooseDone('RecordTree')", function (obj) {
+            console.log(obj.seqId);//seqid
+            console.log(obj.nodeId);//文书id
         });
     });
 });

@@ -78,11 +78,11 @@ public class XtAjxxb {
 
     private String jadwdwdm;
 
-    private Short sfzxbl;
+    private Integer sfzxbl;
 
     private String xzdwdwdm;
 
-    private Short sfysqs;
+    private Integer sfysqs;
 
     private String cbrlxdh;
 
@@ -102,7 +102,7 @@ public class XtAjxxb {
 
     private Date gxsj;
 
-    private Short scbj;
+    private Integer scbj;
 
     private String asjlyzw;
 
@@ -138,21 +138,21 @@ public class XtAjxxb {
 
     private String sadwdwmc;
 
-    private Short glid;
+    private Integer glid;
 
     private String ladwzw;
 
-    private Short sfsd;
+    private Integer sfsd;
 
-    private Short sfsh;
+    private Integer sfsh;
 
-    private Short sfsh1;
+    private Integer sfsh1;
 
-    private Short sfsd1;
+    private Integer sfsd1;
 
-    private Short sfma;
+    private Integer sfma;
 
-    private Short sfsq;
+    private Integer sfsq;
 
     private String ajxxmm;
 
@@ -458,11 +458,11 @@ public class XtAjxxb {
         this.jadwdwdm = jadwdwdm == null ? null : jadwdwdm.trim();
     }
 
-    public Short getSfzxbl() {
+    public Integer getSfzxbl() {
         return sfzxbl;
     }
 
-    public void setSfzxbl(Short sfzxbl) {
+    public void setSfzxbl(Integer sfzxbl) {
         this.sfzxbl = sfzxbl;
     }
 
@@ -474,11 +474,11 @@ public class XtAjxxb {
         this.xzdwdwdm = xzdwdwdm == null ? null : xzdwdwdm.trim();
     }
 
-    public Short getSfysqs() {
+    public Integer getSfysqs() {
         return sfysqs;
     }
 
-    public void setSfysqs(Short sfysqs) {
+    public void setSfysqs(Integer sfysqs) {
         this.sfysqs = sfysqs;
     }
 
@@ -554,11 +554,11 @@ public class XtAjxxb {
         this.gxsj = gxsj;
     }
 
-    public Short getScbj() {
+    public Integer getScbj() {
         return scbj;
     }
 
-    public void setScbj(Short scbj) {
+    public void setScbj(Integer scbj) {
         this.scbj = scbj;
     }
 
@@ -698,11 +698,11 @@ public class XtAjxxb {
         this.sadwdwmc = sadwdwmc == null ? null : sadwdwmc.trim();
     }
 
-    public Short getGlid() {
+    public Integer getGlid() {
         return glid;
     }
 
-    public void setGlid(Short glid) {
+    public void setGlid(Integer glid) {
         this.glid = glid;
     }
 
@@ -714,51 +714,51 @@ public class XtAjxxb {
         this.ladwzw = ladwzw == null ? null : ladwzw.trim();
     }
 
-    public Short getSfsd() {
+    public Integer getSfsd() {
         return sfsd;
     }
 
-    public void setSfsd(Short sfsd) {
+    public void setSfsd(Integer sfsd) {
         this.sfsd = sfsd;
     }
 
-    public Short getSfsh() {
+    public Integer getSfsh() {
         return sfsh;
     }
 
-    public void setSfsh(Short sfsh) {
+    public void setSfsh(Integer sfsh) {
         this.sfsh = sfsh;
     }
 
-    public Short getSfsh1() {
+    public Integer getSfsh1() {
         return sfsh1;
     }
 
-    public void setSfsh1(Short sfsh1) {
+    public void setSfsh1(Integer sfsh1) {
         this.sfsh1 = sfsh1;
     }
 
-    public Short getSfsd1() {
+    public Integer getSfsd1() {
         return sfsd1;
     }
 
-    public void setSfsd1(Short sfsd1) {
+    public void setSfsd1(Integer sfsd1) {
         this.sfsd1 = sfsd1;
     }
 
-    public Short getSfma() {
+    public Integer getSfma() {
         return sfma;
     }
 
-    public void setSfma(Short sfma) {
+    public void setSfma(Integer sfma) {
         this.sfma = sfma;
     }
 
-    public Short getSfsq() {
+    public Integer getSfsq() {
         return sfsq;
     }
 
-    public void setSfsq(Short sfsq) {
+    public void setSfsq(Integer sfsq) {
         this.sfsq = sfsq;
     }
 

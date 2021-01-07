@@ -1,9 +1,11 @@
 package com.ZfbaETL.Case.Server;
 
 import com.bean.jzgl.DTO.*;
+import com.bean.zfba.WjWjdz;
 import com.bean.zfba.XtWjflb;
 import com.mapper.jzgl.*;
 import com.mapper.zfba.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,7 +38,8 @@ public class ArchiveService {
     SysUserDTOMapper jzglSysUserMapper;
     @Resource
     SysBadwbMapper sysBadwbMapper;
-
+    @Resource
+    WjWjdzMapper wjWjdzMapper;
     @Resource
     FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
     @Resource
@@ -47,7 +50,8 @@ public class ArchiveService {
     FunSuspectRecordDTOMapper funSuspectRecordDTOMapper;
     @Resource
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
-
+    @Resource
+    FunArchiveFilesDTOMapper funArchiveFilesDTOMapper;
 
     /**
      * 查询嫌疑人的文书
@@ -89,5 +93,19 @@ public class ArchiveService {
         funSuspectRecordDTOMapper.insert(record);
     }
 
-    //funArchiveTypeDTOMapper
+    public  void createFils(FunArchiveFilesDTO record){
+        funArchiveFilesDTOMapper.insert(record);
+    }
+
+
+    /**
+     * 根据文件表名表id查询文件的图片地址
+     * @author MrLu
+     * @param
+     * @createTime  2021/1/6 10:54
+     * @return    |
+     */
+   public List<WjWjdz> selectWjdzByBmBid (Integer wjbid, String wjbm){
+        return  wjWjdzMapper.selectWjdzByBmBid(wjbid,wjbm);
+    }
 }

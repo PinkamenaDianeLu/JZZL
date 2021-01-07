@@ -54,7 +54,9 @@ var sjjlTable = (function () {
 
                 }, {
                     field: 'authoridcard',
-                    title: '创建人身份证',
+                    title: '创建人身份证',formatter: (value) => {
+                        return '0'===value?'系统整理':value
+                    }
                 },
                 {
                     field: 'createtime',

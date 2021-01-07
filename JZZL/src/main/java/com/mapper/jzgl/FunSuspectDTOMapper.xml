@@ -46,7 +46,7 @@
         AJBH,
         CASEINFOID,
         SFCNUMBER,
-      SUSPECTCODE
+      SUSPECTCODE,
       <if test="casetype != null">
         CASETYPE,
       </if>

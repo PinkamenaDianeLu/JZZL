@@ -7,7 +7,7 @@ public class XtWjflb {
 
     private String jqbh;
 
-    private Short glid;
+    private Integer glid;
 
     private String wjbm;
 
@@ -17,7 +17,7 @@ public class XtWjflb {
 
     private String wjzw;
 
-    private Short scbj;
+    private Integer scbj;
 
     private String jlrxm;
 
@@ -35,7 +35,7 @@ public class XtWjflb {
 
     private Date gxsj;
 
-    private Short wjzt;
+    private Integer wjzt;
 
     private String dydm;
 
@@ -61,11 +61,11 @@ public class XtWjflb {
         this.jqbh = jqbh == null ? null : jqbh.trim();
     }
 
-    public Short getGlid() {
+    public Integer getGlid() {
         return glid;
     }
 
-    public void setGlid(Short glid) {
+    public void setGlid(Integer glid) {
         this.glid = glid;
     }
 
@@ -101,11 +101,11 @@ public class XtWjflb {
         this.wjzw = wjzw == null ? null : wjzw.trim();
     }
 
-    public Short getScbj() {
+    public Integer getScbj() {
         return scbj;
     }
 
-    public void setScbj(Short scbj) {
+    public void setScbj(Integer scbj) {
         this.scbj = scbj;
     }
 
@@ -173,11 +173,11 @@ public class XtWjflb {
         this.gxsj = gxsj;
     }
 
-    public Short getWjzt() {
+    public Integer getWjzt() {
         return wjzt;
     }
 
-    public void setWjzt(Short wjzt) {
+    public void setWjzt(Integer wjzt) {
         this.wjzt = wjzt;
     }
 

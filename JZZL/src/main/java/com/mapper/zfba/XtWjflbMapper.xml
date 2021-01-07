@@ -51,7 +51,6 @@
     WHERE SCBJ=0
     AND JQBH = #{jqbh,jdbcType=VARCHAR}
     AND DYDM IS NULL
-    AND DYLX &lt;&gt; 1
     order by id desc
   </select>
 </mapper>
