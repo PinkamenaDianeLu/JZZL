@@ -44,7 +44,8 @@ public class RecordsController extends BaseFactory {
 
     @RequestMapping(value = "/getFunArchiveRecordsById", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "通过id查询文书", operType = OperLog.type.SELECT)
     public String getFunArchiveRecordsById(Integer id) {
         JSONObject reValue = new JSONObject();
@@ -68,7 +69,8 @@ public class RecordsController extends BaseFactory {
      */
     @RequestMapping(value = "/selectRecordsByJqbhPage", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "文书分页查询", operType = OperLog.type.SELECT)
     public Map<String, Object> selectRecordsByJqbhPage(Integer offset, Integer limit, String params) {
         Map<String, Object> reMap = new HashMap<>();
@@ -97,7 +99,8 @@ public class RecordsController extends BaseFactory {
 
     @RequestMapping(value = "/getRecordCords", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "获取对应卷的文书代码", operType = OperLog.type.SELECT)
     public String getRecordCords(Integer offset, Integer limit, String params) {
         JSONObject reValue = new JSONObject();
@@ -130,13 +133,14 @@ public class RecordsController extends BaseFactory {
      */
     @RequestMapping(value = "/selectRecordTypeSuspectByRid", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "判断文书查询该案件的嫌疑人", operType = OperLog.type.SELECT)
     public String selectRecordTypeSuspectByRid(Integer recordtypeid, Integer seqId) {
         JSONObject reValue = new JSONObject();
         try {
-            SysRecordorderDTO thisRType = recordsService.selectSysRecordorderDTOById(recordtypeid);
             FunArchiveSeqDTO thisSeq = recordsService.selectFunArchiveSeqById(seqId);
+            SysRecordorderDTO thisRType = recordsService.selectSysRecordorderDTOById(recordtypeid);
             //判断是否选人
             if (1 == thisRType.getRecordstyle()) {
                 //嫌疑人单选
@@ -162,7 +166,8 @@ public class RecordsController extends BaseFactory {
 
     @RequestMapping(value = "/createNewRecord", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "新建文书", operType = OperLog.type.INSERT)
     public String createNewRecord(String record) {
         JSONObject reValue = new JSONObject();
@@ -182,13 +187,13 @@ public class RecordsController extends BaseFactory {
                     thisRecordOrder.getDefaultorder(),
                     seqId,
                     suspectId);
-            if (null==newRecordObj){
+            if (null == newRecordObj) {
                 //这种现象有记录出现在选人文书中
                 throw new Exception("该文书代码无法匹配上一个文书");
 
             }
             newRecordObj.setRecordname(newRecordJsonObj.getString("recordName"));
-            int prevRid=newRecordObj.getId();//查找出的文书的id
+            int prevRid = newRecordObj.getId();//查找出的文书的id
             newRecordObj.setRecordwh(newRecordJsonObj.getString("recordWh"));//recordWh
             newRecordObj.setPrevid(0);
             newRecordObj.setAuthor(userNow.getUsername());
@@ -242,6 +247,97 @@ public class RecordsController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+
+     /**
+     * 导入文书
+     * @author MrLu
+     * @param  seqId 被导入的seq
+     * @param  recordId 文书id
+     * @param  fileCodes 文件代码 all 该文书全部导入 数组-> 导入该数组的文书
+     * @createTime  2021/1/8 14:47
+      */
+    @RequestMapping(value = "/importRecords", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @recordTidy
+    @OperLog(operModul = operModul, operDesc = "导入文书", operType = OperLog.type.INSERT)
+    public String importRecords(Integer seqId, Integer recordId, String fileCodes) {
+        JSONObject reValue = new JSONObject();
+        try {
+            //根据id查询基础卷文书
+            FunArchiveRecordsDTO baseRecord = recordsService.getFunArchiveRecordsById(recordId);
+            FunArchiveTypeDTO baseRecordType = recordsService.selectFunArchiveTypeById(baseRecord.getArchivetypeid());
+            //获取目标卷的信息
+            FunArchiveSeqDTO targetSeq = recordsService.selectFunArchiveSeqById(seqId);
+            //获得目标卷中该文书的应在位置
+            SysRecordorderDTO thisRecordOrder = recordsService.selectRecordOrderByTypes(baseRecord.getRecordscode(), targetSeq.getArchivetype(), baseRecordType.getRecordtype());
+            //判断文书是否对人（基础卷）
+            Integer suspectId = null;
+            FunSuspectRecordDTO suspectR = recordsService.selectSuspectRecordByRid(recordId);
+            if (null != suspectR) {
+                //是对人的
+                suspectId = suspectR.getSuspectid();
+            }
+
+            //上一个文书
+            FunArchiveRecordsDTO prevRecord = recordsService.selectPriveRecord(thisRecordOrder.getRecordtype(),
+                    thisRecordOrder.getArchivetype(),
+                    thisRecordOrder.getDefaultorder(),
+                    seqId,
+                    suspectId);
+
+            if (null == prevRecord) {
+                //这种现象有记录出现在选人文书中
+                throw new Exception("该文书代码无法匹配上一个文书");
+            }
+            //查找该seq中是否有这个文书  这个文书必须是基于基础卷生成的
+            FunArchiveRecordsDTO targetRecord = recordsService.selectRecordByUuidSeq(baseRecord.getRecorduuid(), seqId);
+            if (null == targetRecord) {
+                //没有
+//                thisRecord.set
+                baseRecord.setThisorder(prevRecord.getThisorder() + 1);//顺序
+                baseRecord.setArchivetypeid(prevRecord.getArchivetypeid());//type
+                baseRecord.setArchiveseqid(prevRecord.getArchiveseqid());//seq
+                baseRecord.setArchivesfcid(prevRecord.getArchivesfcid());//sfc
+                baseRecord.setPrevid(baseRecord.getId());//上一个的id
+                baseRecord.setBaserecordid(baseRecord.getId());//基础卷文书id
+                recordsService.insertFunArchiveRecords(baseRecord);
+                targetRecord = baseRecord;
+            }
+
+            List<FunArchiveFilesDTO> newFileList = new ArrayList<>();
+            if ("all".equals(fileCodes)) {
+                //全部导入  查询所有没被删除的文书
+                newFileList = recordsService.selectRecordFilesByRecordId(recordId, 0);
+            } else {
+                String[] fileCodesArrary = fileCodes.split(",");
+                //分批导入
+                for (String fileCode :
+                        fileCodesArrary) {
+                    newFileList.add(recordsService.selectFilesByFileCode(fileCode, recordId));
+
+                }
+            }
+
+            //复制这些文书图片
+            for (FunArchiveFilesDTO thisFile :
+                    newFileList) {
+//               thisFile.setThisorder();
+                thisFile.setArchiverecordid(targetRecord.getId());
+                thisFile.setArchivetypeid(targetRecord.getArchivetypeid());
+                thisFile.setArchiveseqid(targetRecord.getArchiveseqid());
+                thisFile.setArchivesfcid(targetRecord.getArchivesfcid());
+                recordsService.insertFunRecordFilesDTO(thisFile);
+            }
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+
+    }
+
     /**
      * 为树形查询基础卷的数据
      *
@@ -252,7 +348,8 @@ public class RecordsController extends BaseFactory {
      */
     @RequestMapping(value = "/selectBaseTypeForTree", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "新建文书", operType = OperLog.type.SELECT)
     public String selectBaseTypeForTree(Integer seqId, Integer nodeId, String parentId) {
         JSONObject reValue = new JSONObject();
@@ -264,14 +361,14 @@ public class RecordsController extends BaseFactory {
             if (null != baseSeq) {
 
                 if (StringUtils.isEmpty(parentId)) {
-                    List<FunArchiveType> archiveTypes = recordsService.selectArchiveTypeByJqSeq(seqId);
+                    List<FunArchiveType> archiveTypes = recordsService.selectArchiveTypeByJqSeq(baseSeq.getId());
                     for (FunArchiveType thisType :
                             archiveTypes) {
                         JSONObject thisTypeJsonObj = new JSONObject();
                         thisTypeJsonObj.put("id", thisType.getId());
                         thisTypeJsonObj.put("title", thisType.getRecordtypecn());
                         thisTypeJsonObj.put("parentId", "0");
-                        thisTypeJsonObj.put("checkArr", "0");
+//                        thisTypeJsonObj.put("checkArr", "0");
                         thisTypeJsonObj.put("last", false);
                         thisTypeJsonObj.put("level", "1");
                         thisTypeJsonObj.put("children", "[]");
@@ -283,7 +380,7 @@ public class RecordsController extends BaseFactory {
                     //当前情况说明为加载二级节点
                     //查询这个type下的所有文书(抛出系统文书 zl系列的)
                     for (FunArchiveRecords thisRecord :
-                            recordsService.selectRecordsByTypeid(nodeId, 0,0)) {
+                            recordsService.selectRecordsByTypeid(nodeId, 0, 0)) {
                         JSONObject thisRecordJsonObj = new JSONObject();
                         thisRecordJsonObj.put("id", thisRecord.getId());
                         thisRecordJsonObj.put("title", thisRecord.getRecordname());

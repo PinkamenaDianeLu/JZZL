@@ -202,4 +202,10 @@
             AND SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
         </if>
     </select>
+
+    <select id="selectRelationByCaseid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM FUN_CASE_PEOPLECASE WHERE SCBJ=0
+        AND CASEINFOID= #{caseinfoid,jdbcType=DECIMAL}
+    </select>
 </mapper>

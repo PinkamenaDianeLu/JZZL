@@ -2783,7 +2783,7 @@ layui.define(['jquery','layer','form'], function(exports) {
         
         // 用户自定义想做的事情
         _this.checkbarFun.chooseDone(checkbarNodes);
-        layui.event.call(this, MOD_NAME, "chooseDone("+$(_this.obj)[0].id+")", {"checkbarParams": checkbarNodes});
+        layui.event.call(this, MOD_NAME, "chooseDone("+$(_this.obj)[0].id+")", {"checkbarParams": checkbarNodes,'thisNode':$i});
         _this.temp = [];
     };
 

@@ -44,8 +44,8 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     @Resource
     FunArchiveFilesDTOMapper funArchiveFilesDTOMapper;
     @Override
-    public FunArchiveRecords getFunArchiveRecordsById(Integer id) {
-        return FunArchiveRecordsMapper.INSTANCE.pcDTOToPc(funArchiveRecordsDTOMapper.selectByPrimaryKey(id));
+    public FunArchiveRecordsDTO getFunArchiveRecordsById(Integer id) {
+        return funArchiveRecordsDTOMapper.selectByPrimaryKey(id);
     }
 
     @Override
@@ -91,7 +91,16 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     }
 
     @Override
-    public SysRecordorderDTO selectSysRecordorderDTOById(Integer id) {
+    public SysRecordorderDTO selectRecordOrderByTypes(String recordcode, Integer archivetype, Integer recordtype) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("recordcode", recordcode);
+        map.put("archivetype", archivetype);
+        map.put("recordtype", recordtype);
+        return sysRecordorderDTOMapper.selectRecordOrderByTypes(map);
+    }
+
+    @Override
+    public SysRecordorderDTO selectSysRecordorderDTOById(int id) {
         return sysRecordorderDTOMapper.selectByPrimaryKey(id);
     }
 
@@ -107,7 +116,9 @@ public class RecordImpl extends BaseFactory implements RecordsService {
         map.put("archivetype", archivetype);
         map.put("defaultorder", defaultorder);//suspectid
         map.put("archiveseqid", archiveseqid);
-        map.put("suspectid", suspectid);
+        if (null!=suspectid){
+            map.put("suspectid", suspectid);
+        }
         return funArchiveRecordsDTOMapper.selectPriveRecord(map);
     }
 
@@ -152,6 +163,31 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     public List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid, Integer isdelete) {
         return funArchiveFilesDTOMapper.selectRecordFilesByRecordId(archiverecordid,isdelete);
     }
+    @Override
+    public void insertFunRecordFilesDTO(FunArchiveFilesDTO record){
+        funArchiveFilesDTOMapper.insert(record);
+    }
 
+    @Override
+    public FunArchiveFilesDTO selectFilesByFileCode(String filecode, int archiverecordid) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("filecode", filecode);
+        map.put("archiverecordid", archiverecordid);
+        return funArchiveFilesDTOMapper.selectFilesByFileCode(map);
+    }
+
+    @Override
+    public FunArchiveRecordsDTO selectRecordByUuidSeq(String recorduuid, Integer archiveseqid) {
+        return funArchiveRecordsDTOMapper.selectRecordByUuidSeq(recorduuid,archiveseqid);
+    }
+    @Override
+    public FunArchiveTypeDTO selectFunArchiveTypeById(Integer id) {
+        return funArchiveTypeDTOMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public FunSuspectRecordDTO selectSuspectRecordByRid(int recordid) {
+        return funSuspectRecordDTOMapper.selectSuspectRecordByRid(recordid);
+    }
 
 }

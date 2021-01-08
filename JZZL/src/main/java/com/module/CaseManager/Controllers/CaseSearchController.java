@@ -1,17 +1,14 @@
-package com.module.CaseSearch.Controllers;
+package com.module.CaseManager.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
-import com.config.webSocket.WebSocketMessage;
-import com.enums.Enums;
 import com.factory.BaseFactory;
-import com.module.CaseSearch.Services.CaseSearchService;
+import com.module.CaseManager.Services.CaseSearchService;
 import com.module.SystemManagement.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

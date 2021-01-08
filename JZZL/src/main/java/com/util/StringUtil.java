@@ -59,13 +59,14 @@ public class StringUtil {
     }
 
 
-     /**
+    /**
      * 判断是否有为null的参数
-     * @author MrLu
+     *
      * @param ss 不定参 String
-     * @createTime  2020/12/8 9:32
-     * @return  boolean  |
-      */
+     * @return boolean  |
+     * @author MrLu
+     * @createTime 2020/12/8 9:32
+     */
     public static boolean isEmptyAll(String... ss) {
         boolean t = false;
         for (String thisSS :
@@ -78,9 +79,15 @@ public class StringUtil {
         return t;
     }
 
-    public static  String createSfcNumber(String dw){
-
-        return "E"+dw+System.currentTimeMillis()+UUID.randomUUID().toString().substring(0,8);
-
+    public static String createSfcNumber(String dw) {
+        return "E" + dw + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 8);
+    }
+    //A2307025600002018050004
+    public static String createJqbh(String dw) {
+        return "JZL" + dw + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 4);
+    }
+    public static String createAjbh(String dw) {
+        //13
+        return "A" + dw + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 1);
     }
 }

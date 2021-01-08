@@ -10,7 +10,7 @@ import java.util.Map;
 public interface SysRecordorderDTOMapper {
 
 
-    SysRecordorderDTO selectByPrimaryKey(Integer id);
+    SysRecordorderDTO selectByPrimaryKey(int id);
 
 
     /**

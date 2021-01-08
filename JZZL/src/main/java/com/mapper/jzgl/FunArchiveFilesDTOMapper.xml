@@ -524,6 +524,8 @@
         AND  archiveseqid=#{archiveseqid,jdbcType=DECIMAL}
     </select>
 
+
+
     <update id="updateFileOrderByRecord" parameterType="map">
         update fun_archive_files
         <set>

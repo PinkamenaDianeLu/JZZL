@@ -5,6 +5,7 @@ import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.selectObj;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ import java.util.Map;
  */
 public interface RecordsService {
 
-    FunArchiveRecords getFunArchiveRecordsById(Integer id);
+    FunArchiveRecordsDTO getFunArchiveRecordsById(Integer id);
 
     /**
      * 通过警情编号分页查询警情对应文书
@@ -73,16 +74,25 @@ public interface RecordsService {
      */
     FunArchiveSeqDTO selectFunArchiveSeqById(Integer id);
 
-
-     /**
-     * 通过id查询文书顺序表
+    /**
+     * 按照送检卷类型和卷类型查询默认顺序
+     *
+     * @param  recordcode 文书代码
+     * @param  archivetype 送检卷卷类型
+     * @param  recordtype 文书卷类型
+     * @return List<SysRecordorderDTO>    |
      * @author MrLu
-     * @param id
-     * @createTime  2020/12/23 14:03
+     * @createTime 2020/11/26 15:23
+     */
+    SysRecordorderDTO selectRecordOrderByTypes(String recordcode, Integer archivetype, Integer recordtype);
+     /**
+     *
+     * @author MrLu
+     * @param
+     * @createTime  2021/1/8 10:12
      * @return    |
       */
-    SysRecordorderDTO selectSysRecordorderDTOById(Integer id);
-
+    SysRecordorderDTO selectSysRecordorderDTOById(int id);
     /**
      * 通过seqid查询该案件的嫌疑人
      * @author MrLu
@@ -167,5 +177,49 @@ public interface RecordsService {
      * @createTime 2020/10/15 17:58
      */
     List<FunArchiveFilesDTO> selectRecordFilesByRecordId(int archiverecordid, Integer isdelete);
+     /**
+     * 插入文件
+     * @author MrLu
+     * @param
+     * @createTime  2021/1/7 18:36
+     * @return    |
+      */
+      void insertFunRecordFilesDTO(FunArchiveFilesDTO record);
+    /**
+     * 根据文书代码找到正在显示的文书
+     * @author MrLu
+     * @createTime  2020/10/22 9:32
+     * @return  FunArchiveFilesDTO  |
+     */
+    FunArchiveFilesDTO selectFilesByFileCode(String filecode, int archiverecordid);
 
+    /**
+     * 根据文书的唯一标识码查询该seq中的文书
+     * @author MrLu
+     * @param recorduuid
+     *  @param archiveseqid
+     * @createTime  2021/1/8 9:41
+     * @return    |
+     */
+    FunArchiveRecordsDTO selectRecordByUuidSeq(String recorduuid,
+                                             Integer archiveseqid);
+
+    /**
+     * 根据id查询文书类型
+     *
+     * @param id id
+     * @return FunArchiveTypeDTO  |
+     * @author MrLu
+     * @createTime 2020/10/14 10:09
+     */
+    FunArchiveTypeDTO selectFunArchiveTypeById(Integer id);
+
+    /**
+     * 查询该文书对嫌疑人的关联信息
+     * @author MrLu
+     * @param recordid
+     * @createTime  2020/12/24 23:03
+     * @return    |
+     */
+    FunSuspectRecordDTO selectSuspectRecordByRid (int recordid);
 }

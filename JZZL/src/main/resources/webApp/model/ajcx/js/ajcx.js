@@ -12,7 +12,7 @@ var ajcxTable = (function () {
 
     let tableObject;
 
-    const searchParam = function (ajbh, jqbh,casetype) {
+    const searchParam = function (ajbh, jqbh, casetype) {
         this.ajbh = ajbh;
         this.jqbh = jqbh;
         this.casetype = casetype;
@@ -20,9 +20,9 @@ var ajcxTable = (function () {
 
     function getSearchParam() {
         let reS = new searchParam();
-        reS.ajbh = $('#ajbhHead').val().trim()+$('#ajbh').val().trim();
+        reS.ajbh = $('#ajbhHead').val().trim() + $('#ajbh').val().trim();
         reS.jqbh = $('#jqbh').val().trim();
-        reS.casetype=$('#casetype').val();
+        reS.casetype = $('#casetype').val();
         return reS;
     };
     /**
@@ -33,8 +33,28 @@ var ajcxTable = (function () {
      * @return    |
      */
     this.submitHistory = function (id) {
-        let urlP= window.btoa(id+sessionStorage.salt)
-        window.open('/model/ajcx/sjjl.html?id='+urlP);
+        let urlP = window.btoa(id + sessionStorage.salt)
+        window.open('/model/ajcx/sjjl.html?id=' + urlP);
+    }
+     /**
+     * 合案
+     * @author MrLu
+     * @param id 案件信息表id
+     * @createTime  2021/1/8 15:14
+     * @return    |
+      */
+    this.combinationCase=function (id) {
+
+    }
+     /**
+     * 拆案
+     * @author MrLu
+     * @param id 案件信息表id
+     * @createTime  2021/1/8 15:14
+     * @return    |
+      */
+    this.splitCase=function (id) {
+
     }
 
     function loadTable() {
@@ -68,25 +88,27 @@ var ajcxTable = (function () {
             }, {
                 field: 'idcard',
                 title: '送检状态'
-            },{
+            }, {
                 title: '操作',
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.caseinfoid + '\')">进入卷宗</a>';
+                    let combinationCase = '<a class="b_but edit" onclick="combinationCase(\'' + row.caseinfoid + '\')">合案</a>';
+                    let splitCase = '<a class="b_but edit" onclick="splitCase(\'' + row.caseinfoid + '\')">拆案</a>';
+                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.caseinfoid + '\')">进入卷宗</a>' + combinationCase + splitCase;
                 }
-            }],param:function (){
+            }], param: function () {
                 return getSearchParam();
             }
         });
     }
 
-     /**
+    /**
      * 查询
      * @author MrLu
-     * @param 
+     * @param
      * @createTime  2020/9/25 10:40
-     * @return    |  
-      */
+     * @return    |
+     */
     function searchTable() {
         tableObject.refreshTable();
     }
@@ -102,7 +124,7 @@ var ajcxTable = (function () {
 })()
 $(function () {
 
-    let at=new ajcxTable(1);
+    let at = new ajcxTable(1);
     $('.caseTypeTab').click(function () {
         //样式转换
         $('.caseTypeTab').removeClass('active');

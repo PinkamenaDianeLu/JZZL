@@ -1,8 +1,8 @@
-package com.module.CaseSearch.Services.Impl;
+package com.module.CaseManager.Services.Impl;
 
 import com.factory.BaseFactory;
 import com.mapper.jzgl.FunCasePeoplecaseDTOMapper;
-import com.module.CaseSearch.Services.CaseSearchService;
+import com.module.CaseManager.Services.CaseSearchService;
 import com.util.MapFactory;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +21,6 @@ public class CaseSearchImpl extends BaseFactory implements CaseSearchService {
 
     @Resource
     FunCasePeoplecaseDTOMapper funCasePeoplecaseDTOMapper;
-
-
 
     @Override
     public List<Object>selectPeopleCasePage(Map<String, Object> map) throws Exception {

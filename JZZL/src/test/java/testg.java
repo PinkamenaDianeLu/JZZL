@@ -165,6 +165,8 @@ public class testg {
     public  void uuidSfc(){
         //52516724
         //62cdcd78
+        System.out.println("23092120180517214432067001");
+        System.out.println("A23010600"+System.currentTimeMillis()+UUID.randomUUID().toString().substring(0,1));
         System.out.println("E230106"+System.currentTimeMillis()+UUID.randomUUID().toString().substring(0,8));
     }
 

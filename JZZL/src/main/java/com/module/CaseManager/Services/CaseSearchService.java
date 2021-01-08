@@ -1,6 +1,4 @@
-package com.module.CaseSearch.Services;
-
-import com.bean.jzgl.Source.FunPeopelCase;
+package com.module.CaseManager.Services;
 
 import java.util.List;
 import java.util.Map;

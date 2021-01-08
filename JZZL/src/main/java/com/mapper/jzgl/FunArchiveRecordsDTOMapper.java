@@ -182,6 +182,14 @@ public interface FunArchiveRecordsDTOMapper {
       */
     List<FunArchiveRecordsDTO> selectRecordByUuid(String recorduuid);
 
+     /**
+     * 根据文书的唯一标识码查询该seq中的文书
+     * @author MrLu
+     * @param recorduuid
+      *  @param archiveseqid
+     * @createTime  2021/1/8 9:41
+     * @return    |
+      */
     FunArchiveRecordsDTO selectRecordByUuidSeq(@Param("recorduuid") String recorduuid,
                                                      @Param("archiveseqid") Integer archiveseqid);
 
