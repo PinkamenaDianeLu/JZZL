@@ -1,3 +1,4 @@
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunPeopelCase;
@@ -141,36 +142,55 @@ public class testg {
 
     @Test
     public void md5() {
-        String encodeStr= DigestUtils.md5Hex("text + key");
-        System.out.println("MD5加密后的字符串为:encodeStr="+encodeStr);
+        String encodeStr = DigestUtils.md5Hex("text + key");
+        System.out.println("MD5加密后的字符串为:encodeStr=" + encodeStr);
     }
 
     @Test
     public void foreachJSONObject() {
         JSONObject jsonObject = JSONObject.parseObject("{\"createtime\":1605577120000,\"dictlabel\":\"正常\",\"dictsort\":1,\"dicttype\":\"sys_role_status\",\"dictvalue\":\"0\",\"id\":123,\"isdefault\":\"Y\",\"remark\":\"角色正常状态\",\"scbj\":\"0\",\"status\":\"1\",\"updatetime\":1605577122000}");
         Set<String> setiterator = jsonObject.keySet();
-        for (String thisKey:
-        setiterator) {
-            String  value = jsonObject.getString(thisKey);
-            System.out.println(thisKey+":"+value);
+        for (String thisKey :
+                setiterator) {
+            String value = jsonObject.getString(thisKey);
+            System.out.println(thisKey + ":" + value);
 
         }
     }
+
     @Test
-    public  void aijiajia(){
-        int i=0;
+    public void aijiajia() {
+        int i = 0;
         System.out.println(i++);
     }
+
     @Test
-    public  void uuidSfc(){
+    public void uuidSfc() {
         //52516724
         //62cdcd78
-        System.out.println("23092120180517214432067001");
-        System.out.println("A23010600"+System.currentTimeMillis()+UUID.randomUUID().toString().substring(0,1));
-        System.out.println("E230106"+System.currentTimeMillis()+UUID.randomUUID().toString().substring(0,8));
+        JSONArray a = new JSONArray();
+        JSONArray b = new JSONArray();
+        b.add(1);
+        b.add(2);
+        b.add(3);
+        a.add(b);
+        System.out.println(a.toJSONString());
+
+        JSONArray c = JSONArray.parseArray(a.toJSONString());
+        for (Object thisA :
+                c) {
+            System.out.println((JSONArray) thisA);
+        }
+
+        System.out.println("A23010600" + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 1));
+        System.out.println("E230106" + System.currentTimeMillis() + UUID.randomUUID().toString().substring(0, 8));
     }
 
-
-
+    @Test
+    public void timeCalendarTest() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 24);
+        System.out.println(calendar.getTime());
+    }
 
 }
