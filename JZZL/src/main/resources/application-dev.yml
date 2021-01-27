@@ -3,7 +3,7 @@ spring:
  datasource:
   jzgl:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:oracle:thin:@192.168.1.250:1521:orcl
+    url: jdbc:oracle:thin:@192.168.30.3:1521:orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
     username: jzzl
     password: jzzl
@@ -49,9 +49,9 @@ spring:
    sessionDatabase: 1
    onlineUsers: 2
    casesAreOccupied: 3
-   host: 192.168.1.124
+   host: 192.168.30.3
    port: 6379
-   password: tljj2020
+   password: sshbjzzl2020
    timeout: 3000
    lettuce:
      pool:

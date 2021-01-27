@@ -24,6 +24,9 @@ public class CaseSearchImpl extends BaseFactory implements CaseSearchService {
 
     @Override
     public List<Object>selectPeopleCasePage(Map<String, Object> map) throws Exception {
+        if (null!=map.get("sfcTimebegin")||null!=map.get("sfcTimeend")){
+            map.put("isZlTime",true);
+        }
         return MapFactory.mapToListBean(funCasePeoplecaseDTOMapper.selectPeopleCaseByUseridPage(map));
     }
     @Override

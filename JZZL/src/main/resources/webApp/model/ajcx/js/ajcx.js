@@ -12,19 +12,43 @@ var ajcxTable = (function () {
 
     let tableObject;
 
-    const searchParam = function (ajbh, jqbh, casetype) {
+    const searchParam = function (zlrq,larq,ajbh, jqbh,casename, casetype,barxm,persontype,badwdwmc) {
         this.ajbh = ajbh;
         this.jqbh = jqbh;
+        this.casename=casename;
         this.casetype = casetype;
+        this.barxm = barxm;
+        this.persontype = persontype;
+        this.badwdwmc = badwdwmc;
+        this.larq=larq;
+        this.zlrq=zlrq;
+        // this.casetype = casetype;
+        // this.casetype = casetype;
+        // this.casetype = casetype;
     };
 
     function getSearchParam() {
         let reS = new searchParam();
         reS.ajbh = $('#ajbhHead').val().trim() + $('#ajbh').val().trim();
         reS.jqbh = $('#jqbh').val().trim();
+        reS.casename=$('#casename').val().trim();
         reS.casetype = $('#casetype').val();
+        reS.barxm=$('#barxm').val().trim();
+        reS.persontype=$('#persontype').val().trim();
+        reS.badwdwmc=$('#badwdwmc').val().trim();
+        if(""!==$("#larq").val()&&null!==$("#larq").val()){
+                var sj = $("#larq").val().split(' - ');
+                reS.fciTimebegin = sj[0];
+                reS.fciateTimeend = sj[1];
+        }
+        if(""!==$("#zlrq").val()&&null!=$("#zlrq").val()){
+            var sjj = $("#zlrq").val().split(' - ');
+            reS.sfcTimebegin = sjj[0];
+            reS.sfcTimeend = sjj[1];
+        }
+
         return reS;
-    };
+    }
     /**
      * 查看送检记录
      * @author MrLu
@@ -105,7 +129,6 @@ var ajcxTable = (function () {
     /**
      * 查询
      * @author MrLu
-     * @param
      * @createTime  2020/9/25 10:40
      * @return    |
      */
@@ -123,8 +146,24 @@ var ajcxTable = (function () {
     return _ajcxTable;
 })()
 $(function () {
+    /**
+     * 添加时间监听
+     * @author zy
+     * @createTime  2021/1/19 11.00
+     */
+    //日期范围
+    laydate.render({
+        elem: '#larq'
+        , range: true
+    });
+    //日期时间选择器
+    laydate.render({
+        elem: '#zlrq'
+        , range: true
+    });
+    let at = new ajcxTable();
 
-    let at = new ajcxTable(1);
+
     $('.caseTypeTab').click(function () {
         //样式转换
         $('.caseTypeTab').removeClass('active');

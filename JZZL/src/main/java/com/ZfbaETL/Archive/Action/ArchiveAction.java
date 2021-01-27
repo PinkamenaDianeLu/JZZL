@@ -2,11 +2,8 @@ package com.ZfbaETL.Archive.Action;
 
 import com.ZfbaETL.Archive.Service.AutoArchiveService;
 import com.ZfbaETL.BaseServer.BaseServer;
-import com.ZfbaETL.Case.Server.CaseServer;
 import com.bean.jzgl.DTO.*;
 import com.enums.EnumSoft;
-import com.enums.Enums;
-import com.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -80,6 +77,8 @@ public class ArchiveAction implements CommandLineRunner {
                     createArchiveBySuspect(OriSeqId, oriSeq);
                     record.setLastpkstrvalue(thisSfc.getId() + "");
                     insertCount++;
+                    lastV.setLastpknumvalue(thisSfc.getId());
+                    baseServer.updateLastValue(lastV);
                 } catch (Exception e) {
                     e.printStackTrace();
                     //错误日志
@@ -87,6 +86,7 @@ public class ArchiveAction implements CommandLineRunner {
                 }
             }
             baseServer.insertSuccessLog(record, insertCount);
+
         } else {
             //啥也没更新
             baseServer.insertSuccessLog(record, 0);
@@ -195,9 +195,7 @@ public class ArchiveAction implements CommandLineRunner {
             } else {
                 //文书不是对嫌疑人的
                 //查看这个顺序的应有的文书
-                if ("XT001".equals(thisOrder.getRecordcode())){
-                    System.out.println(thisOrder);
-                }
+
                 List<FunArchiveRecordsDTO> thisRecord = autoArchiveService.selectRecordBySeqRcode(oriSeqId, thisOrder.getRecordcode());
                 //卷首、卷尾、卷目录创建
 

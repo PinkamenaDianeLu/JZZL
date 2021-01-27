@@ -1,18 +1,14 @@
 package com.ZfbaETL.User.Action;
-
 import com.ZfbaETL.BaseServer.BaseServer;
 import com.ZfbaETL.User.Server.UserServer;
 import com.bean.jzgl.DTO.EtlLogsDTO;
 import com.bean.jzgl.DTO.EtlTablelogDTO;
-import com.bean.jzgl.DTO.SysBmbDTO;
 import com.bean.jzgl.DTO.SysUserDTO;
 import com.bean.zfba.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -47,7 +43,7 @@ public class UserAction implements CommandLineRunner {
      */
 //    @Scheduled(cron = "0 1/1 * * * ?")
     //或直接指定时间间隔，例如：5秒
-//    @Scheduled(fixedRate=60000)
+//    @Scheduled(fixedRate=10000)
     public void ImportUsers() {
         EtlTablelogDTO lastV = baseServer.selectLastValue("SYS_USER", "ID");
         List<SysUser> newUsers = userServer.selectNewSysuser(lastV.getLastpknumvalue());
@@ -102,7 +98,7 @@ public class UserAction implements CommandLineRunner {
      * @author MrLu
      * @createTime 2021/1/4 14:52
      */
-    @Scheduled(cron = "0 0 10 * * ?")
+//    @Scheduled(cron = "0 0 10 * * ?")
     public void UpdateUsers() {
         EtlTablelogDTO lastV = baseServer.selectLastValue("SYS_USER", "GXSJ");
         List<SysUser> updateUsers = userServer.selectUpdateSysuser(lastV.getLastpkdatevalue());

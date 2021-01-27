@@ -192,5 +192,19 @@ public class testg {
         calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 24);
         System.out.println(calendar.getTime());
     }
+    @Test
+    public  void testClassCast(){
+        try {
+            String aaaa="asdad";
+            long lt = new Long(aaaa);
+            Date date = new Date(lt);
+            System.out.println(date);
+        }catch (NumberFormatException e){
+            System.out.println("拦下来了！");
+        }
+
+//        rMap.put("startTime",date);
+
+    }
 
 }

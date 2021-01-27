@@ -46,6 +46,7 @@ public class CaseAction implements CommandLineRunner {
      * @author MrLu
      * @createTime 2021/1/4 17:51
      */
+//    @Scheduled(fixedRate=70000)
     public void ImportCases() {
         EtlTablelogDTO lastV = baseServer.selectLastValue("XT_AJXXB", "ID");
 
@@ -71,6 +72,10 @@ public class CaseAction implements CommandLineRunner {
                     continue;
                 }
                 SysUserDTO thisJzlZbr = caseServer.selectJzUserByIdCard(zbr.getBargmsfhm());
+                if (null==thisJzlZbr){
+                    baseServer.insertErrorLog(record, "主办人不在当前单位", thisCase.getId() + "");
+                    continue;
+                }
                 newCaseInfo.setJqbh(thisCase.getJqbh());
                 newCaseInfo.setAjbh(thisCase.getAjbh());
                 newCaseInfo.setCasename(Optional.ofNullable(thisCase.getAjmc()).orElse("未填写案件名称"));
@@ -263,7 +268,7 @@ public class CaseAction implements CommandLineRunner {
      * @author MrLu
      * @createTime 2021/1/5 17:12
      */
-    private void createRecordsNoSuspect(FunArchiveTypeDTO newType)throws Exception {
+    private void createRecordsNoSuspect(FunArchiveTypeDTO newType) throws Exception {
         //查询不对人的
 
         List<XtWjflb> Records = archiveService.selectRecordNoSuspect(newType.getJqbh());
@@ -298,7 +303,7 @@ public class CaseAction implements CommandLineRunner {
         }
     }
 
-    private void createRecordsSuspect(FunArchiveTypeDTO newType, FunSuspectDTO newSuspect, FunCaseInfoDTO newCaseInfo)throws Exception {
+    private void createRecordsSuspect(FunArchiveTypeDTO newType, FunSuspectDTO newSuspect, FunCaseInfoDTO newCaseInfo) throws Exception {
         //查询对人的
 
         List<XtWjflb> SusRecords = archiveService.selectRecordBySuspect(newType.getJqbh(), newSuspect.getSuspectcode());
@@ -352,18 +357,18 @@ public class CaseAction implements CommandLineRunner {
      * @author MrLu
      * @createTime 2021/1/6 10:16
      */
-    private void createFiles(FunArchiveRecordsDTO newRecord)throws Exception {
-        List<WjWjdz> wjdzs = archiveService.selectWjdzByBmBid(newRecord.getWjbid(), newRecord.getWjbm());
-        int i=0;
-        for (WjWjdz thisWjdz :
+    private void createFiles(FunArchiveRecordsDTO newRecord) throws Exception {
+        List<WjBjz> wjdzs = archiveService.selectWjdzByBmBid_Bjz(newRecord.getWjbid(), newRecord.getWjbm());
+        int i = 0;
+        for (WjBjz thisWjdz :
                 wjdzs) {
             FunArchiveFilesDTO newFile = new FunArchiveFilesDTO();
             newFile.setJqbh(newRecord.getJqbh());
             newFile.setAjbh(newRecord.getAjbh());
-            if (null!=thisWjdz.getXh()){
-                i=thisWjdz.getXh()+i;
+            if (null != thisWjdz.getXh()) {
+                i = thisWjdz.getXh() + i;
                 newFile.setThisorder(i);
-            }else {
+            } else {
                 newFile.setThisorder(i++);
             }
 
@@ -382,37 +387,29 @@ public class CaseAction implements CommandLineRunner {
             newFile.setIsshow(0);
             newFile.setFilecode(UUID.randomUUID().toString());
             newFile.setIsdelete(0);
-            newFile.setServerip("http://192.168.1.135:8080");
+            if ("1".equals(thisWjdz.getWsgl())) {
+                newFile.setServerip("http://35.0.11.40/WordToImage/");
+            } else {
+                //if ("3".equals(thisWjdz.getWsgl()))
 
+                //设置用于判断是否是附件的关键词
+                String wsfj_directory_yuejuan[] = {"wsfjNew", "wsfj", "wpfjNew", "wpfj" };
+                for (String thisWDY :
+                        wsfj_directory_yuejuan) {
+                    //判断是否有这些关键词
+                    if (thisWjdz.getWjdz().indexOf(thisWDY) > -1) {
+                        //yes
+                        newFile.setServerip("http://35.0.11.40:8080/fjupload");
+                        break;
+                    } else {
+                        //no   //这个是上传的word转换的
+                        newFile.setServerip("http://35.0.11.40/UploadFileToImage");
+                    }
+
+                }
+            }
             archiveService.createFils(newFile);
         }
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*兄弟别指望了，
- * 我都准备辞了另外这个项目很多意外×bug×，
- * 你坚持不了多久的，拜拜，祝好兄弟我只能帮你到这里了!*/

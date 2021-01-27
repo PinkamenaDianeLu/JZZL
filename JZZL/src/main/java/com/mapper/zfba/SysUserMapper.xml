@@ -35,14 +35,22 @@
   </select>
 <select id="selectNewSysuser" parameterType="java.lang.Integer" resultMap="BaseResultMap">
   SELECT <include refid="Base_Column_List" />
-  from SYS_USER
-  where  ID &gt; #{userId,jdbcType=DECIMAL}
+  FROM
+  ( SELECT <include refid="Base_Column_List"/>
+  FROM SYS_USER
+  WHERE ID &gt; #{userId,jdbcType=DECIMAL}
+  AND DWMCDM LIKE '2306%'
+  ORDER BY ID ASC
+  )
+  WHERE  ROWNUM &lt; 100
+
 </select>
 
   <select id="selectUpdateSysuser" parameterType="map" resultMap="BaseResultMap">
     SELECT <include refid="Base_Column_List" />
     from SYS_USER
     where  GXSJ &gt; #{gxsj,jdbcType=TIMESTAMP}
+    and  dwmcdm LIKE '2306%'
   </select>
 
 
@@ -52,5 +60,6 @@
     EXISTS  (SELECT 1 FROM Sys_User_Role ROLE WHERE roleid='25' AND USERs.Id=ROLE.USERID)
     AND SUBSTR(dwmcdm,0,4) &lt;&gt; '2366'
     AND dwmcdm LIKE #{dwmcdm,jdbcType=DECIMAL}||'%'
+
   </select>
 </mapper>

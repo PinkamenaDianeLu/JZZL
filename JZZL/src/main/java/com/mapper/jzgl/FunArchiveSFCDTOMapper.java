@@ -1,7 +1,6 @@
 package com.mapper.jzgl;
 
 import com.bean.jzgl.DTO.FunArchiveSFCDTO;
-import com.bean.jzgl.DTO.FunArchiveSeqDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -53,4 +52,14 @@ public interface FunArchiveSFCDTOMapper {
      * @return    |
       */
     List<FunArchiveSFCDTO>  selectNewOriginArchive(Integer id);
+
+
+     /**
+     * 查询案卷整理数
+     * @author MrLu
+     * @param
+     * @createTime  2021/1/27 15:03
+     * @return    |
+      */
+    Integer selectArchivesRearranged(Map<String,Object> map);
 }

@@ -33,5 +33,6 @@
     where  scbj= 0
     and WJBID = #{wjbid,jdbcType=VARCHAR}
     and WJBM = #{wjbm,jdbcType=DECIMAL}
+    and JZFL= 9
   </select>
 </mapper>

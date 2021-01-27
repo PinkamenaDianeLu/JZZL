@@ -164,23 +164,60 @@
     <select id="selectPeopleCaseByUseridPage" parameterType="java.lang.Integer" resultType="map">
         select * from ( SELECT A.*, ROWNUM RUM FROM (
         select
-        <include refid="Base_Column_List"/>,
+        pcase.ID, pcase.SCBJ, pcase.STATE, pcase.CREATETIME, pcase.UPDATETIME, pcase.IDCARD, pcase.NAME, pcase.JQBH,
+        pcase.AJBH, pcase.PERSONTYPE, pcase.SFCNUMBER,
+        pcase.CASENAME, pcase.CASEINFOID, pcase.SYSUSERID, pcase.BARXM, pcase.BARSYSUSERID, pcase.BARIDCARD,
+        pcase.BADWDWDM, pcase.BADWDWMC,pcase.CASETYPE,
         (select count(0) from fun_archive_sfc aseq where pcase.jqbh=aseq.jqbh and scbj=0 ) submitcount
-        from FUN_CASE_PEOPLECASE pcase where 1=1 and scbj=0
+        from FUN_CASE_PEOPLECASE pcase
+        LEFT JOIN FUN_CASE_INFO fci ON fci.id=pcase.CASEINFOID
+        <if test="null != isZlTime ">
+            LEFT JOIN (SELECT * FROM  FUN_ARCHIVE_SFC WHERE scbj=0 ) sfc ON fci.id=sfc.CASEINFOID
+        </if>
+        where 1=1 and pcase.SCBJ=0 and fci.SCBJ=0
         <if test="null != jqbh and jqbh!=''">
-            AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+            AND pcase.JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
         </if>
         <if test="null != ajbh and ajbh!=''">
-            AND AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
+            AND pcase.AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != casename and casename!=''">
+            AND pcase.CASENAME LIKE '%'||#{casename,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != barxm and barxm!=''">
+            AND pcase.BARXM LIKE '%'||#{barxm,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != badwdwmc and badwdwmc!=''">
+            AND ((pcase.BADWDWMC LIKE #{badwdwmc,jdbcType=VARCHAR}||'%') or (pcase.BADWDWDM LIKE
+            '%'||#{badwdwmc,jdbcType=VARCHAR}||'%') )
+        </if>
+        <if test="null != persontype and persontype!=''">
+            AND pcase.PERSONTYPE = #{persontype,jdbcType=VARCHAR}
         </if>
 
+
+        <if test="null != fciTimebegin and fciTimebegin!=''">
+            AND fci.LARQ &gt; to_date(#{fciTimebegin,jdbcType=TIMESTAMP},'yyyy-MM-dd')
+        </if>
+        <if test="null != fciTimeend and fciTimeend!=''">
+            AND fci.LARQ &lt; to_date(#{fciTimeend,jdbcType=TIMESTAMP},'yyyy-MM-dd')
+        </if>
+
+        <if test="null != sfcTimebegin and sfcTimebegin!=''">
+            AND sfc.UPDATETIME &gt; to_date(#{sfcTimebegin,jdbcType=TIMESTAMP},'yyyy-MM-dd')
+        </if>
+        <if test="null != sfcTimeend and sfcTimeend!=''">
+            AND sfc.UPDATETIME &lt; to_date(#{sfcTimeend,jdbcType=TIMESTAMP},'yyyy-MM-dd')
+        </if>
+
+
         <if test="null != casetype and casetype!=''">
-            AND CASETYPE = #{casetype,jdbcType=DECIMAL}
+            AND pcase.CASETYPE = #{casetype,jdbcType=DECIMAL}
         </if>
         <if test="sysuserid != 0">
-        AND SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
+            AND pcase.SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
         </if>
-        order by id desc
+        order by pcase.id desc
         ) A )
         WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
         AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
@@ -188,23 +225,57 @@
 
     <select id="selectPeopleCaseByUseridCount" resultType="java.lang.Integer" parameterType="map">
         select count(0) from
-        FUN_CASE_PEOPLECASE pcase where 1=1 and scbj=0
+        FUN_CASE_PEOPLECASE pcase
+        LEFT JOIN FUN_CASE_INFO fci ON fci.id=pcase.CASEINFOID
+        <if test="null != isZlTime ">
+            LEFT JOIN (SELECT * FROM  FUN_ARCHIVE_SFC WHERE scbj=0 ) sfc ON fci.id=sfc.CASEINFOID
+        </if>
+        where 1=1 and pcase.SCBJ=0 and fci.SCBJ=0
         <if test="null != jqbh and jqbh!=''">
-            AND JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+            AND pcase.JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
         </if>
         <if test="null != ajbh and ajbh!=''">
-            AND AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
+            AND pcase.AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != casename and casename!=''">
+            AND pcase.CASENAME LIKE '%'||#{casename,jdbcType=VARCHAR}||'%'
+        </if>
+
+        <if test="null != badwdwmc and badwdwmc!=''">
+            AND ((pcase.BADWDWMC LIKE '%'||#{badwdwmc,jdbcType=VARCHAR}||'%') or (pcase.BADWDWDM LIKE
+            '%'||#{badwdwmc,jdbcType=VARCHAR}||'%') )
+        </if>
+        <if test="null != persontype and persontype!=''">
+            AND pcase.PERSONTYPE = #{persontype,jdbcType=VARCHAR}
+        </if>
+        <if test="null != barxm and barxm!=''">
+            AND pcase.BARXM LIKE '%'||#{barxm,jdbcType=VARCHAR}||'%'
+        </if>
+
+        <if test="null != createTimebegin and createTimebegin!=''">
+            AND fci.LARQ &gt; to_date(#{createTimebegin,jdbcType=TIMESTAMP},'yyyy-MM-dd')
+        </if>
+        <if test="null != createTimeend and createTimeend!=''">
+            AND fci.LARQ &lt; to_date(#{createTimeend,jdbcType=TIMESTAMP},'yyyy-MM-dd')
+        </if>
+
+        <if test="null != sfcTimebegin and sfcTimebegin!=''">
+            AND sfc.UPDATETIME &gt; to_date(#{sfcTimebegin,jdbcType=TIMESTAMP},'yyyy-MM-dd')
+        </if>
+        <if test="null != sfcTimeend and sfcTimeend!=''">
+            AND sfc.UPDATETIME &lt; to_date(#{sfcTimeend,jdbcType=TIMESTAMP},'yyyy-MM-dd')
         </if>
         <if test="null != casetype and casetype!=''">
-            AND CASETYPE = #{casetype,jdbcType=DECIMAL}
+            AND pcase.CASETYPE = #{casetype,jdbcType=DECIMAL}
         </if>
         <if test="sysuserid != 0">
-            AND SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
+            AND pcase.SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
         </if>
     </select>
 
     <select id="selectRelationByCaseid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-        SELECT  <include refid="Base_Column_List"/>
+        SELECT
+        <include refid="Base_Column_List"/>
         FROM FUN_CASE_PEOPLECASE WHERE SCBJ=0
         AND CASEINFOID= #{caseinfoid,jdbcType=DECIMAL}
     </select>

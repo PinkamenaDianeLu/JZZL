@@ -364,16 +364,59 @@ var createNewRecord = (function () {
     function getRecordV() {
         let newRecord = new record();
         const isaccessory = +($('.recordTab.active').attr('value'));
+        debugger;
         if (0 === isaccessory) {
             //0 不是附件
-            newRecord.recordName = document.getElementById('recordName').value;
-            newRecord.recordWh = document.getElementById('recordWh').value;
+            if ("" !== document.getElementById('recordName').value && null != document.getElementById('recordName').value){
+                newRecord.recordName = document.getElementById('recordName').value;
+            }else{
+                layer.alert('文书名称不允许为空！');
+                return null;
+            }
+            if ("" !== document.getElementById('recordWh').value && null != document.getElementById('recordWh').value){
+                newRecord.recordWh = document.getElementById('recordWh').value;
+            }else{
+                layer.alert('文书文号不允许为空！');
+                return null;
+            }
+            var selectarr=document.getElementsByName("select")[0];
+
+            // var select = xmSelect.batch('#recordCode', 'getValue', 'value');
+            if ("" != selectarr.value && null != selectarr.value){
+                newRecord.recordCode = selectarr.value;
+            }else{
+                layer.alert('文书类型不允许为空！');
+                return null;
+            }
         } else {
             //1 附件
-            newRecord.recordName = document.getElementById('accessoriesName').value;
+            if ("" !== document.getElementById('accessoriesName').value && null != document.getElementById('accessoriesName').value){
+                newRecord.accessoriesName = document.getElementById('accessoriesName').value;
+            }else{
+                layer.alert('附件名称不允许为空！');
+                return null;
+            }
+            var selectarr=document.getElementsByName("select")[1];
+            if ("" != selectarr.value && null != selectarr.value){
+                    newRecord.accessoriesName = selectarr.value;
+                }else{
+                    layer.alert('附件类型不允许为空！');
+                    return null;
+                }
         }
-        newRecord.sysRecordId = document.getElementById('sysRecordId').value;
-        newRecord.suspectId = document.getElementById('suspectId').value;
+        if ("" !== document.getElementById('sysRecordId').value && null != document.getElementById('sysRecordId').value) {
+            newRecord.sysRecordId = document.getElementById('sysRecordId').value;
+        } else {
+            return null;
+        }
+
+        // if ("" !== document.getElementById('suspectId').value && null != document.getElementById('suspectId').value){
+        //     newRecord.suspectId = document.getElementById('suspectId').value;
+        // }else{
+        //
+        //     return ;
+        // }
+
         return newRecord;
     }
 
@@ -389,6 +432,7 @@ var createNewRecord = (function () {
         } else if ($('#thumbnailZone').find('.thumbnail').length === 0) {
             layer.alert('请上传文书图片！')
         } else {
+            if(null!=getRecordV()){
             axios({
                 method: 'post',
                 url: '/Records/createNewRecord',
@@ -409,7 +453,7 @@ var createNewRecord = (function () {
             }).catch(err => {
             });
         }
-
+        }
 
     }
 

@@ -616,7 +616,8 @@ var recordImgLoad = (function () {
             tag: 'img', attrs: {
                 src: file.serverip + file.fileurl,
                 class: 'img_text bigImg',
-                width: width + 'px', height: height + 'px'
+                width: width + 'px', height: height + 'px',
+                onerror:'this.src="/images/noImage.jpg"'
             }
         });
         bigImg.addEventListener('click', function () {

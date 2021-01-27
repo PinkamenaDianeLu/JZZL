@@ -7,9 +7,6 @@ import java.util.List;
 
 public interface XtAjxxbMapper {
 
-    int insert(XtAjxxb record);
-
-    int insertSelective(XtAjxxb record);
 
     XtAjxxb selectByPrimaryKey(Short id);
 

@@ -6,9 +6,6 @@ import java.util.List;
 
 public interface XtBarbMapper {
 
-    int insert(XtBarb record);
-
-    int insertSelective(XtBarb record);
 
     XtBarb selectByPrimaryKey(Integer id);
 

@@ -1,195 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.jzgl.FunCaseInfoDTOMapper">
-  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunCaseInfoDTO">
-    <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
-    <result column="STATE" jdbcType="DECIMAL" property="state" />
-    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
-    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
-    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="CASENAME" jdbcType="VARCHAR" property="casename" />
-    <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
-    <result column="CASESTATE" jdbcType="DECIMAL" property="casestate" />
-    <result column="CASETYPE" jdbcType="DECIMAL" property="casetype" />
-    <result column="CASESTAGE" jdbcType="VARCHAR" property="casestage" />
-    <result column="CASECLASS" jdbcType="VARCHAR" property="caseclass" />
-    <result column="CASECLASSCN" jdbcType="VARCHAR" property="caseclasscn" />
-    <result column="BARXM" jdbcType="VARCHAR" property="barxm" />
-    <result column="BARSYSUSERID" jdbcType="DECIMAL" property="barsysuserid" />
-    <result column="BARIDCARD" jdbcType="VARCHAR" property="baridcard" />
-    <result column="BADWDWDM" jdbcType="VARCHAR" property="badwdwdm" />
-    <result column="BADWDWMC" jdbcType="VARCHAR" property="badwdwmc" />
-    <result column="GAJGMC" jdbcType="VARCHAR" property="gajgmc" />
-    <result column="GAJGDM" jdbcType="VARCHAR" property="gajgdm" />
-    <result column="LARQ" jdbcType="TIMESTAMP" property="larq" />
-    <result column="JARQ" jdbcType="TIMESTAMP" property="jarq" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunCaseInfoDTO">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="SCBJ" jdbcType="DECIMAL" property="scbj"/>
+        <result column="STATE" jdbcType="DECIMAL" property="state"/>
+        <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
+        <result column="JQBH" jdbcType="VARCHAR" property="jqbh"/>
+        <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
+        <result column="CASENAME" jdbcType="VARCHAR" property="casename"/>
+        <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber"/>
+        <result column="CASESTATE" jdbcType="DECIMAL" property="casestate"/>
+        <result column="CASETYPE" jdbcType="DECIMAL" property="casetype"/>
+        <result column="CASESTAGE" jdbcType="VARCHAR" property="casestage"/>
+        <result column="CASECLASS" jdbcType="VARCHAR" property="caseclass"/>
+        <result column="CASECLASSCN" jdbcType="VARCHAR" property="caseclasscn"/>
+        <result column="BARXM" jdbcType="VARCHAR" property="barxm"/>
+        <result column="BARSYSUSERID" jdbcType="DECIMAL" property="barsysuserid"/>
+        <result column="BARIDCARD" jdbcType="VARCHAR" property="baridcard"/>
+        <result column="BADWDWDM" jdbcType="VARCHAR" property="badwdwdm"/>
+        <result column="BADWDWMC" jdbcType="VARCHAR" property="badwdwmc"/>
+        <result column="GAJGMC" jdbcType="VARCHAR" property="gajgmc"/>
+        <result column="GAJGDM" jdbcType="VARCHAR" property="gajgdm"/>
+        <result column="LARQ" jdbcType="TIMESTAMP" property="larq"/>
+        <result column="JARQ" jdbcType="TIMESTAMP" property="jarq"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, CASENAME, SFCNUMBER, CASESTATE, 
     CASETYPE, CASESTAGE, CASECLASS, CASECLASSCN, BARXM, BARSYSUSERID, BARIDCARD, BADWDWDM, 
     BADWDWMC, GAJGMC, GAJGDM, LARQ, JARQ
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from FUN_CASE_INFO
-    where ID = #{id,jdbcType=DECIMAL}
-  </select>
-  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunCaseInfoDTO">
-    <selectKey resultType="INTEGER" order="BEFORE"
-               keyProperty="id">
-      select SEQ_FUN_CASE_INFO_ID.nextval from dual
-    </selectKey>
-    insert into FUN_CASE_INFO
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-        ID,
-        SCBJ,
-        STATE,
-        CREATETIME,
-        UPDATETIME,
-        JQBH,
-        AJBH,
-        CASENAME,
-        SFCNUMBER,
-        CASESTATE,
-        CASETYPE,
-        CASESTAGE,
-        CASECLASS,
-        CASECLASSCN,
-        BARXM,
-        BARSYSUSERID,
-        BARIDCARD,
-      <if test="badwdwdm != null">
-        BADWDWDM,
-      </if>
-      <if test="badwdwmc != null">
-        BADWDWMC,
-      </if>
-      <if test="gajgmc != null">
-        GAJGMC,
-      </if>
-      <if test="gajgdm != null">
-        GAJGDM,
-      </if>
-      <if test="larq != null">
-        LARQ,
-      </if>
-      <if test="jarq != null">
-        JARQ,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-        #{id,jdbcType=DECIMAL},
-     0,0,sysdate,sysdate,
-        #{jqbh,jdbcType=VARCHAR},
-        #{ajbh,jdbcType=VARCHAR},
-        #{casename,jdbcType=VARCHAR},
-        #{sfcnumber,jdbcType=VARCHAR},
-        #{casestate,jdbcType=DECIMAL},
-        #{casetype,jdbcType=DECIMAL},
-        #{casestage,jdbcType=VARCHAR},
-        #{caseclass,jdbcType=VARCHAR},
-        #{caseclasscn,jdbcType=VARCHAR},
-        #{barxm,jdbcType=VARCHAR},
-        #{barsysuserid,jdbcType=DECIMAL},
-        #{baridcard,jdbcType=VARCHAR},
-      <if test="badwdwdm != null">
-        #{badwdwdm,jdbcType=VARCHAR},
-      </if>
-      <if test="badwdwmc != null">
-        #{badwdwmc,jdbcType=VARCHAR},
-      </if>
-      <if test="gajgmc != null">
-        #{gajgmc,jdbcType=VARCHAR},
-      </if>
-      <if test="gajgdm != null">
-        #{gajgdm,jdbcType=VARCHAR},
-      </if>
-      <if test="larq != null">
-        #{larq,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jarq != null">
-        #{jarq,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunCaseInfoDTO">
-    update FUN_CASE_INFO
-    <set>
-      <if test="scbj != null">
-        SCBJ = #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        STATE = #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jqbh != null">
-        JQBH = #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
-        AJBH = #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="casename != null">
-        CASENAME = #{casename,jdbcType=VARCHAR},
-      </if>
-      <if test="sfcnumber != null">
-        SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
-      </if>
-      <if test="casestate != null">
-        CASESTATE = #{casestate,jdbcType=DECIMAL},
-      </if>
-      <if test="casetype != null">
-        CASETYPE = #{casetype,jdbcType=DECIMAL},
-      </if>
-      <if test="casestage != null">
-        CASESTAGE = #{casestage,jdbcType=VARCHAR},
-      </if>
-      <if test="caseclass != null">
-        CASECLASS = #{caseclass,jdbcType=VARCHAR},
-      </if>
-      <if test="caseclasscn != null">
-        CASECLASSCN = #{caseclasscn,jdbcType=VARCHAR},
-      </if>
-      <if test="barxm != null">
-        BARXM = #{barxm,jdbcType=VARCHAR},
-      </if>
-      <if test="barsysuserid != null">
-        BARSYSUSERID = #{barsysuserid,jdbcType=DECIMAL},
-      </if>
-      <if test="baridcard != null">
-        BARIDCARD = #{baridcard,jdbcType=VARCHAR},
-      </if>
-      <if test="badwdwdm != null">
-        BADWDWDM = #{badwdwdm,jdbcType=VARCHAR},
-      </if>
-      <if test="badwdwmc != null">
-        BADWDWMC = #{badwdwmc,jdbcType=VARCHAR},
-      </if>
-      <if test="gajgmc != null">
-        GAJGMC = #{gajgmc,jdbcType=VARCHAR},
-      </if>
-      <if test="gajgdm != null">
-        GAJGDM = #{gajgdm,jdbcType=VARCHAR},
-      </if>
-      <if test="larq != null">
-        LARQ = #{larq,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jarq != null">
-        JARQ = #{jarq,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where ID = #{id,jdbcType=DECIMAL}
-  </update>
-  <select id="selectCaseInfoByCaseInfoId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List" />
-    from FUN_CASE_INFO WHERE SCBJ=0
-    AND ID = #{caseinfoid,jdbcType=DECIMAL}
-  </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_CASE_INFO
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
+    <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunCaseInfoDTO">
+        <selectKey resultType="INTEGER" order="BEFORE"
+                   keyProperty="id">
+            select SEQ_FUN_CASE_INFO_ID.nextval from dual
+        </selectKey>
+        insert into FUN_CASE_INFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            SCBJ,
+            STATE,
+            CREATETIME,
+            UPDATETIME,
+            JQBH,
+            AJBH,
+            CASENAME,
+            SFCNUMBER,
+            CASESTATE,
+            CASETYPE,
+            CASESTAGE,
+            CASECLASS,
+            CASECLASSCN,
+            BARXM,
+            BARSYSUSERID,
+            BARIDCARD,
+            <if test="badwdwdm != null">
+                BADWDWDM,
+            </if>
+            <if test="badwdwmc != null">
+                BADWDWMC,
+            </if>
+            <if test="gajgmc != null">
+                GAJGMC,
+            </if>
+            <if test="gajgdm != null">
+                GAJGDM,
+            </if>
+            <if test="larq != null">
+                LARQ,
+            </if>
+            <if test="jarq != null">
+                JARQ,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id,jdbcType=DECIMAL},
+            0,0,sysdate,sysdate,
+            #{jqbh,jdbcType=VARCHAR},
+            #{ajbh,jdbcType=VARCHAR},
+            #{casename,jdbcType=VARCHAR},
+            #{sfcnumber,jdbcType=VARCHAR},
+            #{casestate,jdbcType=DECIMAL},
+            #{casetype,jdbcType=DECIMAL},
+            #{casestage,jdbcType=VARCHAR},
+            #{caseclass,jdbcType=VARCHAR},
+            #{caseclasscn,jdbcType=VARCHAR},
+            #{barxm,jdbcType=VARCHAR},
+            #{barsysuserid,jdbcType=DECIMAL},
+            #{baridcard,jdbcType=VARCHAR},
+            <if test="badwdwdm != null">
+                #{badwdwdm,jdbcType=VARCHAR},
+            </if>
+            <if test="badwdwmc != null">
+                #{badwdwmc,jdbcType=VARCHAR},
+            </if>
+            <if test="gajgmc != null">
+                #{gajgmc,jdbcType=VARCHAR},
+            </if>
+            <if test="gajgdm != null">
+                #{gajgdm,jdbcType=VARCHAR},
+            </if>
+            <if test="larq != null">
+                #{larq,jdbcType=TIMESTAMP},
+            </if>
+            <if test="jarq != null">
+                #{jarq,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunCaseInfoDTO">
+        update FUN_CASE_INFO
+        <set>
+            <if test="scbj != null">
+                SCBJ = #{scbj,jdbcType=DECIMAL},
+            </if>
+            <if test="state != null">
+                STATE = #{state,jdbcType=DECIMAL},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="casename != null">
+                CASENAME = #{casename,jdbcType=VARCHAR},
+            </if>
+            <if test="sfcnumber != null">
+                SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="casestate != null">
+                CASESTATE = #{casestate,jdbcType=DECIMAL},
+            </if>
+            <if test="casetype != null">
+                CASETYPE = #{casetype,jdbcType=DECIMAL},
+            </if>
+            <if test="casestage != null">
+                CASESTAGE = #{casestage,jdbcType=VARCHAR},
+            </if>
+            <if test="caseclass != null">
+                CASECLASS = #{caseclass,jdbcType=VARCHAR},
+            </if>
+            <if test="caseclasscn != null">
+                CASECLASSCN = #{caseclasscn,jdbcType=VARCHAR},
+            </if>
+            <if test="barxm != null">
+                BARXM = #{barxm,jdbcType=VARCHAR},
+            </if>
+            <if test="barsysuserid != null">
+                BARSYSUSERID = #{barsysuserid,jdbcType=DECIMAL},
+            </if>
+            <if test="baridcard != null">
+                BARIDCARD = #{baridcard,jdbcType=VARCHAR},
+            </if>
+            <if test="badwdwdm != null">
+                BADWDWDM = #{badwdwdm,jdbcType=VARCHAR},
+            </if>
+            <if test="badwdwmc != null">
+                BADWDWMC = #{badwdwmc,jdbcType=VARCHAR},
+            </if>
+            <if test="gajgmc != null">
+                GAJGMC = #{gajgmc,jdbcType=VARCHAR},
+            </if>
+            <if test="gajgdm != null">
+                GAJGDM = #{gajgdm,jdbcType=VARCHAR},
+            </if>
+            <if test="larq != null">
+                LARQ = #{larq,jdbcType=TIMESTAMP},
+            </if>
+            <if test="jarq != null">
+                JARQ = #{jarq,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+    <select id="selectCaseInfoByCaseInfoId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from FUN_CASE_INFO WHERE SCBJ=0
+        AND ID = #{caseinfoid,jdbcType=DECIMAL}
+    </select>
+
+    <select id="selectCaseCount" parameterType="map" resultType="java.lang.Integer">
+        SELECT COUNT(1) FROM FUN_CASE_INFO WHERE SCBJ=0
+        <if test="casetype != null">
+            AND CASETYPE = #{casetype,jdbcType=DECIMAL}
+        </if>
+        <if test="badwdwdm != null">
+            AND BADWDWDM LIKE #{badwdwdm,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="startTime != null">
+            AND LARQ &gt;= #{startTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endTime != null">
+            AND LARQ &lt;= #{endTime,jdbcType=TIMESTAMP}
+        </if>
+
+    </select>
 </mapper>

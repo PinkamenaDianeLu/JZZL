@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.zfba.WjBjzMapper" >
+  <resultMap id="BaseResultMap" type="com.bean.zfba.WjBjz" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="JZFL" property="jzfl" jdbcType="VARCHAR" />
+    <result column="JQBH" property="jqbh" jdbcType="VARCHAR" />
+    <result column="WSGL" property="wsgl" jdbcType="VARCHAR" />
+    <result column="WJBM" property="wjbm" jdbcType="VARCHAR" />
+    <result column="WJBID" property="wjbid" jdbcType="DECIMAL" />
+    <result column="WJDM" property="wjdm" jdbcType="VARCHAR" />
+    <result column="WJZW" property="wjzw" jdbcType="VARCHAR" />
+    <result column="WJDZ" property="wjdz" jdbcType="VARCHAR" />
+    <result column="XH" property="xh" jdbcType="DECIMAL" />
+    <result column="YM" property="ym" jdbcType="DECIMAL" />
+    <result column="JLSJ" property="jlsj" jdbcType="TIMESTAMP" />
+    <result column="GXSJ" property="gxsj" jdbcType="TIMESTAMP" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+    <result column="SFBZJ" property="sfbzj" jdbcType="VARCHAR" />
+    <result column="JZSJBID" property="jzsjbid" jdbcType="DECIMAL" />
+    <result column="SID" property="sid" jdbcType="DECIMAL" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="FJCBID" property="fjcbid" jdbcType="DECIMAL" />
+    <result column="SFAZXT" property="sfazxt" jdbcType="DECIMAL" />
+    <result column="XYRBH" property="xyrbh" jdbcType="VARCHAR" />
+    <result column="XYRXM" property="xyrxm" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, JZFL, JQBH, WSGL, WJBM, WJBID, WJDM, WJZW, WJDZ, XH, YM, JLSJ, GXSJ, SCBJ, SFBZJ, 
+    JZSJBID, UUID,FJCBID,SFAZXT,SID,XYRBH,XYRXM
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    select 
+    <include refid="Base_Column_List" />
+    from WJ_BJZ
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+    <select id="selectWjdzByBmBid"  parameterType="map" resultMap="BaseResultMap">
+        SELECT  <include refid="Base_Column_List" />
+        from WJ_BJZ
+        WHERE SCBJ=0 AND SFBZJ=0
+        AND WJBID = #{wjbid,jdbcType=VARCHAR}
+        AND WJBM = #{wjbm,jdbcType=DECIMAL}
+    </select>
+</mapper>

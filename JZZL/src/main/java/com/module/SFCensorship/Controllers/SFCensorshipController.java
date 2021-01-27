@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveSFC;
-import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
@@ -106,6 +105,7 @@ public class SFCensorshipController extends BaseFactory {
             newSfc.setArchivename(pJsonObj.getString("archivename"));
             newSfc.setCaseinfoid(thisFunCaseInfo.getId());//案件表id
             newSfc.setBaserecordid(recordId);//基于那张文书选择的
+            newSfc.setIssuspectorder(1);//已经排序
             sFCensorshipService.insertFunArchiveSFC(newSfc);
             //查询正在活跃的基础卷
             FunArchiveSeqDTO BaseSeq = sFCensorshipService.selectActiveSeqByCaseId(caseInfoId);
@@ -228,7 +228,15 @@ public class SFCensorshipController extends BaseFactory {
             int caseInfoId = Integer.parseInt(DecodeUrlP(caseinfoid));
 
             reValue.put("value", sFCensorshipService.getFunCaseInfoById(caseInfoId));
-            reValue.put("issuspectorder", 1 == sFCensorshipService.selectBaseSfcByCaseinfoid(caseInfoId).getIssuspectorder());//基础卷是否已经为嫌疑人排序
+            FunArchiveSFCDTO sfc=sFCensorshipService.selectBaseSfcByCaseinfoid(caseInfoId);
+            //判断该卷是否被整理
+            if (null!=sfc){
+                //有基础卷
+                reValue.put("issuspectorder", 1 == sFCensorshipService.selectBaseSfcByCaseinfoid(caseInfoId).getIssuspectorder());//基础卷是否已经为嫌疑人排序
+            }else {
+                //没有基础卷
+                reValue.put("issuspectorder", false);
+            }
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

@@ -1005,7 +1005,6 @@ var loadArchiveIndex = (function () {
     /**
      * 上传新的文书
      * @author MrLu
-     * @param
      * @createTime  2020/12/22 15:49
      * @return    |
      */
