@@ -206,10 +206,7 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
 
-    @Override
-    public List<FunSuspectRecordDTO> selectRecordBySuspectid(int suspectid, int recordtype) {
-        return funSuspectRecordDTOMapper.selectRecordBySuspectid(suspectid,recordtype);
-    }
+
 
     @Override
     public void updateArchiveSfcById(FunArchiveSFCDTO funArchiveSFCDTO) {

@@ -28,23 +28,24 @@ var webSocket = (function () {
      * @return    |
      */
     function createUnreadMessageLi(thisMes) {
+
         let newMessage = utils.createElement.createElement({
             tag: 'li',
             attrs: {}, arg: '<b>发件人：' + thisMes.sender + '</b>' +
                 '<font>' + utils.timeFormat.timestampToDate(thisMes.sendtime) + '</font>'
-        })
+        });
         let readed = utils.createElement.createElement({
             tag: 'a',
             attrs: {
                 'class': 'b_but edit'
             }, arg: '已读'
-        })
+        });
         //确认已读按钮
         readed.addEventListener('click', function () {
             readMessage(thisMes.id);
             $(newMessage).remove();
 
-        })
+        });
 
         let msg = document.createElement('p');
         msg.innerHTML = thisMes.message;
@@ -67,7 +68,6 @@ var webSocket = (function () {
             selectUnreadMessage();
             // /user  /用户  /订阅地址
             stompClient.subscribe('/queues/' + userNow, function (chat) {
-                console.log(chat)
                 showGreeting(chat.body);
             })
 
@@ -83,6 +83,7 @@ var webSocket = (function () {
     function readAllMessage() {
         if (confirm('确认全部标记已读？')) {
             readMessage(Array.from(messageIds).join(','));
+            $('#messageCount').hide();
         }
     }
 
@@ -102,6 +103,11 @@ var webSocket = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     console.log('已标记已读');
+                    let messageCount=$('#messageCount').html();
+                    if (messageCount&&+messageCount>=1){
+                        messageCount--;
+                    }
+                    $('#messageCount').html(messageCount);
                 } else {
                     console.error('标记已读失败');
                 }
@@ -134,7 +140,18 @@ var webSocket = (function () {
      */
     function showGreeting(message) {
         console.log(message);
-        $('#webSocketMessageUl').prepend(createUnreadMessageLi(JSON.parse(message)));
+        let messageObj=JSON.parse(message);
+        if ('destroy'===messageObj.message){
+            //提示关闭页面功能 不需要记录为消息
+            return  ;
+        }
+        $('#webSocketMessageUl').prepend(createUnreadMessageLi(messageObj));
+        let messageCount=$('#messageCount').html();
+        if (!messageCount||messageCount<1){
+            messageCount=0
+        }
+        $('#messageCount').show().html(+messageCount+1);
+
     }
 
     /**
@@ -150,11 +167,23 @@ var webSocket = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
-                    let fd = document.createDocumentFragment();
-                    for (let thisMes of reV.value) {
-                        $(fd).append(createUnreadMessageLi(thisMes));
+
+                    if (reV.value.length>0){
+                        let fd = document.createDocumentFragment();
+                        for (let thisMes of reV.value) {
+                            if ('destroy'===thisMes.message){
+                                //提示关闭页面功能 不需要记录为消息
+                                continue;
+                            }
+                            $(fd).append(createUnreadMessageLi(thisMes));
+                        }
+                        $('#webSocketMessageUl').append(fd);
+                        $('#messageCount').html(reV.value.length)
+                    } else {
+                        $('#messageCount').hide();
                     }
-                    $('#webSocketMessageUl').append(fd);
+
+
                 } else {
                     console.error('未读消息加载失败');
                 }

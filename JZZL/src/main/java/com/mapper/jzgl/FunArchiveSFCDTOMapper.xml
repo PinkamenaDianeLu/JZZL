@@ -168,7 +168,7 @@
         AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
     </select>
     <select id="selectArchiveSFCPageCount" resultType="java.lang.Integer" parameterType="map">
-    select count(0) from   FUN_ARCHIVE_SFC where 1=1 and scbj=0
+    select count(0) from   FUN_ARCHIVE_SFC where 1=1 and scbj=0 AND ARCHIVETYPE >= 0
     and CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
   </select>
 
@@ -195,6 +195,7 @@
         FROM fun_archive_sfc
         WHERE scbj=0
         AND ID &gt; #{id,jdbcType=DECIMAL}
+
         AND archivetype=-1
     </select>
 

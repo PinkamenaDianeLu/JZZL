@@ -27,6 +27,8 @@ public class FunSuspectRecordDTO {
 
     private Integer recordtype;
 
+    private Integer archiveseqid;
+
     public Integer getId() {
         return id;
     }
@@ -121,5 +123,13 @@ public class FunSuspectRecordDTO {
 
     public void setRecordtype(Integer recordtype) {
         this.recordtype = recordtype;
+    }
+
+    public Integer getArchiveseqid() {
+        return archiveseqid;
+    }
+
+    public void setArchiveseqid(Integer archiveseqid) {
+        this.archiveseqid = archiveseqid;
     }
 }

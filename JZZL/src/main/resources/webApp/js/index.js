@@ -4,13 +4,14 @@
  * @url webApp.js
  * @describe  访问登录
  * test : 127.0.0.1:8080?username=123&pwd=123&key=123
+ * --http://35.2.31.58:8080/?username=YWRtaW4=&password=MjAyY2I5NjJhYzU5MDc1Yjk2NGIwNzE1MmQyMzRiNzA=&key=123
  */
 
 $(function () {
     // //用户名
-    const oriName = utils.getUrlPar('username');
+    const oriName = window.atob(utils.getUrlPar('username'));
     // //密码
-    const oriPwd = utils.getUrlPar('pwd');
+    const oriPwd = window.atob(utils.getUrlPar('password'));
     //生成的key
     const key = utils.getUrlPar('key');
     $.post({
@@ -25,15 +26,39 @@ $(function () {
                     data: {loginMessage: loadMessageFactory()},
                     success: (re) => {
                         const reV = JSON.parse(re);
-                        if ('success' === reV.message) {
-                            //登录成功
-                            location.href = '../model/ajcx/ajcx.html';
-                            sessionStorage.username = oriName;
-                        }else if ('deny' === reV.message){
-                            alert('用户名或密码错误！')
-                        }else {
-                            alert('用户名密码key呢？')
+                        switch (reV.message) {
+                            case 'success':
+                                //正常登录成功
+                                location.href = '../model/ajcx/ajcx.html';
+                                sessionStorage.username = oriName;
+                                break
+                            case 'urlLogin_success':
+                                //外部跳转
+                                let urlP = window.btoa(reV.value + sessionStorage.salt);
+                                location.href = '../model/ajcx/sjjl.html?id=' + urlP;
+                                sessionStorage.username = oriName;
+                                break;
+                            case 'deny':
+                                alert('用户名或密码错误！')
+                                break;
+                            case 'urlLogin_deny':
+                                alert('传递的参数有误！')
+                                break;
+                            default:
+                                alert('缺少登录所需要的必要值！');
                         }
+
+
+                        //urlLogin_success
+                        /*     if ('success' === reV.message) {
+                                 //登录成功
+                                 location.href = '../model/ajcx/ajcx.html';
+                                 sessionStorage.username = oriName;
+                             }else if ('deny' === reV.message){
+                                 alert('用户名或密码错误！')
+                             }else {
+                                 alert('用户名密码key呢？')
+                             }*/
                     }
                 });
             } else {

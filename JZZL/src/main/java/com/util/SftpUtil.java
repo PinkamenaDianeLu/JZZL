@@ -75,10 +75,10 @@ public class SftpUtil {
     public static String upLoad(String fileName, String dstDirPath, String fileType, InputStream inputFile) throws Exception {
         if (StringUtils.isEmpty(fileType)) throw new Exception("请指定上传文件类型");
         String rePath = "";//返回文件的完整路径
-        String username = GlobalUtil.getGlobal("ftpUserName");
-        String password = GlobalUtil.getGlobal("ftpPassword");
-        String host = GlobalUtil.getGlobal("ftpHost");
-        int port = Integer.parseInt(GlobalUtil.getGlobal("ftpPort"));
+        String username = GlobalUtil.getGlobal("ftpUserNameForLinux");
+        String password = GlobalUtil.getGlobal("ftpPasswordForLinux");
+        String host = GlobalUtil.getGlobal("ftpHostForLinux");
+        int port = Integer.parseInt(GlobalUtil.getGlobal("ftpPortForLinux"));
         String nginxUrl = "";
         if ("img".equals(fileType)) {
             nginxUrl = GlobalUtil.getGlobal("nginxImgUrl");

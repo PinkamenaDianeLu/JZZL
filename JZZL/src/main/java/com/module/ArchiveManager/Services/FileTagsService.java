@@ -36,4 +36,24 @@ public interface FileTagsService {
      * @return    |
       */
     FunArchiveRecordsDTO selectFunArchiveRecordsDTOById (Integer recordId);
+    
+     /**
+     * 删除标签
+     * @author Mrlu
+     * @param 
+     * @createTime  2021/3/2 16:45
+     * @return    |  
+      */
+    void delTagById(Integer id);
+
+
+     /**
+     * 更改标签的颜色
+     * @author MrLu
+     * @param id id
+     * @param colour 颜色
+     * @createTime  2021/3/15 14:38
+     * @return    |
+      */
+    void changeTagColor(Integer id,String colour);
 }

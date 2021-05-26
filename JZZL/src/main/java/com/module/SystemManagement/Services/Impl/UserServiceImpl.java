@@ -33,4 +33,9 @@ public class UserServiceImpl  implements UserService {
     public SysUser loginVerification(String username, String pwd) throws Exception {
         return SysUserMapper.INSTANCE.pcDTOToPc(sysUserDTOMapper.login(username,pwd));
     }
+
+    @Override
+    public SysUser loginVerification(String username) throws Exception {
+        return SysUserMapper.INSTANCE.pcDTOToPc(sysUserDTOMapper.loginNoPasswd(username));
+    }
 }

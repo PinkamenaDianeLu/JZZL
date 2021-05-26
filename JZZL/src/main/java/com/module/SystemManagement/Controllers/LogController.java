@@ -2,6 +2,7 @@ package com.module.SystemManagement.Controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bean.jzgl.DTO.FunCasePeoplecaseDTO;
 import com.bean.jzgl.DTO.SysLogsLoginDTO;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
@@ -9,6 +10,7 @@ import com.config.session.UserSession;
 import com.module.SystemManagement.Services.LogService;
 import com.module.SystemManagement.Services.UserService;
 import com.util.IpUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,7 +23,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -51,8 +55,9 @@ public class LogController {
     RedisTemplate<String, Object> redisOnlineUserTemplate;
 
     private final UserService userServiceByRedis;
+
     public LogController(LogService logService,
-                         @Qualifier("redisCSTemplate")  RedisTemplate<String, Serializable> redisCSTemplate,
+                         @Qualifier("redisCSTemplate") RedisTemplate<String, Serializable> redisCSTemplate,
                          RedisTemplate<String, Object> redisCCTemplate,
                          RedisTemplate<String, Object> redisOnlineUserTemplate,
                          @Qualifier("UserService") UserService userService,
@@ -97,33 +102,96 @@ public class LogController {
                 throw new Exception("你传nm呢？弟弟？");
             }
             //解密字符串
-            String DecodeUsername = username;
-            String DecodePwd = oriPwd;
+//            String DecodeUsername = username;
+//            String DecodePwd = oriPwd;
 //            String DecodeUsername= ThreeDesUtil.des3DecodeCBC(username);
 //            String DecodePwd= ThreeDesUtil.des3DecodeCBC(oriPwd);
-            SysUser sysUserNow = userService.loginVerification(DecodeUsername, DecodePwd);
-            if (null == sysUserNow) {
-                //用户名密码验证失败
-                reValue.put("message", "deny");
+
+            if ("123".equals(key)) {
+                //本系统自我登录
+                SysUser sysUserNow = userService.loginVerification(username, oriPwd);
+                if (null == sysUserNow) {
+                    //用户名密码验证失败
+                    reValue.put("message", "deny");
+                } else {
+                    //正常登录
+                    loginToRedis(sysUserNow);
+                }
             } else {
-                //获取随机字符串作为key
-                final String UserRedisId = "redisUser" + UUID.randomUUID();
-                //上缴session 在redis中的对应id
-                userSession.setUserRedisId(UserRedisId);
-                //上缴redis一个序列化的
-                redisCSTemplate.opsForValue().set(UserRedisId, sysUserNow, 900, TimeUnit.SECONDS);
-                //记录在线用户  key：身份证号   value 登录时间  持续时间600s
-                redisOnlineUserTemplate.opsForValue().set(sysUserNow.getUsername(), new Date(), 900, TimeUnit.SECONDS);
-
-                //记录登录日志
-                saveLoginLog(sysUserNow);
+                //通过其它途径进入系统
+                reValue=loginByUrl(username, key, oriPwd);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
             reValue.put("message", "error");
         }
         return reValue.toJSONString();
+    }
+
+    /**
+     * 其它系统的跳转登录
+     *
+     * @param
+     * @return |
+     * @author MrLu
+     * @createTime 2021/4/8 15:38
+     */
+    private JSONObject loginByUrl(String username, String key, String oriPwd) throws Exception {
+        JSONObject reValue = new JSONObject();
+        reValue.put("message", "error");
+
+        byte[] asBytes = Base64.getDecoder().decode(key);
+        String realKeys = new String(asBytes);
+        String keys[] = realKeys.split(",");
+        //来源
+        String comeFrom = keys[0].toUpperCase();
+        //http://ip:端口/username=base64的用户名&password=base64的密码$key=base64(SSHB_AZXT,jqbh)
+//http://35.2.31.58:8080/?username=YWRtaW4=&password=MjAyY2I5NjJhYzU5MDc1Yjk2NGIwNzE1MmQyMzRiNzA=&key=123
+        if ("SSHB_AZXT".equals(comeFrom)) {
+            //案宗系统跳转
+            //加密规则：password=md5(身份证号+key)
+            //要访问的案件
+            String jqbh = keys[1];
+            String md5Pwd = DigestUtils.md5Hex(username + comeFrom);
+            //判断加密方法是否一致
+            if (md5Pwd.equals(oriPwd)) {
+                //判断该警情所属的案件的主/辅办人是否是他
+                List<FunCasePeoplecaseDTO> cases = logService.selectCaseByJqIDCard( jqbh,username);
+                if (cases.size() > 0) {
+                    //记录登录并跳转message
+                    SysUser sysUserNow = userService.loginVerification(username);
+                    //记录登录日志
+                    loginToRedis(sysUserNow);
+                    reValue.put("message", "urlLogin_success");
+                    reValue.put("value", cases.get(0).getCaseinfoid());
+                } else {
+                    reValue.put("message", "urlLogin_deny");
+                }
+            }
+        }
+        return reValue;
+    }
+
+    /**
+     * 登录信息记载至redis
+     *
+     * @param
+     * @return |
+     * @author MrLu
+     * @createTime 2021/4/8 16:16
+     */
+    private void loginToRedis(SysUser sysUserNow) {
+        //获取随机字符串作为key
+        final String UserRedisId = "redisUser" + UUID.randomUUID();
+        //上缴session 在redis中的对应id
+        userSession.setUserRedisId(UserRedisId);
+        //上缴redis一个序列化的
+        redisCSTemplate.opsForValue().set(UserRedisId, sysUserNow, 900000, TimeUnit.SECONDS);
+        //记录在线用户  key：身份证号   value 登录时间  持续时间600s
+        redisOnlineUserTemplate.opsForValue().set(sysUserNow.getUsername(), new Date(), 900000, TimeUnit.SECONDS);
+
+        //记录登录日志
+        saveLoginLog(sysUserNow);
     }
 
     /**
@@ -148,13 +216,14 @@ public class LogController {
         logService.insertLogLogin(SysLogsLoginDTO);
     }
 
-     /**
+    /**
      * 获取上次登录日志
-     * @author MrLu
+     *
      * @param
-     * @createTime  2020/12/8 14:59
-     * @return    |
-      */
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/8 14:59
+     */
     @RequestMapping(value = "/getPrevLoginHistory", method = {RequestMethod.GET,
             RequestMethod.POST}, produces = "text/html;charset=UTF-8")
     @ResponseBody

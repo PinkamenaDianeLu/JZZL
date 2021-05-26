@@ -12,7 +12,7 @@ var ajcxTable = (function () {
 
     let tableObject;
 
-    const searchParam = function (zlrq,larq,ajbh, jqbh,casename, casetype,barxm,persontype,badwdwmc) {
+    const searchParam = function (zlrq,larq,ajbh, jqbh,casename, casetype,barxm,persontype,badwdwmc,sfcnumber) {
         this.ajbh = ajbh;
         this.jqbh = jqbh;
         this.casename=casename;
@@ -22,6 +22,7 @@ var ajcxTable = (function () {
         this.badwdwmc = badwdwmc;
         this.larq=larq;
         this.zlrq=zlrq;
+        this.sfcnumber=sfcnumber;
         // this.casetype = casetype;
         // this.casetype = casetype;
         // this.casetype = casetype;
@@ -29,14 +30,16 @@ var ajcxTable = (function () {
 
     function getSearchParam() {
         let reS = new searchParam();
-        reS.ajbh = $('#ajbhHead').val().trim() + $('#ajbh').val().trim();
+        //去掉原有的A23
+        reS.ajbh = $('#ajbhHead').val().trim() + $('#ajbh').val().replace('A23','').trim();
         reS.jqbh = $('#jqbh').val().trim();
         reS.casename=$('#casename').val().trim();
         reS.casetype = $('#casetype').val();
         reS.barxm=$('#barxm').val().trim();
         reS.persontype=$('#persontype').val().trim();
         reS.badwdwmc=$('#badwdwmc').val().trim();
-        if(""!==$("#larq").val()&&null!==$("#larq").val()){
+        reS.sfcnumber=$('#sfcnumber').val().trim();
+        if($("#larq").val()){
                 var sj = $("#larq").val().split(' - ');
                 reS.fciTimebegin = sj[0];
                 reS.fciateTimeend = sj[1];
@@ -57,9 +60,9 @@ var ajcxTable = (function () {
      * @return    |
      */
     this.submitHistory = function (id) {
-        let urlP = window.btoa(id + sessionStorage.salt)
+        let urlP = window.btoa(id + sessionStorage.salt);
         window.open('/model/ajcx/sjjl.html?id=' + urlP);
-    }
+    };
      /**
      * 合案
      * @author MrLu
@@ -67,9 +70,20 @@ var ajcxTable = (function () {
      * @createTime  2021/1/8 15:14
      * @return    |
       */
-    this.combinationCase=function (id) {
+    this.combinationCase=function (id,casename) {
+        //打开合案页面
+        layer.open({
+            icon: 1,
+            type: 2,
+            title: '合并案卷',
+            skin: 'layui-layer-lan',
+            maxmin: false,
+            shadeClose: false, //点击遮罩关闭层
+            area: ['1000px', '700px'],
+            content: '/model/ajcx/combinationCase.html?caseinfoid=' +id+'&casename='+ utils.Base64.utoa(casename)
+        });
 
-    }
+    };
      /**
      * 拆案
      * @author MrLu
@@ -78,8 +92,18 @@ var ajcxTable = (function () {
      * @return    |
       */
     this.splitCase=function (id) {
-
-    }
+        //拆案选择同一单位下的人
+        layer.open({
+            icon: 1,
+            type: 2,
+            title: '拆分案卷',
+            skin: 'layui-layer-lan',
+            maxmin: false,
+            shadeClose: false, //点击遮罩关闭层
+            area: ['1000px', '700px'],
+            content: '/model/ajcx/splitCase.html?caseinfoid=' +id
+        });
+    };
 
     function loadTable() {
         tableObject = createTable({
@@ -116,7 +140,7 @@ var ajcxTable = (function () {
                 title: '操作',
                 align: 'center',
                 formatter: function (value, row, index) {
-                    let combinationCase = '<a class="b_but edit" onclick="combinationCase(\'' + row.caseinfoid + '\')">合案</a>';
+                    let combinationCase = '<a class="b_but edit" onclick="combinationCase(\'' + row.caseinfoid+ '\',\'' + row.casename + '\')">合案</a>';
                     let splitCase = '<a class="b_but edit" onclick="splitCase(\'' + row.caseinfoid + '\')">拆案</a>';
                     return '<a class="b_but edit" onclick="submitHistory(\'' + row.caseinfoid + '\')">进入卷宗</a>' + combinationCase + splitCase;
                 }
@@ -142,9 +166,9 @@ var ajcxTable = (function () {
 
     _ajcxTable.prototype = {
         searchTable
-    }
+    };
     return _ajcxTable;
-})()
+})();
 $(function () {
     /**
      * 添加时间监听

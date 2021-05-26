@@ -1,5 +1,6 @@
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.bean.jzgl.DTO.FunArchiveRecordsDTO;
 import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.bean.jzgl.Source.SysUser;
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -57,7 +59,11 @@ public class testg {
     public void replace() {
         System.out.println("asdasdadssdaasd_name".replace("_name", ""));
     }
-
+@Test
+public  void splitTest(){
+    String[] whereArrary = "123".split(",");
+    System.out.print(whereArrary.length);
+}
     @Test
     public void ann() throws Exception {
         Class<?> ObjClass = FunArchiveRecords.class;
@@ -142,8 +148,10 @@ public class testg {
 
     @Test
     public void md5() {
-        String encodeStr = DigestUtils.md5Hex("text + key");
-        System.out.println("MD5加密后的字符串为:encodeStr=" + encodeStr);
+        System.out.println(Base64.getEncoder().encodeToString("230103198810140915".getBytes(StandardCharsets.UTF_8)));
+        String encodeStr = DigestUtils.md5Hex("230103198810140915SSHB_AZXT");
+        System.out.println(Base64.getEncoder().encodeToString(encodeStr.getBytes(StandardCharsets.UTF_8)));
+        System.out.println(Base64.getEncoder().encodeToString("SSHB_AZXT,J2310020600002020020015".getBytes(StandardCharsets.UTF_8)));
     }
 
     @Test
@@ -192,19 +200,36 @@ public class testg {
         calendar.set(Calendar.HOUR_OF_DAY, calendar.get(Calendar.HOUR_OF_DAY) - 24);
         System.out.println(calendar.getTime());
     }
+
     @Test
-    public  void testClassCast(){
+    public void testClassCast() {
         try {
-            String aaaa="asdad";
+            String aaaa = "asdad";
             long lt = new Long(aaaa);
             Date date = new Date(lt);
             System.out.println(date);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             System.out.println("拦下来了！");
         }
+    }
 
-//        rMap.put("startTime",date);
+    @Test
+    public void testSubstring() {
+        System.out.println("0101I".substring(0, 4));
+    }
 
+    @Test
+    public void testSplit() {
+        String a = "1,2,3";
+        String[] aa = Optional.ofNullable(a).orElse("").split(",");
+        System.out.println(aa.length);
+    }
+
+
+    @Test
+    public void testOption(){
+        FunArchiveRecordsDTO thisRecord=new FunArchiveRecordsDTO();
+        System.out.println(thisRecord.getId());
     }
 
 }

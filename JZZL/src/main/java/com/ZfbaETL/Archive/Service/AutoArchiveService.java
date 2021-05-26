@@ -1,7 +1,6 @@
 package com.ZfbaETL.Archive.Service;
 
 import com.bean.jzgl.DTO.*;
-import com.bean.zfba.XtWjflb;
 import com.mapper.jzgl.*;
 import com.mapper.zfba.*;
 import org.springframework.stereotype.Service;
@@ -96,7 +95,7 @@ public class AutoArchiveService {
      * @createTime 2020/10/11 16:13
      */
   public   FunArchiveSeqDTO selectLastSeqBySfc(int archivesfcid){
-        return  funArchiveSeqDTOMapper.selectLastSeqBySfc(archivesfcid);
+        return  funArchiveSeqDTOMapper.selectOriSeqBySfc(archivesfcid);
     };
 
     public List<SysRecordorderDTO> selectSysRecordOrderByArchiveType(int archivetype) throws  Exception{
@@ -145,6 +144,12 @@ public class AutoArchiveService {
         return funArchiveFilesDTOMapper.selectRepeatedlyFileCodeBySeqid(filecode,archiveseqid);
     }
 
+    public SysRecordorderDTO selectRecordOrderByTypes(String recordcode, Integer archivetype) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("recordcode", recordcode);
+        map.put("archivetype", archivetype);
+        return sysRecordorderDTOMapper.selectRecordOrderByTypes(map);
+    }
     /**
      * 新建文书目录 封皮 封底
      * @author MrLu
@@ -190,6 +195,7 @@ public class AutoArchiveService {
             r.setIsdelete(0);
             r.setServerip("/");
             r.setFilecode("F" + record.getRecordscode() + "R" + record.getId() + "T" + type.getId());
+            r.setBjzid(0);
             createFiles(r);
         } else {
             //查询复制

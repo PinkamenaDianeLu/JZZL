@@ -29,6 +29,8 @@ public class FunSuspectRecord {
     private Integer recordtype;
     @CodeTableMapper(sourceFiled = "recordtype", codeTableType = "archivetype")
     private Integer recordtype_name;
+
+    private Integer archiveseqid;
     public Integer getId() {
         return id;
     }
@@ -123,5 +125,21 @@ public class FunSuspectRecord {
 
     public void setRecordtype(Integer recordtype) {
         this.recordtype = recordtype;
+    }
+
+    public Integer getRecordtype_name() {
+        return recordtype_name;
+    }
+
+    public void setRecordtype_name(Integer recordtype_name) {
+        this.recordtype_name = recordtype_name;
+    }
+
+    public Integer getArchiveseqid() {
+        return archiveseqid;
+    }
+
+    public void setArchiveseqid(Integer archiveseqid) {
+        this.archiveseqid = archiveseqid;
     }
 }

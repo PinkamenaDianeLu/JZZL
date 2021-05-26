@@ -166,9 +166,9 @@ var loadFiles = (function () {
             $(largeWrapper).hide();
         })
 
-        div.append(front);
-        div.append(mov);
-        div.append(largeWrapper);
+        div.appendChild(front);
+        div.appendChild(mov);
+        div.appendChild(largeWrapper);
         imgMap.set(file.filecode, file);
         return div;
     }
@@ -288,9 +288,8 @@ $(function () {
         //Integer seqId, Integer recordId, String fileCodes
         const iterator1 = ImportRecords[Symbol.iterator]();
         for (const item of iterator1) {
-            console.log(item)
-
             if (item[1]) {
+                console.log(item[1])
                 let fileCodes = 'all';
                 if ('all' !== item[1]) {
                     fileCodes = Array.from(item[1]).join(',');
@@ -305,8 +304,10 @@ $(function () {
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {
+                            layer.msg("导入成功！");
                             console.log('导入成功');
                         } else {
+                            layer.msg("导入失败，无法确认该文书的相对位置！");
                             console.log('导入失败');
                         }
                     }

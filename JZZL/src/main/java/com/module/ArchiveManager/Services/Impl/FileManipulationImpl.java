@@ -30,10 +30,25 @@ public class FileManipulationImpl implements FileManipulationService {
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
     @Resource
     FunArchiveRecordindexDTOMapper funArchiveRecordindexDTOMapper;
+    @Resource
+    FunSuspectDTOMapper funSuspectDTOMapper;
+    @Resource
+    FunArchiveBackcoverDTOMapper FunArchiveBackcoverDTOMapper;
+    @Resource
+    FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
+    @Resource
+    FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
+
     @Override
     public FunArchiveCoverDTO selectFunArchiveCoverDTOByFileId (Integer fileid){
         return  funArchiveCoverDTOMapper.selectFunArchiveCoverDTOByFileId(fileid);
     }
+
+    @Override
+    public FunArchiveBackcoverDTO selectFunArchiveBackCoverDTOByFileId(Integer fileid) {
+        return FunArchiveBackcoverDTOMapper.selectFunArchiveBackCoverDTOByFileId(fileid);
+    }
+
     @Override
     public FunCaseInfoDTO selectFunCaseInfoDTOById (Integer caseId){
         return  funCaseInfoDTOMapper.selectByPrimaryKey(caseId);
@@ -46,6 +61,12 @@ public class FileManipulationImpl implements FileManipulationService {
     public FunArchiveRecordsDTO selectFunArchiveRecordsDTOById (Integer recordId){
         return  funArchiveRecordsDTOMapper.selectByPrimaryKey(recordId);
     }
+
+    @Override
+    public List<FunArchiveRecordsDTO> selectFunArchiveRecordsByUUID(String recordUuid) {
+        return funArchiveRecordsDTOMapper.selectFunArchiveRecordsByUUID(recordUuid);
+    }
+
     @Override
     public List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid) {
         Map<String,Object> map=new HashMap<>();
@@ -74,10 +95,22 @@ public class FileManipulationImpl implements FileManipulationService {
     @Override
     public void  updateFunArchiveCoverById(FunArchiveCoverDTO record){
         funArchiveCoverDTOMapper.updateByPrimaryKeySelective(record);
-    };
+    }
+
+    @Override
+    public void updateFunArchiveBackCoverById(FunArchiveBackcoverDTO FunArchiveBackcoverDTO) {
+        FunArchiveBackcoverDTOMapper.updateByPrimaryKeySelective(FunArchiveBackcoverDTO);
+    }
+
+    ;
     @Override
     public void  insertFunArchiveCover(FunArchiveCoverDTO record){
         funArchiveCoverDTOMapper.insertSelective(record);
+    }
+
+    @Override
+    public void insertFunArchiveBackCover(FunArchiveBackcoverDTO FunArchiveBackcoverDTO) {
+        FunArchiveBackcoverDTOMapper.insertSelective(FunArchiveBackcoverDTO);
     }
 
     @Override
@@ -108,8 +141,6 @@ public class FileManipulationImpl implements FileManipulationService {
     @Override
     public void updateFunArchiveFileDTO(FunArchiveFilesDTO record) {
         funArchiveFilesDTOMapper.updateByPrimaryKeySelective(record);
-
-
     }
 
     @Override
@@ -127,6 +158,36 @@ public class FileManipulationImpl implements FileManipulationService {
         map.put("archiverecordid",archiverecordid);
         map.put("filecode",filecode);
         return funArchiveFilesDTOMapper.selectFilesByFileCode(map);
+    }
+
+    @Override
+    public List<FunSuspectDTO> selectSuspectByArchiveseqid(Integer archiveseqid) {
+        return funSuspectDTOMapper.selectSuspectByArchiveseqid(archiveseqid);
+    }
+
+    @Override
+    public Integer selectFilesCountByTypeid(Integer archivetypeid) {
+        return funArchiveFilesDTOMapper.selectFilesCountByTypeid(archivetypeid);
+    }
+
+    @Override
+    public Integer selectFilecCountByRecordid(Integer recordid) {
+        return funArchiveFilesDTOMapper.selectFilecCountByRecordid(recordid);
+    }
+
+    @Override
+    public FunArchiveSeqDTO selectBaseArchiveBySeqId(int seqid) {
+        return funArchiveSeqDTOMapper.selectBaseArchiveBySeqId(seqid);
+    }
+
+    @Override
+    public FunArchiveTypeDTO selectSameTypeWithSeq(Integer archiveseqid, Integer id) {
+        return funArchiveTypeDTOMapper.selectSameTypeWithSeq(archiveseqid,id);
+    }
+
+    @Override
+    public List<FunArchiveFilesDTO> selectFilesByCodeNotSend(String filecode) {
+       return   funArchiveFilesDTOMapper.selectFilesByCodeNotSend(filecode);
     }
 
 }

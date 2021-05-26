@@ -2,7 +2,6 @@ package com.mapper.jzgl;
 
 
 import com.bean.jzgl.DTO.SysRecordorderDTO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +53,9 @@ public interface SysRecordorderDTOMapper {
     List<SysRecordorderDTO> selectRecordCodesByAtype(Map<String, Object> map);
 
     Integer selectRecordCodesByAtypeCount(Map<String, Object> map);
+
+
+
 
 
 

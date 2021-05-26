@@ -42,7 +42,7 @@
   AND DWMCDM LIKE '2306%'
   ORDER BY ID ASC
   )
-  WHERE  ROWNUM &lt; 100
+
 
 </select>
 
@@ -50,7 +50,7 @@
     SELECT <include refid="Base_Column_List" />
     from SYS_USER
     where  GXSJ &gt; #{gxsj,jdbcType=TIMESTAMP}
-    and  dwmcdm LIKE '2306%'
+    and  dwmcdm LIKE '231002%'
   </select>
 
 

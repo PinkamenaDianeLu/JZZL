@@ -56,4 +56,10 @@ public class UserServiceByRedisImpl implements UserService {
         System.err.println("空实现！");
         return null;
     }
+
+    @Override
+    public SysUser loginVerification(String username) throws Exception {
+        System.err.println("空实现！");
+        return null;
+    }
 }

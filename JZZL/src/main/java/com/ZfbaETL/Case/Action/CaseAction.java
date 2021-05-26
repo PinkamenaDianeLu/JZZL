@@ -3,11 +3,15 @@ package com.ZfbaETL.Case.Action;
 import com.ZfbaETL.BaseServer.BaseServer;
 import com.ZfbaETL.Case.Server.ArchiveService;
 import com.ZfbaETL.Case.Server.CaseServer;
+import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
+import com.bean.jzgl.Source.SysRecordMessage;
 import com.bean.zfba.*;
 import com.enums.EnumSoft;
 import com.enums.Enums;
+import com.util.GlobalUtil;
 import com.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -48,14 +52,17 @@ public class CaseAction implements CommandLineRunner {
      */
 //    @Scheduled(fixedRate=70000)
     public void ImportCases() {
+        String groupcode = GlobalUtil.getGlobal("groupcode");//查询的单位代码
+
         EtlTablelogDTO lastV = baseServer.selectLastValue("XT_AJXXB", "ID");
 
-        List<XtAjxxb> cases = caseServer.selectNewCase(lastV.getLastpknumvalue());
+        List<XtAjxxb> cases = caseServer.selectNewCase(lastV.getLastpknumvalue(),groupcode);
         EtlLogsDTO record = new EtlLogsDTO();
         record.setSystemname(lastV.getSystemname());
         record.setTablename(lastV.getTablename());
         record.setStarttime(new Date());
         record.setLastpkname(lastV.getLastpkname());
+        record.setLastpkstrvalue("无数据更新");
         int insertCount = 0;
         for (XtAjxxb thisCase :
                 cases) {
@@ -72,7 +79,7 @@ public class CaseAction implements CommandLineRunner {
                     continue;
                 }
                 SysUserDTO thisJzlZbr = caseServer.selectJzUserByIdCard(zbr.getBargmsfhm());
-                if (null==thisJzlZbr){
+                if (null == thisJzlZbr) {
                     baseServer.insertErrorLog(record, "主办人不在当前单位", thisCase.getId() + "");
                     continue;
                 }
@@ -90,8 +97,10 @@ public class CaseAction implements CommandLineRunner {
                 newCaseInfo.setBaridcard(zbr.getBargmsfhm());//办案人
                 newCaseInfo.setBadwdwdm(zbdw.getBadwdm());//办案单位
                 newCaseInfo.setBadwdwmc(zbdw.getBadwzw());
-                newCaseInfo.setGajgmc("公安机关名称？");
-                newCaseInfo.setGajgdm("公安机关代码？");
+                String gajgmc = Optional.ofNullable(caseServer.selectGroupByDwdm(zbdw.getBadwdm()).getDwjc()).orElse(zbdw.getBadwzw());
+                newCaseInfo.setGajgmc(gajgmc);//公安机关名称
+
+                newCaseInfo.setGajgdm(zbdw.getBadwdm());
                 newCaseInfo.setLarq(thisCase.getLarq());//立案日期
                 newCaseInfo.setJarq(thisCase.getJarq());//简要案情
 
@@ -270,38 +279,20 @@ public class CaseAction implements CommandLineRunner {
      */
     private void createRecordsNoSuspect(FunArchiveTypeDTO newType) throws Exception {
         //查询不对人的
-
         List<XtWjflb> Records = archiveService.selectRecordNoSuspect(newType.getJqbh());
         int i = 0;
         for (XtWjflb thisR :
                 Records) {
-            FunArchiveRecordsDTO newRecord = new FunArchiveRecordsDTO();
-            newRecord.setJqbh(newType.getJqbh());
-            newRecord.setAjbh(newType.getAjbh());
-            newRecord.setThisorder(i++);
-            newRecord.setRecordname(thisR.getWjzw());
-            newRecord.setArchivetypeid(newType.getId());
-            newRecord.setArchivecode(thisR.getWjdm());
-            newRecord.setRecordstyle(EnumSoft.recordstyle.DEWS.getValue());
-            newRecord.setArchiveseqid(newType.getArchiveseqid());
-            newRecord.setRecordscode(thisR.getWjdm());
-            newRecord.setIsdelete(0);
-            newRecord.setIsazxt(0);//"系统抽取"
-            newRecord.setArchivesfcid(newType.getArchivesfcid());
-            newRecord.setAuthor("系统抽取");
-            newRecord.setAuthorid(0);
-            newRecord.setPrevid(0);
-            newRecord.setJcyrecordcode("");
-            newRecord.setRecordwh("文号");
-            newRecord.setEffectivetime(thisR.getJlsj());
-            newRecord.setBaserecordid(0);
-            newRecord.setRecorduuid(UUID.randomUUID().toString());
-            newRecord.setWjbm(thisR.getWjbm());//文件表名
-            newRecord.setWjbid(thisR.getWjbid());//文件表id
-            archiveService.createNewRecord(newRecord);
-            createFiles(newRecord);
+            try {
+
+                baseServer.createRecordsNoSuspect(newType, i++, thisR);
+            }catch (Exception e){
+                e.printStackTrace();
+                System.out.printf("错误："+newType.getId());
+            }
         }
     }
+
 
     private void createRecordsSuspect(FunArchiveTypeDTO newType, FunSuspectDTO newSuspect, FunCaseInfoDTO newCaseInfo) throws Exception {
         //查询对人的
@@ -310,6 +301,9 @@ public class CaseAction implements CommandLineRunner {
         int i = 0;
         for (XtWjflb thisR :
                 SusRecords) {
+            try{
+
+
             FunArchiveRecordsDTO newRecord = new FunArchiveRecordsDTO();
             newRecord.setJqbh(newType.getJqbh());
             newRecord.setAjbh(newType.getAjbh());
@@ -326,8 +320,8 @@ public class CaseAction implements CommandLineRunner {
             newRecord.setAuthor("系统抽取");
             newRecord.setAuthorid(0);
             newRecord.setPrevid(0);
-            newRecord.setJcyrecordcode("");
-            newRecord.setRecordwh("文号");
+            //查询文号！、检察院代码
+            baseServer.recordSetWhJcycode(newRecord, thisR.getWjdm(), thisR.getWjbm().toUpperCase(), thisR.getWjbid());
             newRecord.setEffectivetime(thisR.getJlsj());
             newRecord.setBaserecordid(0);
             newRecord.setRecorduuid(UUID.randomUUID().toString());
@@ -343,73 +337,15 @@ public class CaseAction implements CommandLineRunner {
             newSR.setSuspectid(newSuspect.getId());
             newSR.setRecordid(newRecord.getId());
             newSR.setRecordtype(newType.getRecordtype());//文书类型
+            newSR.setArchiveseqid(newRecord.getArchiveseqid());
             archiveService.createNewSR(newSR);
-            createFiles(newRecord);
+            baseServer.createFiles(newRecord);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
 
     }
 
-    /**
-     * 抽取文书的文件
-     *
-     * @param
-     * @return |
-     * @author MrLu
-     * @createTime 2021/1/6 10:16
-     */
-    private void createFiles(FunArchiveRecordsDTO newRecord) throws Exception {
-        List<WjBjz> wjdzs = archiveService.selectWjdzByBmBid_Bjz(newRecord.getWjbid(), newRecord.getWjbm());
-        int i = 0;
-        for (WjBjz thisWjdz :
-                wjdzs) {
-            FunArchiveFilesDTO newFile = new FunArchiveFilesDTO();
-            newFile.setJqbh(newRecord.getJqbh());
-            newFile.setAjbh(newRecord.getAjbh());
-            if (null != thisWjdz.getXh()) {
-                i = thisWjdz.getXh() + i;
-                newFile.setThisorder(i);
-            } else {
-                newFile.setThisorder(i++);
-            }
-
-            newFile.setArchiverecordid(newRecord.getId());
-            newFile.setArchivetypeid(newRecord.getArchivetypeid());
-            newFile.setFiletype(0);//标准文书
-            newFile.setFileurl(thisWjdz.getWjdz());
-            newFile.setOriginurl(thisWjdz.getWjdz());
-            newFile.setIsdowland(0);
-            newFile.setFilename(thisWjdz.getWjzw());
-            newFile.setArchiveseqid(newRecord.getArchiveseqid());
-            newFile.setArchivesfcid(newRecord.getArchivesfcid());
-            newFile.setIsazxt(0);
-            newFile.setAuthor("系统抽取");
-            newFile.setAuthorid(0);
-            newFile.setIsshow(0);
-            newFile.setFilecode(UUID.randomUUID().toString());
-            newFile.setIsdelete(0);
-            if ("1".equals(thisWjdz.getWsgl())) {
-                newFile.setServerip("http://35.0.11.40/WordToImage/");
-            } else {
-                //if ("3".equals(thisWjdz.getWsgl()))
-
-                //设置用于判断是否是附件的关键词
-                String wsfj_directory_yuejuan[] = {"wsfjNew", "wsfj", "wpfjNew", "wpfj" };
-                for (String thisWDY :
-                        wsfj_directory_yuejuan) {
-                    //判断是否有这些关键词
-                    if (thisWjdz.getWjdz().indexOf(thisWDY) > -1) {
-                        //yes
-                        newFile.setServerip("http://35.0.11.40:8080/fjupload");
-                        break;
-                    } else {
-                        //no   //这个是上传的word转换的
-                        newFile.setServerip("http://35.0.11.40/UploadFileToImage");
-                    }
-
-                }
-            }
-            archiveService.createFils(newFile);
-        }
-    }
 
 }

@@ -49,7 +49,7 @@ var recycleBin = (function () {
         thisTypeEle.addEventListener('click', function () {
             console.log('点一下收缩或展示' + thisType.recordtypecn)
         });
-        div.append(thisTypeEle);
+        $(div).append(thisTypeEle);
         $('#recycleBinArchiveIndex').append(div);
         //加载文书
         loadRecords(thisType.id, div.id)
@@ -90,7 +90,8 @@ var recycleBin = (function () {
      * @return    |
      */
     function createRecordDiv(thisRecord, isdelete) {
-        let record = thisRecord;
+        let record = thisRecord.record;
+        console.log(record);
         if (!record) {
             throw  '(回收站)无文书信息，无法加载该文书！！';
         }
@@ -113,11 +114,11 @@ var recycleBin = (function () {
             recordscode: record.recordscode
         });//缓存信息
         if (viewModel) {
-            p.append(createButtons(key));//加载按钮
+            p.appendChild(createButtons(key));//加载按钮
         }
 
         //加载文书目录
-        // createFileIndex(thisRecord.files, p);
+        createFileIndex(thisRecord.files, p);
         //点击显示对应图片
         $(p).unbind().click(function () {
             //加载文书图片 按照子标签的顺序加载
@@ -132,13 +133,13 @@ var recycleBin = (function () {
 
         });
         //加载文书
-        div.append(p);
+        div.appendChild(p);
         return div;
     }
 
     function createFileIndex(files, div) {
         for (let thisFile of files) {
-            div.append(createFilesDiv(thisFile));
+            div.appendChild(createFilesDiv(thisFile));
         }
     }
 
@@ -166,9 +167,9 @@ var recycleBin = (function () {
             event.stopPropagation();
         })
         if (viewModel) {
-            p.append(createButtons(key));
+            p.appendChild(createButtons(key));
         }
-        div.append(p);
+        div.appendChild(p);
         return div;
     }
 
@@ -214,7 +215,7 @@ var recycleBin = (function () {
             $(this).remove();//删除该对象
             event.stopPropagation();
         })
-        div.append(a);
+        div.appendChild(a);
         return div;
     }
 
@@ -259,6 +260,9 @@ var recycleBin = (function () {
                                 let fileDiv = createFilesDiv(i);//生成对应文书
                                 $('#recycleDd' + recordId).children('p').append(fileDiv);
                             }
+                            $('#thumbnail' + fileCodes).remove();
+                            $('#bigImg' + fileCodes).remove();
+                            $('#front' + fileCodes).remove();
                         } else {
                             throw '文件添加回收站失败';
                         }
@@ -273,7 +277,12 @@ var recycleBin = (function () {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {
                             let thisRecord = reV.value;
+                            console.log(thisRecord.record)
+                            $('#thumbnail' + fileCodes).remove();
+                            $('#bigImg' + fileCodes).remove();
+                            $('#front' + fileCodes).remove();
                             $('#recycleP' + thisRecord.record.archivetypeid).append(createRecordDiv(thisRecord, 1));
+
                         } else {
                             throw '文件添加回收站失败';
                         }

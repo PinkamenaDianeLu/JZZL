@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.zfba.XtDzqzbMapper" >
+  <resultMap id="BaseResultMap" type="com.bean.zfba.XtDzqzb" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="WJBM" property="wjbm" jdbcType="VARCHAR" />
+    <result column="WJBID" property="wjbid" jdbcType="DECIMAL" />
+    <result column="JLRXM" property="jlrxm" jdbcType="VARCHAR" />
+    <result column="JLRGMSFHM" property="jlrgmsfhm" jdbcType="VARCHAR" />
+    <result column="JLRGAJGJGDM" property="jlrgajgjgdm" jdbcType="VARCHAR" />
+    <result column="JLRGAJGMC" property="jlrgajgmc" jdbcType="VARCHAR" />
+    <result column="JLSJ" property="jlsj" jdbcType="TIMESTAMP" />
+    <result column="GXSJ" property="gxsj" jdbcType="TIMESTAMP" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.bean.zfba.XtDzqzb" extends="BaseResultMap" >
+    <result column="YZNR" property="yznr" jdbcType="BLOB" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, WJBM, WJBID, JLRXM, JLRGMSFHM, JLRGAJGJGDM, JLRGAJGMC, JLSJ, GXSJ, SCBJ
+  </sql>
+  <sql id="Blob_Column_List" >
+    YZNR
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from XT_DZQZB
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectSealByRecord" resultType="java.lang.Integer" parameterType="map">
+    select  nvl(count(1),0)
+    from XT_DZQZB
+    where  WJBM= #{wjbm,jdbcType=VARCHAR} and WJBID = #{wjbid,jdbcType=DECIMAL}
+  </select>
+
+</mapper>

@@ -49,7 +49,8 @@ public class FileTagsController extends BaseFactory {
      */
     @RequestMapping(value = "/createNewTags", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "创建新的标签", operType = OperLog.type.INSERT)
     public String createNewTags(String tag) {
         JSONObject reValue = new JSONObject();
@@ -57,9 +58,9 @@ public class FileTagsController extends BaseFactory {
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
             FunArchiveTagsDTO tagsDTO = JSON.parseObject(tag, FunArchiveTagsDTO.class);
 
-            FunArchiveRecordsDTO thisRecord=   fileTagsService.selectFunArchiveRecordsDTOById(tagsDTO.getRecordid());
-            if (null==thisRecord){
-                throw  new Exception("文书id查不到对应文书！");
+            FunArchiveRecordsDTO thisRecord = fileTagsService.selectFunArchiveRecordsDTOById(tagsDTO.getRecordid());
+            if (null == thisRecord) {
+                throw new Exception("文书id查不到对应文书！");
             }
             tagsDTO.setArchiveseqid(thisRecord.getArchiveseqid());
             tagsDTO.setArchivesfcid(thisRecord.getArchivesfcid());
@@ -78,7 +79,33 @@ public class FileTagsController extends BaseFactory {
     }
 
     /**
+     * 删除标签
+     *
+     * @param id 标签id
+     * @return |
+     * @author Mrlu
+     * @createTime 2021/3/2 9:49
+     */
+    @RequestMapping(value = "/delTag", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @recordTidy
+    @OperLog(operModul = operModul, operDesc = "删除标签", operType = OperLog.type.UPDATE)
+    public String delTag(Integer id) {
+        JSONObject reValue = new JSONObject();
+        try {
+            fileTagsService.delTagById(id);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+    /**
      * 查询文件的标签
+     *
      * @param archiveseqid
      * @param filecode
      * @return |
@@ -87,15 +114,37 @@ public class FileTagsController extends BaseFactory {
      */
     @RequestMapping(value = "/selectArchiveTags", method = {RequestMethod.GET,
             RequestMethod.POST})
-    @ResponseBody    @recordTidy
+    @ResponseBody
+    @recordTidy
     @OperLog(operModul = operModul, operDesc = "查询文件的标签", operType = OperLog.type.SELECT)
     public String selectArchiveTags(String archiveseqid, String filecode) {
         JSONObject reValue = new JSONObject();
         try {
             if (StringUtil.isEmptyAll(archiveseqid, filecode)) {
-                throw  new Exception("传nm呢？？？  值呢？？！");
+                throw new Exception("传nm呢？？？  值呢？？！");
             }
-            reValue.put("value", fileTagsService.selectArchiveTagsById(Integer.parseInt(archiveseqid),filecode));
+            reValue.put("value", fileTagsService.selectArchiveTagsById(Integer.parseInt(archiveseqid), filecode));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+    //
+
+    @RequestMapping(value = "/changeTagColor", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @recordTidy
+    @OperLog(operModul = operModul, operDesc = "更改标签的亚麻色", operType = OperLog.type.UPDATE)
+    public String changeTagColor(Integer id, String color) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtil.isEmptyAll(id+"", color)) {
+                throw new Exception("传nm呢？？？  值呢？？！");
+            }
+            fileTagsService.changeTagColor(id, color);//更新颜色
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

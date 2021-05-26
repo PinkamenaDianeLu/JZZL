@@ -32,18 +32,19 @@ var recordsTable = (function () {
      */
     this.moveIn = function (recordId) {
         const seqId = utils.getUrlPar('seqid');
+        layer.msg('开始移动，请稍等....');
         $.post({
             url: '/FileManipulation/moveFiles',
             data: {
                 fileOrder: moveObj,
                 seqId: seqId,
-                recordid:recordId,
-                orirecordid:oriRecordId
+                recordid: recordId,
+                orirecordid: oriRecordId
             },
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
-                    let lastFileCount=reV.value.length;//加载文件数量
+                    let lastFileCount = reV.value.length;//加载文件数量
                     //前台dom更改
                     let Fragment = document.createDocumentFragment();
                     //假的索引使得方法不需要再次迭代dom判断位置
@@ -51,34 +52,38 @@ var recordsTable = (function () {
                         i: 999,
                         f: 999
                     };
-                    for (let thisFile of reV.value){
+                    for (let thisFile of reV.value) {
                         //判断是否是最后一个文书
                         lastFileCount--;
-                        if (lastFileCount===0){
+                        if (lastFileCount === 0) {
                             //这些写法将不会加载下一个按钮
-                             fileIndexing = {
+                            fileIndexing = {
                                 i: 991,
                                 f: 993
                             };
                         }
 
-                        Fragment.append(parent.lai.createFilesDiv(thisFile,fileIndexing));
+                        Fragment.appendChild(parent.lai.createFilesDiv(thisFile, fileIndexing));
                         //将原有的删除
-                        parent.$('#front'+thisFile.filecode).remove();
-                        parent.$('#bigImg'+thisFile.filecode).remove();
-                        parent.$('#thumbnail'+thisFile.filecode).remove();
-                        parent.$('#fileIndex'+thisFile.filecode).remove();
+                        parent.$('#front' + thisFile.filecode).remove();
+                        parent.$('#bigImg' + thisFile.filecode).remove();
+                        parent.$('#thumbnail' + thisFile.filecode).remove();
+                        parent.$('#fileIndex' + thisFile.filecode).remove();
                     }
                     //重新计算按钮
                     parent.lai.reloadButton(parent.$('#dd' + oriRecordId).find('.v3').last());
                     parent.lai.reloadButton(parent.$('#dd' + oriRecordId).find('.v3').first());
-                   const lastFile= parent.$('#dd' + recordId).find('.v3').last();//保存目标文书的原最后一个文书
+                    const lastFile = parent.$('#dd' + recordId).find('.v3').last();//保存目标文书的原最后一个文书
                     //移动到新目录
-                    parent.$('#dd'+recordId).find('.fileSortZone').append(Fragment);
+                    parent.$('#dd' + recordId).find('.fileSortZone').append(Fragment);
                     parent.lai.reloadButton(lastFile);//刷新按钮
 
-
+                    layer.msg('开始完成！');
+                    //自我关闭
+                    const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.layer.close(index);
                 } else {
+                    layer.alert('移动失败，请稍后再试');
                 }
             }
         });
@@ -105,7 +110,7 @@ var recordsTable = (function () {
                 title: '操作',
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return oriRecordId!==row.id?'<a class="b_but edit" onclick="moveIn(' + row.id + ')" >移入</a>':'<a class="b_but editGreen"  >原文书</a>';
+                    return oriRecordId !== row.id ? '<a class="b_but edit" onclick="moveIn(' + row.id + ')" >移入</a>' : '<a class="b_but editGreen"  >原文书</a>';
                 }
             }], param: function () {
                 return getSearchParam();
@@ -124,8 +129,8 @@ var recordsTable = (function () {
         tableObject.refreshTable();
     }
 
-    function _recordsTable(moveObjP,oriRecordIdP) {
-        oriRecordId=oriRecordIdP;
+    function _recordsTable(moveObjP, oriRecordIdP) {
+        oriRecordId = oriRecordIdP;
         moveObj = moveObjP;
         loadTable();
     }
@@ -148,7 +153,7 @@ $(function () {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
                 //列表带搜索显示所有文书
-                let rt = new recordsTable(moveObj,oriRecordId);
+                let rt = new recordsTable(moveObj, oriRecordId);
                 let Fragment = document.createDocumentFragment();
                 for (let thisType of reV.value) {
                     let thisTab = utils.createElement.createElement({
@@ -163,7 +168,7 @@ $(function () {
                         $('#archivetypeid').val(thisType.id);
                         rt.searchTable();
                     });
-                    Fragment.append(thisTab)
+                    Fragment.appendChild(thisTab)
                 }
 
                 //搜索选项卡、搜索按钮 赋值

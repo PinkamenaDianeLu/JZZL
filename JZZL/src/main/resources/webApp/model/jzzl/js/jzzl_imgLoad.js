@@ -28,10 +28,16 @@ var recordImgLoad = (function () {
      * @createTime  2020/10/15 18:31
      */
     function loadFilesByRecord(recordId, fileOrder, callback) {
+        let url = '/ArrangeArchives/loadFilesByRecord';
+        console.log(fileOrder)
+        if (fileOrder.length > 0) {
+            //客制化
+            url = '/ArrangeArchives/loadFilesByFileCodes';
+        }
         $.post({
-            url: '/ArrangeArchives/loadFilesByRecord',
+            url: url,
             data: {
-                // fileOrder: fileOrder.join(','),
+                fileOrder: fileOrder.join(','),
                 seqId: parent.lai.getSeqId(),
                 recordId
             },
@@ -99,7 +105,7 @@ var recordImgLoad = (function () {
 
 
                         //跳转至区域
-                        $('#pageSum').html('/'+i);// 总页数
+                        $('#pageSum').html('/' + i);// 总页数
                         $('#jumpToPage').val(1);//跳到哪（赋值1 默认显示第一页）
                         /*********************为功能区按钮添加方法******************************/
                         //切换视图按钮
@@ -115,7 +121,7 @@ var recordImgLoad = (function () {
                     }
                     callback();//回调方法
                 } else {
-                    console.error('文书图片加载错误' );
+                    console.error('文书图片加载错误');
                     layer.alert('图片加载失败！');
                 }
             }
@@ -159,7 +165,7 @@ var recordImgLoad = (function () {
         //新建标签按钮
         $('#newTagBtn').unbind().click(function () {
             if (!isReadOnly) {
-                layer.msg('当前案件处于只读状态！');
+                layer.msg('当前案件处于只读状态！1');
                 return false;
             }
             if (thisFileCode) {
@@ -198,7 +204,7 @@ var recordImgLoad = (function () {
         //重新上传按钮
         $('#reUpLoadBtn').unbind().click(function () {
             if (!isReadOnly) {
-                layer.msg('当前案件处于只读状态！');
+                layer.msg('当前案件处于只读状态！2');
                 return false;
             }
             if (thisFileCode) {
@@ -210,7 +216,7 @@ var recordImgLoad = (function () {
                     maxmin: false,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['1000px', '700px'],
-                    content: '/model/jzzl/imgReUpload.html?fileId=' + imgMap.get(thisFileCode).id+'&fileCode='+thisFileCode
+                    content: '/model/jzzl/imgReUpload.html?fileId=' + imgMap.get(thisFileCode).id + '&fileCode=' + thisFileCode
                 });
             } else {
                 layer.alert('请选择需要重新上传的图片');
@@ -248,7 +254,7 @@ var recordImgLoad = (function () {
         //添加上传按钮
         $('#addUploadBtn').unbind().click(function () {
             if (!isReadOnly) {
-                layer.msg('当前案件处于只读状态！');
+                layer.msg('当前案件处于只读状态！3');
                 return false;
             }
             //直接上传到文书的后面
@@ -269,23 +275,23 @@ var recordImgLoad = (function () {
         //删除按钮
         $('#deleteBtn').unbind().click(function () {
             if (!isReadOnly) {
-                layer.msg('当前案件处于只读状态！');
+                layer.msg('当前案件处于只读状态！4');
                 return false;
             }
             if (confirm('确认删除？')) {
                 if (thisFileCode) {
-                    //上传至该文书后面
-                    parent.lai.delFun('fileIndex' + thisFileCode);
+                    //删除单页文书 recordId
+                    parent.lai.delFun('thumbnail' + thisFileCode, recordId);
                 } else {
-                    //上传至整个文书的最后
-                    parent.lai.delFun('dd' + recordId);
+                    //删除整个文书
+                    parent.lai.delFun('dd' + recordId, recordId);
                 }
             }
         });
         //图片详细按钮
         /**
-        * @description
-        * @log  2020/11/11 13:56  MrLu  已经没这个功能了
+         * @description
+         * @log  2020/11/11 13:56  MrLu  已经没这个功能了
          **/
         $('#imgInfoBtn').unbind().click(function () {
             layer.open({
@@ -352,7 +358,7 @@ var recordImgLoad = (function () {
      */
     function loadTags(fileCode) {
         if (!isReadOnly) {
-            layer.msg('当前案件处于只读状态！');
+            // layer.msg('当前案件处于只读状态！');
             return false;
         }
         if (document.getElementById('bigImg' + fileCode)) {
@@ -369,18 +375,44 @@ var recordImgLoad = (function () {
                                     class: 'div_a_title',
                                     id: 'tags' + fileCode
                                 }
-                            })
+                            });
                             for (let thisTag of reV.value) {
+                                let thisTagDivP=document.createElement('p');
+                                thisTagDivP.id='tag' + thisTag.id;//标签id
                                 let thisTagDiv = utils.createElement.createElement({
                                     tag: 'div',
                                     attrs: {
                                         class: 'a_title',
-                                        id: 'tag' + thisTag.id,
                                         colour: colorList.indexOf(thisTag.tagcolour),
                                         style: 'background:' + thisTag.tagcolour
                                     },
                                     arg: '' + thisTag.taginfo + '&nbsp;&nbsp;&nbsp;&nbsp;' + thisTag.authorxm + "&nbsp;&nbsp;" + utils.timeFormat.timestampToDate(thisTag.createtime)
-                                })
+                                });
+                                //删除标签按钮
+                                let delTagBtn = utils.createElement.createElement({
+                                    tag: 'a',
+                                    attrs: {
+                                        color: '#FFF',
+                                        'background-color':'#000'
+                                    }, arg: 'X'
+                                });
+                                //删除按钮方法
+                                delTagBtn.addEventListener('click', function () {
+                                    $.post({
+                                        url: '/FileTags/delTag',
+                                        data: {id: thisTag.id},
+                                        success: (re) => {
+                                            const reV = JSON.parse(re);
+                                            if ('success' === reV.message) {
+                                                $('#tag' + thisTag.id).remove();
+                                            } else {
+                                                console.error('删除失败')
+                                            }
+                                        }
+                                    });
+                                });
+                                $(thisTagDiv).append(delTagBtn);
+                                thisTagDivP.appendChild(thisTagDiv);
                                 //点击标签变色
                                 thisTagDiv.addEventListener('click', function () {
                                     //获取当前颜色下标+1
@@ -390,8 +422,20 @@ var recordImgLoad = (function () {
                                     }
                                     let color = colorList[colorNow];
                                     $(this).attr({'style': 'background:' + color, colour: colorNow})
-                                })
-                                $(thisTagsList).append(thisTagDiv);
+                                    $.post({
+                                        url: '/FileTags/changeTagColor',
+                                        data: {id: thisTag.id,
+                                        color:color},
+                                        success: (re) => {
+                                            const reV = JSON.parse(re);
+                                            if ('success' === reV.message) {
+                                            } else {
+                                                console.error('颜色更改失败')
+                                            }
+                                        }
+                                    });
+                                });
+                                $(thisTagsList).append(thisTagDivP);
                             }
                             $('#bigImg' + fileCode).append(thisTagsList);
                         }
@@ -435,14 +479,14 @@ var recordImgLoad = (function () {
 
     }
 
-     /**
+    /**
      * 实时保存顺序
      * @author MrLu
      * @param fileCode 文件代码
-      * @param prevFileCode 用于定位的上一个文件代码 当被动到第一个时 该参数为null
-      * @param fileOrder 文件的位置
+     * @param prevFileCode 用于定位的上一个文件代码 当被动到第一个时 该参数为null
+     * @param fileOrder 文件的位置
      * @createTime  2021/1/1 13:57
-      */
+     */
     function saveFileOrderOnTime(fileCode, prevFileCode, fileOrder) {
         const updateObj = function () {
             this.recordId = recordId;//被移动的或被移动到的文书id
@@ -476,7 +520,7 @@ var recordImgLoad = (function () {
      */
     function multipleFun(thisBtn) {
         if (!isReadOnly) {
-            layer.msg('当前案件处于只读状态！');
+            layer.msg('当前案件处于只读状态！6');
             return false;
         }
         $(thisBtn).find('span').html('取消多选');
@@ -514,7 +558,7 @@ var recordImgLoad = (function () {
      */
     function moveToFn(fileCode, recordId) {
         if (!isReadOnly) {
-            layer.msg('当前案件处于只读状态！');
+            layer.msg('当前案件处于只读状态！7');
             return false;
         }
         let moveState = 0;
@@ -617,13 +661,13 @@ var recordImgLoad = (function () {
                 src: file.serverip + file.fileurl,
                 class: 'img_text bigImg',
                 width: width + 'px', height: height + 'px',
-                onerror:'this.src="/images/noImage.jpg"'
+                onerror: 'this.src="/images/noImage.jpg"'
             }
         });
         bigImg.addEventListener('click', function () {
             //绑定按钮
         });
-        div.append(bigImg);
+        div.appendChild(bigImg);
         return div;
     }
 
@@ -643,7 +687,8 @@ var recordImgLoad = (function () {
             tag: 'img', attrs: {
                 src: file.serverip + file.fileurl,
                 class: 'img_text',
-                width: '120px', height: '154px'
+                width: '120px', height: '154px',
+                onerror: 'this.src="/images/noImage.jpg"'
             }
         });
         imgMap.set(file.filecode, file);
@@ -657,7 +702,7 @@ var recordImgLoad = (function () {
         if (0 === index) {
             loadBtn(file.filecode);
         }
-        a.append(thumbnail);
+        a.appendChild(thumbnail);
         return a;
     }
 
@@ -788,7 +833,8 @@ var recordImgLoad = (function () {
                 id: 'frontImg' + file.filecode,
                 src: file.serverip + file.fileurl,
                 class: 'img_text',
-                width: '150px', height: '192px'
+                width: '150px', height: '192px',
+                onerror: 'this.src="/images/noImage.jpg"'
             }
         });
         //大图
@@ -798,7 +844,7 @@ var recordImgLoad = (function () {
                 style: 'display:none',
                 class: 'larimg',
 
-            }, arg: '<img width= "900px" height="1152px" src="' + file.serverip + file.fileurl + '">'
+            }, arg: '<img width= "900px" height="1152px" src="' + file.serverip + file.fileurl + '" onerror=\'this.src="/images/noImage.jpg/"\'>'
         });
         /////////放大镜效果
         //生成跟随鼠标的小方框
@@ -833,9 +879,9 @@ var recordImgLoad = (function () {
             $(largeWrapper).hide();
         })
 
-        div.append(front);
-        div.append(mov);
-        div.append(largeWrapper);
+        div.appendChild(front);
+        div.appendChild(mov);
+        div.appendChild(largeWrapper);
 
         return div;
     }
@@ -873,7 +919,17 @@ var recordImgLoad = (function () {
         }
 
     };
-    _recordImgLoad.prototype = {getRecordId, jumpImg, orderMove, fileMoveOut, fileMoveIn, loadBtn,loadThumbnail,loadImgs,loadFrontImg}
+    _recordImgLoad.prototype = {
+        getRecordId,
+        jumpImg,
+        orderMove,
+        fileMoveOut,
+        fileMoveIn,
+        loadBtn,
+        loadThumbnail,
+        loadImgs,
+        loadFrontImg
+    }
     return _recordImgLoad;
 
 })();

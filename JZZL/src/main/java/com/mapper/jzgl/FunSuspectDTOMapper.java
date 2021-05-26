@@ -1,7 +1,6 @@
 package com.mapper.jzgl;
 
 import com.bean.jzgl.DTO.FunSuspectDTO;
-import com.bean.jzgl.DTO.FunSuspectRecordDTO;
 
 import java.util.List;
 
@@ -33,6 +32,14 @@ public interface FunSuspectDTOMapper {
     List<FunSuspectDTO> selectSuspectByRecordid(Integer recordid);
 
      /**
+     * 按照seqid查询本次送检的嫌疑人
+     * @author Mrlu
+     * @param
+     * @createTime  2021/2/20 16:11
+     * @return    |
+      */
+    List<FunSuspectDTO> selectSuspectByArchiveseqid(Integer archiveseqid);
+     /**
      * 按照id查询对应案件下的嫌疑人
      * @author MrLu
      * @param  id  caseinfoid
@@ -49,4 +56,33 @@ public interface FunSuspectDTOMapper {
      * @return    |
       */
     List<FunSuspectDTO> selectSuspectBySeqId(Integer seqid);
+
+     /**
+     * 根据id查询嫌疑人信息
+     * @author Mrlu
+     * @param  array
+     * @createTime  2021/3/8 11:09
+     * @return    |
+      */
+    List<FunSuspectDTO>  selectByPrimaryKeys(String [] array);
+
+
+     /**
+     * 根据嫌疑人编号查询嫌疑人
+     * @author MrLu
+     * @param suspectcode
+     * @createTime  2021/3/25 14:28
+     * @return    |
+      */
+    FunSuspectDTO selectSuspectBySuspectcode(String suspectcode);
+
+
+     /**
+     * 查询案件中嫌疑人的最大顺序
+     * @author MrLu
+     * @param caseinfoid
+     * @createTime  2021/3/25 15:42
+     * @return    |
+      */
+    int selectMaxOrderByCaseid(Integer caseinfoid);
 }

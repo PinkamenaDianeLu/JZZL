@@ -1,13 +1,9 @@
 package com.ZfbaETL.User.Server;
 
-import com.bean.jzgl.DTO.EtlLogsDTO;
-import com.bean.jzgl.DTO.EtlTablelogDTO;
 import com.bean.jzgl.DTO.SysUserDTO;
 import com.bean.zfba.SysUser;
-import com.mapper.jzgl.EtlTablelogDTOMapper;
 import com.mapper.jzgl.SysUserDTOMapper;
 import com.mapper.zfba.SysUserMapper;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

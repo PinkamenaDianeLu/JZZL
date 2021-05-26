@@ -44,6 +44,15 @@ public interface FunArchiveSeqDTOMapper {
      */
     FunArchiveSeqDTO selectLastSeqBySfc(int archivesfcid);
 
+
+     /**
+     * 获取原始卷的原始卷seq
+     * @author Mrlu
+     * @param  archivesfcid
+     * @createTime  2021/3/3 15:13
+     * @return    |
+      */
+    FunArchiveSeqDTO  selectOriSeqBySfc(int archivesfcid);
     /**
      * 得到某个案件最后的整理次序
      *
@@ -83,7 +92,7 @@ public interface FunArchiveSeqDTOMapper {
      * @createTime 2020/11/27 9:22
      */
     FunArchiveSeqDTO selectActiveSeqByCaseId(int caseinfoid);
-
+    List<FunArchiveSeqDTO>  selectActiveSeqByCaseIds(String []array);
 
     /**
      * 更新一个送检卷下的整理次序都是不活跃状态
@@ -104,4 +113,13 @@ public interface FunArchiveSeqDTOMapper {
      * @createTime 2020/12/15 15:09
      */
     List<FunArchiveSeqDTO> selectActiveSeqByCaseInfoId(int caseinfoid);
+
+     /**
+     * 按照警情编号查询没有发送的seq
+     * @author MrLu
+     * @param jqbh 警情编号
+     * @createTime  2021/3/25 11:37
+     * @return    |
+      */
+    List<FunArchiveSeqDTO> selectSeqByJqbh(String jqbh);
 }

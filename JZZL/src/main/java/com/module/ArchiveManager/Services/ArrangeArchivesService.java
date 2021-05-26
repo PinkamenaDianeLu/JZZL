@@ -310,16 +310,7 @@ public interface ArrangeArchivesService {
      */
     FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid);
 
-    /**
-     * 查询一个人的对应文书
-     *
-     * @param suspectid  嫌疑人id
-     * @param recordtype 文书类型
-     * @return List<FunSuspectRecordDTO>  |
-     * @author MrLu
-     * @createTime 2020/11/26 15:27
-     */
-    List<FunSuspectRecordDTO> selectRecordBySuspectid(int suspectid, int recordtype);
+
 
 
     /**

@@ -6,8 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/Framework/js/jquery.min.js"></script>
-    <script src="/Framework/layer/layer.js"></script>
+    <!--<script src="/utils/Base64Plus.js"></script>-->
     <link type="text/css" rel="stylesheet" href="/css/style.css">
     <link type="text/css" rel="stylesheet" href="/Framework/laydate/theme/default/laydate.css">
     <script src="/Framework/laydate/laydate.js"></script>
@@ -35,8 +34,10 @@
                         <div class="col-md-2"><input type="text" id="barxm" placeholder=""/><input type="hidden" id="persontype" value="0"></div>
                         <div class="col-md-1">办案单位 ：</div>
                         <div class="col-md-2"><input type="text" id="badwdwmc" placeholder=""/></div>
-                        <div class="col-md-1">被害人：</div>
-                        <div class="col-md-2"><input type="text" placeholder=""/></div>
+                        <div class="col-md-1">送检编号 ：</div>
+                        <div class="col-md-2"><input type="text" id="sfcnumber" placeholder=""/></div>
+                        <!--<div class="col-md-1">被害人：</div>-->
+                        <!--<div class="col-md-2"><input type="text" placeholder=""/></div>-->
                         <div class="col-md-1">送检状态 ：</div>
                         <div class="col-md-2"><input type="text" placeholder=""/></div>
                         <div class="col-md-1">警情编号 ：</div>
@@ -45,14 +46,13 @@
                         <div class="col-md-2"><input type="text" style="width: 60px;" placeholder="" value="A23" id="ajbhHead"/>+<input type="text" style="width: 145px;" placeholder="" id="ajbh"/></div>
                         <div class="col-md-1">立案时间 ：</div>
                         <div class="col-md-2">
-                            <input type="text" style="width: 70%;" autocomplete="off" class="layui-input" id="larq" >
+                            <input type="text"  autocomplete="off" class="layui-input" id="larq" >
                             </div>
                         <div class="col-md-1">整理时间 ：</div>
-                        <div class="col-md-3">
-                            <input type="text" id="zlrq" autocomplete="off" class="layui-input"
-                                   style="width: 70%;" >
-                        </div>
                         <div class="col-md-2">
+                            <input type="text" id="zlrq" autocomplete="off" class="layui-input">
+                        </div>
+                        <div class="col-md-2" style="padding-left: 10px">
                             <button class="ok_but" id="ajcxSearchBtn">查询</button>
                         </div>
                     </div>

@@ -189,16 +189,11 @@
         </set>
         where ID = #{id,jdbcType=DECIMAL}
     </update>
-    <select id="selectRecordsByJqbhPage" parameterType="map" resultType="map">
+    <select id="selectRecordsByJqbhPage" parameterType="map" resultMap="BaseResultMap">
         select * from ( SELECT A.*, ROWNUM RUM FROM (
         select
         <include refid="Base_Column_List"/>
-        ,(SELECT LISTAGG(suspect.SUSPECTNAME, ',') WITHIN GROUP(ORDER BY suspect.SUSPECTNAME)
-        FROM FUN_SUSPECT suspect WHERE scbj=0
-        AND EXISTS (SELECT 1
-        FROM FUN_SUSPECT_RECORD RE
-        WHERE RE.scbj=0 AND RE.SUSPECTID = SUSPECT.ID
-        AND RE.RECORDID = records.ID) ) AS SUSPECTNAME
+
         FROM FUN_ARCHIVE_RECORDS RECORDS WHERE 1=1 AND SCBJ=0
         AND NOT EXISTS (SELECT 1 FROM FUN_ARCHIVE_SFC SFC WHERE SFC.SCBJ=0 AND SFC.BASERECORDID=RECORDS.ID)
         <if test="recordscode != null">
@@ -260,10 +255,25 @@
         <if test="notRecordstyle != null">
             AND recordstyle &lt;&gt; #{notRecordstyle,jdbcType=DECIMAL}
         </if>
-
-
         ORDER BY THISORDER ASC
     </select>
+
+    <select id="selectRecordsBySuspects" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from FUN_ARCHIVE_RECORDS records
+        WHERE SCBJ=0 and ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        AND EXISTS (SELECT 1 FROM FUN_SUSPECT_RECORD sr WHERE SCBJ=0
+        and records.id=sr.recordid
+        AND suspectid IN
+        <foreach collection="suspectid" item="item" separator=","
+                 open="(" close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+        )
+        ORDER BY THISORDER ASC
+    </select>
+
 
     <select id="updateRecordOrderByTypeId" parameterType="java.lang.Integer">
         UPDATE fun_archive_records
@@ -284,6 +294,23 @@
         AND THISORDER &lt; 9999
     </select>
 
+    <select id="selectRsMaxOrderByTypeid" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        SELECT NVL(MAX(THISORDER),0) FROM FUN_ARCHIVE_RECORDS
+        WHERE SCBJ=0
+        AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        and RECORDSTYLE=1
+        AND ISDELETE &lt; 2
+    </select>
+    <select id="selectLastRsByTypeid" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+      select * from ( SELECT <include refid="Base_Column_List"/>
+         FROM FUN_ARCHIVE_RECORDS
+        WHERE SCBJ=0
+        AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        AND RECORDSTYLE=1
+        AND ISDELETE &lt; 2
+        order by THISORDER desc
+        ) where rownum=1
+    </select>
     <select id="selectArchiveRecordPage" resultType="map" parameterType="map">
         select * from ( SELECT A.*, ROWNUM RUM FROM (
         select
@@ -364,7 +391,7 @@
         (SELECT ID FROM fun_archive_type
         WHERE SCBJ=0
         AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
-         )
+        )
         ORDER BY EFFECTIVETIME ASC
     </select>
 
@@ -375,7 +402,6 @@
    AND RECORDS.SCBJ = 0
    AND RECORDS.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
    AND RECORDS.RECORDSCODE = RECORDORDER.RECORDCODE
-   AND RECORDORDER.RECORDSTYLE = 1
    AND RECORDORDER.RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
    AND RECORDORDER.ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
    AND EXISTS (SELECT 1
@@ -547,5 +573,85 @@
         AND seq.id=r.archiveseqid)
     </select>
 
+    <select id="selectRecordsNotSuspectByType" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_RECORDS rec
+        WHERE SCBJ = 0
+        AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        AND NOT EXISTS (SELECT 1 FROM fun_suspect_record sr
+        WHERE sr.scbj=0 AND rec.id=sr.recordid
+        AND sr.suspectid IN
+        <foreach collection="notsuspectids" item="item" separator=","
+                 open="(" close=")">
+            #{item,jdbcType=DECIMAL}
+        </foreach>)
+    </select>
 
+
+    <select id="selectRecordsBySeqType" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fun_archive_records re
+        WHERE scbj=0 AND recordstyle >0
+        AND EXISTS
+        (SELECT 1 FROM fun_archive_type ty
+        WHERE scbj=0
+        AND archiveseqid IN
+        <foreach collection="seqids" item="item" separator=","
+                 open="(" close=")">
+            #{item,jdbcType=DECIMAL}
+        </foreach>
+        AND re.archivetypeid=ty.id
+        AND recordtype = #{recordtype,jdbcType=VARCHAR})
+        ORDER BY re.thisorder
+    </select>
+
+    <select id="selectNoWhRecords" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fun_archive_records ar
+        WHERE scbj=0 and recordwh IS NULL
+        AND EXISTS
+        (SELECT 1 FROM sys_recordmessage rm
+        WHERE rm.z IS NOT NULL AND rm.recordcode=ar.recordscode)
+    </select>
+
+    <update id="updateRecordWhByWjMessage" parameterType="map">
+        update fun_archive_records
+        set RECORDWH= #{recordwh,jdbcType=VARCHAR},updatetime=sysdate
+        where scbj=0
+        and wjbm= #{wjbm,jdbcType=VARCHAR}
+        and wjbid=#{wjbid,jdbcType=DECIMAL}
+    </update>
+
+    <select id="selectRecordsByWjMessageNotSend" resultMap="BaseResultMap" parameterType="map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fun_archive_records ar
+        WHERE scbj=0 and wjbm= #{wjbm,jdbcType=VARCHAR}
+        and wjbid=#{wjbid,jdbcType=DECIMAL}
+        and exists (select 1 from fun_archive_sfc sfc where sfc.id=ar.archivesfcid
+        and sfc.issend=0)
+    </select>
+
+    <update id="deleteRecordsByWjMessageNotSend" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO" >
+     update fun_archive_records ar
+     set UPDATETIME = SYSDATE
+    ,ISDELETE = 2
+     where wjbm= #{wjbm,jdbcType=VARCHAR}
+        and wjbid=#{wjbid,jdbcType=DECIMAL}
+        and exists (select 1 from fun_archive_sfc sfc where  sfc.id=f.archivesfcid
+        and sfc.issend=0)
+
+    </update>
+
+    <select id="selectFunArchiveRecordsByUUID" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM fun_archive_records ar
+        WHERE scbj=0
+        AND RECORDUUID= #{recorduuid,jdbcType=VARCHAR}
+        AND ISDELETE= 0
+        AND EXISTS (SELECT 1 FROM FUN_ARCHIVE_SEQ seq WHERE seq.id=ar.archiveseqid AND seq.isfinal=0)
+    </select>
 </mapper>

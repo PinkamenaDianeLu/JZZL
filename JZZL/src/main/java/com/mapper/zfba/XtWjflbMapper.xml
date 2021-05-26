@@ -41,7 +41,7 @@
     from XT_WJFLB
     WHERE SCBJ=0
     AND JQBH = #{jqbh,jdbcType=VARCHAR}
-    AND DYDM = #{dydm,jdbcType=VARCHAR}
+    AND DYDM LIKE '%'||#{dydm,jdbcType=VARCHAR}||'%'
     order by id desc
   </select>
 
@@ -50,7 +50,20 @@
     from XT_WJFLB
     WHERE SCBJ=0
     AND JQBH = #{jqbh,jdbcType=VARCHAR}
-    AND DYDM IS NULL
+    AND (DYLX &gt; 1 OR DYLX IS NULL)
     order by id desc
+  </select>
+
+  <select id="selectSahzBool" parameterType="map" resultType="java.lang.Integer">
+    SELECT COUNT(1) FROM XT_SAHZ WHERE SCBJ=0 AND JQBH = #{jqbh,jdbcType=VARCHAR} AND ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+
+  <select id="selectNewRecordsAfterDate" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    from XT_WJFLB
+    WHERE SCBJ=0
+    AND GXSJ &gt; #{lastpkdatevalue,jdbcType=TIMESTAMP}
+    AND JLRGAJGJGDM LIKE  #{jlrgajgjgdm,jdbcType=VARCHAR}||'%'
   </select>
 </mapper>

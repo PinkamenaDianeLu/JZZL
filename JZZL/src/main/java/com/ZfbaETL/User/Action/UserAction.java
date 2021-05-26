@@ -28,8 +28,8 @@ public class UserAction implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        ImportUsers();
-//        UpdateUsers();
+        ImportUsers();
+        UpdateUsers();
     }
 
     /**
@@ -60,7 +60,7 @@ public class UserAction implements CommandLineRunner {
                 try {
                     SysUserDTO newUser = new SysUserDTO();
                     newUser.setUsername(thisUser.getUsername());
-                    newUser.setPassword(thisUser.getUsername());
+                    newUser.setPassword("MjAyY2I5NjJhYzU5MDc1Yjk2NGIwNzE1MmQyMzRiNzA=");//md5的123
                     newUser.setOrigin("案宗导入");
                     newUser.setPhone(thisUser.getDwlxfs());
                     newUser.setIdcardnumber(thisUser.getUsername());
@@ -105,7 +105,9 @@ public class UserAction implements CommandLineRunner {
         EtlLogsDTO record = new EtlLogsDTO();
         record.setSystemname(lastV.getSystemname());
         record.setTablename(lastV.getTablename());
+        record.setStarttime(new Date());
         record.setLastpkname(lastV.getLastpkname());
+        record.setLastpkstrvalue(lastV.getLastpknumvalue() + "");
         if (null != updateUsers && updateUsers.size() > 0) {
             int insertCount = 0;
 
@@ -121,13 +123,15 @@ public class UserAction implements CommandLineRunner {
                         newUser.setXm(thisUser.getXm());
                         newUser.setAgencycode(thisUser.getDwmcdm());
                         newUser.setAgencyname(thisUser.getDwmcdm());
-                    }
+
 
                     userServer.updateUser(newUser);
                     //更新最后更新的值
                     lastV.setLastpknumvalue(thisUser.getId());
+                    lastV.setLastpkdatevalue(new Date());
                     baseServer.updateLastValue(lastV);
-                    insertCount++;
+                        insertCount++;
+                    }
                 } catch (Exception ignored) {
                     ignored.printStackTrace();
                     //插入失败日志

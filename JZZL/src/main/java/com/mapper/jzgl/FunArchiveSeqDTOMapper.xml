@@ -168,9 +168,18 @@
     select nvl(max(BATCHESSEQ),0) from FUN_ARCHIVE_SEQ where scbj=0 and CASEINFOID=#{caseinfoid,jdbcType=VARCHAR}
   </select>
   <select id="selectLastSeqBySfc"  resultMap="BaseResultMap" parameterType="java.lang.Integer">
-    select <include refid="Base_Column_List" /> from  FUN_ARCHIVE_SEQ where scbj=0
-     and  archivesfcid=#{archivesfcid,jdbcType=DECIMAL}
-     and  rownum=1 order by id desc
+   SELECT * FROM ( SELECT <include refid="Base_Column_List" /> FROM  FUN_ARCHIVE_SEQ WHERE SCBJ=0
+     AND  ARCHIVESFCID=#{archivesfcid,jdbcType=DECIMAL}
+     AND  ISACTIVE=0  ORDER BY ID DESC) WHERE   ROWNUM = 1
+  </select>
+
+  <select id="selectOriSeqBySfc"  resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT * FROM ( SELECT <include refid="Base_Column_List" />
+    FROM  FUN_ARCHIVE_SEQ WHERE SCBJ=0
+    AND  ARCHIVESFCID=#{archivesfcid,jdbcType=DECIMAL}
+    AND ARCHIVETYPE=-1
+    AND  ISACTIVE=1
+    ORDER BY ID DESC) WHERE   ROWNUM = 1
   </select>
 
   <select id="selectBaseArchive"   resultMap="BaseResultMap"  parameterType="java.lang.Integer">
@@ -202,8 +211,23 @@
     AND ISACTIVE = 0 AND ROWNUM=1
   </select>
 
+  <select id="selectActiveSeqByCaseIds" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FUN_ARCHIVE_SEQ
+    WHERE scbj=0
+    AND archivetype=0
+    AND caseinfoid in
+    <foreach collection="array" item="item" separator=","
+                                open="(" close=")">
+    #{item,jdbcType=VARCHAR}
+  </foreach>
+    AND ISACTIVE = 0
+  </select>
+
+
   <select id="updateBaseSeqIsNotActive" parameterType="java.lang.Integer">
-    UPDATE FUN_ARCHIVE_SEQ set ISACTIVE=1 where scbj=0 and ARCHIVESFCID=#{archivesfcid,jdbcType=VARCHAR}
+    UPDATE FUN_ARCHIVE_SEQ set ISACTIVE=1 where scbj=0 and ARCHIVESFCID=#{archivesfcid,jdbcType=DECIMAL}
   </select>
   <select id="selectActiveSeqByCaseInfoId" parameterType="java.lang.Integer"  resultMap="BaseResultMap" >
     SELECT <include refid="Base_Column_List" />
@@ -216,5 +240,11 @@
     AND CASEINFOID = #{caseinfoid,jdbcType=VARCHAR}
     AND ISSEND &lt; 1
     AND SEQ.ARCHIVESFCID = SFC.ID)
+  </select>
+
+  <select id="selectSeqByJqbh" parameterType="java.lang.String"  resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM FUN_ARCHIVE_SEQ SEQ
+    WHERE SCBJ = 0 AND ISFINAL=0 AND JQBH = #{jqbh,jdbcType=VARCHAR}
   </select>
 </mapper>

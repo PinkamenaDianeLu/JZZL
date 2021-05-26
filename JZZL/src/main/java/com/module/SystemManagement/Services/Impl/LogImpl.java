@@ -1,13 +1,16 @@
 package com.module.SystemManagement.Services.Impl;
 
+import com.bean.jzgl.DTO.FunCasePeoplecaseDTO;
 import com.bean.jzgl.DTO.SysLogsDTO;
 import com.bean.jzgl.DTO.SysLogsLoginDTO;
+import com.mapper.jzgl.FunCasePeoplecaseDTOMapper;
 import com.mapper.jzgl.SysLogsLoginDTOMapper;
 import com.mapper.jzgl.SysLogsMapper;
 import com.module.SystemManagement.Services.LogService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author MrLu
@@ -20,6 +23,8 @@ public class LogImpl implements LogService {
     SysLogsMapper sysLogsMapper;
     @Resource
     SysLogsLoginDTOMapper sysLogsLoginDTOMapper;
+    @Resource
+    FunCasePeoplecaseDTOMapper funCasePeoplecaseDTOMapper;
     @Override
     public void insertLog(SysLogsDTO record) {
         sysLogsMapper.insertSelective(record);
@@ -38,6 +43,11 @@ public class LogImpl implements LogService {
     @Override
     public void updateHistoryLog(Integer sysuserid) {
         sysLogsLoginDTOMapper.updateHistoryLog(sysuserid);
+    }
+
+    @Override
+    public List<FunCasePeoplecaseDTO> selectCaseByJqIDCard(String jqbh, String idcard) {
+        return funCasePeoplecaseDTOMapper.selectCaseByJqIDCard(jqbh,idcard);
     }
 
 }

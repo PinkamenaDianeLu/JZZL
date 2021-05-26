@@ -97,18 +97,7 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.SysUserDTO">
     update SYS_USER
     <set>
-      <if test="scbj != null">
-        SCBJ = #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        STATE = #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+        UPDATETIME = sysdate,
       <if test="username != null">
         USERNAME = #{username,jdbcType=VARCHAR},
       </if>
@@ -141,6 +130,12 @@
     select  <include refid="Base_Column_List" /> from  SYS_USER
     WHERE USERNAME=#{username,jdbcType=VARCHAR}
     AND PASSWORD=#{pwd,jdbcType=VARCHAR}
+    AND SCBJ=0 AND STATE=0
+  </select>
+
+  <select id="loginNoPasswd" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select  <include refid="Base_Column_List" /> from  SYS_USER
+    WHERE USERNAME=#{username,jdbcType=VARCHAR}
     AND SCBJ=0 AND STATE=0
   </select>
 </mapper>

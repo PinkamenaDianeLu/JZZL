@@ -105,10 +105,11 @@
     <include refid="Base_Column_List" />
     from XT_AJXXB aj
     where scbj=0
-     AND EXISTS (SELECT 1 FROM xt_badwb dw WHERE badwdm LIKE '2306%' AND aj.jqbh=dw.jqbh)
-     and  ID  &gt; #{id,jdbcType=DECIMAL}
+     AND EXISTS (SELECT 1 FROM xt_badwb dw WHERE badwdm LIKE #{groupcode,jdbcType=DECIMAL}||'%' AND aj.jqbh=dw.jqbh)
+     and  ID &gt; #{id,jdbcType=DECIMAL}
+     and  larq &gt; to_date('2020-01-01','yyyy-MM-dd')
      order by id asc )
-    where rownum &lt; 998
+
   </select>
 
   <select id="selectUpdateCase"  parameterType="map" resultMap="BaseResultMap">

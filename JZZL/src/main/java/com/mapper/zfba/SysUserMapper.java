@@ -16,7 +16,7 @@ public interface SysUserMapper {
  * @author MrLu
  * @param 
  * @createTime  2021/1/4 14:19
- * @return    |  
+ * @return    |  --  WHERE  ROWNUM &lt; 100
   */
    List<SysUser> selectNewSysuser(Integer userId);
     /**

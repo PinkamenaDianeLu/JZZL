@@ -1,129 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.jzgl.FunArchiveTypeDTOMapper">
-  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveTypeDTO">
-    <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
-    <result column="STATE" jdbcType="DECIMAL" property="state" />
-    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
-    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
-    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="RECORDTYPE" jdbcType="DECIMAL" property="recordtype" />
-    <result column="RECORDTYPECN" jdbcType="VARCHAR" property="recordtypecn" />
-    <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder" />
-    <result column="ARCHIVENAME" jdbcType="VARCHAR"  property="archivename" />
-    <result column="ISAZXT"  jdbcType="DECIMAL"  property="isazxt" />
-    <result column="ARCHIVESEQID"  jdbcType="DECIMAL"  property="archiveseqid" />
-    <result column="ARCHIVECODE" jdbcType="VARCHAR"  property="archivecode" />
-    <result column="ARCHIVESFCID"  jdbcType="DECIMAL"  property="archivesfcid" />
+    <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="SCBJ" jdbcType="DECIMAL" property="scbj"/>
+        <result column="STATE" jdbcType="DECIMAL" property="state"/>
+        <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
+        <result column="JQBH" jdbcType="VARCHAR" property="jqbh"/>
+        <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
+        <result column="RECORDTYPE" jdbcType="DECIMAL" property="recordtype"/>
+        <result column="RECORDTYPECN" jdbcType="VARCHAR" property="recordtypecn"/>
+        <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder"/>
+        <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename"/>
+        <result column="ISAZXT" jdbcType="DECIMAL" property="isazxt"/>
+        <result column="ARCHIVESEQID" jdbcType="DECIMAL" property="archiveseqid"/>
+        <result column="ARCHIVECODE" jdbcType="VARCHAR" property="archivecode"/>
+        <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid"/>
 
-  </resultMap>
-  <sql id="Base_Column_List">
+    </resultMap>
+    <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, RECORDTYPE, RECORDTYPECN,
     DEFAULTORDER,ARCHIVENAME,ISAZXT,ARCHIVESEQID,ARCHIVECODE,ARCHIVESFCID
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from FUN_ARCHIVE_TYPE
-    where ID = #{id,jdbcType=DECIMAL}
-  </select>
-  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
-    <selectKey resultType="INTEGER" order="BEFORE"
-               keyProperty="id">
-      select SEQ_FUN_ARCHIVE_TYPE_ID.nextval from dual
-    </selectKey>
-    insert into FUN_ARCHIVE_TYPE
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-        ID,
-        SCBJ,
-        STATE,
-        CREATETIME,
-        UPDATETIME,
-        JQBH,
-        AJBH,
-        RECORDTYPE,
-        RECORDTYPECN,
-        DEFAULTORDER,
-        ISAZXT,
-        ARCHIVESEQID,
-        ARCHIVECODE,
-        ARCHIVESFCID,
-      <if test="archivename != null">
-        ARCHIVENAME,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-        #{id,jdbcType=DECIMAL},
-        0,
-        0,
-        sysdate,
-        sysdate,
-        #{jqbh,jdbcType=VARCHAR},
-        #{ajbh,jdbcType=VARCHAR},
-        #{recordtype,jdbcType=DECIMAL},
-        #{recordtypecn,jdbcType=VARCHAR},
-        #{defaultorder,jdbcType=DECIMAL},
-        #{isazxt,jdbcType=DECIMAL},
-        #{archiveseqid,jdbcType=DECIMAL},
-        #{archivecode,jdbcType=DECIMAL},
-        #{archivesfcid,jdbcType=VARCHAR},
-      <if test="archivename != null">
-        #{archivename,jdbcType=VARCHAR},
-      </if>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_ARCHIVE_TYPE
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
+    <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+        <selectKey resultType="INTEGER" order="BEFORE"
+                   keyProperty="id">
+            select SEQ_FUN_ARCHIVE_TYPE_ID.nextval from dual
+        </selectKey>
+        insert into FUN_ARCHIVE_TYPE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            SCBJ,
+            STATE,
+            CREATETIME,
+            UPDATETIME,
+            JQBH,
+            AJBH,
+            RECORDTYPE,
+            RECORDTYPECN,
+            DEFAULTORDER,
+            ISAZXT,
+            ARCHIVESEQID,
+            ARCHIVECODE,
+            ARCHIVESFCID,
+            <if test="archivename != null">
+                ARCHIVENAME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id,jdbcType=DECIMAL},
+            0,
+            0,
+            sysdate,
+            sysdate,
+            #{jqbh,jdbcType=VARCHAR},
+            #{ajbh,jdbcType=VARCHAR},
+            #{recordtype,jdbcType=DECIMAL},
+            #{recordtypecn,jdbcType=VARCHAR},
+            #{defaultorder,jdbcType=DECIMAL},
+            #{isazxt,jdbcType=DECIMAL},
+            #{archiveseqid,jdbcType=DECIMAL},
+            #{archivecode,jdbcType=DECIMAL},
+            #{archivesfcid,jdbcType=VARCHAR},
+            <if test="archivename != null">
+                #{archivename,jdbcType=VARCHAR},
+            </if>
 
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
-    update FUN_ARCHIVE_TYPE
-    <set>
-      <if test="scbj != null">
-        SCBJ = #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        STATE = #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="jqbh != null">
-        JQBH = #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
-        AJBH = #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="recordtype != null">
-          RECORDTYPE = #{recordtype,jdbcType=DECIMAL},
-      </if>
-      <if test="recordtypecn != null">
-          RECORDTYPECN = #{recordtypecn,jdbcType=VARCHAR},
-      </if>
-      <if test="defaultorder != null">
-        DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
-      </if>
-      <if test="archivename != null">
-        ARCHIVENAME =    #{archivename,jdbcType=VARCHAR},
-      </if>
-      <if test="isazxt != null">
-        ISAZXT=  #{isazxt,jdbcType=DECIMAL},
-      </if>
-    </set>
-    where ID = #{id,jdbcType=DECIMAL}
-  </update>
-<select id="selectArchiveTypeByJqSeq" parameterType="map" resultMap="BaseResultMap">
-  select
-  <include refid="Base_Column_List" />
-  from FUN_ARCHIVE_TYPE WHERE scbj=0
-    <if test="archiveseqid != null">
-  AND ARCHIVESEQID=#{archiveseqid,jdbcType=DECIMAL}
-    </if>
-    <if test="jqbh != null">
-  AND jqbh=#{jqbh,jdbcType=VARCHAR}
-    </if>
-    ORDER BY DEFAULTORDER ASC
-</select>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveTypeDTO">
+        update FUN_ARCHIVE_TYPE
+        <set>
+            <if test="scbj != null">
+                SCBJ = #{scbj,jdbcType=DECIMAL},
+            </if>
+            <if test="state != null">
+                STATE = #{state,jdbcType=DECIMAL},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="recordtype != null">
+                RECORDTYPE = #{recordtype,jdbcType=DECIMAL},
+            </if>
+            <if test="recordtypecn != null">
+                RECORDTYPECN = #{recordtypecn,jdbcType=VARCHAR},
+            </if>
+            <if test="defaultorder != null">
+                DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
+            </if>
+            <if test="archivename != null">
+                ARCHIVENAME = #{archivename,jdbcType=VARCHAR},
+            </if>
+            <if test="isazxt != null">
+                ISAZXT= #{isazxt,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
+    <select id="selectArchiveTypeByJqSeq" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_ARCHIVE_TYPE WHERE scbj=0
+        <if test="archiveseqid != null">
+            AND ARCHIVESEQID=#{archiveseqid,jdbcType=DECIMAL}
+        </if>
+        <if test="jqbh != null">
+            AND jqbh=#{jqbh,jdbcType=VARCHAR}
+        </if>
+        ORDER BY DEFAULTORDER ASC
+    </select>
+    <select id="selectTypeBySeqType"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_TYPE
+        WHERE SCBJ=0
+        AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
+        AND ROWNUM=1
+    </select>
+    <select id="selectSameTypeWithSeq"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+           SELECT <include refid="Base_Column_List"/>
+     FROM FUN_ARCHIVE_TYPE
+    WHERE SCBJ=0 and ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+      AND ARCHIVETYPE =
+          (SELECT ARCHIVETYPE FROM FUN_ARCHIVE_TYPE WHERE ID = #{id,jdbcType=DECIMAL})
+    </select>
 </mapper>

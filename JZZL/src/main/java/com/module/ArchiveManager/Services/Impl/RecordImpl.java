@@ -49,8 +49,8 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     }
 
     @Override
-    public List<Object> selectRecordsByJqbhPage(Map<String, Object> map) throws Exception {
-        return MapFactory.mapToListBean(funArchiveRecordsDTOMapper.selectRecordsByJqbhPage(map));
+    public List<FunArchiveRecordsDTO> selectRecordsByJqbhPage(Map<String, Object> map) throws Exception {
+        return funArchiveRecordsDTOMapper.selectRecordsByJqbhPage(map);
     }
 
 
@@ -190,4 +190,15 @@ public class RecordImpl extends BaseFactory implements RecordsService {
         return funSuspectRecordDTOMapper.selectSuspectRecordByRid(recordid);
     }
 
+    /**
+     * 查询一个type中对嫌疑人文书的最大顺序（不针对某个嫌疑人）
+     * @author MrLu
+     * @param typeid
+     * @createTime  2021/3/25 16:19
+     * @return    |
+     */
+    @Override
+    public int selectRsMaxOrderByTypeid(int typeid){
+        return funArchiveRecordsDTOMapper.selectRsMaxOrderByTypeid(typeid);
+    }
 }

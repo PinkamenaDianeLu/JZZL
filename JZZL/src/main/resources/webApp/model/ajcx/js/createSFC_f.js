@@ -40,7 +40,7 @@ var recordsTable = (function () {
                         return utils.beautifulTitle(value, 18);
                     }
                 }, {
-                    field: 'issuetime',
+                    field: 'effectivetime',
                     title: '开具时间',
                     formatter: (value, row) => {
                         return utils.timeFormat.timestampToDate2(value)
@@ -113,7 +113,7 @@ var createNewSFC = (function () {
      * @author MrLu
      * @createTime  2020/10/7 15:17
      */
-    function createNSFC() {
+    function createNSFC(loadIndex) {
         $.post({
             url: '/SFCensorship/createNewSFCensorship',
             data: {params: JSON.stringify(getSearchParam())},
@@ -122,10 +122,12 @@ var createNewSFC = (function () {
                 if ('success' === reV.message) {
                     layer.msg('成功');
                     window.parent.st.searchTable();//父页面表格刷新
+                    layer.close(loadIndex);//关闭遮罩层
                     const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     parent.layer.close(index);
                 } else {
                     layer.msg('失败');
+                    window.close();
                 }
             }
         });
@@ -151,7 +153,11 @@ $(function () {
     let cnf = new createNewSFC(ajid);
     //保存按钮
     $('#createNewSFC').click(function () {
-        cnf.createNSFC();
+        let index = layer.load(1, {
+            content:'正在生成中....',
+            shade: [0.3,'#fff'] //0.1透明度的白色背景
+        });
+        cnf.createNSFC(index);
     });
     //关闭当前页面
     $('#closeWindow').click(function () {

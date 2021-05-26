@@ -15,6 +15,14 @@ var utils = {
         return typeof (str) == 'undefined' || !str || str === "" || str === "empty";
 
     },
+    Base64:{
+        utoa: function (str) {
+            return window.btoa(unescape(encodeURIComponent(str)))
+        },
+        atou:function (str) {
+            return decodeURIComponent(escape(window.atob(str)));
+        }
+    },
     /**
      * 判断非空
      * @param str
@@ -301,7 +309,7 @@ var utils = {
     beautifulTitle: function (title, length) {
 
         if (this.isEmpty(title)) return '';
-        return '<span>' + (title.substring(0, length) + (title.length > length ? "....." : "") + '</span>');
+        return '<span title="'+title+'">' + (title.substring(0, length) + (title.length > length ? "....." : "") + '</span>');
     },
     convertToChinaNum:function(num){
         const arr1 = ['零', '一', '二', '三', '四', '五', '六', '七', '八', '九'];

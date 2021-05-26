@@ -19,11 +19,11 @@ var recordCover = (function () {
         let reValue = ['0', '0', '0'];
         //查找该文书类型的总页数
         const records = $('#P' + file.archivetypeid).find('.recordSortZone').find('.v2');
-        let pageCount = 0;
-        utils.functional.forEach(records, function (thisRecord) {
-            pageCount += $(thisRecord).find('.v3').length;
-        })
-        reValue[2] = pageCount;
+        /*  let pageCount = 0;
+          utils.functional.forEach(records, function (thisRecord) {
+              pageCount += $(thisRecord).find('.v3').length;
+          })
+          reValue[2] = pageCount;*/
         //共多少卷
         let typeCount = 0;
         let typeNum = 1;
@@ -40,8 +40,29 @@ var recordCover = (function () {
         //第几卷
         reValue[1] = utils.convertToChinaNum(typeNum);
 
-        console.log(reValue)
         return reValue;
+    }
+
+    /**
+     * 计算一个卷的页数
+     * @author Mrlu
+     * @param typeid  archivetypeid
+     * @createTime  2021/2/23 14:35
+     * @return    |
+     */
+    function getArchivePageNum(typeid) {
+        $.post({
+            url: '/FileManipulation/getArchivePageNum',
+            data: {typeid},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    $('#pagecount').val(reV.value);//总页数
+                } else {
+                    console.error('卷宗页数计算失败');
+                }
+            }
+        });
     }
 
     /**
@@ -60,11 +81,13 @@ var recordCover = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
+                    console.log(reV.value);
                     utils.setValue(reV.value);
                     const ColumnNum = getColumnNum();
                     $('#archivecount').val(ColumnNum[0]);//共几卷
                     $('#recordcount').val(ColumnNum[1]);//第几卷
-                    $('#pagecount').val(+ColumnNum[2]);//总页数
+                    getArchivePageNum(file.archivetypeid);
+                    // $('#pagecount').val(+ColumnNum[2]);//总页数
                 } else {
                     console.error('卷封皮初始化失败');
                 }
@@ -75,7 +98,6 @@ var recordCover = (function () {
     /**
      * 加载封皮信息
      * @author MrLu
-     * @param
      * @createTime  2020/10/30 15:02
      * @return    |
      */
@@ -91,7 +113,7 @@ var recordCover = (function () {
                         //更新封皮
                         //加载
                         for (let thisCol in reV.value) {
-                           $('#'+thisCol).val(reV.value[thisCol]);
+                            $('#' + thisCol).val(reV.value[thisCol]);
                         }
                         //保存卷宗封皮
                         $('#saveCover').unbind().click(function () {
@@ -151,23 +173,22 @@ var recordCover = (function () {
     }
 
     _recordCover.prototype = {
-        getColumnNum, loadCover, saveCover
-    }
+        getColumnNum, loadCover, getArchivePageNum
+    };
     return _recordCover;
-})()
+})();
 
 $(function () {
     const thisCover = parent.recordImgLoad.pValue;
-    console.log(thisCover)
     let rc = new recordCover(thisCover);
     rc.loadCover();
 
     //自动生成页码
     $('#getPageNum').click(function () {
-       let ColumnNum= rc.getColumnNum();
+        let ColumnNum = rc.getColumnNum();
         $('#archivecount').val(ColumnNum[0]);//共几卷
         $('#recordcount').val(ColumnNum[1]);//第几卷
-        $('#pagecount').val(+ColumnNum[2]);//总页数
+         $('#pagecount').val( rc.getArchivePageNum(thisCover.archivetypeid));//总页数
     })
 
 })

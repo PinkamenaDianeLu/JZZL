@@ -156,4 +156,11 @@ DJR_XM,DJR_GMSFZHM,CXT_XYRCLB,GKRQ,SYZTDM,GXSJ,SCBJ,QZCSZT
   <select id="selectXyrByJqbh"  parameterType="java.lang.String" resultMap="BaseResultMap">
 SELECT * FROM XT_XYRXXB XYR WHERE XYR.SCBJ = 0 AND EXISTS (SELECT 1 FROM XT_AJXYRGXB GXB WHERE GXB.SCBJ = 0 AND XYR.XYRBH = GXB.XYRBH AND JJBH = #{jqbh,jdbcType=VARCHAR}) ORDER BY ID ASC
 </select>
+
+  <select id="selectXyrByXyrbh"  parameterType="java.lang.String" resultMap="BaseResultMap">
+SELECT * FROM XT_XYRXXB XYR WHERE
+XYR.SCBJ = 0
+AND  XYR.xyrbh= #{xyrbh,jdbcType=VARCHAR}
+and rownum=1
+</select>
 </mapper>

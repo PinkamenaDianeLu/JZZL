@@ -4,6 +4,7 @@ import com.ZfbaETL.Archive.Service.AutoArchiveService;
 import com.ZfbaETL.BaseServer.BaseServer;
 import com.bean.jzgl.DTO.*;
 import com.enums.EnumSoft;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +48,7 @@ public class ArchiveAction implements CommandLineRunner {
         record.setTablename(lastV.getTablename());
         record.setStarttime(new Date());
         record.setLastpkname(lastV.getLastpkname());
+
         int insertCount = 0;
         if (0 < newSfcList.size()) {
             for (FunArchiveSFCDTO thisSfc :
@@ -88,6 +90,12 @@ public class ArchiveAction implements CommandLineRunner {
             baseServer.insertSuccessLog(record, insertCount);
 
         } else {
+            if (StringUtils.isEmpty(lastV.getLastpkstrvalue())){
+                record.setLastpkstrvalue(lastV.getLastpknumvalue().toString());
+            }else {
+                record.setLastpkstrvalue(lastV.getLastpkstrvalue());
+            }
+
             //啥也没更新
             baseServer.insertSuccessLog(record, 0);
         }
@@ -155,10 +163,10 @@ public class ArchiveAction implements CommandLineRunner {
         //循环所有的顺序
         for (SysRecordorderDTO thisOrder :
                 baseOrder) {
-            //判断文书是否对嫌疑人
-            if (1 == thisOrder.getRecordstyle()) {
+            //判断文书是否对嫌疑人或是对多人
+            if (1 == thisOrder.getRecordstyle() || 7 == thisOrder.getRecordstyle()) {
                 //如果对嫌疑人 按照人查询文书
-                //卷类型创建过
+                //该卷类型中所有的对嫌疑人文书都已经创建过了  跳过
                 if (recordType.contains(thisOrder.getRecordtype())) {
                     continue;
                 }
@@ -181,12 +189,17 @@ public class ArchiveAction implements CommandLineRunner {
                         thisSuspectRecord.setArchivetypeid(recordTypeIdMap.get(thisOrder.getRecordtype()));//typeid
                         thisSuspectRecord.setArchiveseqid(newSeq.getId());//seqid
                         thisSuspectRecord.setThisorder(i);//顺序
+//                        thisSuspectRecord.setArchivesfcid(newSeq.getArchivesfcid());//sfcid
                         FunSuspectRecordDTO sr = autoArchiveService.selectSuspectRecordByRid(thisSuspectRecord.getId());//此时使用原有的id查询
-                        copyRecordsToNew(thisSuspectRecord);//（copy）
+
+                        //查询该文书取第几页
+                        SysRecordorderDTO ro=  autoArchiveService.selectRecordOrderByTypes(thisSuspectRecord.getRecordscode(),0);  //文书取第几页
+                        copyRecordsToNew(thisSuspectRecord, ro.getDemand());//（copy）
                         if (null != sr) {
                             //这里应该保证sr不能为空  因为这个文书如果对人但是在嫌疑人文书关联表中没有数据那么就是数据出现错误了  是个问题了
                             //对人文书复制关联表
                             sr.setRecordid(thisSuspectRecord.getId());//注意此时是新的id了
+                            sr.setArchiveseqid(newSeq.getId());//seqid也是新的
                             autoArchiveService.createNewSR(sr);
                         }
                     }
@@ -206,7 +219,7 @@ public class ArchiveAction implements CommandLineRunner {
                     thisReocrd.setArchivetypeid(recordTypeIdMap.get(thisOrder.getRecordtype()));//typeid
                     thisReocrd.setArchiveseqid(newSeq.getId());//seqid
                     thisReocrd.setThisorder(i);//顺序
-                    copyRecordsToNew(thisReocrd);//插入（copy）
+                    copyRecordsToNew(thisReocrd, thisOrder.getDemand());//插入（copy）
                 }
             }
 
@@ -214,20 +227,36 @@ public class ArchiveAction implements CommandLineRunner {
     }
 
 
-    private void copyRecordsToNew(FunArchiveRecordsDTO newRecord) {
+    /**
+     * @param newRecord 新建的文书
+     * @param demand    区第几页 0为全都要
+     * @return |
+     * @author Mrlu
+     * @createTime 2021/1/29 10:57
+     */
+    private void copyRecordsToNew(FunArchiveRecordsDTO newRecord, Integer demand) {
         int oriId = newRecord.getId();//此时还是原有的id
         newRecord.setPrevid(oriId);//上一个 源于谁的id
         autoArchiveService.createNewRecord(newRecord);//新建 （此时该实体类的id已经变成新的了）
-        copyFilesToNew(oriId, newRecord);
+        copyFilesToNew(oriId, newRecord, demand);
     }
 
-    private void copyFilesToNew(int oriId, FunArchiveRecordsDTO newRecord) {
+    private void copyFilesToNew(int oriId, FunArchiveRecordsDTO newRecord, Integer demand) {
 
+        if (newRecord.getRecordscode().equals("AS021")){
+            System.out.println(demand);
+        }
         int newRecordId = newRecord.getId();//新建的文书id
         //开始复制文书文件
         //查找该文书原有的文件
+        int index =1;
         for (FunArchiveFilesDTO thisFile :
                 autoArchiveService.selectRecordFilesByRecordId(oriId, null)) {
+            //只取第几页
+            if ( 0 != demand&&index != demand ) {
+                index++;
+                continue;
+            }
             //判断该文件的uuid是否有重复  如果有的话重新生成uuid  同一个seq下不允许有重复的fileCode ！
             int Repeated = autoArchiveService.selectRepeatedlyFileCodeBySeqid(thisFile.getFilecode(), newRecord.getArchiveseqid());
             if (Repeated > 0) {
@@ -242,6 +271,10 @@ public class ArchiveAction implements CommandLineRunner {
             thisFile.setAuthorid(newRecord.getAuthorid());
             //复制插入
             autoArchiveService.createFiles(thisFile);
+            if ( 0 != demand){
+                //当该文书抽取指定页数 此页整理完毕后后面的就不要了
+                break;
+            }
         }
 
     }

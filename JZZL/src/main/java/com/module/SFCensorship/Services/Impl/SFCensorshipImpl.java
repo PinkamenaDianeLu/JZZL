@@ -3,12 +3,10 @@ package com.module.SFCensorship.Services.Impl;
 import com.bean.jzgl.Converter.FunArchiveSFCMapper;
 import com.bean.jzgl.Converter.FunArchiveSeqMapper;
 import com.bean.jzgl.Converter.FunCaseInfoMapper;
-import com.bean.jzgl.Converter.SysRecordorderMapper;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveSFC;
 import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunCaseInfo;
-import com.bean.jzgl.Source.FunCasePeoplecase;
 import com.factory.BaseFactory;
 import com.mapper.jzgl.*;
 import com.module.SFCensorship.Services.SFCensorshipService;
@@ -46,6 +44,8 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     SysRecordtypeorderDTOMapper sysRecordtypeorderDTOMapper;
     @Resource
     FunSuspectRecordDTOMapper funSuspectRecordDTOMapper;
+    @Resource
+    FunArchiveTagsDTOMapper funArchiveTagsDTOMapper;
 
     @Override
     public List<FunArchiveSFC> selectArchiveSFCPage(Map<String, Object> map) {
@@ -101,8 +101,9 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     @Override
     public List<FunArchiveRecordsDTO> selectRecordsByTypeid(int archivetypeid) {
         //archivetypeid
-        Map<String,Object> map=new HashMap<>();
-        map.put("archivetypeid",archivetypeid);
+        Map<String, Object> map = new HashMap<>();
+        map.put("archivetypeid", archivetypeid);
+        map.put("notRecordstyle", 1);//对嫌疑人单选的文书不复制 而是单独查询复制
         return funArchiveRecordsDTOMapper.selectRecordsByTypeid(map);
     }
 
@@ -154,6 +155,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
             r.setIsdelete(0);
             r.setServerip("/");
             r.setFilecode("F" + record.getRecordscode() + "R" + record.getId() + "T" + type.getId());
+            r.setBjzid(0);
             insertFunArchiveFilesDTO(r);
         } else {
             //查询复制
@@ -168,7 +170,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
 
     @Override
     public Integer selectRepeatedlyFileCodeBySeqid(String filecode, int archiveseqid) {
-        return funArchiveFilesDTOMapper.selectRepeatedlyFileCodeBySeqid(filecode,archiveseqid);
+        return funArchiveFilesDTOMapper.selectRepeatedlyFileCodeBySeqid(filecode, archiveseqid);
     }
 
     @Override
@@ -240,6 +242,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
         map.put("archiveseqid", archiveseqid);
         return funArchiveRecordsDTOMapper.selectRecordOrderForSuspect(map);
     }
+
     @Override
     public FunSuspectRecordDTO selectSuspectRecordByRid(int recordid) {
         return funSuspectRecordDTOMapper.selectSuspectRecordByRid(recordid);
@@ -248,6 +251,30 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     @Override
     public void insertSuspectRecord(FunSuspectRecordDTO record) {
         funSuspectRecordDTOMapper.insert(record);
+    }
+
+
+    @Override
+    public List<FunSuspectDTO> selectSuspectByRecordid(Integer recordid) {
+        return funSuspectDTOMapper.selectSuspectByRecordid(recordid);
+    }
+
+    @Override
+    public List<FunArchiveRecordsDTO> selectRecordsBySuspects(Integer archivetypeid, List<Integer> suspectid) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("archivetypeid", archivetypeid);
+        map.put("suspectid", suspectid);
+        return funArchiveRecordsDTOMapper.selectRecordsBySuspects(map);
+    }
+
+    @Override
+    public List<FunArchiveTagsDTO> selectRecordByRecordId(Integer recordid) {
+        return funArchiveTagsDTOMapper.selectRecordByRecordId(recordid);
+    }
+
+    @Override
+    public void createNewTags(FunArchiveTagsDTO funArchiveTagsDTO) {
+        funArchiveTagsDTOMapper.insert(funArchiveTagsDTO);
     }
 
 }

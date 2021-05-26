@@ -10,7 +10,6 @@ public interface FunArchiveFilesDTOMapper {
 
     int insert(FunArchiveFilesDTO record);
 
-    int insertSelective(FunArchiveFilesDTO record);
 
     FunArchiveFilesDTO selectByPrimaryKey(Integer id);
 
@@ -113,4 +112,59 @@ public interface FunArchiveFilesDTOMapper {
      */
    void updateFileOrderByRecord(Map<String,Object> map);
 
+   
+    /**
+    * 查询一个文书卷下有多少页文书
+    * @author Mrlu
+    * @param  archivetypeid archivetypeid
+    * @createTime  2021/2/23 11:12
+    * @return    |  
+     */
+   Integer selectFilesCountByTypeid(Integer archivetypeid);
+
+    /**
+    * 查询一个文书下有多少页
+    * @author Mrlu
+    * @param  archiverecordid 文书id
+    * @createTime  2021/2/23 15:40
+    * @return    |
+     */
+   Integer selectFilecCountByRecordid(Integer archiverecordid);
+
+    /**
+    * 删除文件By表卷准表id（未被送检的）
+     * set scbj=1
+    * @author MrLu
+    * @param bjzid
+    * @createTime  2021/3/24 14:30
+    * @return    |
+     */
+   void deleteFilesByBjzid(Integer bjzid);
+
+
+    /**
+    * 根据标准卷id查看该文书是否已经存在
+    * @author MrLu
+    * @param  bjzid
+    * @createTime  2021/3/26 11:40
+    * @return  int  |
+     */
+   int selectFileCountByBjzid(Integer bjzid);
+    /**
+    * 根据bjzid更新文书的url  （未被送检的）
+    * @author MrLu
+    * @param
+    * @createTime  2021/3/24 15:20
+    * @return    |
+     */
+   void updateFilesByBjzid(FunArchiveFilesDTO record);
+
+    /**
+    * 文件代码查询未发送的文书图片
+    * @author MrLu
+    * @param filecode
+    * @createTime  2021/4/7 16:29
+    * @return    |
+     */
+    List<FunArchiveFilesDTO> selectFilesByCodeNotSend(String filecode);
 }

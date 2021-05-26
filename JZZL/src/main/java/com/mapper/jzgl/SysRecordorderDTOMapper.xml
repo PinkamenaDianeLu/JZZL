@@ -14,10 +14,11 @@
         <result column="ARCHIVETYPE" jdbcType="DECIMAL" property="archivetype"/>
         <result column="RECORDSTYLE" jdbcType="DECIMAL" property="recordstyle"/>
         <result column="ISACCESSORY" jdbcType="DECIMAL" property="isaccessory"/>
+        <result column="DEMAND" jdbcType="DECIMAL" property="demand"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, RECORDNAME, RECORDCODE, DEFAULTORDER, RECORDTYPE, 
-    ARCHIVETYPE,RECORDSTYLE,ISACCESSORY
+    ARCHIVETYPE,RECORDSTYLE,ISACCESSORY,DEMAND
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -34,7 +35,9 @@
         SCBJ=0
         AND RECORDCODE = #{recordcode,jdbcType=VARCHAR}
         AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+        <if test="recordtype != null">
         AND RECORDTYPE = #{recordtype,jdbcType=DECIMAL}
+        </if>
         and ROWNUM=1
     </select>
     <select id="selectSysRecordOrderByArchiveType" resultMap="BaseResultMap" parameterType="java.lang.Integer">

@@ -1,158 +1,196 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.jzgl.FunSuspectDTOMapper">
-  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunSuspectDTO">
-    <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
-    <result column="STATE" jdbcType="DECIMAL" property="state" />
-    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
-    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
-    <result column="SUSPECTIDCARD" jdbcType="VARCHAR" property="suspectidcard" />
-    <result column="SUSPECTNAME" jdbcType="VARCHAR" property="suspectname" />
-    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
-    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="CASEINFOID" jdbcType="DECIMAL" property="caseinfoid" />
-    <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber" />
-    <result column="CASETYPE" jdbcType="DECIMAL" property="casetype" />
-    <result column="SUSPECTSTATE" jdbcType="DECIMAL" property="suspectstate" />
-    <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder" />
-    <result column="SUSPECTCODE" jdbcType="VARCHAR" property="suspectcode" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunSuspectDTO">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="SCBJ" jdbcType="DECIMAL" property="scbj"/>
+        <result column="STATE" jdbcType="DECIMAL" property="state"/>
+        <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
+        <result column="SUSPECTIDCARD" jdbcType="VARCHAR" property="suspectidcard"/>
+        <result column="SUSPECTNAME" jdbcType="VARCHAR" property="suspectname"/>
+        <result column="JQBH" jdbcType="VARCHAR" property="jqbh"/>
+        <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
+        <result column="CASEINFOID" jdbcType="DECIMAL" property="caseinfoid"/>
+        <result column="SFCNUMBER" jdbcType="VARCHAR" property="sfcnumber"/>
+        <result column="CASETYPE" jdbcType="DECIMAL" property="casetype"/>
+        <result column="SUSPECTSTATE" jdbcType="DECIMAL" property="suspectstate"/>
+        <result column="DEFAULTORDER" jdbcType="DECIMAL" property="defaultorder"/>
+        <result column="SUSPECTCODE" jdbcType="VARCHAR" property="suspectcode"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, SUSPECTIDCARD, SUSPECTNAME, JQBH, AJBH,
     CASEINFOID, SFCNUMBER, CASETYPE, SUSPECTSTATE, DEFAULTORDER,SUSPECTCODE
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from FUN_SUSPECT
-    where ID = #{id,jdbcType=DECIMAL}
-  </select>
-  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunSuspectDTO">
-    <selectKey resultType="INTEGER" order="BEFORE"
-               keyProperty="id">
-      select SEQ_FUN_SUSPECT_ID.nextval from dual
-    </selectKey>
-    insert into FUN_SUSPECT
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-        ID,
-        SCBJ,
-        STATE,
-        CREATETIME,
-        UPDATETIME,
-        SUSPECTIDCARD,
-        SUSPECTNAME,
-        JQBH,
-        AJBH,
-        CASEINFOID,
-        SFCNUMBER,
-      SUSPECTCODE,
-      <if test="casetype != null">
-        CASETYPE,
-      </if>
-      <if test="suspectstate != null">
-        SUSPECTSTATE,
-      </if>
-      <if test="defaultorder != null">
-        DEFAULTORDER,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-        #{id,jdbcType=DECIMAL},
-        0,
-        0,
-        SYSDATE,
-      SYSDATE,
-        #{suspectidcard,jdbcType=VARCHAR},
-        #{suspectname,jdbcType=VARCHAR},
-        #{jqbh,jdbcType=VARCHAR},
-        #{ajbh,jdbcType=VARCHAR},
-        #{caseinfoid,jdbcType=DECIMAL},
-        #{sfcnumber,jdbcType=VARCHAR},
-      #{suspectcode,jdbcType=VARCHAR},
-      <if test="casetype != null">
-        #{casetype,jdbcType=DECIMAL},
-      </if>
-      <if test="suspectstate != null">
-        #{suspectstate,jdbcType=DECIMAL},
-      </if>
-      <if test="defaultorder != null">
-        #{defaultorder,jdbcType=DECIMAL},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunSuspectDTO">
-    update FUN_SUSPECT
-    <set>
-      <if test="scbj != null">
-        SCBJ = #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        STATE = #{state,jdbcType=DECIMAL},
-      </if>
-        UPDATETIME = SYSDATE,
-      <if test="suspectidcard != null">
-        SUSPECTIDCARD = #{suspectidcard,jdbcType=VARCHAR},
-      </if>
-      <if test="suspectname != null">
-        SUSPECTNAME = #{suspectname,jdbcType=VARCHAR},
-      </if>
-      <if test="jqbh != null">
-        JQBH = #{jqbh,jdbcType=VARCHAR},
-      </if>
-      <if test="ajbh != null">
-        AJBH = #{ajbh,jdbcType=VARCHAR},
-      </if>
-      <if test="caseinfoid != null">
-        CASEINFOID = #{caseinfoid,jdbcType=DECIMAL},
-      </if>
-      <if test="sfcnumber != null">
-        SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
-      </if>
-      <if test="casetype != null">
-        CASETYPE = #{casetype,jdbcType=DECIMAL},
-      </if>
-      <if test="suspectstate != null">
-        SUSPECTSTATE = #{suspectstate,jdbcType=DECIMAL},
-      </if>
-      <if test="defaultorder != null">
-        DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
-      </if>
-    </set>
-    where ID = #{id,jdbcType=DECIMAL}
-  </update>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_SUSPECT
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
+    <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunSuspectDTO">
+        <selectKey resultType="INTEGER" order="BEFORE"
+                   keyProperty="id">
+            select SEQ_FUN_SUSPECT_ID.nextval from dual
+        </selectKey>
+        insert into FUN_SUSPECT
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            ID,
+            SCBJ,
+            STATE,
+            CREATETIME,
+            UPDATETIME,
+            SUSPECTIDCARD,
+            SUSPECTNAME,
+            JQBH,
+            AJBH,
+            CASEINFOID,
+            SFCNUMBER,
+            SUSPECTCODE,
+            <if test="casetype != null">
+                CASETYPE,
+            </if>
+            <if test="suspectstate != null">
+                SUSPECTSTATE,
+            </if>
+            <if test="defaultorder != null">
+                DEFAULTORDER,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            #{id,jdbcType=DECIMAL},
+            0,
+            0,
+            SYSDATE,
+            SYSDATE,
+            #{suspectidcard,jdbcType=VARCHAR},
+            #{suspectname,jdbcType=VARCHAR},
+            #{jqbh,jdbcType=VARCHAR},
+            #{ajbh,jdbcType=VARCHAR},
+            #{caseinfoid,jdbcType=DECIMAL},
+            #{sfcnumber,jdbcType=VARCHAR},
+            #{suspectcode,jdbcType=VARCHAR},
+            <if test="casetype != null">
+                #{casetype,jdbcType=DECIMAL},
+            </if>
+            <if test="suspectstate != null">
+                #{suspectstate,jdbcType=DECIMAL},
+            </if>
+            <if test="defaultorder != null">
+                #{defaultorder,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunSuspectDTO">
+        update FUN_SUSPECT
+        <set>
+            <if test="scbj != null">
+                SCBJ = #{scbj,jdbcType=DECIMAL},
+            </if>
+            <if test="state != null">
+                STATE = #{state,jdbcType=DECIMAL},
+            </if>
+            UPDATETIME = SYSDATE,
+            <if test="suspectidcard != null">
+                SUSPECTIDCARD = #{suspectidcard,jdbcType=VARCHAR},
+            </if>
+            <if test="suspectname != null">
+                SUSPECTNAME = #{suspectname,jdbcType=VARCHAR},
+            </if>
+            <if test="jqbh != null">
+                JQBH = #{jqbh,jdbcType=VARCHAR},
+            </if>
+            <if test="ajbh != null">
+                AJBH = #{ajbh,jdbcType=VARCHAR},
+            </if>
+            <if test="caseinfoid != null">
+                CASEINFOID = #{caseinfoid,jdbcType=DECIMAL},
+            </if>
+            <if test="sfcnumber != null">
+                SFCNUMBER = #{sfcnumber,jdbcType=VARCHAR},
+            </if>
+            <if test="casetype != null">
+                CASETYPE = #{casetype,jdbcType=DECIMAL},
+            </if>
+            <if test="suspectstate != null">
+                SUSPECTSTATE = #{suspectstate,jdbcType=DECIMAL},
+            </if>
+            <if test="defaultorder != null">
+                DEFAULTORDER = #{defaultorder,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=DECIMAL}
+    </update>
 
-  <select id="selectSuspectByCaseinfoId"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from FUN_SUSPECT
-    where SCBJ=0 and CASEINFOID= #{caseinfoid,jdbcType=DECIMAL}
-    ORDER BY DEFAULTORDER ASC
+    <select id="selectSuspectByCaseinfoId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_SUSPECT
+        where SCBJ=0 and CASEINFOID= #{caseinfoid,jdbcType=DECIMAL}
+        ORDER BY DEFAULTORDER ASC
 
-  </select>
+    </select>
 
 
-  <select id="selectSuspectByRecordid"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT  <include refid="Base_Column_List" />
-    FROM FUN_SUSPECT SUSPECT
-    WHERE  scbj=0 AND EXISTS (SELECT 1
-    FROM FUN_SUSPECT_RECORD RE
-    WHERE RE.SUSPECTID = SUSPECT.ID AND RE.SCBJ=0
-    AND RE.RECORDID = #{recordid,jdbcType=DECIMAL})
+    <select id="selectSuspectByRecordid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_SUSPECT SUSPECT
+        WHERE scbj=0 AND EXISTS (SELECT 1
+        FROM FUN_SUSPECT_RECORD RE
+        WHERE RE.SUSPECTID = SUSPECT.ID AND RE.SCBJ=0
+        AND RE.RECORDID = #{recordid,jdbcType=DECIMAL})
+    </select>
 
-  </select>
 
-  <select id="selectSuspectById"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List" />  FROM FUN_SUSPECT SUSPECT
-    WHERE SCBJ=0 AND CASEINFOID =#{caseinfoid,jdbcType=DECIMAL}
-  </select>
+    <select id="selectSuspectByArchiveseqid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_SUSPECT SUSPECT
+        WHERE scbj=0 AND EXISTS (SELECT 1
+        FROM FUN_SUSPECT_RECORD RE
+        WHERE RE.SUSPECTID = SUSPECT.ID AND RE.SCBJ=0
+        AND RE.ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL})
+    </select>
 
-  <select id="selectSuspectBySeqId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT   <include refid="Base_Column_List" /> FROM  FUN_SUSPECT
-     WHERE SCBJ=0
-     AND CASEINFOID = (SELECT CASEINFOID
-     FROM fun_archive_seq
-     WHERE  id = #{seqid,jdbcType=DECIMAL})
-  </select>
+    <select id="selectSuspectById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_SUSPECT SUSPECT
+        WHERE SCBJ=0 AND CASEINFOID =#{caseinfoid,jdbcType=DECIMAL}
+        ORDER BY DEFAULTORDER ASC
+    </select>
 
+    <select id="selectSuspectBySeqId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_SUSPECT
+        WHERE SCBJ=0
+        AND CASEINFOID = (SELECT CASEINFOID
+        FROM fun_archive_seq
+        WHERE id = #{seqid,jdbcType=DECIMAL})
+    </select>
+
+    <select id="selectByPrimaryKeys" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_SUSPECT
+        WHERE SCBJ=0 AND id in
+        <foreach collection="array" item="item" separator=","
+                 open="(" close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <select id="selectSuspectBySuspectcode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT   <include refid="Base_Column_List"/>
+        FROM FUN_SUSPECT
+        WHERE SCBJ=0 AND SUSPECTCODE=#{suspectcode,jdbcType=VARCHAR} and rownum=1
+    </select>
+
+
+    <select id="selectMaxOrderByCaseid" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT nvl(MAX(DEFAULTORDER),0) from FUN_SUSPECT
+        WHERE SCBJ=0 AND CASEINFOID= #{caseinfoid,jdbcType=DECIMAL}
+    </select>
 </mapper>

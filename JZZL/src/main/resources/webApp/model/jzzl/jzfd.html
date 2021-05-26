@@ -24,20 +24,20 @@
     .juan .content p textarea{ width: 100%; line-height: 30px; padding: 10px; margin-bottom: 50px; border: none;}
 </style>
 <body>
-<div class="roll" style="z-index: 9999;">
+<div class="roll" style="z-index: 9999;margin-bottom: 0px;">
     <div class="juan">
         <h2 style="margin-top: 2rem;">卷内备考表</h2>
         <div class="content">
-            <p style="text-indent: 1em;"><span>本案卷共有文件材料</span><input type="text" />页，其中：</p>
-            <p style="text-indent: 1em;"><span>文字材料</span><input type="text" />页，文字材料<input type="text" />页，照片<input type="text" />张。</p>
+            <p style="text-indent: 1em;"><span>本案卷共有文件材料</span><input  class="coverInfo" type="text" id="documentpage"/>页，其中：</p>
+            <p style="text-indent: 1em;"><span>文字材料</span><input   class="coverInfo"type="text" id="scriptpage"/>页，照片<input type="text" id="photopage"  class="coverInfo"/>张。</p>
             <p><span>说明：</span></p>
-            <p><textarea rows="10"></textarea></p>
-            <p class="text_r"><span>立卷人：</span><input type="text" /></p>
-            <p class="text_r"><input type="text" /><span>年</span><input type="number" style="width: 40px;" /><span>月</span><input type="number" style="width: 40px;" /><span>日</span></p>
-            <p class="text_r"><span>审核人：</span><input type="text" /></p>
-            <p class="text_r"><input type="text" /><span>年</span><input type="number" style="width: 40px;" /><span>月</span><input type="number" style="width: 40px;" /><span>日</span></p>
+            <p><textarea rows="10"  class="coverInfo" id="explain"></textarea></p>
+            <p class="text_r"><span>立卷人：</span><input type="text" id="ljr"  class="coverInfo"/></p>
+            <p class="text_r"><input type="text" id="ljsj"  class="coverInfo"/></p>
+            <p class="text_r"><span>审核人：</span><input type="text" id="reviewxm"  class="coverInfo"/></p>
+            <p class="text_r"><input type="text" id="reviewdate"  class="coverInfo"/></p>
         </div>
-        <a class="save">保存</a>
+        <a class="save" id="saveBackCover">保存</a>
     </div>
 </div>
 </body>

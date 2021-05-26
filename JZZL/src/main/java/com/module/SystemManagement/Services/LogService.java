@@ -1,8 +1,11 @@
 package com.module.SystemManagement.Services;
 
 
+import com.bean.jzgl.DTO.FunCasePeoplecaseDTO;
 import com.bean.jzgl.DTO.SysLogsDTO;
 import com.bean.jzgl.DTO.SysLogsLoginDTO;
+
+import java.util.List;
 
 /**
  * @author MrLu
@@ -46,5 +49,15 @@ public interface LogService {
      * @return    |
      */
     void updateHistoryLog(Integer sysuserid);
+    /**
+     * 通过警情编号和身份证号查询案件
+     *
+     * @param jqbh   警情编号
+     * @param idcard 身份证好
+     * @return |
+     * @author MrLu
+     * @createTime 2021/4/8 16:03
+     */
+    List<FunCasePeoplecaseDTO> selectCaseByJqIDCard(String jqbh, String idcard);
 
 }

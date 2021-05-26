@@ -97,4 +97,14 @@
   AND  FILECODE = #{filecode,jdbcType=VARCHAR}
   ORDER BY ID DESC
 </select>
+
+  <update id="delTagById" parameterType="java.lang.Integer">
+    UPDATE FUN_ARCHIVE_TAGS set SCBJ=1 where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+  <select id="selectRecordByRecordId"  parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT  <include refid="Base_Column_List" />
+    from FUN_ARCHIVE_TAGS
+    where SCBJ=0 AND recordid =#{recordid,jdbcType=DECIMAL}
+  </select>
 </mapper>

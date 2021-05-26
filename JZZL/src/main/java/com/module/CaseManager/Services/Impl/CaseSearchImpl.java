@@ -33,4 +33,6 @@ public class CaseSearchImpl extends BaseFactory implements CaseSearchService {
     public int selectPeopleCasePageCount(Map<String, Object> map) throws Exception {
         return funCasePeoplecaseDTOMapper.selectPeopleCaseByUseridCount(map);
     }
+
+
 }

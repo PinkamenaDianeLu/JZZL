@@ -123,18 +123,7 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.EtlTablelogDTO">
     update ETL_TABLELOG
     <set>
-      <if test="scbj != null">
-        SCBJ = #{scbj,jdbcType=DECIMAL},
-      </if>
-      <if test="state != null">
-        STATE = #{state,jdbcType=DECIMAL},
-      </if>
-      <if test="createtime != null">
-        CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updatetime != null">
-        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
-      </if>
+        UPDATETIME = sysdate,
       <if test="systemname != null">
         SYSTEMNAME = #{systemname,jdbcType=VARCHAR},
       </if>
@@ -163,8 +152,7 @@
     update ETL_TABLELOG
     set SCBJ = #{scbj,jdbcType=DECIMAL},
       STATE = #{state,jdbcType=DECIMAL},
-      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
-      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      UPDATETIME = sysdate,
       SYSTEMNAME = #{systemname,jdbcType=VARCHAR},
       TABLENAME = #{tablename,jdbcType=VARCHAR},
       LASTPKNAME = #{lastpkname,jdbcType=VARCHAR},

@@ -17,7 +17,7 @@ var recordCoverIndex = (function () {
      * @createTime  2020/10/29 10:01
      * @return    |
      */
-    let recordObj = function (name, pagenumber, index, author, recorddate, wh, comment) {
+    let recordObj = function (name, pagenumber, index, author, recorddate, wh, comment, recordid) {
         this.name = name;//文书名
         this.pagenumber = pagenumber;//页号
         this.index = index;//序号
@@ -25,6 +25,7 @@ var recordCoverIndex = (function () {
         this.recorddate = recorddate;//文书开局日期
         this.wh = wh;//文书文号
         this.comment = comment;//注释
+        this.recordid = recordid;//文书id
     };
 
     /**
@@ -41,38 +42,38 @@ var recordCoverIndex = (function () {
         let thisIndexSpan = utils.createElement.createElement({
             tag: 'td',
             arg: '<input class="indexValue" name="index" value="' + index + '"/>'
-        })
+        });
         let thisWhInput = utils.createElement.createElement({
             tag: 'td',
-            arg: '<input  class="indexValue" name="wh" value="' + wh + '" />'
-        })
+            arg: '<input  class="indexValue" name="wh" value="' + (wh || '') + '" />'
+        });
         let thisZrzInput = utils.createElement.createElement({
             tag: 'td',
             arg: '<input class="indexValue" name="zrz"  value="' + zrz + '" />'
-        })
+        });
         let thisTmInput = utils.createElement.createElement({
             tag: 'td',
             arg: '<input class="indexValue" name="tm"  value="' + tm + '" />'
-        })
+        });
         let thisRqInput = utils.createElement.createElement({
             tag: 'td',
             arg: '<input class="indexValue" name="rq"  value="' + rq + '" />'
-        })
+        });
         let thisPagenumberInput = utils.createElement.createElement({
             tag: 'td',
             arg: '<input class="indexValue" name="pagenumber"  value="' + pagenumber + '" />'
-        })
+        });
         let thisCommentInput = utils.createElement.createElement({
             tag: 'td',
             arg: '<input class="indexValue" name="comment"  value="' + comment + '" />'
-        })
-        thisTr.append(thisIndexSpan);
-        thisTr.append(thisWhInput);
-        thisTr.append(thisZrzInput)
-        ;thisTr.append(thisTmInput);
-        thisTr.append(thisRqInput);
-        thisTr.append(thisPagenumberInput)
-        ;thisTr.append(thisCommentInput);
+        });
+        thisTr.appendChild(thisIndexSpan);
+        thisTr.appendChild(thisWhInput);
+        thisTr.appendChild(thisZrzInput)
+        ;thisTr.appendChild(thisTmInput);
+        thisTr.appendChild(thisRqInput);
+        thisTr.appendChild(thisPagenumberInput)
+        ;thisTr.appendChild(thisCommentInput);
         return thisTr;
     }
 
@@ -91,7 +92,7 @@ var recordCoverIndex = (function () {
                 wh: thisRecord.wh,
                 zrz: thisRecord.author,
                 tm: thisRecord.name,
-                rq: thisRecord.recorddate,
+                rq: thisRecord.recorddate||'-',
                 pagenumber: thisRecord.pagenumber,
                 comment: thisRecord.comment || ''
             })
@@ -100,6 +101,16 @@ var recordCoverIndex = (function () {
         $('#indexTable').append(trs);
     }
 
+    /**
+     * 查询一个文书有多少页
+     * @author Mrlu
+     * @param
+     * @createTime  2021/2/23 15:38
+     * @return    |
+     */
+    function getPageNumByRecordId() {
+
+    }
 
     /**
      * 一键生成按钮
@@ -109,22 +120,37 @@ var recordCoverIndex = (function () {
      */
     let oneKeyGo = () => {
         const typeDate = parent.lai.getRecordIndexSort(PEle, true);
+        console.log(typeDate);
         //循环生成
         let i = 1;//文书序号
-        let lastPageCount=1;
+        let lastPageCount = 1;
         let records = [];
         for (let thisRecord of typeDate) {
 
-            records[records.length] = new recordObj(
-                thisRecord.name,
-                lastPageCount,
-                i++,
-                thisRecord.recordObj.author,
-                utils.timeFormat.timestampToDate(thisRecord.recordObj.createtime),
-                thisRecord.recordObj.recordwh,
-                ''
-            );
-            lastPageCount+=thisRecord.filecodes.split(',').length;
+            $.post({
+                url: '/FileManipulation/getRecordPageNum',
+                async: false,
+                data: {recordid: thisRecord.id},
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        records[records.length] = new recordObj(
+                            thisRecord.name,
+                            lastPageCount,
+                            i++,
+                            thisRecord.recordObj.author,
+                            utils.timeFormat.timestampToDate(thisRecord.recordObj.effectivetime||''),
+                            thisRecord.recordObj.recordwh,
+                            ''
+                        );
+                        // lastPageCount += thisRecord.filecodes.split(',').length;
+                        lastPageCount += reV.value;
+                    } else {
+                        console.error('查询失败:' + thisRecord.id + ':' + thisRecord.name);
+                    }
+                }
+            });
+
         }
         loadTable(records);
     }
@@ -132,7 +158,7 @@ var recordCoverIndex = (function () {
     /**
      * 保存文书目录信息
      * @author MrLu
-     * @param
+     * @param indexId
      * @createTime  2020/10/29 10:55
      * @return    |
      */
@@ -150,7 +176,9 @@ var recordCoverIndex = (function () {
                 trValue[5],
                 trValue[0],
                 trValue[2],
-                trValue[4], trValue[1], trValue[6]);
+                trValue[4],
+                trValue[1],
+                trValue[6]);
         });
         console.log(JSON.stringify(recordInfo));
         console.log(file);
@@ -166,6 +194,7 @@ var recordCoverIndex = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     getIndexInfo();
+                    layer.msg('保存成功');
                 } else {
                     alert('保存失败，请重新登录再试');
                 }
@@ -190,13 +219,11 @@ var recordCoverIndex = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
-
-                    console.log(JSON.parse(reV.value.indexinfo));
-                    if (reV.value.indexinfo){
+                    if (reV.value) {
+                        console.log(reV.value);
                         //重新加载目录信息
                         loadTable(JSON.parse(reV.value.indexinfo));
                     }
-
 //为保存按钮上方法
                     $('#saveIndexInfo').unbind().click(function () {
                         if (!reV.value) {

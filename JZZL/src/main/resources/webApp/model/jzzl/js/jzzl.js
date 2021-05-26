@@ -189,6 +189,7 @@ var loadArchiveIndex = (function () {
                     });
                     //循环文书
 
+                    console.log(reV.value);
                     utils.functional.forEach(reV.value, function (thisRecord) {
 
                         const thisDD = createRecordDiv(thisRecord, indexing);
@@ -201,7 +202,7 @@ var loadArchiveIndex = (function () {
                             $('#' + liD).append(sortDiv).append(thisDD);
                         } else {
                             //普通卷放入可拖拽域
-                            sortDiv.append(thisDD);
+                            sortDiv.appendChild(thisDD);
                         }
                         indexing.i++; //此行必须在$('#' + liD).append的后边
 
@@ -250,13 +251,15 @@ var loadArchiveIndex = (function () {
         //点击文书名收缩或显示文书内的文件
         p.addEventListener('click', function () {
             $(this).next('.fileSortZone').slideToggle(300);
+            $('.watching').removeClass('watching');
+            $('#'+key).addClass('watching');
         });
 
         //文书缓存至recordsMap  此行必须在createButtons()方法上
         recordsMap.set(key, record);//缓存信息
         //加载按钮 -> 文书的
-        p.append(createButtons(key, indexing));
-        div.append(p);
+        p.appendChild(createButtons(key, indexing));
+        div.appendChild(p);
         //加载文书目录
         // div.append(createFileIndex(thisRecord.files));
         //点击显示对应图片
@@ -299,7 +302,7 @@ var loadArchiveIndex = (function () {
         for (let thisFile of files) {
             //加载第三级别文书图片目录
             //只有文书图片需要加载内容、文书封皮封底目录不需要子目录
-            div.append(createFilesDiv(thisFile, fileIndexing));
+            div.appendChild(createFilesDiv(thisFile, fileIndexing));
             fileIndexing.i++;
         }
         sortList('fileSortZone');//加载拖拽域
@@ -332,8 +335,8 @@ var loadArchiveIndex = (function () {
             //此时是列表第一次加载时、故图片位置为fileIndexing.i-1  当该元素被拖拽、上下移按钮后 要重新添加事件
             loadFileImg(div, thisFile.archiverecordid);
         });
-        div.append(p);
-        p.append(createButtons(key, fileIndexing));
+        div.appendChild(p);
+        p.appendChild(createButtons(key, fileIndexing));
         return div;
     }
 
@@ -409,10 +412,10 @@ var loadArchiveIndex = (function () {
             //封皮//封底  没有操作按钮
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
-            div.append(upButton(ddId, indexing));//加载上移按钮
-            div.append(downButton(ddId, indexing));//加载下移按钮
-            div.append(renameButton(ddId));//加载重命名按钮
-            div.append(delButton(ddId));//加载删除按钮
+            div.appendChild(upButton(ddId, indexing));//加载上移按钮
+            div.appendChild(downButton(ddId, indexing));//加载下移按钮
+            div.appendChild(renameButton(ddId));//加载重命名按钮
+            div.appendChild(delButton(ddId));//加载删除按钮
         }
         return div;
     }
@@ -673,7 +676,7 @@ var loadArchiveIndex = (function () {
      * @param ddId
      * @createTime  2020/10/10 14:13
      */
-    function delFun(ddId) {
+    function delFun(ddId,recordId) {
         event.stopPropagation();
         //判断级别 v2为文书 v3为图片
         let thisRecord = $('#' + ddId);
@@ -687,20 +690,24 @@ var loadArchiveIndex = (function () {
             saveDeleteDateOnTime(ddId, null);
         } else {
             //是图片
-            thisRecord = thisRecord.parent().parent('.v2');//变成文书
+            // thisRecord = thisRecord.parent().parent('.v2');//变成文书
+            // let thumbnailList=
             //判断是否是最后一张图片 如果是的话也删除文书
-            if (thisRecord.find('.v3').length === 1) {
+            console.log(filesMap)
+            if ($('#thumbnail').find('a').length === 1) {
                 if (confirm('这是该文书的最后一张图片！删除后该文书也会一起删除，是否继续？')) {
-                    delFun(thisRecord.attr('id'));
-                    filesMap.delete(ddId);
+                    delFun('dd'+recordId);//删除文书
+                    // filesMap.delete(ddId);
                 }
             } else {
                 //删除单个文件
-                let thisRecordId = thisRecord.attr('id').replace('dd', '');
-                let fileCode = ddId.replace('fileIndex', '');
+                // let thisRecordId = thisRecord.attr('id').replace('dd', '');
+                let thisRecordId = recordId;
+                let fileCode = ddId.replace('thumbnail', '');
                 recycleBinObj.addRecycleBin(thisRecordId, fileCode);
-                $('#' + ddId).remove();
-                filesMap.delete(ddId);
+
+
+                // filesMap.delete(ddId);
                 saveDeleteDateOnTime(thisRecordId, fileCode);
             }
         }
@@ -832,6 +839,7 @@ var loadArchiveIndex = (function () {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
                     console.log('实时删除成功');
+                    //删除后删除图片  并移动至回收站位置
                 } else {
                 }
             }
@@ -1264,6 +1272,7 @@ $(function () {
             $('.delt').hide();
             $('.textt').show();
         } else {
+            layer.msg('回收站');
             $('.textt').hide();
             $('.delt').show();
 
@@ -1280,6 +1289,7 @@ $(function () {
             if ('success' === reV.message) {
                 const seq = reV.value.seq;//最新的整理记录id
                 const sfc = reV.value.sfc;//送检卷信息
+                $('#recordStatusMessage').html(reV.value.casename);
                 const caseStatus = reV.value.caseStatus;//送检卷信息
                 let viewModel = true;
                 if ("0" !== caseStatus) {

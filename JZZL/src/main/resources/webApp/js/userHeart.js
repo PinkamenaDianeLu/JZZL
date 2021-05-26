@@ -15,15 +15,16 @@ $(function () {
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
-                const log=reV.value;
-                $('#heartUsername').html(log.sysusername);
+                const log = reV.value;
+                $('#heartUsername').html(log.xm);
                 $('#heartPrevIp').html(log.ip);
                 $('#heartPrevTime').html(utils.timeFormat.timestampToDate(log.createtime));
-
-
-
             } else {
             }
         }
     });
+    $('#closeWindow').click(function () {
+        window.location.href='about:blank';
+        window.close();
+    })
 })

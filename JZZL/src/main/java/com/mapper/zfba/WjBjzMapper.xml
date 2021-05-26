@@ -40,8 +40,38 @@
     <select id="selectWjdzByBmBid"  parameterType="map" resultMap="BaseResultMap">
         SELECT  <include refid="Base_Column_List" />
         from WJ_BJZ
-        WHERE SCBJ=0 AND SFBZJ=0
-        AND WJBID = #{wjbid,jdbcType=VARCHAR}
-        AND WJBM = #{wjbm,jdbcType=DECIMAL}
+        WHERE SCBJ=0
+        AND WJBID = #{wjbid,jdbcType=DECIMAL}
+        AND WJBM = #{wjbm,jdbcType=VARCHAR}
+        AND JZFL = 9
     </select>
+
+  <select id="selectWhByBmBid"  parameterType="map" resultType="com.bean.zfba.Wh">
+    SELECT G,J,N,H  FROM ${wjbm} where scbj=0 and id=#{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectObjectByBmBid"  parameterType="map" resultType="map">
+    SELECT  *  FROM ${wjbm} where scbj=0 and id=#{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectNewFilesAfterDate" parameterType="map" resultMap="BaseResultMap">
+     WITH CASES AS
+  (SELECT *
+     FROM XT_AJXXB AJ
+    WHERE SCBJ = 0
+      AND EXISTS (SELECT 1
+             FROM XT_BADWB DW
+            WHERE BADWDM LIKE  #{groupcode,jdbcType=VARCHAR}||'%'
+              AND AJ.JQBH = DW.JQBH)
+      AND LARQ > TO_DATE('2020-01-01', 'yyyy-MM-dd')
+    ORDER BY ID ASC)
+
+ SELECT <include refid="Base_Column_List" />
+   FROM WJ_BJZ BJZ
+  WHERE BJZ.SCBJ = 0
+    AND (BJZ.JLSJ >  #{lastpkdatevalue,jdbcType=TIMESTAMP}
+    OR BJZ.GXSJ >  #{lastpkdatevalue,jdbcType=TIMESTAMP})
+    AND EXISTS (SELECT 1 FROM CASES C WHERE BJZ.JQBH =  C.JQBH)
+
+  </select>
 </mapper>

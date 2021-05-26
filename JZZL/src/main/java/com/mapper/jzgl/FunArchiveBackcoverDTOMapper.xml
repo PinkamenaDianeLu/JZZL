@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.jzgl.FunArchiveBackcoverDTOMapper" >
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveBackcoverDTO" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+    <result column="STATE" property="state" jdbcType="DECIMAL" />
+    <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="AUTHOR" property="author" jdbcType="VARCHAR" />
+    <result column="AUTHORID" property="authorid" jdbcType="DECIMAL" />
+    <result column="AUTHORXM" property="authorxm" jdbcType="VARCHAR" />
+    <result column="JQBH" property="jqbh" jdbcType="VARCHAR" />
+    <result column="AJBH" property="ajbh" jdbcType="VARCHAR" />
+    <result column="ARCHIVESFCID" property="archivesfcid" jdbcType="DECIMAL" />
+    <result column="ARCHIVESEQID" property="archiveseqid" jdbcType="DECIMAL" />
+    <result column="ARCHIVETYPEID" property="archivetypeid" jdbcType="DECIMAL" />
+    <result column="ARCHIVEFILEID" property="archivefileid" jdbcType="DECIMAL" />
+    <result column="FILECODE" property="filecode" jdbcType="VARCHAR" />
+    <result column="DOCUMENTPAGE" property="documentpage" jdbcType="VARCHAR" />
+    <result column="SCRIPTPAGE" property="scriptpage" jdbcType="VARCHAR" />
+    <result column="PHOTOPAGE" property="photopage" jdbcType="VARCHAR" />
+    <result column="LJSJ" property="ljsj" jdbcType="TIMESTAMP" />
+    <result column="LJR" property="ljr" jdbcType="VARCHAR" />
+    <result column="EXPLAIN" property="explain" jdbcType="VARCHAR" />
+    <result column="REVIEW" property="review" jdbcType="VARCHAR" />
+    <result column="REVIEWID" property="reviewid" jdbcType="DECIMAL" />
+    <result column="REVIEWXM" property="reviewxm" jdbcType="VARCHAR" />
+    <result column="REVIEWDATE" property="reviewdate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, AUTHOR, AUTHORID, AUTHORXM, JQBH, AJBH, 
+    ARCHIVESFCID, ARCHIVESEQID, ARCHIVETYPEID, ARCHIVEFILEID, FILECODE,  DOCUMENTPAGE, SCRIPTPAGE, PHOTOPAGE, LJSJ, LJR,
+    EXPLAIN,REVIEW,REVIEWID,REVIEWXM,REVIEWDATE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from FUN_ARCHIVE_BACKCOVER
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectFunArchiveBackCoverDTOByFileId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from FUN_ARCHIVE_BACKCOVER
+    WHERE SCBJ=0 AND ARCHIVEFILEID = #{archivefileid,jdbcType=DECIMAL}
+  </select>
+
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveBackcoverDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARCHIVE_COVER_ID.nextval from dual
+    </selectKey>
+    insert into FUN_ARCHIVE_BACKCOVER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        ID,
+      SCBJ,
+      STATE,
+      CREATETIME,
+      UPDATETIME,
+        AUTHOR,
+        AUTHORID,
+        AUTHORXM,
+        JQBH,
+        AJBH,
+        ARCHIVESFCID,
+        ARCHIVESEQID,
+        ARCHIVETYPEID,
+        ARCHIVEFILEID,
+        FILECODE,
+        DOCUMENTPAGE,
+        SCRIPTPAGE,
+        PHOTOPAGE,
+        LJR,
+      <if test="explain != null">
+        EXPLAIN,
+      </if>
+      <if test="ljsj != null">
+        LJSJ,
+      </if>
+      <if test="review != null">
+        REVIEW,
+      </if>
+      <if test="reviewid != null">
+        REVIEWID,
+      </if>
+      <if test="reviewxm != null">
+        REVIEWXM,
+      </if>
+      <if test="reviewdate != null">
+        REVIEWDATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        #{id,jdbcType=DECIMAL},
+      0,
+      0,
+      SYSDATE,
+      SYSDATE,
+        #{author,jdbcType=VARCHAR},
+        #{authorid,jdbcType=DECIMAL},
+        #{authorxm,jdbcType=VARCHAR},
+        #{jqbh,jdbcType=VARCHAR},
+        #{ajbh,jdbcType=VARCHAR},
+        #{archivesfcid,jdbcType=DECIMAL},
+        #{archiveseqid,jdbcType=DECIMAL},
+        #{archivetypeid,jdbcType=DECIMAL},
+        #{archivefileid,jdbcType=DECIMAL},
+        #{filecode,jdbcType=VARCHAR},
+        #{documentpage,jdbcType=VARCHAR},
+        #{scriptpage,jdbcType=VARCHAR},
+        #{photopage,jdbcType=VARCHAR},
+
+      <if test="ljr != null">
+        #{ljr,jdbcType=VARCHAR},
+      </if>
+      <if test="explain != null">
+        #{explain,jdbcType=VARCHAR},
+      </if>
+      <if test="ljsj != null">
+        #{ljsj,jdbcType=VARCHAR},
+      </if>
+      <if test="review != null">
+        #{review,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewid != null">
+        #{reviewid,jdbcType=DECIMAL},
+      </if>
+      <if test="reviewxm != null">
+        #{reviewxm,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewdate != null">
+        #{reviewdate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveBackcoverDTO">
+    update FUN_ARCHIVE_BACKCOVER
+    <set>
+        UPDATETIME = sysdate,
+      <if test="author != null">
+        AUTHOR = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="authorid != null">
+        AUTHORID = #{authorid,jdbcType=DECIMAL},
+      </if>
+      <if test="authorxm != null">
+        AUTHORXM = #{authorxm,jdbcType=VARCHAR},
+      </if>
+      <if test="jqbh != null">
+        JQBH = #{jqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ajbh != null">
+        AJBH = #{ajbh,jdbcType=VARCHAR},
+      </if>
+      <if test="archivesfcid != null">
+        ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+      </if>
+      <if test="archiveseqid != null">
+        ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+      </if>
+      <if test="archivetypeid != null">
+        ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+      </if>
+      <if test="archivefileid != null">
+        ARCHIVEFILEID = #{archivefileid,jdbcType=DECIMAL},
+      </if>
+      <if test="filecode != null">
+        FILECODE = #{filecode,jdbcType=VARCHAR},
+      </if>
+      <if test="documentpage != null">
+        DOCUMENTPAGE = #{documentpage,jdbcType=VARCHAR},
+      </if>
+      <if test="scriptpage != null">
+        SCRIPTPAGE = #{scriptpage,jdbcType=VARCHAR},
+      </if>
+      <if test="photopage != null">
+        PHOTOPAGE = #{photopage,jdbcType=VARCHAR},
+      </if>
+      <if test="ljsj != null">
+        LJSJ = #{ljsj,jdbcType=VARCHAR},
+      </if>
+      <if test="ljr != null">
+        LJR = #{ljr,jdbcType=VARCHAR},
+      </if>
+      <if test="explain != null">
+        EXPLAIN = #{explain,jdbcType=VARCHAR},
+      </if>
+      <if test="review != null">
+        REVIEW = #{review,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewid != null">
+        REVIEWID = #{reviewid,jdbcType=DECIMAL},
+      </if>
+      <if test="reviewxm != null">
+        REVIEWXM = #{reviewxm,jdbcType=VARCHAR},
+      </if>
+      <if test="reviewdate != null">
+        REVIEWDATE = #{reviewdate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.bean.jzgl.DTO.FunArchiveBackcoverDTO">
+          update FUN_ARCHIVE_BACKCOVER
+    set SCBJ = #{scbj,jdbcType=DECIMAL},
+      STATE = #{state,jdbcType=DECIMAL},
+      CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      AUTHOR = #{author,jdbcType=VARCHAR},
+      AUTHORID = #{authorid,jdbcType=DECIMAL},
+      AUTHORXM = #{authorxm,jdbcType=VARCHAR},
+      JQBH = #{jqbh,jdbcType=VARCHAR},
+      AJBH = #{ajbh,jdbcType=VARCHAR},
+      ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+      ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+      ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+      ARCHIVEFILEID = #{archivefileid,jdbcType=DECIMAL},
+      FILECODE = #{filecode,jdbcType=VARCHAR},
+      DOCUMENTPAGE = #{documentpage,jdbcType=VARCHAR},
+      SCRIPTPAGE = #{scriptpage,jdbcType=VARCHAR},
+      PHOTOPAGE = #{photopage,jdbcType=VARCHAR},
+      LJSJ = #{ljsj,jdbcType=VARCHAR},
+      LJR = #{ljr,jdbcType=VARCHAR},
+      EXPLAIN = #{explain,jdbcType=VARCHAR},
+      REVIEW = #{review,jdbcType=VARCHAR},
+      REVIEWID = #{reviewid,jdbcType=DECIMAL},
+      REVIEWXM = #{reviewxm,jdbcType=VARCHAR},
+      REVIEWDATE = #{reviewdate,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>

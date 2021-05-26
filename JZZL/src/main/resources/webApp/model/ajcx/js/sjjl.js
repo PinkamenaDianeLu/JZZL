@@ -217,7 +217,7 @@ var suspectOrder = function (ajid) {
                                 SuspectOrder.add(thisSuspectId);
                             })
                             //传到后台开始整理
-                            layer.close(index)
+                            layer.close(index);
                             $.post({
                                 url: '/SFCensorship/orderArchivesBySuspectOrder',
                                 data: {
@@ -233,7 +233,7 @@ var suspectOrder = function (ajid) {
                                     }
                                 }
                             });
-                            alert('已开始将所有卷按照嫌疑人顺序智能排序，请稍等。。。。。。');
+                            alert('已开始将所有卷按照嫌疑人顺序智能排序，请注意右上角提醒');
                         },
                         area: ['338px', '471px'],
                         content: $('#suspectOrderDiv')

@@ -41,4 +41,17 @@ public class FileTagsImpl implements FileTagsService {
     public FunArchiveRecordsDTO selectFunArchiveRecordsDTOById (Integer recordId){
         return  funArchiveRecordsDTOMapper.selectByPrimaryKey(recordId);
     }
+
+    @Override
+    public void delTagById(Integer id) {
+        funArchiveTagsDTOMapper.delTagById(id);
+    }
+
+    @Override
+    public void changeTagColor(Integer id, String colour) {
+        FunArchiveTagsDTO record=new FunArchiveTagsDTO();
+        record.setId(id);
+        record.setTagcolour(colour);//颜色
+        funArchiveTagsDTOMapper.updateByPrimaryKeySelective(record);
+    }
 }

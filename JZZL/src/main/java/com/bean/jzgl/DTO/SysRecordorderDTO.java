@@ -27,6 +27,8 @@ public class SysRecordorderDTO {
 
     private  Integer isaccessory;
 
+    private Integer demand;
+
     public Integer getId() {
         return id;
     }
@@ -121,5 +123,13 @@ public class SysRecordorderDTO {
 
     public void setIsaccessory(Integer isaccessory) {
         this.isaccessory = isaccessory;
+    }
+
+    public Integer getDemand() {
+        return demand;
+    }
+
+    public void setDemand(Integer demand) {
+        this.demand = demand;
     }
 }

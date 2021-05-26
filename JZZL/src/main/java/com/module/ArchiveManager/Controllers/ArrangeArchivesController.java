@@ -7,8 +7,6 @@ import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.*;
 import com.config.annotations.OperLog;
 import com.config.annotations.recordTidy;
-import com.config.webSocket.WebSocketMessage;
-import com.enums.Enums;
 import com.factory.BaseFactory;
 import com.module.ArchiveManager.Services.ArrangeArchivesService;
 import com.module.SystemManagement.Services.UserService;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -112,7 +109,7 @@ public class ArrangeArchivesController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "解锁文书", operType = OperLog.type.UPDATE)
-    public String unlockReocrd(Integer sfcid, String username,Integer caseinfoid) {
+    public String unlockReocrd(Integer sfcid, String username, Integer caseinfoid) {
         JSONObject reValue = new JSONObject();
         try {
             if (StringUtil.isEmptyAll(username)) {
@@ -122,7 +119,7 @@ public class ArrangeArchivesController extends BaseFactory {
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
             //发送导弹  Biu
             unlockRecord(userNow.getXm(), username, sfcid);
-            redisCasesAreOccupiedTemplate.delete("C"+caseinfoid);
+            redisCasesAreOccupiedTemplate.delete("C" + caseinfoid);
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,15 +177,22 @@ public class ArrangeArchivesController extends BaseFactory {
                 throw new Exception("你传nm呢？");
             }
             int isdelete = Integer.parseInt(isDelete);
-            JSONArray records = new JSONArray();
-      /*      for (FunArchiveRecords thisRecord :
-                    arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), isdelete)) {
-                JSONObject record = new JSONObject();
-                record.put("record", thisRecord);
-                record.put("files", arrangeArchivesService.selectRecordFilesByRecordId(thisRecord.getId(), isdelete));
-                records.add(record);
-            }*/
-            reValue.put("value", arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), isdelete));
+            if (isdelete > 0) {
+                //当查询删除的文书的时候  子菜单一起查询出来
+                JSONArray records = new JSONArray();
+                for (FunArchiveRecords thisRecord :
+                        arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), isdelete)) {
+                    JSONObject record = new JSONObject();
+                    record.put("record", thisRecord);
+                    record.put("files", arrangeArchivesService.selectRecordFilesByRecordId(thisRecord.getId(), isdelete));
+                    records.add(record);
+                }
+                reValue.put("value", records);
+            } else {
+                //查询显示的时候只查询文书级别
+                reValue.put("value", arrangeArchivesService.selectRecordsByTypeid(Integer.parseInt(id), isdelete));
+            }
+
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -433,6 +437,7 @@ public class ArrangeArchivesController extends BaseFactory {
         }
         return reValue.toJSONString();
     }
+
     /**
      * 按照文书id查询可看的文件
      *
@@ -445,7 +450,7 @@ public class ArrangeArchivesController extends BaseFactory {
     @ResponseBody
     @recordTidy
     @OperLog(operModul = operModul, operDesc = "按照文书代码按顺序查询文书列表", operType = OperLog.type.SELECT)
-    public String loadFilesByRecord( String seqId, String recordId) {
+    public String loadFilesByRecord(String seqId, String recordId) {
         JSONObject reValue = new JSONObject();
         try {
             if (StringUtils.isEmpty(seqId) || StringUtils.isEmpty(recordId)) {

@@ -194,7 +194,9 @@
         <if test="null != persontype and persontype!=''">
             AND pcase.PERSONTYPE = #{persontype,jdbcType=VARCHAR}
         </if>
-
+        <if test="null != persontype and persontype!=''">
+            AND pcase.PERSONTYPE = #{persontype,jdbcType=VARCHAR}
+        </if>
 
         <if test="null != fciTimebegin and fciTimebegin!=''">
             AND fci.LARQ &gt; to_date(#{fciTimebegin,jdbcType=TIMESTAMP},'yyyy-MM-dd')
@@ -210,6 +212,9 @@
             AND sfc.UPDATETIME &lt; to_date(#{sfcTimeend,jdbcType=TIMESTAMP},'yyyy-MM-dd')
         </if>
 
+        <if test="null != sfcnumber and sfcnumber!=''">
+            AND sfc.SFCNUMBER LIKE  '%'||#{persontype,jdbcType=VARCHAR}||'%'
+        </if>
 
         <if test="null != casetype and casetype!=''">
             AND pcase.CASETYPE = #{casetype,jdbcType=DECIMAL}
@@ -265,6 +270,9 @@
         <if test="null != sfcTimeend and sfcTimeend!=''">
             AND sfc.UPDATETIME &lt; to_date(#{sfcTimeend,jdbcType=TIMESTAMP},'yyyy-MM-dd')
         </if>
+        <if test="null != sfcnumber and sfcnumber!=''">
+            AND sfc.SFCNUMBER LIKE  '%'||#{persontype,jdbcType=VARCHAR}||'%'
+        </if>
         <if test="null != casetype and casetype!=''">
             AND pcase.CASETYPE = #{casetype,jdbcType=DECIMAL}
         </if>
@@ -273,10 +281,64 @@
         </if>
     </select>
 
+
+
+    <select id="selectPeopleCaseForCombinationPage" parameterType="java.lang.Integer" resultType="map">
+        select * from ( SELECT A.*, ROWNUM RUM FROM (
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_CASE_PEOPLECASE pcase
+        where 1=1
+        <if test="null != jqbh and jqbh!=''">
+            AND pcase.JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != ajbh and ajbh!=''">
+            AND pcase.AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != casename and casename!=''">
+            AND pcase.CASENAME LIKE '%'||#{casename,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="sysuserid != 0">
+            AND pcase.SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
+        </if>
+        and pcase.CASEINFOID &lt;&gt; #{caseinfoid,jdbcType=DECIMAL}
+        order by pcase.id desc
+        ) A )
+        WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
+        AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
+    </select>
+
+    <select id="selectPeopleCaseForCombinationCount" resultType="java.lang.Integer" parameterType="map">
+        select count(0) from
+        FUN_CASE_PEOPLECASE pcase
+        where 1=1
+        <if test="null != jqbh and jqbh!=''">
+            AND pcase.JQBH LIKE '%'||#{jqbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != ajbh and ajbh!=''">
+            AND pcase.AJBH LIKE #{ajbh,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="null != casename and casename!=''">
+            AND pcase.CASENAME LIKE '%'||#{casename,jdbcType=VARCHAR}||'%'
+        </if>
+        <if test="sysuserid != 0">
+            AND pcase.SYSUSERID = #{sysuserid,jdbcType=DECIMAL}
+        </if>
+        and pcase.CASEINFOID &lt;&gt; #{caseinfoid,jdbcType=DECIMAL}
+    </select>
+
     <select id="selectRelationByCaseid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM FUN_CASE_PEOPLECASE WHERE SCBJ=0
         AND CASEINFOID= #{caseinfoid,jdbcType=DECIMAL}
+    </select>
+
+    <select id="selectCaseByJqIDCard" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_CASE_PEOPLECASE WHERE SCBJ=0
+        AND JQBH = #{jqbh,jdbcType=VARCHAR}
+        AND IDCARD =  #{idcard,jdbcType=VARCHAR}
     </select>
 </mapper>

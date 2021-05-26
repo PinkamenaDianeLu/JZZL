@@ -67,7 +67,10 @@ var dropUpload = (function () {
     function createThumbnailZone(thisImgs) {
         if (thisImgs.length > 0) {
             let frag = document.createDocumentFragment();
-            for (let thisImg of thisImgs) {
+            console.log(thisImgs);
+            // for (let thisImg of thisImgs) {
+            for (let i = 0; i < thisImgs.length; i++) {
+                let thisImg = thisImgs[i]
                 let msg = '';//提示信息
                 let isCool = true;//该图片是否符合规范
                 let fileSize = +Math.round(thisImg.size * 100 / 1024) / 100;
@@ -78,7 +81,7 @@ var dropUpload = (function () {
                     msg += '文件过大！请上传小于5M的图片';
                     isCool = false;
                 }
-                frag.append(createThumbnailDiv(thisImg, isCool, msg));
+                frag.appendChild(createThumbnailDiv(thisImg, isCool, msg));
             }
             $('#thumbnailZone').append(frag);
         }
@@ -123,10 +126,10 @@ var dropUpload = (function () {
         delDiv.addEventListener("click", function () {
             removeOne(key);
         })
-        pDiv.append(imgDiv);
-        pDiv.append(inputDiv);
-        pDiv.append(msgDiv);
-        pDiv.append(delDiv);
+        pDiv.appendChild(imgDiv);
+        pDiv.appendChild(inputDiv);
+        pDiv.appendChild(msgDiv);
+        pDiv.appendChild(delDiv);
         return pDiv;
     }
 
@@ -182,16 +185,16 @@ var dropUpload = (function () {
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ("success" === reV.message) {
-                        pDiv.find('.thumbnailMsg').html('上传成功');
+                        pDiv.find('.thumbnailMsg').html('<span style="color: green">上传成功</span>');
                         //刷新父页面
                         // parent.dqfxpgbgOut.reFreshTk();
                         //
                         files.delete(item[1].keyForInput);
-                        if (files.size===0){
+                        if (files.size === 0) {
                             layer.msg('创建成功！');
                             //自我关闭
-                               const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                               parent.layer.close(index);
+                            const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                            parent.layer.close(index);
                         }
 
                     }
@@ -364,45 +367,45 @@ var createNewRecord = (function () {
     function getRecordV() {
         let newRecord = new record();
         const isaccessory = +($('.recordTab.active').attr('value'));
-        debugger;
         if (0 === isaccessory) {
             //0 不是附件
-            if ("" !== document.getElementById('recordName').value && null != document.getElementById('recordName').value){
+            if ("" !== document.getElementById('recordName').value && null != document.getElementById('recordName').value) {
                 newRecord.recordName = document.getElementById('recordName').value;
-            }else{
+            } else {
                 layer.alert('文书名称不允许为空！');
                 return null;
             }
-            if ("" !== document.getElementById('recordWh').value && null != document.getElementById('recordWh').value){
+            if ("" !== document.getElementById('recordWh').value && null != document.getElementById('recordWh').value) {
                 newRecord.recordWh = document.getElementById('recordWh').value;
-            }else{
+            } else {
                 layer.alert('文书文号不允许为空！');
                 return null;
             }
-            var selectarr=document.getElementsByName("select")[0];
+            var selectarr = document.getElementsByName("select")[0];
 
             // var select = xmSelect.batch('#recordCode', 'getValue', 'value');
-            if ("" != selectarr.value && null != selectarr.value){
+            if ("" != selectarr.value && null != selectarr.value) {
                 newRecord.recordCode = selectarr.value;
-            }else{
+            } else {
                 layer.alert('文书类型不允许为空！');
                 return null;
             }
         } else {
             //1 附件
-            if ("" !== document.getElementById('accessoriesName').value && null != document.getElementById('accessoriesName').value){
-                newRecord.accessoriesName = document.getElementById('accessoriesName').value;
-            }else{
+            let accessoriesName=document.getElementById('accessoriesName').value;
+            if (accessoriesName) {
+                newRecord.recordName =accessoriesName;
+            } else {
                 layer.alert('附件名称不允许为空！');
                 return null;
             }
-            var selectarr=document.getElementsByName("select")[1];
-            if ("" != selectarr.value && null != selectarr.value){
-                    newRecord.accessoriesName = selectarr.value;
-                }else{
-                    layer.alert('附件类型不允许为空！');
-                    return null;
-                }
+            var selectarr = document.getElementsByName("select")[1];
+            if ("" != selectarr.value && null != selectarr.value) {
+                newRecord.recordCode = selectarr.value;
+            } else {
+                layer.alert('附件类型不允许为空！');
+                return null;
+            }
         }
         if ("" !== document.getElementById('sysRecordId').value && null != document.getElementById('sysRecordId').value) {
             newRecord.sysRecordId = document.getElementById('sysRecordId').value;
@@ -432,27 +435,28 @@ var createNewRecord = (function () {
         } else if ($('#thumbnailZone').find('.thumbnail').length === 0) {
             layer.alert('请上传文书图片！')
         } else {
-            if(null!=getRecordV()){
-            axios({
-                method: 'post',
-                url: '/Records/createNewRecord',
-                params: {
-                    record: JSON.stringify(getRecordV())
-                }
-            }).then(response => {
-                const reV = response.data;
-                if ('success' === reV.message) {
-                    const record = reV.value;
-                    console.log(record);
-                    zl.upload(record.id);
-                    parent.lai.addRecord(record,reV.prevRId);
-                } else {
-                    console.error('新建文书失败');
-                }
-                //文书新建完了  把文书图片传上去
-            }).catch(err => {
-            });
-        }
+            if (null != getRecordV()) {
+                console.log(getRecordV())
+                axios({
+                    method: 'post',
+                    url: '/Records/createNewRecord',
+                    params: {
+                        record: JSON.stringify(getRecordV())
+                    }
+                }).then(response => {
+                    const reV = response.data;
+                    if ('success' === reV.message) {
+                        const record = reV.value;
+                        console.log(record);
+                        zl.upload(record.id);
+                        parent.lai.addRecord(record, reV.prevRId);
+                    } else {
+                        console.error('新建文书失败');
+                    }
+                    //文书新建完了  把文书图片传上去
+                }).catch(err => {
+                });
+            }
         }
 
     }

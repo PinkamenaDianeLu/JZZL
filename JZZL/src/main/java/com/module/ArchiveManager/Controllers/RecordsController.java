@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author MrLu
@@ -88,7 +89,19 @@ public class RecordsController extends BaseFactory {
             //查找该案件的基础卷的第0次（案宗抽取次）的整理次序id
             FunArchiveSeqDTO thisSeq = recordsService.selectBaseArchive(caseInfoId);
             pJsonObj.put("archiveseqid", thisSeq.getId());//这里查询的是未被送检的卷 所有传0
-            reMap.put("rows", recordsService.selectRecordsByJqbhPage(pJsonObj));
+            List<FunArchiveRecordsDTO> records = recordsService.selectRecordsByJqbhPage(pJsonObj);
+            JSONArray recordsArray = new JSONArray();
+            for (FunArchiveRecordsDTO thisRecord :
+                    records) {
+                //对象转换城jsonObj
+                JSONObject rObj = (JSONObject) JSONObject.toJSON(thisRecord);
+                //查找这个文书对应的嫌疑人
+                List<FunSuspectDTO> suspects = recordsService.selectSuspectByRecordid(thisRecord.getId());
+                String suspectname = suspects.stream().map(FunSuspectDTO::getSuspectname).collect(Collectors.joining(",", "", ""));
+                rObj.put("suspectname", suspectname);
+                recordsArray.add(rObj);//这时这个文书就带有嫌疑人信息了
+            }
+            reMap.put("rows", recordsArray);
             reMap.put("total", recordsService.selectRecordsByJqbhCount(pJsonObj));
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,7 +202,12 @@ public class RecordsController extends BaseFactory {
                     suspectId);
             if (null == newRecordObj) {
                 //这种现象有记录出现在选人文书中
-                throw new Exception("该文书代码无法匹配上一个文书");
+//                throw new Exception("该文书代码无法匹配上一个文书");
+                newRecordObj = recordsService.selectPriveRecord(thisRecordOrder.getRecordtype(),
+                        thisRecordOrder.getArchivetype(),
+                        thisRecordOrder.getDefaultorder(),
+                        seqId,
+                        null);
 
             }
             newRecordObj.setRecordname(newRecordJsonObj.getString("recordName"));
@@ -234,6 +252,7 @@ public class RecordsController extends BaseFactory {
                 suspectRecord.setSuspectid(suspectId);
                 suspectRecord.setRecordid(newRecordObj.getId());
                 suspectRecord.setRecordtype(thisRecordOrder.getRecordtype());
+                suspectRecord.setArchiveseqid(newRecordObj.getArchiveseqid());
                 recordsService.insertSuspectRecord(suspectRecord);
             }
 
@@ -248,14 +267,15 @@ public class RecordsController extends BaseFactory {
     }
 
 
-     /**
+    /**
      * 导入文书
+     *
+     * @param seqId     被导入的seq
+     * @param recordId  文书id
+     * @param fileCodes 文件代码 all 该文书全部导入 数组-> 导入该数组的文书
      * @author MrLu
-     * @param  seqId 被导入的seq
-     * @param  recordId 文书id
-     * @param  fileCodes 文件代码 all 该文书全部导入 数组-> 导入该数组的文书
-     * @createTime  2021/1/8 14:47
-      */
+     * @createTime 2021/1/8 14:47
+     */
     @RequestMapping(value = "/importRecords", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -266,10 +286,11 @@ public class RecordsController extends BaseFactory {
         try {
             //根据id查询基础卷文书
             FunArchiveRecordsDTO baseRecord = recordsService.getFunArchiveRecordsById(recordId);
+            //查询这个文书属于哪个type
             FunArchiveTypeDTO baseRecordType = recordsService.selectFunArchiveTypeById(baseRecord.getArchivetypeid());
             //获取目标卷的信息
             FunArchiveSeqDTO targetSeq = recordsService.selectFunArchiveSeqById(seqId);
-            //获得目标卷中该文书的应在位置
+            //获得目标卷中该文书的应在位置 （对人文书可能出现查不到对的人）
             SysRecordorderDTO thisRecordOrder = recordsService.selectRecordOrderByTypes(baseRecord.getRecordscode(), targetSeq.getArchivetype(), baseRecordType.getRecordtype());
             //判断文书是否对人（基础卷）
             Integer suspectId = null;
@@ -287,8 +308,14 @@ public class RecordsController extends BaseFactory {
                     suspectId);
 
             if (null == prevRecord) {
-                //这种现象有记录出现在选人文书中
-                throw new Exception("该文书代码无法匹配上一个文书");
+                //这种现象有记录出现在选人文书中  //
+                //想从基础卷导入一个对人文书  但是这个卷没有这个嫌疑人 所以只能查不对人文书的相对最后一个
+//                recordsService.selectRsMaxOrderByTypeid(baseRecordType.getId());
+                prevRecord = recordsService.selectPriveRecord(thisRecordOrder.getRecordtype(),
+                        thisRecordOrder.getArchivetype(),
+                        thisRecordOrder.getDefaultorder(),
+                        seqId,
+                        null);
             }
             //查找该seq中是否有这个文书  这个文书必须是基于基础卷生成的
             FunArchiveRecordsDTO targetRecord = recordsService.selectRecordByUuidSeq(baseRecord.getRecorduuid(), seqId);

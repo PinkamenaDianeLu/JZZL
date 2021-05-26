@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.jzgl.SysRecordMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.Source.SysRecordMessage" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+    <result column="STATE" property="state" jdbcType="DECIMAL" />
+    <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="RECORDNAME" property="recordname" jdbcType="VARCHAR" />
+    <result column="WJBM" property="wjbm" jdbcType="VARCHAR" />
+    <result column="RECORDCODE" property="recordcode" jdbcType="VARCHAR" />
+    <result column="JCYCODE" property="jcycode" jdbcType="VARCHAR" />
+    <result column="Z" property="z" jdbcType="VARCHAR" />
+    <result column="DIFFERENCE" property="difference" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, RECORDNAME, WJBM, RECORDCODE, JCYCODE, Z, 
+    DIFFERENCE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_RECORDMESSAGE
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectMessageByCode" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT  <include refid="Base_Column_List" />
+    from SYS_RECORDMESSAGE
+    where SCBJ=0 AND RECORDCODE=#{recordcode,jdbcType=VARCHAR}
+  </select>
+</mapper>

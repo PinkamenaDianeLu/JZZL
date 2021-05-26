@@ -39,4 +39,6 @@ public interface UserService {
       */
     SysUser loginVerification(String username, String pwd) throws Exception;
 
+    SysUser loginVerification(String username) throws Exception;
+
 }

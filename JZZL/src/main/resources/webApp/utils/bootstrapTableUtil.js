@@ -124,10 +124,10 @@ var createTable = (function () {
                 param: param
             })
         }
-    }
+    };
     _createTable.prototype = {
         refreshTable,getSelections
-    }
+    };
     return _createTable;
 
-})()
+})();

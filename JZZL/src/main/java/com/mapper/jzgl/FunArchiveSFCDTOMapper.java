@@ -46,6 +46,7 @@ public interface FunArchiveSFCDTOMapper {
 
      /**
      * 查询新的原始卷
+      * --AND ID &gt; #{id,jdbcType=DECIMAL}
      * @author MrLu
      * @param id 大于某个id
      * @createTime  2021/1/6 14:12

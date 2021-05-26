@@ -62,7 +62,10 @@ var dropUpload = (function () {
     function createThumbnailZone(thisImgs) {
         if (thisImgs.length > 0) {
             let frag = document.createDocumentFragment();
-            for (let thisImg of thisImgs) {
+            console.log(thisImgs);
+            // for (let thisImg of thisImgs) {
+            for (let i = 0; i < thisImgs.length; i++) {
+                let thisImg = thisImgs[i]
                 let msg = '';//提示信息
                 let isCool = true;//该图片是否符合规范
                 let fileSize = +Math.round(thisImg.size * 100 / 1024) / 100;
@@ -73,7 +76,7 @@ var dropUpload = (function () {
                     msg += '文件过大！请上传小于5M的图片';
                     isCool = false;
                 }
-                frag.append(createThumbnailDiv(thisImg, isCool, msg));
+                frag.appendChild(createThumbnailDiv(thisImg, isCool, msg));
             }
             $('#thumbnailZone').append(frag);
         }
@@ -118,10 +121,10 @@ var dropUpload = (function () {
         delDiv.addEventListener("click", function () {
             removeOne(key);
         });
-        pDiv.append(imgDiv);
-        pDiv.append(inputDiv);
-        pDiv.append(msgDiv);
-        pDiv.append(delDiv);
+        pDiv.appendChild(imgDiv);
+        pDiv.appendChild(inputDiv);
+        pDiv.appendChild(msgDiv);
+        pDiv.appendChild(delDiv);
         return pDiv;
     }
 

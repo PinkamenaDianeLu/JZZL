@@ -12,168 +12,290 @@ import java.util.Map;
  */
 public interface FileManipulationService {
 
-     /**
+    /**
      * 通过fileid查询文书封皮
-     * @author MrLu
+     *
      * @param fileid
-     * @createTime  2020/10/23 10:17
-     * @return  FunArchiveCoverDTO  |
-      */
-    FunArchiveCoverDTO selectFunArchiveCoverDTOByFileId (Integer fileid);
+     * @return FunArchiveCoverDTO  |
+     * @author MrLu
+     * @createTime 2020/10/23 10:17
+     */
+    FunArchiveCoverDTO selectFunArchiveCoverDTOByFileId(Integer fileid);
 
-     /**
+    /**
+     * 通过fileid查询文书封底
+     *
+     * @param
+     * @return |
+     * @author Mrlu
+     * @createTime 2021/2/25 16:25
+     */
+    FunArchiveBackcoverDTO selectFunArchiveBackCoverDTOByFileId(Integer fileid);
+
+    /**
      * 根绝案件id查找案件
-     * @author MrLu
+     *
      * @param caseId 案件id
-     * @createTime  2020/10/23 10:39
-     * @return  FunCaseInfoDTO  |
-      */
-    FunCaseInfoDTO selectFunCaseInfoDTOById (Integer caseId);
+     * @return FunCaseInfoDTO  |
+     * @author MrLu
+     * @createTime 2020/10/23 10:39
+     */
+    FunCaseInfoDTO selectFunCaseInfoDTOById(Integer caseId);
 
-     /**
+    /**
      * 根据送检卷id查询送检卷
-     * @author MrLu
+     *
      * @param
-     * @createTime  2020/10/23 10:56
-     * @return    |
-      */
-    FunArchiveSFCDTO selectFunArchiveSFCDTOById (Integer sfcId);
-     /**
+     * @return |
+     * @author MrLu
+     * @createTime 2020/10/23 10:56
+     */
+    FunArchiveSFCDTO selectFunArchiveSFCDTOById(Integer sfcId);
+
+    /**
      * 根据文书id查找文书
-     * @author MrLu
+     *
      * @param
-     * @createTime  2020/10/23 10:57
-     * @return    |
-      */
-    FunArchiveRecordsDTO selectFunArchiveRecordsDTOById (Integer recordId);
+     * @return |
+     * @author MrLu
+     * @createTime 2020/10/23 10:57
+     */
+    FunArchiveRecordsDTO selectFunArchiveRecordsDTOById(Integer recordId);
+
+    /**
+     * 根据uuid查询相关文书
+     *
+     * @param recordUuid uuid
+     * @return |
+     * @author MrLu
+     * @createTime 2021/3/31 14:19
+     */
+    List<FunArchiveRecordsDTO> selectFunArchiveRecordsByUUID(String recordUuid);
 
     /**
      * 根据文件代码查找文件列表
-     * @author MrLu
+     *
      * @param filesCode
      * @param archiverecordid
-     * @createTime  2020/10/21 11:24
-     * @return    |
-     */
-    List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode,int archiverecordid);
-
-     /**
-     * 新建文书目录
+     * @return |
      * @author MrLu
+     * @createTime 2020/10/21 11:24
+     */
+    List<FunArchiveFilesDTO> selectRecordFilesByFileCodes(String[] filesCode, int archiverecordid);
+
+    /**
+     * 新建文书目录
+     *
      * @param record
-     * @createTime  2020/10/29 14:55
-     * @return  void  |
-      */
+     * @return void  |
+     * @author MrLu
+     * @createTime 2020/10/29 14:55
+     */
     void insertFunArchiveRecordindexDTO(FunArchiveRecordindexDTO record);
 
-     /**
+    /**
      * 更新文书目录
-     * @author MrLu
+     *
      * @param record
-     * @createTime  2020/10/29 15:05
      * @return void   |
-      */
-    void updateFunArchiveRecordindexDTO(FunArchiveRecordindexDTO record);
-     /**
-     * 根据id查询archivefile表
      * @author MrLu
+     * @createTime 2020/10/29 15:05
+     */
+    void updateFunArchiveRecordindexDTO(FunArchiveRecordindexDTO record);
+
+    /**
+     * 根据id查询archivefile表
+     *
      * @param id 表id
-     * @createTime  2020/10/29 15:04
      * @return FunArchiveFilesDTO   |
-      */
+     * @author MrLu
+     * @createTime 2020/10/29 15:04
+     */
     FunArchiveFilesDTO selectFunArchiveFilesDTOById(Integer id);
 
     /**
      * 根据送检次序id和文书类型id查询这个文书类型的文书目录信息
-     * @author MrLu
+     *
      * @param archiveseqid
      * @param archivetypeid
-     * @createTime  2020/10/29 15:18
-     * @return    |
+     * @return |
+     * @author MrLu
+     * @createTime 2020/10/29 15:18
      */
-    FunArchiveRecordindexDTO selectRecordIndexByTypeId(Integer archiveseqid,Integer archivetypeid);
+    FunArchiveRecordindexDTO selectRecordIndexByTypeId(Integer archiveseqid, Integer archivetypeid);
 
-     /**
+    /**
      * 更新卷宗封皮
+     *
+     * @param
+     * @return |
      * @author MrLu
-     * @param 
-     * @createTime  2020/10/30 15:44
-     * @return    |  
-      */
-    void  updateFunArchiveCoverById(FunArchiveCoverDTO record);
-     /**
+     * @createTime 2020/10/30 15:44
+     */
+    void updateFunArchiveCoverById(FunArchiveCoverDTO record);
+
+    /**
+     * 更新卷宗封底
+     *
+     * @param
+     * @return |
+     * @author Mrlu
+     * @createTime 2021/2/25 16:14
+     */
+    void updateFunArchiveBackCoverById(FunArchiveBackcoverDTO FunArchiveBackcoverDTO);
+
+    /**
      * 新建卷宗封皮
+     *
+     * @param
+     * @return |
      * @author MrLu
-     * @param 
-     * @createTime  2020/10/30 15:57
-     * @return    |  
-      */
-    void  insertFunArchiveCover(FunArchiveCoverDTO record);
+     * @createTime 2020/10/30 15:57
+     */
+    void insertFunArchiveCover(FunArchiveCoverDTO record);
+
+    /**
+     * 新建卷宗封底
+     *
+     * @param
+     * @return |
+     * @author Mrlu
+     * @createTime 2021/2/25 16:10
+     */
+    void insertFunArchiveBackCover(FunArchiveBackcoverDTO FunArchiveBackcoverDTO);
 
 
     /**
      * 分页查询文书
-     * @author MrLu
+     *
      * @param
-     * @createTime  2020/11/5 17:39
-     * @return    |
+     * @return |
+     * @author MrLu
+     * @createTime 2020/11/5 17:39
      */
-    List<Object> selectArchiveRecordPage(Map<String,Object> map) throws Exception;
-    int selectArchiveRecordPageCount(Map<String,Object> map);
+    List<Object> selectArchiveRecordPage(Map<String, Object> map) throws Exception;
+
+    int selectArchiveRecordPageCount(Map<String, Object> map);
 
     /**
      * 查询一个文书中的最大顺序
-     * @author MrLu
+     *
      * @param archiverecordid 文书id
-     * @createTime  2020/11/5 14:59
-     * @return   int |
+     * @return int |
+     * @author MrLu
+     * @createTime 2020/11/5 14:59
      */
     int selectFileMaxOrder(int archiverecordid);
-     /**
+
+    /**
      * 根据文件代码和整理次序id更新文件
-     * @author MrLu
+     *
      * @param record
-     * @createTime  2020/11/7 12:17
-     * @return  void  |
-      */
+     * @return void  |
+     * @author MrLu
+     * @createTime 2020/11/7 12:17
+     */
     void updateFileByFileCode(FunArchiveFilesDTO record);
 
     /**
      * 新建文件
-     * @author MrLu
+     *
      * @param record
-     * @createTime  2020/10/27 14:27
-     * @return  void  |
+     * @return void  |
+     * @author MrLu
+     * @createTime 2020/10/27 14:27
      */
     void insertFunArchiveFilesDTO(FunArchiveFilesDTO record);
 
-     /**
+    /**
      * 按照id更新文书文件
-     * @author MrLu
+     *
      * @param record
-     * @createTime  2020/12/25 15:43
-     * @return    |
-      */
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/25 15:43
+     */
     void updateFunArchiveFileDTO(FunArchiveFilesDTO record);
 
     /**
      * 将一个文书内顺序大于该值的文件顺序+1
+     *
+     * @return void |
      * @author MrLu
-
-     * @createTime  2020/11/2 16:47
-     * @return   void |
+     * @createTime 2020/11/2 16:47
      */
-    void updateOrderByRecordId(int archiverecordid,int thisorder,String filecode);
+    void updateOrderByRecordId(int archiverecordid, int thisorder, String filecode);
 
     /**
      * 根据文书代码找到正在显示的文书
+     *
+     * @param filecode:文件代码,
+     * @param archiverecordid:文书id}
+     * @return FunArchiveFilesDTO  |
      * @author MrLu
-     * @param  filecode:文件代码,
-     * @param  archiverecordid:文书id}
-     * @createTime  2020/10/22 9:32
-     * @return  FunArchiveFilesDTO  |
+     * @createTime 2020/10/22 9:32
      */
-    FunArchiveFilesDTO selectFilesByFileCode(int archiverecordid,String filecode);
+    FunArchiveFilesDTO selectFilesByFileCode(int archiverecordid, String filecode);
+
+    /**
+     * 按照seqid查询本次送检的嫌疑人
+     *
+     * @param
+     * @return |
+     * @author Mrlu
+     * @createTime 2021/2/20 16:11
+     */
+    List<FunSuspectDTO> selectSuspectByArchiveseqid(Integer archiveseqid);
+
+    /**
+     * 查询一个文书卷下有多少页
+     *
+     * @param
+     * @return |
+     * @author Mrlu
+     * @createTime 2021/2/23 11:08
+     */
+    Integer selectFilesCountByTypeid(Integer archivetypeid);
 
 
+    /**
+     * 查询一个文书下有多少页
+     *
+     * @param
+     * @return |
+     * @author Mrlu
+     * @createTime 2021/2/23 15:39
+     */
+    Integer selectFilecCountByRecordid(Integer recordid);
+
+    /**
+     * 通过seqid查询这个案件正在活跃的基础卷
+     *
+     * @param seqid
+     * @return |
+     * @author MrLu
+     * @createTime 2020/12/28 20:14
+     */
+    FunArchiveSeqDTO selectBaseArchiveBySeqId(int seqid);
+
+    /**
+     * 查询不同seq下的相同type
+     *
+     * @param archiveseqid seqid
+     * @param archiveseqid id
+     * @return |
+     * @author MrLu
+     * @createTime 2021/3/31 14:06
+     */
+    FunArchiveTypeDTO selectSameTypeWithSeq(Integer archiveseqid, Integer id);
+
+    /**
+     * 文件代码查询未发送的文书图片
+     *
+     * @param filecode
+     * @return |
+     * @author MrLu
+     * @createTime 2021/4/7 16:29
+     */
+    List<FunArchiveFilesDTO> selectFilesByCodeNotSend(String filecode);
 }

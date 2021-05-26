@@ -15,4 +15,14 @@ public interface XtXyrxxbMapper {
      * @return    |
       */
     List<XtXyrxxb> selectXyrByJqbh(@Param("jqbh") String jqbh);
+
+
+     /**
+     * 通过嫌疑人编号会查询嫌疑人信息
+     * @author MrLu
+     * @param
+     * @createTime  2021/3/25 15:33
+     * @return    |
+      */
+    XtXyrxxb selectXyrByXyrbh(String xyrbh);
 }

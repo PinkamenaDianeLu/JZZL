@@ -26,7 +26,7 @@ public interface RecordsService {
      * @createTime  2020/10/4 14:02
      * @return   List<Object> |
      */
-    List<Object> selectRecordsByJqbhPage(Map<String,Object> map) throws Exception;
+    List<FunArchiveRecordsDTO> selectRecordsByJqbhPage(Map<String,Object> map) throws Exception;
     int selectRecordsByJqbhCount(Map<String,Object> map);
      /**
      * 通过id获取案件表
@@ -222,4 +222,13 @@ public interface RecordsService {
      * @return    |
      */
     FunSuspectRecordDTO selectSuspectRecordByRid (int recordid);
+
+    /**
+     * 查询一个type中对嫌疑人文书的最大顺序（不针对某个嫌疑人）
+     * @author MrLu
+     * @param typeid
+     * @createTime  2021/3/25 16:19
+     * @return    |
+     */
+    public int selectRsMaxOrderByTypeid(int typeid);
 }

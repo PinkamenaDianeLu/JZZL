@@ -1,76 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>案卷整理</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
-<link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
-<script src="/Framework/js/jquery.min.js"></script>
-<script src="/Framework/layer/layer.js"></script>
-<link type="text/css" rel="stylesheet" href="/css/style.css">
-<style>
-	body{ background: #fff;}
-	.form-group input{margin-bottom: 10px;}
-	.form-group{ text-align: left;}
-	.form-group .control-label{ line-height: 40px;}
-	.table{ margin: 0;}
-	.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{ vertical-align: middle;}
-	.tc-left,.tc-center,.tc-right{position: relative;float: left;width: 40%;margin: 20px 0;border:1px solid #fafafa;height: 480px; padding:10px; overflow-y: auto;}
-	.tc-left{ margin-left: 5%;}
-	.tc-center{width: 10%;border:none; line-height: 480px; font-size: 30px; color:#488ed8;}
-	.tc-left p,.tc-right p{ float:left; width: 100%; background: #fafafa; padding: 8px 8px; margin-top: 8px;border:1px solid #ddd; cursor: pointer;}
-	.tc-left p span,.tc-right p span{ display: inline-block; width: 30%;}
-	.tc-left p span:nth-child(2),.tc-right p span:nth-child(2) {width: 40%;}
-</style>
+    <meta charset="utf-8">
+    <title>案卷整理</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+    <link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/Framework/js/jquery.min.js"></script>
+    <script src="/Framework/layer/layer.js"></script>
+    <link type="text/css" rel="stylesheet" href="/css/style.css">
+    <link href="/Framework/bootstrapTable/bootstrap-table.min.css" rel="stylesheet">
+    <style>
+        body{ background: #fff;}
+        .form-group input{margin-bottom: 10px;}
+        .form-group{ text-align: left;}
+        .form-group .f_title {padding-left: 80px;line-height:35px;}
+        .form-group .f_title font{ line-height:35px; position: absolute; left:15px; width: 80px; font-weight: bold;}
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{ vertical-align: middle;}
+        .i_right{ position: absolute; right:10px; top:10px; font-weight: normal; cursor: pointer;}
+        .fua{border: 1px solid #d6d5d5; margin-bottom: 10px; background: #fff; height: 35px; padding: 5px 10px; display: inline-block; border-radius: 3px;}
+        .o-h{width: 100%; position: relative; padding: 10px;background: #f9f9f9; margin-bottom: 10px; height: 150px; overflow-y: auto; overflow-x: hidden;}
+        .tc-left, .tc-center, .tc-right {
+            position: relative;
+            float: left;
+            width: 40%;
+            margin: 20px 0;
+            border: 1px solid #fafafa;
+            height: 480px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        .tc-left {
+            margin-left: 5%;
+        }
+
+        .tc-center {
+            width: 10%;
+            border: none;
+            line-height: 500px;
+            font-size: 30px;
+            color: #488ed8;
+            overflow: hidden;
+        }
+
+        .tc-left p, .tc-right p {
+            float: left;
+            width: 100%;
+            background: #fafafa;
+            padding: 8px 8px;
+            margin-top: 8px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .tc-left p span, .tc-right p span {
+            display: inline-block;
+            width: 30%;
+        }
+
+        .tc-left p span:nth-child(2), .tc-right p span:nth-child(2) {
+            width: 40%;
+        }
+        .t_search .col-md-4,.t_search .col-md-5{ padding-left: 100px;}
+        .t_search .col-md-4 font,.t_search .col-md-5 font{position: absolute;left:0px; text-align: right; padding:0px 10px; width: 100px; line-height: 35px;}
+
+    </style>
 </head>
 <body>
-	<div class="t_search" style="line-height: 35px;">
-		<p><b>案件名称：</b>安家名称案件名称</p>
-	</div>
-<div class="tc-left table-responsive f_main">
-	<table class="table table-striped table-hover text-nowrap">
-		<tr>
-			<th width="30%">姓名</th>
-			<th width="40%">案件编号</th>
-			<th width="30%">主办人</th>
-		</tr>
-	</table>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
-	<p><span>姓名</span><span>A111111111111113333333</span><span>主办人</span></p>
+<div style="position: relative; width:99%; float: left; padding: 10px 10px 50px 10px; display: inline-block;" id="caseSelect">
+    <div class="form-group">
+        <div class="col-sm-12 f_title"><font>主案：</font><span id="casenameMain" type="text" placeholder="卷宗名称"></span></div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12 f_title">
+            <font>辅案：</font>
+            <div class="o-h" id="appurtenance">
+            </div>
+        </div>
+    </div>
+    <div class="t_search" style="float: left; width: 100%;">
+        <div class="form-group">
+            <div class="col-md-4"><font>案件名称：</font><input type="text" placeholder="" id="casename"/></div>
+            <div class="col-md-5" style="padding-top: 5px;"><font>案件编号：</font><input type="text" style="width: 33px;" placeholder="" value="A23" id="ajbhHead"/>+<input type="text" placeholder="" id="ajbh" style="width: calc(100% - 50px);" /></div>
+            <div class="col-md-3">&nbsp;<button class="ok_but" id="searchBtn">查询</button></div>
+        </div>
+    </div>
+    <div class="table-responsive f_main" style="min-height: 480px; float: left; width: 100%;  margin-top: 0;"><!--table-striped//不产生横向滚动条，数据内容折行显示-->
+        <table class="table table-striped table-hover text-nowrap" id="ajcxTable"  colnum="13">
+
+        </table>
+    </div>
+    <div style="position: absolute;bottom:0px; padding:15px 0; width: 100%;">
+        <button class="ok_but" id="nextBtn">下一步</button>&nbsp;&nbsp;&nbsp;&nbsp;
+        <button class="close_but">取消</button>
+    </div>
 </div>
-<div class="tc-center"><i class="glyphicon glyphicon-arrow-right"></i></div>
-<div class="tc-right table-responsive f_main">
-    <table class="table table-striped table-hover text-nowrap">
-    	<tr>
-    		<th width="30%">姓名</th>
-    		<th width="40%">案件编号</th>
-    		<th width="30%">主办人</th>
-    	</tr>
-    </table>
+
+<div id="suspectSelect" style="display: none">
+    <div class="t_search" style="line-height: 35px;">
+        <p><b>案件名称：</b><input id="combinationCasename"style="width: calc(100% - 200px)" /></p>
+    </div>
+    <div class="tc-left table-responsive f_main">
+        <table class="table table-striped table-hover text-nowrap">
+            <tr>
+                <th width="20%">姓名</th>
+                <th width="30%">嫌疑人身份证号</th>
+                <th width="40%">案件名称</th>
+            </tr>
+        </table>
+        <span id="suspectsListA">
+    </span>
+    </div>
+    <div class="tc-center"><i class="glyphicon glyphicon-arrow-right"></i></div>
+    <div class="tc-right table-responsive f_main">
+        <table class="table table-striped table-hover text-nowrap">
+            <tr>
+                <th width="20%">姓名</th>
+                <th width="30%">嫌疑人身份证号</th>
+                <th width="40%">案件名称</th>
+
+            </tr>
+        </table>
+        <span id="suspectsListB">
+    </span>
+    </div>
+    <div class="row" style="position: absolute;bottom:0px; padding:15px 0; width: 100%;">
+        <div class="col-md-12">
+            <button class="ok_but" id="startCombinationCase">合案</button>&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="close_but" id="closeBtn">取消</button>
+        </div>
+    </div>
 </div>
-<div class="form-group">
-	<label class="col-sm-2 control-label">文书名称：</label>
-	<div class="col-sm-9"><input type="text" placeholder="卷宗名称"></div>
-</div>
-<div class="form-group">
-	<label class="col-sm-2 control-label">文书文号：</label>
-	<div class="col-sm-9"><input type="text" placeholder="卷宗名称"></div>
-</div>
-<div class="form-group">
-	<label class="col-sm-2 control-label">文书类型：</label>
-	<div class="col-sm-9"><input type="text" placeholder="卷宗名称"></div>
-</div>
-<div class="row" style="position: absolute;bottom:0px; padding:15px 0; width: 100%;">
-	<div class="col-md-12"><button class="ok_but">确定</button>&nbsp;&nbsp;&nbsp;&nbsp;<button class="close_but">取消</button></div>
-</div>
-<script src="/Framework/js/bootstrap.min.js"></script>
+
+<script src="/Framework/js/jquery.min.js"></script>
+<script src="/Framework/layer/layer.js"></script>
+<script src="/utils/utils.js"></script>
+<script src="/utils/bootstrapTableUtil.js"></script>
+<script src="/model/ajcx/js/combinationCase.js"></script>
 </body>
 </html>

@@ -44,6 +44,7 @@ public class FunArchiveRecords {
     private String recorduuid;
     private Integer wjbid;
     private String wjbm;
+    private  Date effectivetime;
     public Integer getId() {
         return id;
     }
@@ -266,5 +267,13 @@ public class FunArchiveRecords {
 
     public void setWjbm(String wjbm) {
         this.wjbm = wjbm;
+    }
+
+    public Date getEffectivetime() {
+        return effectivetime;
+    }
+
+    public void setEffectivetime(Date effectivetime) {
+        this.effectivetime = effectivetime;
     }
 }
