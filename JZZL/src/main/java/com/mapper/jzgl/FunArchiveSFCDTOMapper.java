@@ -63,4 +63,14 @@ public interface FunArchiveSFCDTOMapper {
      * @return    |
       */
     Integer selectArchivesRearranged(Map<String,Object> map);
+
+
+     /**
+     * 通过seqid查询对应的SFC
+     * @author MrLu
+     * @param seqid
+     * @createTime  2021/5/27 10:49
+     * @return    |
+      */
+    FunArchiveSFCDTO selectArchiveSfcBySeqid(Integer seqid);
 }

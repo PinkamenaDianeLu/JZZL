@@ -31,6 +31,30 @@ var sjjlTable = (function () {
         window.open('/model/jzzl/jzzl.html?id=' + urlP);
     }
 
+    /**
+     * 发送打包
+     * @author MrLu
+     * @param id 案件关系表id
+     * @createTime  2021/5/26 15:07
+     * @return    |
+     */
+    this.sendArchive = function (id) {
+        $.post({
+            url: '/SFCensorship/sendArchive',
+            data: {id},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    layer.alert("打包成功");
+                } else {
+                    layer.alert("打包程序调用失败");
+                }
+            }
+        });
+
+        layer.alert("打包程序已在后台运行，请关注右上角通知");
+    }
+
     function loadTable(ajidP) {
         ajid = ajidP;
         // sjjlTable.pValue = ajidP;
@@ -54,8 +78,8 @@ var sjjlTable = (function () {
 
                 }, {
                     field: 'authoridcard',
-                    title: '创建人身份证',formatter: (value) => {
-                        return '0'===value?'系统整理':value
+                    title: '创建人身份证', formatter: (value) => {
+                        return '0' === value ? '系统整理' : value
                     }
                 },
                 {
@@ -75,7 +99,7 @@ var sjjlTable = (function () {
                     formatter: function (value, row, index) {
                         let reBtn = '<a class="b_but edit" onclick="submitForCensorship(\'' + row.id + '\')">整理</a>';
                         if (0 !== row.archivetype) {
-                            reBtn += '<a class="b_but edit" >发送</a>';
+                            reBtn += '<a class="b_but edit" onclick="sendArchive(\'' + row.id + '\')">打包</a>';
                         }
 
                         return reBtn;
@@ -162,13 +186,13 @@ var progressBar = (function () {
     return _progressBar;
 
 })();
- /**
+/**
  * 嫌疑人排序
  * @author MrLu
  * @param ajid 案件id
  * @createTime  2020/12/17 19:24
  * @return    |
-  */
+ */
 var suspectOrder = function (ajid) {
     $.post({
         url: '/SFCensorship/selectSuspectByCaseInfoId',
@@ -192,7 +216,8 @@ var suspectOrder = function (ajid) {
                             arg: '<span>' + thisSuspect.suspectname + '</span><span>' + thisSuspect.suspectidcard + '</span>'
                         })
                         suspects.appendChild(thisSuspectTd);
-                    };
+                    }
+                    ;
                     $('#suspectUl').append(suspects);
 
                     //嫌疑人开启拖拽
@@ -268,7 +293,7 @@ $(function () {
                 $('#sjjlSearchBtn').click(function () {
                     st.searchTable();
                 });
-                if (reV.issuspectorder)  {
+                if (reV.issuspectorder) {
                     $('#issuspectorder').remove();
                     //新建送检按钮
                     $('#createSFC').on('click', function () {
@@ -283,7 +308,7 @@ $(function () {
                             content: '/model/ajcx/createSFC_f.html'
                         });
                     });
-                }else {
+                } else {
                     $('#issuspectorder').html('您还没有为嫌疑人排序！');
                     //弹出给嫌疑人排序窗口
                     suspectOrder(ajid);

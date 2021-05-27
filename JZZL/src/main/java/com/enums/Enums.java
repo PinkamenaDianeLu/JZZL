@@ -58,7 +58,8 @@ public class Enums {
         PRIMARY(0, "主办人"),//主办人
         SECONDARY(1, "辅办人"),//副办人
         LEADER(2, "部门领导"),
-        LEGAL(3,"法治科") ;//副办人
+        LEGAL(3, "法治科");//副办人
+
         PersonType(int value, String name) {
             this.value = value;
             this.name = name;
@@ -298,48 +299,92 @@ public class Enums {
         }
     }
 
-     /**
+    /**
      * websocket消息类型
+     *
      * @author MrLu
-     * @createTime  2020/12/18 10:29
-      */
-    public enum messagetype{
-         typeNegativeOne(-1, "确认收到"),
-         typeZero(0, "智能整理"),
-         typeOne(1, "文件打包"),
-         typeTwo(2, "打包发送"),
-         typeThree(3, "其它"),
-         typeFive(5, "拆案"),
-         typeSix(6, "合案"),
-         typeFour(4, "解锁案件");
-         messagetype(int value, String name) {
-             this.value = value;
-             this.name = name;
-         }
+     * @createTime 2020/12/18 10:29
+     */
+    public enum messagetype {
+        typeNegativeOne(-1, "确认收到"),
+        typeZero(0, "智能整理"),
+        typeOne(1, "文件打包"),
+        typeTwo(2, "打包发送"),
+        typeThree(3, "其它"),
+        typeFive(5, "拆案"),
+        typeSix(6, "合案"),
+        typeFour(4, "解锁案件");
 
-         private int value;
-         private String name;
+        messagetype(int value, String name) {
+            this.value = value;
+            this.name = name;
+        }
 
-         public String getName() {
-             return name;
-         }
+        private int value;
+        private String name;
 
-         public void setName(String name) {
-             this.name = name;
-         }
+        public String getName() {
+            return name;
+        }
 
-         public int getValue() {
-             return value;
-         }
+        public void setName(String name) {
+            this.name = name;
+        }
 
-         public void setValue(int value) {
-             this.value = value;
-         }
+        public int getValue() {
+            return value;
+        }
 
-         @Override
-         public String toString() {
-             return name;
-         }
+        public void setValue(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    /**
+     * 接口消息类型
+     *
+     * @param
+     * @author MrLu
+     * @createTime 2021/5/26 14:56
+     * @return |
+     */
+    public enum passwordSwitch {
+        sendToAz("U2FsdGVkX1/dptwdF69wXVS+73EstHw926CvL5NuP+dkQGwRLJuxmN1Q+CSza8TK", "发送给安综"),
+        sendToZfxz("BBF47EFDAE317C557C1BDBFA7B32D494", "发送给执法写作");
+
+        passwordSwitch(String value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        private String value;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     public static void main(String[] args) {

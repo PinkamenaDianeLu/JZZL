@@ -4,14 +4,18 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.FunArchiveSFC;
+import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.enums.EnumSoft;
 import com.enums.Enums;
 import com.factory.BaseFactory;
+import com.module.ArchiveManager.Services.ArrangeArchivesService;
+import com.module.Interface.Controllers.WebSocketClientUtil;
 import com.module.SFCensorship.Services.SFCensorshipService;
 import com.module.SystemManagement.Services.UserService;
+import com.util.GlobalUtil;
 import com.util.StringUtil;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,11 +43,13 @@ public class SFCensorshipController extends BaseFactory {
     private final
     SFCensorshipService sFCensorshipService;
     private final UserService userServiceByRedis;
+    private final ArrangeArchivesService arrangeArchivesService;
 
     @Autowired
-    public SFCensorshipController(SFCensorshipService sFCensorshipService, @Qualifier("UserServiceByRedis") UserService userServiceByRedis) {
+    public SFCensorshipController(SFCensorshipService sFCensorshipService, @Qualifier("UserServiceByRedis") UserService userServiceByRedis, ArrangeArchivesService arrangeArchivesService) {
         this.sFCensorshipService = sFCensorshipService;
         this.userServiceByRedis = userServiceByRedis;
+        this.arrangeArchivesService = arrangeArchivesService;
     }
 
     /**
@@ -155,7 +162,7 @@ public class SFCensorshipController extends BaseFactory {
     private void cloneBaseRecords(final FunArchiveSeqDTO newSeq, List<FunSuspectDTO> suspects) {
         List<FunArchiveTypeDTO> oriArchiveTypes = sFCensorshipService.selectArchiveTypeByJqSeq(newSeq.getPrevid());
 
-        int typeOrder=1;
+        int typeOrder = 1;
         for (FunArchiveTypeDTO thisType :
                 oriArchiveTypes) {
             int oriTypeId = thisType.getId();//源id
@@ -298,6 +305,49 @@ public class SFCensorshipController extends BaseFactory {
             //说明是基础卷
             suspects = sFCensorshipService.selectSuspectById(caseInfoId);
             reValue.put("value", suspects);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+    /**
+     * 发送打包
+     *
+     * @param id fun_archivesfc表id
+     * @return |
+     * @author MrLu
+     * @createTime 2021/5/26 15:11
+     */
+    public String sendArchive(String id) {
+
+        JSONObject reValue = new JSONObject();
+        try {
+            //解密ip
+            int sfcId = Integer.parseInt(DecodeUrlP(id));
+            //找到需要打包的seq
+            FunArchiveSeq needSeq = arrangeArchivesService.selectLastSeqBySfc(sfcId);
+            //调用打包程序
+            String version = GlobalUtil.getGlobal("version");//查询的单位代码
+            JSONObject paramJsonObj=new JSONObject();//打包所需参数
+            //根据不同版本调用不同的打包程序
+            if ("province".equals(version)) {
+                paramJsonObj.put("key",Enums.passwordSwitch.sendToAz.getValue());
+            } else {
+                paramJsonObj.put("key",Enums.passwordSwitch.sendToZfxz.getValue());
+            }
+            String archiveUrl = GlobalUtil.getGlobal("archiveUrl");//查询发送打包的websocket地址
+            if (StringUtils.isNotEmpty(archiveUrl)) {
+                WebSocketClientUtil c = new WebSocketClientUtil(new URI("ws://localhost:9003")); // more about drafts here: http://github.com/TooTallNate/Java-WebSocket/wiki/Drafts
+
+                c.connectBlocking();//等待连接成功ing...
+                c.getReadyState();
+                c.send(paramJsonObj.toJSONString());//发送参数
+            } else {
+                throw new Exception("打你妈包呢，地址呢");
+            }
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -479,8 +529,8 @@ public class SFCensorshipController extends BaseFactory {
 
         //复制文书也要复制对应的标签
         //查找这个文书的标签
-        for (FunArchiveTagsDTO thisTag:
-        sFCensorshipService.selectRecordByRecordId(oriId)) {
+        for (FunArchiveTagsDTO thisTag :
+                sFCensorshipService.selectRecordByRecordId(oriId)) {
             //开始复制了呢
             thisTag.setRecordid(newRecord.getId());
             thisTag.setArchiveseqid(newRecord.getArchiveseqid());

@@ -32,8 +32,7 @@ public class WebSocketClientUtil extends WebSocketClient{
 
     @Override
     public void onOpen(ServerHandshake serverHandshake) {
-        send("测试发送websocket连接");
-        System.out.println("发送连接文本");
+        System.out.println("连接成功！");
     }
 
      /**
@@ -52,7 +51,7 @@ public class WebSocketClientUtil extends WebSocketClient{
      * 断开连接
      * @author MrLu
      * @param 
-     * @createTime  2021/5/26 14:47
+     * @createTime  2021/5/26 15:06
      * @return    |  
       */
     @Override
