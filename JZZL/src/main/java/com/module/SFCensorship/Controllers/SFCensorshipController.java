@@ -8,6 +8,7 @@ import com.bean.jzgl.Source.FunArchiveSeq;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
+import com.config.session.UserSession;
 import com.enums.EnumSoft;
 import com.enums.Enums;
 import com.factory.BaseFactory;
@@ -44,12 +45,15 @@ public class SFCensorshipController extends BaseFactory {
     SFCensorshipService sFCensorshipService;
     private final UserService userServiceByRedis;
     private final ArrangeArchivesService arrangeArchivesService;
+    private final
+    UserSession userSession;
 
     @Autowired
-    public SFCensorshipController(SFCensorshipService sFCensorshipService, @Qualifier("UserServiceByRedis") UserService userServiceByRedis, ArrangeArchivesService arrangeArchivesService) {
+    public SFCensorshipController(SFCensorshipService sFCensorshipService, @Qualifier("UserServiceByRedis") UserService userServiceByRedis, ArrangeArchivesService arrangeArchivesService, UserSession userSession) {
         this.sFCensorshipService = sFCensorshipService;
         this.userServiceByRedis = userServiceByRedis;
         this.arrangeArchivesService = arrangeArchivesService;
+        this.userSession = userSession;
     }
 
     /**
@@ -321,6 +325,10 @@ public class SFCensorshipController extends BaseFactory {
      * @author MrLu
      * @createTime 2021/5/26 15:11
      */
+    @RequestMapping(value = "/sendArchive", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "发送打包", operType = OperLog.type.SELECT)
     public String sendArchive(String id) {
 
         JSONObject reValue = new JSONObject();
@@ -331,12 +339,14 @@ public class SFCensorshipController extends BaseFactory {
             FunArchiveSeq needSeq = arrangeArchivesService.selectLastSeqBySfc(sfcId);
             //调用打包程序
             String version = GlobalUtil.getGlobal("version");//查询的单位代码
-            JSONObject paramJsonObj=new JSONObject();//打包所需参数
+            JSONObject paramJsonObj = new JSONObject();//打包所需参数
             //根据不同版本调用不同的打包程序
             if ("province".equals(version)) {
-                paramJsonObj.put("key",Enums.passwordSwitch.sendToAz.getValue());
+                paramJsonObj.put("key", Enums.passwordSwitch.sendToAz.getValue());
+                paramJsonObj.put("message", userSession.getTempString());
+                paramJsonObj.put("seqid", needSeq.getId());
             } else {
-                paramJsonObj.put("key",Enums.passwordSwitch.sendToZfxz.getValue());
+                paramJsonObj.put("key", Enums.passwordSwitch.sendToZfxz.getValue());
             }
             String archiveUrl = GlobalUtil.getGlobal("archiveUrl");//查询发送打包的websocket地址
             if (StringUtils.isNotEmpty(archiveUrl)) {

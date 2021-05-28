@@ -99,7 +99,10 @@ var sjjlTable = (function () {
                     formatter: function (value, row, index) {
                         let reBtn = '<a class="b_but edit" onclick="submitForCensorship(\'' + row.id + '\')">整理</a>';
                         if (0 !== row.archivetype) {
-                            reBtn += '<a class="b_but edit" onclick="sendArchive(\'' + row.id + '\')">打包</a>';
+                            if (sessionStorage.version ==='province'){
+                                reBtn += '<a class="b_but edit" onclick="sendArchive(\'' + row.id + '\')">打包发送</a>';
+                            }
+
                         }
 
                         return reBtn;

@@ -42,4 +42,14 @@ public class UserSession    {
     public void setOccupyCaseinInfoId(Integer occupyCaseinInfoId) {
         this.occupyCaseinInfoId = occupyCaseinInfoId;
     }
+
+    private String tempString;
+
+    public String getTempString() {
+        return tempString;
+    }
+
+    public void setTempString(String tempString) {
+        this.tempString = tempString;
+    }
 }

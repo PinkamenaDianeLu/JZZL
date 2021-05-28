@@ -7,10 +7,10 @@ import com.bean.jzgl.DTO.SysLogsLoginDTO;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.config.session.UserSession;
+import com.enums.Enums;
 import com.module.SystemManagement.Services.LogService;
 import com.module.SystemManagement.Services.UserService;
 import com.util.IpUtil;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -119,7 +119,7 @@ public class LogController {
                 }
             } else {
                 //通过其它途径进入系统
-                reValue=loginByUrl(username, key, oriPwd);
+                reValue = loginByUrl(username, key, oriPwd);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,7 +131,9 @@ public class LogController {
     /**
      * 其它系统的跳转登录
      *
-     * @param
+     * @param username 用户身份证号
+     * @param key      参数以及验证传递来源 base64("来源代码","警情编号","参数json")
+     * @param oriPwd   密码
      * @return |
      * @author MrLu
      * @createTime 2021/4/8 15:38
@@ -140,9 +142,11 @@ public class LogController {
         JSONObject reValue = new JSONObject();
         reValue.put("message", "error");
 
+
         byte[] asBytes = Base64.getDecoder().decode(key);
         String realKeys = new String(asBytes);
-        String keys[] = realKeys.split(",");
+        String paramJson=realKeys.substring(realKeys.indexOf("{"));//截取最后的参数
+        String[] keys = realKeys.split(",");
         //来源
         String comeFrom = keys[0].toUpperCase();
         //http://ip:端口/username=base64的用户名&password=base64的密码$key=base64(SSHB_AZXT,jqbh)
@@ -152,11 +156,12 @@ public class LogController {
             //加密规则：password=md5(身份证号+key)
             //要访问的案件
             String jqbh = keys[1];
-            String md5Pwd = DigestUtils.md5Hex(username + comeFrom);
-            //判断加密方法是否一致
-            if (md5Pwd.equals(oriPwd)) {
+            byte[] passwordBytes = Base64.getDecoder().decode(oriPwd);
+            String realPasswordBytes = new String(passwordBytes);
+            //判断密码是否符合规则
+            if (realPasswordBytes.indexOf(Enums.passwordSwitch.sendToAz.getValue()) > 0) {
                 //判断该警情所属的案件的主/辅办人是否是他
-                List<FunCasePeoplecaseDTO> cases = logService.selectCaseByJqIDCard( jqbh,username);
+                List<FunCasePeoplecaseDTO> cases = logService.selectCaseByJqIDCard(jqbh, username);
                 if (cases.size() > 0) {
                     //记录登录并跳转message
                     SysUser sysUserNow = userService.loginVerification(username);
@@ -164,9 +169,13 @@ public class LogController {
                     loginToRedis(sysUserNow);
                     reValue.put("message", "urlLogin_success");
                     reValue.put("value", cases.get(0).getCaseinfoid());
+                    //将安综传递的部分参数保存至session
+                    userSession.setTempString(paramJson);
                 } else {
                     reValue.put("message", "urlLogin_deny");
                 }
+            } else {
+                reValue.put("message", "urlLogin_deny");
             }
         }
         return reValue;

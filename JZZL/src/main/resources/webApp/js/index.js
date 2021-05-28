@@ -19,7 +19,9 @@ $(function () {
         success: (re) => {
             const reV = JSON.parse(re);
             if ('success' === reV.message) {
-                sessionStorage.salt = reV.value;
+                sessionStorage.salt = reV.value;//加密的盐
+                sessionStorage.version = reV.version;//当前版本
+
                 //验证登录
                 $.post({
                     url: '/Login/login',

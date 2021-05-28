@@ -1,6 +1,7 @@
 package com.module.SystemManagement.Controllers;
 
 import com.alibaba.fastjson.JSONObject;
+import com.util.GlobalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,7 @@ public class saltController {
         JSONObject reValue = new JSONObject();
         try {
             reValue.put("value",  redisCCTemplate.opsForValue().get("salt"));
+            reValue.put("version",  GlobalUtil.getGlobal("version"));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

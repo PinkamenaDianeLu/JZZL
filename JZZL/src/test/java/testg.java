@@ -59,11 +59,13 @@ public class testg {
     public void replace() {
         System.out.println("asdasdadssdaasd_name".replace("_name", ""));
     }
-@Test
-public  void splitTest(){
-    String[] whereArrary = "123".split(",");
-    System.out.print(whereArrary.length);
-}
+
+    @Test
+    public void splitTest() {
+        String[] whereArrary = "123".split(",");
+        System.out.print(whereArrary.length);
+    }
+
     @Test
     public void ann() throws Exception {
         Class<?> ObjClass = FunArchiveRecords.class;
@@ -215,7 +217,10 @@ public  void splitTest(){
 
     @Test
     public void testSubstring() {
-        System.out.println("0101I".substring(0, 4));
+        String realKeys = "JQBH,A230102151854,{a:1,b:2,c:3}";
+        String paramJson =realKeys.substring(realKeys.indexOf("{"));
+
+        System.out.println(paramJson);
     }
 
     @Test
@@ -227,8 +232,8 @@ public  void splitTest(){
 
 
     @Test
-    public void testOption(){
-        FunArchiveRecordsDTO thisRecord=new FunArchiveRecordsDTO();
+    public void testOption() {
+        FunArchiveRecordsDTO thisRecord = new FunArchiveRecordsDTO();
         System.out.println(thisRecord.getId());
     }
 
