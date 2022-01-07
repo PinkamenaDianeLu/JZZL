@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<style>
+		*{ padding: 0; border:0px; font-family: "微软雅黑"; margin: 0;box-sizing: border-box;-moz-user-select:none;/*火狐*/-webkit-user-select:none;/*webkit浏览器*/-ms-user-select:none;/*IE10*/-khtml-user-select:none;/*早期浏览器*/user-select:none;}
+		body{ width: 100%;  font-family: "微软雅黑"; font-size: 14px; text-align: center;}
+		li{list-style:none;}
+		a{ color: #696969;text-decoration: none;outline: none;transition: .2s ease-in-out;-webkit-transition: .2s ease-in-out;-moz-transition: .2s ease-in-out }
+		dt{ font-weight:normal;}
+		a:hover{text-decoration: none; color: initial;}
+		a:focus {  outline:none;}
+		*:hover{transition: .2s ease-in-out;-webkit-transition: .2s ease-in-out;-moz-transition: .2s ease-in-out}
+		::-webkit-scrollbar {width: 9px;height: 9px;}
+		::-webkit-scrollbar-thumb {border-radius: 6px;background: #a8aaaf;}
+		::-webkit-scrollbar-thumb:hover {background: #b5b5b5;}
+		::-webkit-input-placeholder{ color: #b5b2b1;}
+		:-moz-placeholder{color: #b5b2b1;}
+		::-moz-placeholder{color: #b5b2b1;}
+		:-ms-input-placeholder{color: #b5b2b1;}
+		.left{ float: left;}
+		.right{ float: right;}
+		input{border:0;outline: none; height: 38px; moz-box-shadow:0px 0px 2px #D9D9D9; -webkit-box-shadow:0px 0px 2px #D9D9D9; box-shadow:0px 0px 2px #D9D9D9; border-radius: 3px; padding: 5px 10px;}
+		input:focus{moz-box-shadow:0px 0px 6px #f63434 inset; -webkit-box-shadow:0px 0px 6px #f63434 inset; box-shadow:0px 0px 6px #f63434 inset;}
+		.ico{ background-image: url('/images/ico.png');}
+		.login_bg{ position: fixed; background: url('/images/bg.jpg') no-repeat center top fixed; color: #fff;min-height: 700px; height: 100%; overflow-y: auto;}
+		.login_title{position: relative;width:100%; }
+		.login_title img{margin:8% auto 40px;}
+		.login_h2{font-size: 45px;  font-weight: bold; letter-spacing: 0.2rem; margin: 0 auto 100px;}
+
+		.login_t{display: inline-block; /*width: 580px;*/ height: 300px; background-color: #00477e; /*margin-top: -37px;*/margin-top: -37px;position: relative; max-width: 560px;width: calc(100% - 230px);}
+		.login_t h2{font-size: 28px;letter-spacing: 0.3rem; padding: 20px 0;color: #fff; font-weight: normal;}
+		.login_t p{position: relative; width: 100%; padding: 5px 15px;font-size: 14px; }
+		.login_t p i{position:absolute; width:38px;height: 24px; margin: 8px 0; padding-right: 10px; border-right: 1px solid #677182;}
+		.login_t p i.i_user{background-position: -3px -9px;}
+		.login_t p i.i_pass{background-position: -42px -9px;}
+		.login_t p input{ background:rgba(0,0,0,0.3); border: none; border-radius: 0; width: 70%; height: 45px; line-height: 45px; font-size: 16px; padding-left: 45px; color: #fff;}
+		.login_t p button,.loginBtn{border-radius: 5px;background: 0 0;padding: 11px 50px; margin: 0px auto; width:70%; border: none; background:#008cff;color: #fff; text-transform: uppercase;font-size: 18px;-webkit-transition-property: background,color;transition-property: background,color; -webkit-transition-duration: .2s; transition-duration: .2s;}
+		.login_t p button:focus{box-shadow:none;outline:none}
+		.login_t p button:hover{color:#fff;background:#4fa1d9;cursor:pointer;-webkit-transition-property:background,color;transition-property:background,color;-webkit-transition-duration:.2s;transition-duration:.2s}
+		.loginBtn{ margin-top: 40px;}
+		.login_t p a{color: #d3d7f7; text-decoration: underline; }
+		canvas, #canvas {width: 100%; top:0px; left:0px; bottom:0px;height: 100%;position: absolute;opacity: 0.6;z-index: -10}
+		.loginBox { width: 100%;height: 100%;background-image: url("/images/earth.png"); background-repeat: no-repeat; background-position: calc(50% - 14px) 50%; background-size: 68%; top: 0; left: 0;}
+		.mainBox { width: 100%;height: 225px; background-color: rgba(0, 0, 0, 0.3); position: relative;}
+		.loginRightBg {position: absolute;left: -19px;top: 0;}
+		.loginType {display: inline-block;width: 180px; /*margin-right: 50px;*/float: left;padding-top: 30px; height: 100%; position: relative;}
+		.mainCenter { height: 100%;margin: 0 auto 0;font-size: 18px; color: #fff;width: 50%; max-width: 840px;min-width: 500px;padding-left: 50px;}
+		.typeItem {line-height: 40px;cursor: pointer;}
+		.typeText {display: inline-block;text-indent: 20px;vertical-align: middle;font-size: 18px;}
+		.typeSpan { display: inline-block; vertical-align: middle; width: 5px; background-color: transparent;}
+		.activeType { width: 5px; height: 40px; background-color: #ec9f2c;}
+		.activeText { font-size: 22px;}
+		.pkiBox {text-align: center;}
+		.pkiTop {margin-top: 90px;font-size: 24px;}
+		.pkiBox img { width: 50px; margin-right: 10px; vertical-align: middle;}
+
+		@media (max-width: 1920px) {
+
+		}
+		@media (max-width: 1366px) {
+			.login_title img{    margin: 6% auto 40px; height: 65px;}
+			.login_h2{    margin: 0 auto 80px;font-size: 35px;}
+		}
+	</style>
+</head>
+<body class="login_bg">
+<canvas id="canvas"></canvas>
+<div class="loginBox">
+	<div class="login_title">
+		<img src="/images/logo.png" height="100" />
+		<h2 class="login_h2"><b id="loginHtmlTitle"></b></h2>
+	</div>
+	<div class="mainBox">
+		<form id="loginForm" class="mainCenter" method="post">
+			<div class="loginType">
+				<div class="typeItem" onclick="checkType('pki')"><span class="typeSpan pkiType activeType"></span>
+					<span class="typeText pkiTypetext activeText">PKI认证登录</span></div>
+
+				<div class="typeItem" onclick="checkType('face')"><span class="typeSpan faceType"></span>
+					<span class="typeText faceTypetext">账户登录</span></div>
+			</div>
+			<div class="login_t">
+				<img class="loginRightBg" src="/images/shadow.png">
+				<div class="pkiBox rightItemBox" style="">
+					<div class="pkiTop">
+						<img src="/images/Ukey.png">
+						请插入专用的Ukey进行登录
+					</div>
+					<div class="loginBtn">认证</div>
+					<div class="errText pkiError"></div>
+					<input class="pki-input" id="signedData" name="signedData" type="hidden">
+					<input class="pki-input" id="originalPage" name="originalPage" type="hidden" value="tHTNKX4kCG">
+				</div>
+				<!--账户登录-->
+				<div class="faceBox rightItemBox" style="display: none">
+					<h2>账户登录</h2>
+					<p><i class="ico i_user"></i><input type="text" id="username" value="admin" placeholder="请输入用户名" /></p>
+					<p><i class="ico i_pass"></i><input type="password" id="password" value="123" placeholder="请输入密码" /></p>
+					<p><button style="margin-top: 10px;" type="button" id="loginBtn">登录</button></p>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script src="/Framework/js/jquery.min.js"></script>
+<script src="/Framework/layer/layer.js"></script>
+<script src="/utils/utils.js"></script>
+<script src="/js/login.js"></script>
+</body>
+</html>

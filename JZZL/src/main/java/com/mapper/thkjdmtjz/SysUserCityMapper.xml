@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.thkjdmtjz.SysUserCityMapper">
+    <resultMap id="BaseResultMap" type="com.bean.thkjdmtjz.SysUserCity">
+        <id column="ID" property="id" jdbcType="DECIMAL"/>
+        <result column="USERNAME" property="username" jdbcType="VARCHAR"/>
+        <result column="PASSWORD" property="password" jdbcType="VARCHAR"/>
+        <result column="PHONE" property="phone" jdbcType="VARCHAR"/>
+        <result column="XM" property="xm" jdbcType="VARCHAR"/>
+        <result column="STATE" property="state" jdbcType="DECIMAL"/>
+        <result column="SCBJ" property="scbj" jdbcType="DECIMAL"/>
+        <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP"/>
+        <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP"/>
+        <result column="ORIGIN" property="origin" jdbcType="VARCHAR"/>
+        <result column="REMARK" property="remark" jdbcType="VARCHAR"/>
+        <result column="DWMC" property="dwmc" jdbcType="VARCHAR"/>
+        <result column="DWMCDM" property="dwmcdm" jdbcType="VARCHAR"/>
+        <result column="CREATEXM" jdbcType="VARCHAR" property="createxm"/>
+        <result column="CREATEZJHM" jdbcType="VARCHAR" property="createzjhm"/>
+        <result column="CREATEDWMC" jdbcType="VARCHAR" property="createdwmc"/>
+        <result column="CREATEDWDM" jdbcType="VARCHAR" property="createdwdm"/>
+        <result column="ZJMC" jdbcType="VARCHAR" property="zjmc"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, USERNAME, PASSWORD, PHONE, XM, STATE, SCBJ, CREATETIME, UPDATETIME,
+        ORIGIN, REMARK, DWMC, DWMCDM,CREATEXM,CREATEZJHM,CREATEDWMC,CREATEDWDM,JH,ZJMC
+    </sql>
+
+    <!--查询-->
+    <select id="selectBySysUser" resultMap="BaseResultMap" parameterType="map">
+        select
+        <include refid="Base_Column_List"/>
+        from SYS_USER sysUser
+        where 1 = 1 and scbj = 0
+        <if test="select != null and select != ''">
+            and DWMCDM like #{select,jdbcType=VARCHAR} || '%'
+        </if>
+        <if test="id != null">
+            and ID = #{id,jdbcType=DECIMAL}
+        </if>
+        <if test="idNotIn != null">
+            and ID &lt;&gt; #{idNotIn,jdbcType=DECIMAL}
+        </if>
+        <if test="jh != null and jh != ''">
+            and JH = #{jh,jdbcType=VARCHAR}
+        </if>
+        <if test="sfzhSelect != null and sfzhSelect != ''">
+            and username = #{sfzhSelect,jdbcType=VARCHAR}
+        </if>
+        <if test="password != null and password != ''">
+            and (PASSWORD = #{password,jdbcType=VARCHAR} or PASSWORD = #{passwordMd5,jdbcType=VARCHAR})
+        </if>
+        <if test="username != null and username != ''">
+            and USERNAME = #{username,jdbcType=VARCHAR}
+        </if>
+        <if test="xmSelect != null and xmSelect != ''">
+            and XM like '%' || #{xmSelect,jdbcType=VARCHAR} || '%'
+        </if>
+        <if test="zjmc != null and zjmc != ''">
+            and ZJMC = #{zjmc,jdbcType=VARCHAR}
+        </if>
+        <if test="xm != null and xm != ''">
+            and XM like '%' || #{xm,jdbcType=VARCHAR} || '%'
+        </if>
+        <if test="dwmcs != null and dwmcs != ''">
+            and DWMC like '%' || #{dwmcs,jdbcType=VARCHAR} || '%'
+        </if>
+        <if test="cjsjbegin != null and cjsjbegin!=''">
+            and to_date(to_char(CREATETIME,'yyyy-MM-dd'),'yyyy-MM-dd')&gt;=to_date(#{cjsjbegin,jdbcType=VARCHAR},'yyyy-MM-dd')
+        </if>
+        <if test="cjsjend!= null and cjsjend!=''">
+            and to_date(to_char(CREATETIME,'yyyy-MM-dd'),'yyyy-MM-dd')&lt;= to_date(#{cjsjend,jdbcType=VARCHAR},'yyyy-MM-dd')
+        </if>
+        <if test="admin == 'admin'">
+            and username &lt;&gt; 'admin'
+        </if>
+        <if test="dataScope != null">
+            <!-- 数据范围过滤 -->
+            ${dataScope}
+        </if>
+    </select>
+
+    <!--新增-->
+    <insert id="insertBySysUser" parameterType="map">
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select
+            SEQ_SYS_USER_ID.nextval from dual
+        </selectKey>
+        insert into SYS_USER
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="username != null">
+                USERNAME,
+            </if>
+            <if test="password != null">
+                PASSWORD,
+            </if>
+            <if test="phone != null">
+                PHONE,
+            </if>
+            <if test="xm != null">
+                XM,
+            </if>
+            <if test="origin != null">
+                ORIGIN,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="dwmc != null">
+                DWMC,
+            </if>
+            <if test="dwmcdm != null">
+                DWMCDM,
+            </if>
+            <if test="createxm != null">
+                CREATEXM,
+            </if>
+            <if test="createzjhm != null">
+                CREATEZJHM,
+            </if>
+            <if test="createdwmc != null">
+                CREATEDWMC,
+            </if>
+            <if test="createdwdm != null">
+                CREATEDWDM,
+            </if>
+            <if test="jh != null">
+                JH,
+            </if>
+            <if test="zjmc != null">
+                ZJMC,
+            </if>
+            STATE,SCBJ,CREATETIME,UPDATETIME,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=DECIMAL},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="xm != null">
+                #{xm,jdbcType=VARCHAR},
+            </if>
+            <if test="origin != null">
+                #{origin,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="dwmc != null">
+                #{dwmc,jdbcType=VARCHAR},
+            </if>
+            <if test="dwmcdm != null">
+                #{dwmcdm,jdbcType=VARCHAR},
+            </if>
+            <if test="createxm != null">
+                #{createxm,jdbcType=VARCHAR},
+            </if>
+            <if test="createzjhm != null">
+                #{createzjhm,jdbcType=VARCHAR},
+            </if>
+            <if test="createdwmc != null">
+                #{createdwmc,jdbcType=VARCHAR},
+            </if>
+            <if test="createdwdm != null">
+                #{createdwdm,jdbcType=VARCHAR},
+            </if>
+            <if test="jh != null">
+                #{jh,jdbcType=VARCHAR},
+            </if>
+            <if test="zjmc != null">
+                #{zjmc,jdbcType=VARCHAR},
+            </if>
+            '0','0',sysdate,sysdate,
+        </trim>
+    </insert>
+
+    <!--更新-->
+    <update id="updateBySysUser" parameterType="map">
+        update SYS_USER
+        <set>
+            <if test="username != null">
+                USERNAME = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                PASSWORD = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                PHONE = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="xm != null">
+                XM = #{xm,jdbcType=VARCHAR},
+            </if>
+            <if test="zjmc != null">
+                ZJMC = #{zjmc,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                STATE = #{state,jdbcType=DECIMAL},
+            </if>
+            <if test="scbj != null">
+                SCBJ = #{scbj,jdbcType=DECIMAL},
+            </if>
+            <if test="createtime != null">
+                CREATETIME = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="origin != null">
+                ORIGIN = #{origin,jdbcType=VARCHAR},
+            </if>
+            <if test="jh != null ">
+                JH = #{jh,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="dwmc != null">
+                DWMC = #{dwmc,jdbcType=VARCHAR},
+            </if>
+            <if test="dwmcdm != null">
+                DWMCDM = #{dwmcdm,jdbcType=VARCHAR},
+            </if>
+            UPDATETIME = sysdate,
+        </set>
+        where USERNAME = #{username,jdbcType=DECIMAL}
+    </update>
+
+
+    <!--查询此角色下有什么用户-->
+    <select id="listRoleUserPage" resultMap="BaseResultMap" parameterType="map">
+        select * from sys_user sysUser where 1=1
+        <if test='type =="1"'>
+            and sysUser.id in (select userid from sys_user_role where scbj = '0' and roleid = #{id,jdbcType=DECIMAL})
+        </if>
+        <if test='type =="2"'>
+            and sysUser.id not in (select userid from sys_user_role where scbj = '0' and roleid = #{id,jdbcType=DECIMAL})
+        </if>
+        and scbj='0'
+        <if test="username != null and username != ''">
+            and sysUser.username like '%' || #{username,jdbcType=VARCHAR} || '%'
+        </if>
+        <if test="xm != null and xm != ''">
+            and sysUser.xm like '%' || #{xm,jdbcType=VARCHAR} || '%'
+        </if>
+        <if test="dataScope != null">
+            <!-- 数据范围过滤 -->
+            ${dataScope}
+        </if>
+    </select>
+
+    <select id="selectNewSysuser" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        SELECT   <include refid="Base_Column_List"/>
+        from SYS_USER sysUser
+        where 1 = 1 and scbj = 0
+        AND  ID &gt;  #{id,jdbcType=DECIMAL}
+    </select>
+
+
+    <select id="selectUpdateSysuser" parameterType="java.util.Date" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from SYS_USER
+        where UPDATETIME &gt; #{gxsj,jdbcType=TIMESTAMP}
+    </select>
+</mapper>

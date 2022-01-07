@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		*{ text-align: center;}
+		.save{ display: inline-block; width: 100px; height: 35px; line-height: 35px; margin: 10px 20px 10px 0px; background: #114eb8; color: #fff; text-align: center;}
+		.save:hover{color: #fff;background-color: rgba(18,78,184,0.7); }
+		.list_a{position: relative; width: 90%; margin: 0 auto; text-align: left; border-bottom: 1px solid #D3D3D3;}
+		.juan{color:#363636;text-align: center; margin: 0 auto; width: 880px; font-size: 14px; text-decoration: none; padding: 50px 50px 100px; background: #fff;}
+		.juan h2{ font-size: 40px; padding: 10px 0;}
+		.juan h2 input{ font-size: 40px; width: 100%; height: 50px; text-align: center; padding: 10px 0;}
+		.juan h3{ font-size: 24px;}
+		input{ width: 60px; border: 1px solid #fff;}
+		table{border:2px solid #000;border-top:1px solid #000;border-left:1px solid #000; margin-top: 10px;}
+		table tr td{border-top:1px solid #000; border-left:1px solid #000; padding: 5px 10px; line-height: 30px;}
+	</style>
+</head>
+<body>
+<div class="list_a"><a class="save" id="getPageNum">计算页码</a><a class="save"  id="saveCover">保存</a></div>
+<div class="juan" >
+	<table width="100%" cellpadding="0" cellspacing="0" >
+		<tr>
+			<td colspan="3">
+				<h2><input class="coverInfo" type="text" id="sfcname"/></h2>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<h3><input class="coverInfo" type="text" style="width: 100%;text-align: center" id="archivename" value="治安管理处罚卷"/></h3>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" height="300" valign="top">
+				<textarea class="coverInfo" type="text" id="describe" style="width: 100%; height: 300px; border: none;">
+
+				</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td valign="middle" style="text-align: left;">
+				自
+				<input type="text" class="coverInfo" placeholder="保管开始时间" id="starttime" style="width: 150px;" />
+				至
+				<input type="text" class="coverInfo" placeholder="保管结束时间"  id="endtime" style="width: 150px;" />
+			</td>
+			<td width="60" height="80">
+				保管<br/>期限
+			</td>
+			<td >
+				<input type="text" class="coverInfo" style="width: 100%"  id="retentionperiod"/>
+			</td>
+		</tr>
+		<tr>
+			<td valign="middle" style="text-align: left;">
+				本案共<input type="text" class="coverInfo" id="archivecount"/>卷<br/>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				第<input type="text" class="coverInfo" id="recordcount"/>卷&nbsp;&nbsp;
+				共<input type="text" style="width: 60px; border-bottom: 1px solid #000;" class="coverInfo" id="pagecount"/>页
+			</td>
+			<td width="60" height="80">
+				立卷<br/>单位
+			</td>
+			<td width="300">
+				<input type="text" class="coverInfo" id="ljdw"  style="width: 100%"/>
+			</td>
+		</tr>
+	</table>
+	<table width="80%" style="margin-left: 10%;" cellpadding="0" cellspacing="0" >
+		<tr>
+			<td height="30">
+				全宗号
+			</td>
+			<td>
+				类别号
+			</td>
+			<td>
+				目录号
+			</td>
+			<td>
+				案卷号
+			</td>
+		</tr>
+		<tr>
+			<td height="30">
+				<input type="text" class="coverInfo" id="qzcode" style="width: 100%"/>
+			</td>
+			<td>
+				<input type="text" class="coverInfo" id="lbcode" style="width: 100%"/>
+			</td>
+			<td>
+				<input type="text" class="coverInfo" id="mlcode" style="width: 100%"/>
+			</td>
+			<td>
+				<input type="text" class="coverInfo" id="ajcode" style="width: 100%"/>
+			</td>
+		</tr>
+	</table>
+</div>
+</body>
+
+<script src="/model/jzzl/js/jzfp_xz.js"></script>
+</html>

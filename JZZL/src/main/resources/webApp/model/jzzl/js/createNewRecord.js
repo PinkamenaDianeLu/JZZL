@@ -67,14 +67,13 @@ var dropUpload = (function () {
     function createThumbnailZone(thisImgs) {
         if (thisImgs.length > 0) {
             let frag = document.createDocumentFragment();
-            console.log(thisImgs);
             // for (let thisImg of thisImgs) {
             for (let i = 0; i < thisImgs.length; i++) {
                 let thisImg = thisImgs[i]
                 let msg = '';//提示信息
                 let isCool = true;//该图片是否符合规范
                 let fileSize = +Math.round(thisImg.size * 100 / 1024) / 100;
-                if (!/\/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(thisImg.type)) {
+                if (!/\/(jpg|jpeg|png|JPG|PNG)$/.test(thisImg.type)) {
                     msg += ' 不是可上传的类型！';
                     isCool = false;
                 } else if (fileSize > (5 * 1024)) {
@@ -163,7 +162,6 @@ var dropUpload = (function () {
      * @return    |
      */
     function upload(recordId) {
-        console.log(recordId)
         const iterator1 = files[Symbol.iterator]();
         for (const item of iterator1) {
             let formData = new FormData();
@@ -172,9 +170,9 @@ var dropUpload = (function () {
             formData.append('fileOrder', pDiv.index());//文件的顺序
             formData.append('newFile', item[1]);//文件本身
             formData.append('recordid', recordId);//文件所属文书的id
-            console.log(pDiv.find('input').val());
+           /* console.log(pDiv.find('input').val());
             console.log(pDiv.index());
-            console.log(item[1]);
+            console.log(item[1]);*/
             pDiv.find('.thumbnailMsg').html('正在上传');
             $.post({
                 url: '/FileManipulation/upLoadRecordFiles',
@@ -197,6 +195,8 @@ var dropUpload = (function () {
                             parent.layer.close(index);
                         }
 
+                    }else {
+                        pDiv.find('.thumbnailMsg').html('<span style="color: red">上传失败</span>');
                     }
                 }
             })
@@ -322,7 +322,9 @@ var searchSelect = (function () {
                                 }
                                 $('#suspectDiv').show();
                                 $('#suspectTable').append(f)
+                                $('#isSuspectRecord').val('yes');
                             } else {
+                                $('#isSuspectRecord').val('no');
                                 $('#suspectDiv').hide();
                                 $('#suspectName').val('');
                                 $('#suspectId').val('');
@@ -377,6 +379,10 @@ var createNewRecord = (function () {
             }
             if ("" !== document.getElementById('recordWh').value && null != document.getElementById('recordWh').value) {
                 newRecord.recordWh = document.getElementById('recordWh').value;
+                if (newRecord.recordWh.indexOf('[') > -1 || newRecord.recordWh.indexOf(']') > -1) {
+                    layer.alert('文书文号请使用中文中括号【】！');
+                    return null;
+                }
             } else {
                 layer.alert('文书文号不允许为空！');
                 return null;
@@ -392,9 +398,9 @@ var createNewRecord = (function () {
             }
         } else {
             //1 附件
-            let accessoriesName=document.getElementById('accessoriesName').value;
+            let accessoriesName = document.getElementById('accessoriesName').value;
             if (accessoriesName) {
-                newRecord.recordName =accessoriesName;
+                newRecord.recordName = accessoriesName;
             } else {
                 layer.alert('附件名称不允许为空！');
                 return null;
@@ -407,18 +413,25 @@ var createNewRecord = (function () {
                 return null;
             }
         }
+
+        //判断文书是否选人
         if ("" !== document.getElementById('sysRecordId').value && null != document.getElementById('sysRecordId').value) {
             newRecord.sysRecordId = document.getElementById('sysRecordId').value;
         } else {
+            layer.alert('请选择需要上传的文书/附件类型');
             return null;
         }
 
-        // if ("" !== document.getElementById('suspectId').value && null != document.getElementById('suspectId').value){
-        //     newRecord.suspectId = document.getElementById('suspectId').value;
-        // }else{
-        //
-        //     return ;
-        // }
+        if ('yes'===$('#isSuspectRecord').val()){
+
+            if ("" !== document.getElementById('suspectId').value && null != document.getElementById('suspectId').value) {
+                newRecord.suspectId = document.getElementById('suspectId').value;
+            } else {
+                layer.alert('请选择嫌疑人！');
+                return null;
+            }
+        }
+
 
         return newRecord;
     }
@@ -436,26 +449,40 @@ var createNewRecord = (function () {
             layer.alert('请上传文书图片！')
         } else {
             if (null != getRecordV()) {
-                console.log(getRecordV())
-                axios({
-                    method: 'post',
-                    url: '/Records/createNewRecord',
-                    params: {
-                        record: JSON.stringify(getRecordV())
-                    }
-                }).then(response => {
-                    const reV = response.data;
-                    if ('success' === reV.message) {
-                        const record = reV.value;
-                        console.log(record);
-                        zl.upload(record.id);
-                        parent.lai.addRecord(record, reV.prevRId);
-                    } else {
-                        console.error('新建文书失败');
-                    }
-                    //文书新建完了  把文书图片传上去
-                }).catch(err => {
-                });
+                // $.post({
+                //     url: '/Records/createNewRecord',
+                //     data: {record: JSON.stringify(getRecordV())},
+                //     success: (re) => {
+                //         const reV = JSON.parse(re);
+                //         if ('success' === reV.message) {
+                //             const record = reV.value;
+                //             zl.upload(reV.recordID);
+                //             parent.lai.addRecord(record, reV.prevRId);
+                //         } else {
+                //
+                //             console.error('新建文书失败');
+                //         }
+                //     }
+                // });
+                      axios({
+                          method: 'post',
+                          url: '/Records/createNewRecord',
+                          params: {
+                              record: JSON.stringify(getRecordV())
+                          }
+                      }).then(response => {
+                          const reV = response.data;
+                          if ('success' === reV.message) {
+                              const record = reV.value;
+                              console.log(record);
+                              zl.upload(reV.recordID);
+                               parent.lai.addRecord(record, reV.prevRId);
+                          } else {
+                              console.error('新建文书失败');
+                          }
+                          //文书新建完了  把文书图片传上去
+                      }).catch(err => {
+                      });
             }
         }
 
@@ -492,7 +519,9 @@ $(function () {
             let cnr = new createNewRecord(seqId);
             //判断当前是附件还是文书
 
-            cnr.saveRecord(zl)
+            cnr.saveRecord(zl);
+
+
         });
         $('#removeAll').click(function () {
             zl.allRemove();

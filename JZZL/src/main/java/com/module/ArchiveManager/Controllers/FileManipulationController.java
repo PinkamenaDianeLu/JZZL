@@ -6,6 +6,7 @@ import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.config.annotations.recordTidy;
+import com.enums.EnumSoft;
 import com.factory.BaseFactory;
 import com.module.ArchiveManager.Services.FileManipulationService;
 import com.module.SystemManagement.Services.UserService;
@@ -48,7 +49,7 @@ public class FileManipulationController extends BaseFactory {
     /**
      * 根据file查询对应的文书封皮
      *
-     * @param fileId fileId
+     * @param fileId String
      * @return String  |
      * @author MrLu
      * @createTime 2020/10/23 10:20
@@ -72,6 +73,37 @@ public class FileManipulationController extends BaseFactory {
         }
         return reValue.toJSONString();
     }
+
+
+    /**
+     * 根据file查询对应的行政文书封皮
+     *
+     * @param fileId String
+     * @return |
+     * @author MrLu
+     * @createTime 2021/6/24 9:26
+     */
+    @RequestMapping(value = "/loadArchiveXzCover", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @recordTidy
+    @OperLog(operModul = operModul, operDesc = "查询行政文书封皮信息", operType = OperLog.type.SELECT)
+    public String loadArchiveXzCover(Integer fileId) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (null == fileId) {
+                throw new Exception("你传nm呢？");
+            }
+            reValue.put("value", fileManipulationService.selectFunArchiveXzCoverDTOByFileId(fileId));
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+
     /**
      * 根据file查询对应的文书封底
      *
@@ -126,11 +158,28 @@ public class FileManipulationController extends BaseFactory {
             FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(Integer.parseInt(recordId));
             FunArchiveSFCDTO thisSfc = fileManipulationService.selectFunArchiveSFCDTOById(Integer.parseInt(sfcId));
             FunCaseInfoDTO thisCase = fileManipulationService.selectFunCaseInfoDTOById(thisSfc.getCaseinfoid());
-            re.put("archivename", thisRecord.getRecordname());//文书名称
+            //行政封皮
+            if (thisRecord.getRecordscode().equals(EnumSoft.fplx.XZCOVER.getValue())) {
+
+                SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+                re.put("sfcname", thisCase.getGajgmc());//送检卷名称
+                re.put("ljdw", userNow.getAgencyname());//立卷单位
+                re.put("archivename","治安管理处罚卷");//文书名称
+            } else {
+                //刑事的查嫌疑人
+                //查询这次送检的嫌疑人姓名
+                List<FunSuspectDTO> suspects = fileManipulationService.selectSuspectByArchiveseqid(thisRecord.getArchiveseqid());
+                String names = suspects.stream().map(FunSuspectDTO::getSuspectname).collect(Collectors.joining(",", "", ""));
+                re.put("suspectsxm", names);//嫌疑人姓名
+                re.put("badwmc", thisCase.getBadwdwmc());//办案单位名称
+                re.put("badwdm", thisCase.getBadwdwdm());//办案单位代码
+                re.put("sfcname", thisSfc.getArchivename());//送检卷名称
+                re.put("qzname", thisCase.getGajgmc());//全宗名称
+                re.put("archivename", thisRecord.getRecordname());//文书名称（名起错了好像  不要介意）
+            }
+
             re.put("recordstyle", thisRecord.getRecordstyle());//文书类型
-            re.put("sfcname", thisSfc.getArchivename());//送检卷名称
             re.put("casename", thisCase.getCasename());//案件名称
-            re.put("qzname", thisCase.getGajgmc());//全宗名称
             SimpleDateFormat formatData = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");//日期格式化
             re.put("ajbh", thisCase.getAjbh());//案件编号
             if (null != thisCase.getLarq()) {
@@ -139,12 +188,8 @@ public class FileManipulationController extends BaseFactory {
             if (null != thisCase.getJarq()) {
                 re.put("jarq", formatData.format(thisCase.getJarq()));//立案日期
             }
-            re.put("badwmc", thisCase.getBadwdwmc());//办案单位名称
-            re.put("badwdm", thisCase.getBadwdwdm());//办案单位代码
-            //查询这次送检的嫌疑人姓名
-            List<FunSuspectDTO> suspects = fileManipulationService.selectSuspectByArchiveseqid(thisRecord.getArchiveseqid());
-            String names = suspects.stream().map(FunSuspectDTO::getSuspectname).collect(Collectors.joining(",", "", ""));
-            re.put("suspectsxm", names);//嫌疑人姓名
+
+
             reValue.put("value", re);
             reValue.put("message", "success");
         } catch (Exception e) {
@@ -167,7 +212,7 @@ public class FileManipulationController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @recordTidy
-    @OperLog(operModul = operModul, operDesc = "保存卷宗封皮信息", operType = OperLog.type.InsertOrUpdate)
+    @OperLog(operModul = operModul, operDesc = "保存刑事卷宗封皮信息", operType = OperLog.type.InsertOrUpdate)
     public String saveCover(String coverid, String fileid, String cover) {
         JSONObject reValue = new JSONObject();
         try {
@@ -179,16 +224,16 @@ public class FileManipulationController extends BaseFactory {
             FunArchiveCoverDTO coverDTO = JSON.parseObject(cover, FunArchiveCoverDTO.class);
 
             int coverId = Integer.parseInt(coverid);
+            SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+            coverDTO.setAuthor(userNow.getUsername());
+            coverDTO.setAuthorid(userNow.getId());
+            coverDTO.setAuthorxm(userNow.getXm());
             if (coverId > 0) {
                 //更新
                 coverDTO.setId(coverId);
                 fileManipulationService.updateFunArchiveCoverById(coverDTO);
             } else {
                 //新建
-                SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
-                coverDTO.setAuthor(userNow.getUsername());
-                coverDTO.setAuthorid(userNow.getId());
-                coverDTO.setAuthorxm(userNow.getXm());
                 coverDTO.setJqbh(thisFile.getJqbh());
                 coverDTO.setAjbh(thisFile.getAjbh());
                 coverDTO.setArchivesfcid(thisFile.getArchivesfcid());
@@ -206,6 +251,57 @@ public class FileManipulationController extends BaseFactory {
         return reValue.toJSONString();
     }
 
+
+    /**
+    * 保存行政卷宗封皮
+    * @author MrLu
+    * @param
+    * @createTime  2021/6/24 15:49
+    * @return    |
+     */
+    @RequestMapping(value = "/saveXzCover", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @recordTidy
+    @OperLog(operModul = operModul, operDesc = "保存行政卷宗封皮信息", operType = OperLog.type.InsertOrUpdate)
+    public String saveXzCover(String coverid, String fileid, String cover) {
+        JSONObject reValue = new JSONObject();
+        try {
+            if (StringUtils.isEmpty(fileid) || StringUtils.isEmpty(coverid) || StringUtils.isEmpty(cover)) {
+                throw new Exception("你传nm呢？");
+            }
+            FunArchiveFilesDTO thisFile = fileManipulationService.selectFunArchiveFilesDTOById(Integer.parseInt(fileid));
+
+            FunArchiveXzcoverDTO coverDTO = JSON.parseObject(cover, FunArchiveXzcoverDTO.class);
+
+            int coverId = Integer.parseInt(coverid);
+            if (coverId > 0) {
+                //更新
+                coverDTO.setId(coverId);
+                fileManipulationService.updateFunArchiveCoverById(coverDTO);
+            } else {
+                //新建
+                SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+                coverDTO.setAuthor(userNow.getUsername());
+                coverDTO.setAuthorid(userNow.getId());
+                coverDTO.setAuthorxm(userNow.getXm());
+                coverDTO.setJqbh(thisFile.getJqbh());
+                coverDTO.setAjbh(thisFile.getAjbh());
+//                coverDTO.setArchivename("治安管理处罚卷");
+                coverDTO.setArchivesfcid(thisFile.getArchivesfcid());
+                coverDTO.setArchiveseqid(thisFile.getArchiveseqid());
+                coverDTO.setArchivetypeid(thisFile.getArchivetypeid());
+                coverDTO.setArchivefileid(thisFile.getId());
+                coverDTO.setFilecode(thisFile.getFilecode());
+                fileManipulationService.insertFunArchiveCover(coverDTO);
+            }
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
     @RequestMapping(value = "/saveBackcover", method = {RequestMethod.GET,
             RequestMethod.POST})
     @ResponseBody
@@ -420,9 +516,9 @@ public class FileManipulationController extends BaseFactory {
             fileManipulationService.insertFunArchiveFilesDTO(newRecordFile);
             //其它同文书也要添加这个图片
             //查询这个文书在其它seq的版本
-            List<FunArchiveRecordsDTO> records=  fileManipulationService.selectFunArchiveRecordsByUUID(thisRecord.getRecorduuid());
-            for (FunArchiveRecordsDTO tR :records){
-                if (tR.getId().equals(recordId)){
+            List<FunArchiveRecordsDTO> records = fileManipulationService.selectFunArchiveRecordsByUUID(thisRecord.getRecorduuid());
+            for (FunArchiveRecordsDTO tR : records) {
+                if (tR.getId().equals(recordId)) {
                     //把自己掠过
                     continue;
                 }
@@ -454,7 +550,12 @@ public class FileManipulationController extends BaseFactory {
         try {
             //如果有附件的 触发附件上传
             if (null != newFile) {
-                int recordId = Integer.parseInt(recordid);
+                String []recordidAry=recordid.split(",");
+                for (String thisRid:
+                recordidAry) {
+
+
+                int recordId = Integer.parseInt(thisRid);
                 FunArchiveRecordsDTO thisRecord = fileManipulationService.selectFunArchiveRecordsDTOById(recordId);
                 FunArchiveFilesDTO newRecordFile = new FunArchiveFilesDTO();
                 //上传文件
@@ -471,6 +572,7 @@ public class FileManipulationController extends BaseFactory {
                 newRecordFile.setBjzid(0);
 
                 fileManipulationService.insertFunArchiveFilesDTO(newRecordFile);
+                }
                 reValue.put("message", "success");
             } else {
                 throw new Exception("低情商:你传尼玛呢弟弟 高情商:？");
@@ -516,14 +618,14 @@ public class FileManipulationController extends BaseFactory {
             //把原有的干了
             oriFile.setIsshow(1);
             fileManipulationService.updateFunArchiveFileDTO(oriFile);
-            String oriFileCode=oriFile.getFilecode();//原有的文件代码
+            String oriFileCode = oriFile.getFilecode();//原有的文件代码
             //传新的  夺舍它
             newFile(oriFile, newFile);//上传个新的 并对原有值做操作  会生成新的文件代码
             fileManipulationService.insertFunArchiveFilesDTO(oriFile);
             //把同一文件并没有送检的也都夺舍了
-            for (FunArchiveFilesDTO otherFile:
-            fileManipulationService.selectFilesByCodeNotSend(oriFileCode)) {
-                if (fileId.equals(otherFile.getId())){
+            for (FunArchiveFilesDTO otherFile :
+                    fileManipulationService.selectFilesByCodeNotSend(oriFileCode)) {
+                if (fileId.equals(otherFile.getId())) {
                     //把自己略过
                     continue;
                 }
@@ -638,14 +740,32 @@ public class FileManipulationController extends BaseFactory {
         //上传路径 年与日
         Calendar now = Calendar.getInstance();
         //最终上传路径
-        String uploadFile = now.get(Calendar.YEAR) + "/" + (now.get(Calendar.MONTH) + 1) + now.get(Calendar.DAY_OF_MONTH);
+        //
         //得到上传完成后的文件名
+        String version = GlobalUtil.getGlobal("ftpPortForWindow");
+        String jdlj = "";
+        String serverIp = "";
+        if ("city".equals(version)) {
+            //地市版为window服务器
+            jdlj = FtpUtil.uploadImage(osFileName, newFile.getInputStream());
+            serverIp = GlobalUtil.getGlobal("tomcatFinUrl");//服务器ip地址
+            oriFile.setOriginurl(GlobalUtil.getGlobal("ftpFileUrlForWindow") + "/" + jdlj);//服务器上的路径
+        }else if("provinceTest".equals(version)){
+            //省厅培训版本
+            String uploadFile = now.get(Calendar.YEAR) + "/" + (now.get(Calendar.MONTH) + 1) + now.get(Calendar.DAY_OF_MONTH);
+            jdlj = SftpUtil.upLoad(osFileName, uploadFile, "img", newFile.getInputStream());
+            serverIp = GlobalUtil.getGlobal("nginxFinUrl");//服务器ip地址
+            oriFile.setOriginurl(GlobalUtil.getGlobal("ftpFileUrlForLinux") + jdlj);//服务器上的路径
+        } else {
+            //省厅版为linux服务器
+            String uploadFile = now.get(Calendar.YEAR) + "/" + (now.get(Calendar.MONTH) + 1) + now.get(Calendar.DAY_OF_MONTH);
+            jdlj = SftpUtil.upLoad(osFileName, uploadFile, "img", newFile.getInputStream());
+            serverIp = GlobalUtil.getGlobal("nginxFinUrl");//服务器ip地址
+            oriFile.setOriginurl(GlobalUtil.getGlobal("ftpFileUrlForLinux") + jdlj);//服务器上的路径
+        }
 //        String jdlj = SftpUtil.upLoad(osFileName, uploadFile, "img", newFile.getInputStream());
 
-        String jdlj =  FtpUtil.uploadImage(osFileName, newFile.getInputStream());
-
         SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
-        String serverIp = GlobalUtil.getGlobal("tomcatFinUrl");//服务器ip地址
         oriFile.setServerip(serverIp);//服务器ip
         oriFile.setAuthor(userNow.getXm());//用户名
         oriFile.setAuthorid(userNow.getId());//用户id
@@ -655,7 +775,7 @@ public class FileManipulationController extends BaseFactory {
         oriFile.setIsshow(0);//是否显示
         oriFile.setIsazxt(1);//是否来自案宗 不是
         oriFile.setFileurl("/" + jdlj);//图片路径
-        oriFile.setOriginurl("/" +jdlj);//服务器上的路径
+
     }
 
 
@@ -690,7 +810,7 @@ public class FileManipulationController extends BaseFactory {
             //自己顺序改为对应数
             FunArchiveFilesDTO record = new FunArchiveFilesDTO();
             record.setFilecode(fileCode);
-            record.setThisorder(fileOrder);
+            record.setThisorder(fileOrder<0?1:fileOrder);
             record.setArchiveseqid(seqId);
 
             fileManipulationService.updateFileByFileCode(record);

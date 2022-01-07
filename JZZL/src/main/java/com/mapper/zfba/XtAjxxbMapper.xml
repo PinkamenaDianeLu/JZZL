@@ -1,88 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mapper.zfba.XtAjxxbMapper">
-  <resultMap id="BaseResultMap" type="com.bean.zfba.XtAjxxb">
-    <id column="ID" jdbcType="DECIMAL" property="id" />
-    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
-    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
-    <result column="AJLX" jdbcType="VARCHAR" property="ajlx" />
-    <result column="AJMC" jdbcType="VARCHAR" property="ajmc" />
-    <result column="ASJLYDM" jdbcType="VARCHAR" property="asjlydm" />
-    <result column="ZCJDDM" jdbcType="VARCHAR" property="zcjddm" />
-    <result column="XZCSDM" jdbcType="VARCHAR" property="xzcsdm" />
-    <result column="DYLBDM" jdbcType="VARCHAR" property="dylbdm" />
-    <result column="AJLBDM" jdbcType="VARCHAR" property="ajlbdm" />
-    <result column="AJXLDM" jdbcType="VARCHAR" property="ajxldm" />
-    <result column="AJLBDM1" jdbcType="VARCHAR" property="ajlbdm1" />
-    <result column="AJXLDM1" jdbcType="VARCHAR" property="ajxldm1" />
-    <result column="AJLBDM2" jdbcType="VARCHAR" property="ajlbdm2" />
-    <result column="AJXLDM2" jdbcType="VARCHAR" property="ajxldm2" />
-    <result column="ASJFSKSSJ" jdbcType="TIMESTAMP" property="asjfskssj" />
-    <result column="ASJFSJSSJ" jdbcType="TIMESTAMP" property="asjfsjssj" />
-    <result column="DZMC" jdbcType="VARCHAR" property="dzmc" />
-    <result column="ZXDHZB" jdbcType="DECIMAL" property="zxdhzb" />
-    <result column="ZXDZZB" jdbcType="DECIMAL" property="zxdzzb" />
-    <result column="SARQ" jdbcType="TIMESTAMP" property="sarq" />
-    <result column="SADWDWDM" jdbcType="VARCHAR" property="sadwdwdm" />
-    <result column="LARQ" jdbcType="TIMESTAMP" property="larq" />
-    <result column="LADWDWDM" jdbcType="VARCHAR" property="ladwdwdm" />
-    <result column="LAZL" jdbcType="VARCHAR" property="lazl" />
-    <result column="JYAQ" jdbcType="VARCHAR" property="jyaq" />
-    <result column="SFDWZA" jdbcType="VARCHAR" property="sfdwza" />
-    <result column="ZAXS" jdbcType="VARCHAR" property="zaxs" />
-    <result column="PAFSDM" jdbcType="VARCHAR" property="pafsdm" />
-    <result column="PARQ" jdbcType="TIMESTAMP" property="parq" />
-    <result column="PADWDWDM" jdbcType="VARCHAR" property="padwdwdm" />
-    <result column="PAZL" jdbcType="VARCHAR" property="pazl" />
-    <result column="CARQ" jdbcType="TIMESTAMP" property="carq" />
-    <result column="CXAJYYDM" jdbcType="VARCHAR" property="cxajyydm" />
-    <result column="CADWDWDM" jdbcType="VARCHAR" property="cadwdwdm" />
-    <result column="JARQ" jdbcType="TIMESTAMP" property="jarq" />
-    <result column="JADWDWDM" jdbcType="VARCHAR" property="jadwdwdm" />
-    <result column="SFZXBL" jdbcType="DECIMAL" property="sfzxbl" />
-    <result column="XZDWDWDM" jdbcType="VARCHAR" property="xzdwdwdm" />
-    <result column="SFYSQS" jdbcType="DECIMAL" property="sfysqs" />
-    <result column="CBRLXDH" jdbcType="VARCHAR" property="cbrlxdh" />
-    <result column="TBDWDWDM" jdbcType="VARCHAR" property="tbdwdwdm" />
-    <result column="TBDWDWMC" jdbcType="VARCHAR" property="tbdwdwmc" />
-    <result column="DJRXM" jdbcType="VARCHAR" property="djrxm" />
-    <result column="DJRGMSFZHM" jdbcType="VARCHAR" property="djrgmsfzhm" />
-    <result column="DJRQ" jdbcType="TIMESTAMP" property="djrq" />
-    <result column="WQGKRQ" jdbcType="TIMESTAMP" property="wqgkrq" />
-    <result column="SYZTDM" jdbcType="VARCHAR" property="syztdm" />
-    <result column="GXSJ" jdbcType="TIMESTAMP" property="gxsj" />
-    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
-    <result column="ASJLYZW" jdbcType="VARCHAR" property="asjlyzw" />
-    <result column="ZCJDZW" jdbcType="VARCHAR" property="zcjdzw" />
-    <result column="XZCSZW" jdbcType="VARCHAR" property="xzcszw" />
-    <result column="DYLBZW" jdbcType="VARCHAR" property="dylbzw" />
-    <result column="AJLBZW" jdbcType="VARCHAR" property="ajlbzw" />
-    <result column="AJXLZW" jdbcType="VARCHAR" property="ajxlzw" />
-    <result column="AJLBDM1ZW" jdbcType="VARCHAR" property="ajlbdm1zw" />
-    <result column="AJXLDM1ZW" jdbcType="VARCHAR" property="ajxldm1zw" />
-    <result column="AJLBDM2ZW" jdbcType="VARCHAR" property="ajlbdm2zw" />
-    <result column="AJXLDM2ZW" jdbcType="VARCHAR" property="ajxldm2zw" />
-    <result column="LAZLZW" jdbcType="VARCHAR" property="lazlzw" />
-    <result column="ZAXSZW" jdbcType="VARCHAR" property="zaxszw" />
-    <result column="PAFSZW" jdbcType="VARCHAR" property="pafszw" />
-    <result column="PAZLZW" jdbcType="VARCHAR" property="pazlzw" />
-    <result column="CARQZW" jdbcType="VARCHAR" property="carqzw" />
-    <result column="CXAJYYZW" jdbcType="VARCHAR" property="cxajyyzw" />
-    <result column="SADWDWMC" jdbcType="VARCHAR" property="sadwdwmc" />
-    <result column="GLID" jdbcType="DECIMAL" property="glid" />
-    <result column="LADWZW" jdbcType="VARCHAR" property="ladwzw" />
-    <result column="SFSD" jdbcType="DECIMAL" property="sfsd" />
-    <result column="SFSH" jdbcType="DECIMAL" property="sfsh" />
-    <result column="SFSH1" jdbcType="DECIMAL" property="sfsh1" />
-    <result column="SFSD1" jdbcType="DECIMAL" property="sfsd1" />
-    <result column="SFMA" jdbcType="DECIMAL" property="sfma" />
-    <result column="SFSQ" jdbcType="DECIMAL" property="sfsq" />
-    <result column="AJXXMM" jdbcType="VARCHAR" property="ajxxmm" />
-    <result column="CADWZW" jdbcType="VARCHAR" property="cadwzw" />
-    <result column="JADWZW" jdbcType="VARCHAR" property="jadwzw" />
-    <result column="PADWMC" jdbcType="VARCHAR" property="padwmc" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="com.bean.zfba.XtAjxxb">
+        <id column="ID" jdbcType="DECIMAL" property="id"/>
+        <result column="JQBH" jdbcType="VARCHAR" property="jqbh"/>
+        <result column="AJBH" jdbcType="VARCHAR" property="ajbh"/>
+        <result column="AJLX" jdbcType="VARCHAR" property="ajlx"/>
+        <result column="AJMC" jdbcType="VARCHAR" property="ajmc"/>
+        <result column="ASJLYDM" jdbcType="VARCHAR" property="asjlydm"/>
+        <result column="ZCJDDM" jdbcType="VARCHAR" property="zcjddm"/>
+        <result column="XZCSDM" jdbcType="VARCHAR" property="xzcsdm"/>
+        <result column="DYLBDM" jdbcType="VARCHAR" property="dylbdm"/>
+        <result column="AJLBDM" jdbcType="VARCHAR" property="ajlbdm"/>
+        <result column="AJXLDM" jdbcType="VARCHAR" property="ajxldm"/>
+        <result column="AJLBDM1" jdbcType="VARCHAR" property="ajlbdm1"/>
+        <result column="AJXLDM1" jdbcType="VARCHAR" property="ajxldm1"/>
+        <result column="AJLBDM2" jdbcType="VARCHAR" property="ajlbdm2"/>
+        <result column="AJXLDM2" jdbcType="VARCHAR" property="ajxldm2"/>
+        <result column="ASJFSKSSJ" jdbcType="TIMESTAMP" property="asjfskssj"/>
+        <result column="ASJFSJSSJ" jdbcType="TIMESTAMP" property="asjfsjssj"/>
+        <result column="DZMC" jdbcType="VARCHAR" property="dzmc"/>
+        <result column="ZXDHZB" jdbcType="DECIMAL" property="zxdhzb"/>
+        <result column="ZXDZZB" jdbcType="DECIMAL" property="zxdzzb"/>
+        <result column="SARQ" jdbcType="TIMESTAMP" property="sarq"/>
+        <result column="SADWDWDM" jdbcType="VARCHAR" property="sadwdwdm"/>
+        <result column="LARQ" jdbcType="TIMESTAMP" property="larq"/>
+        <result column="LADWDWDM" jdbcType="VARCHAR" property="ladwdwdm"/>
+        <result column="LAZL" jdbcType="VARCHAR" property="lazl"/>
+        <result column="JYAQ" jdbcType="VARCHAR" property="jyaq"/>
+        <result column="SFDWZA" jdbcType="VARCHAR" property="sfdwza"/>
+        <result column="ZAXS" jdbcType="VARCHAR" property="zaxs"/>
+        <result column="PAFSDM" jdbcType="VARCHAR" property="pafsdm"/>
+        <result column="PARQ" jdbcType="TIMESTAMP" property="parq"/>
+        <result column="PADWDWDM" jdbcType="VARCHAR" property="padwdwdm"/>
+        <result column="PAZL" jdbcType="VARCHAR" property="pazl"/>
+        <result column="CARQ" jdbcType="TIMESTAMP" property="carq"/>
+        <result column="CXAJYYDM" jdbcType="VARCHAR" property="cxajyydm"/>
+        <result column="CADWDWDM" jdbcType="VARCHAR" property="cadwdwdm"/>
+        <result column="JARQ" jdbcType="TIMESTAMP" property="jarq"/>
+        <result column="JADWDWDM" jdbcType="VARCHAR" property="jadwdwdm"/>
+        <result column="SFZXBL" jdbcType="DECIMAL" property="sfzxbl"/>
+        <result column="XZDWDWDM" jdbcType="VARCHAR" property="xzdwdwdm"/>
+        <result column="SFYSQS" jdbcType="DECIMAL" property="sfysqs"/>
+        <result column="CBRLXDH" jdbcType="VARCHAR" property="cbrlxdh"/>
+        <result column="TBDWDWDM" jdbcType="VARCHAR" property="tbdwdwdm"/>
+        <result column="TBDWDWMC" jdbcType="VARCHAR" property="tbdwdwmc"/>
+        <result column="DJRXM" jdbcType="VARCHAR" property="djrxm"/>
+        <result column="DJRGMSFZHM" jdbcType="VARCHAR" property="djrgmsfzhm"/>
+        <result column="DJRQ" jdbcType="TIMESTAMP" property="djrq"/>
+        <result column="WQGKRQ" jdbcType="TIMESTAMP" property="wqgkrq"/>
+        <result column="SYZTDM" jdbcType="VARCHAR" property="syztdm"/>
+        <result column="GXSJ" jdbcType="TIMESTAMP" property="gxsj"/>
+        <result column="SCBJ" jdbcType="DECIMAL" property="scbj"/>
+        <result column="ASJLYZW" jdbcType="VARCHAR" property="asjlyzw"/>
+        <result column="ZCJDZW" jdbcType="VARCHAR" property="zcjdzw"/>
+        <result column="XZCSZW" jdbcType="VARCHAR" property="xzcszw"/>
+        <result column="DYLBZW" jdbcType="VARCHAR" property="dylbzw"/>
+        <result column="AJLBZW" jdbcType="VARCHAR" property="ajlbzw"/>
+        <result column="AJXLZW" jdbcType="VARCHAR" property="ajxlzw"/>
+        <result column="AJLBDM1ZW" jdbcType="VARCHAR" property="ajlbdm1zw"/>
+        <result column="AJXLDM1ZW" jdbcType="VARCHAR" property="ajxldm1zw"/>
+        <result column="AJLBDM2ZW" jdbcType="VARCHAR" property="ajlbdm2zw"/>
+        <result column="AJXLDM2ZW" jdbcType="VARCHAR" property="ajxldm2zw"/>
+        <result column="LAZLZW" jdbcType="VARCHAR" property="lazlzw"/>
+        <result column="ZAXSZW" jdbcType="VARCHAR" property="zaxszw"/>
+        <result column="PAFSZW" jdbcType="VARCHAR" property="pafszw"/>
+        <result column="PAZLZW" jdbcType="VARCHAR" property="pazlzw"/>
+        <result column="CARQZW" jdbcType="VARCHAR" property="carqzw"/>
+        <result column="CXAJYYZW" jdbcType="VARCHAR" property="cxajyyzw"/>
+        <result column="SADWDWMC" jdbcType="VARCHAR" property="sadwdwmc"/>
+        <result column="GLID" jdbcType="DECIMAL" property="glid"/>
+        <result column="LADWZW" jdbcType="VARCHAR" property="ladwzw"/>
+        <result column="SFSD" jdbcType="DECIMAL" property="sfsd"/>
+        <result column="SFSH" jdbcType="DECIMAL" property="sfsh"/>
+        <result column="SFSH1" jdbcType="DECIMAL" property="sfsh1"/>
+        <result column="SFSD1" jdbcType="DECIMAL" property="sfsd1"/>
+        <result column="SFMA" jdbcType="DECIMAL" property="sfma"/>
+        <result column="SFSQ" jdbcType="DECIMAL" property="sfsq"/>
+        <result column="AJXXMM" jdbcType="VARCHAR" property="ajxxmm"/>
+        <result column="CADWZW" jdbcType="VARCHAR" property="cadwzw"/>
+        <result column="JADWZW" jdbcType="VARCHAR" property="jadwzw"/>
+        <result column="PADWMC" jdbcType="VARCHAR" property="padwmc"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     ID, JQBH, AJBH, AJLX, AJMC, ASJLYDM, ZCJDDM, XZCSDM, DYLBDM, AJLBDM, AJXLDM, AJLBDM1, 
     AJXLDM1, AJLBDM2, AJXLDM2, ASJFSKSSJ, ASJFSJSSJ, DZMC, ZXDHZB, ZXDZZB, SARQ, SADWDWDM, 
     LARQ, LADWDWDM, LAZL, JYAQ, SFDWZA, ZAXS, PAFSDM, PARQ, PADWDWDM, PAZL, CARQ, CXAJYYDM, 
@@ -92,28 +92,52 @@
     PAZLZW, CARQZW, CXAJYYZW, SADWDWMC, GLID, LADWZW, SFSD, SFSH, SFSH1, SFSD1, SFMA, 
     SFSQ, AJXXMM, CADWZW, JADWZW, PADWMC
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Short" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from XT_AJXXB
-    where ID = #{id,jdbcType=DECIMAL}
-  </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Short" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from XT_AJXXB
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
 
-  <select id="selectNewCase" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" /> from ( select
-    <include refid="Base_Column_List" />
-    from XT_AJXXB aj
-    where scbj=0
-     AND EXISTS (SELECT 1 FROM xt_badwb dw WHERE badwdm LIKE #{groupcode,jdbcType=DECIMAL}||'%' AND aj.jqbh=dw.jqbh)
-     and  ID &gt; #{id,jdbcType=DECIMAL}
-     and  larq &gt; to_date('2020-01-01','yyyy-MM-dd')
-     order by id asc )
+    <select id="selectNewCase" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM ( SELECT
+        <include refid="Base_Column_List"/>
+        from XT_AJXXB aj
+        where scbj=0
+        AND EXISTS (SELECT 1 FROM xt_badwb dw WHERE badwdm LIKE #{groupcode,jdbcType=DECIMAL}||'%' AND aj.jqbh=dw.jqbh
+        AND DW.Sfzb=0
+        AND DW.Scbj=0
+        )
+        and  ID &gt; #{id,jdbcType=DECIMAL}
+        and  sarq &gt;= to_date('2021-01-01','yyyy-MM-dd')
 
-  </select>
+        <if test="isXz == false ">
+         and    ajlx = 1
+        </if>
+        ORDER BY ID ASC )
 
-  <select id="selectUpdateCase"  parameterType="map" resultMap="BaseResultMap">
-    select   <include refid="Base_Column_List" />
-    from XT_AJXXB     where scbj=0 and   GXSJ &gt; #{gxsj,jdbcType=TIMESTAMP}
-  </select>
+    </select>
+
+    <select id="selectNeededAj"   resultMap="BaseResultMap">
+      SELECT
+        <include refid="Base_Column_List"/>
+        from XT_AJXXB aj
+        where scbj=0
+        AND EXISTS (SELECT 1 FROM TEMPAJBH bhb WHERE bhb.ajbh=aj.ajbh
+        )
+    </select>
+    <select id="selectUpdateCase" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from XT_AJXXB where scbj=0 and GXSJ &gt; #{gxsj,jdbcType=TIMESTAMP}
+    </select>
+
+    <select id="selectCaseByJqbh"  parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from XT_AJXXB where scbj=0 and JQBH = #{jqbh,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

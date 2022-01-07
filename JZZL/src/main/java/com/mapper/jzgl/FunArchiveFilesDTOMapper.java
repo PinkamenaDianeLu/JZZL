@@ -167,4 +167,14 @@ public interface FunArchiveFilesDTOMapper {
     * @return    |
      */
     List<FunArchiveFilesDTO> selectFilesByCodeNotSend(String filecode);
+
+
+     /**
+     * 查询一个seq下的所有没被删除的文件
+     * @author MrLu
+     * @param archiveseqid
+     * @createTime  2021/12/21 9:54
+     * @return    |
+      */
+    List<FunArchiveFilesDTO> selectFileBySeq(Integer archiveseqid);
 }

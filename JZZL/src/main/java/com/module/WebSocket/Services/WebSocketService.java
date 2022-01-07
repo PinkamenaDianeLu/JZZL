@@ -41,4 +41,13 @@ public interface WebSocketService {
      * @return    |
      */
     void readMessage(@Param("ids") String[] ids);
+
+    /**
+     * 全部已读
+     * @author MrLu
+     * @param
+     * @createTime  2021/12/17 16:28
+     * @return    |
+     */
+    void readMessageAll(String receiver);
 }

@@ -210,7 +210,15 @@
     AND caseinfoid=#{caseinfoid,jdbcType=VARCHAR}
     AND ISACTIVE = 0 AND ROWNUM=1
   </select>
-
+  <select id="selectActiveSeqByJqbh" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM FUN_ARCHIVE_SEQ
+    WHERE SCBJ=0
+    AND ARCHIVETYPE=0
+    AND JQBH=#{jqbh,jdbcType=VARCHAR}
+    AND ISACTIVE = 0 AND ROWNUM=1
+  </select>
   <select id="selectActiveSeqByCaseIds" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List" />

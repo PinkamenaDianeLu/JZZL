@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.SysRoleMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.SysRoleDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="STATUS" jdbcType="VARCHAR" property="status" />
+    <result column="SCBJ" jdbcType="VARCHAR" property="scbj" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="ROLENAME" jdbcType="VARCHAR" property="rolename" />
+    <result column="ROLECODE" jdbcType="VARCHAR" property="rolecode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, ROLENAME, ROLECODE, STATUS, SCBJ, CREATETIME, UPDATETIME,
+  </sql>
+
+</mapper>

@@ -37,7 +37,7 @@ public class FunArchiveSFC {
     private  Integer caseinfoid;
 
     private  Integer baserecordid;
-
+    private  Integer approval;
     public Integer getId() {
         return id;
     }
@@ -175,5 +175,13 @@ public class FunArchiveSFC {
 
     public void setIssuspectorder(Integer issuspectorder) {
         this.issuspectorder = issuspectorder;
+    }
+
+    public Integer getApproval() {
+        return approval;
+    }
+
+    public void setApproval(Integer approval) {
+        this.approval = approval;
     }
 }

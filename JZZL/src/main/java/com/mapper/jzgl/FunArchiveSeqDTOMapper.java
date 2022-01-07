@@ -92,6 +92,7 @@ public interface FunArchiveSeqDTOMapper {
      * @createTime 2020/11/27 9:22
      */
     FunArchiveSeqDTO selectActiveSeqByCaseId(int caseinfoid);
+    FunArchiveSeqDTO selectActiveSeqByJqbh(String ajbh);
     List<FunArchiveSeqDTO>  selectActiveSeqByCaseIds(String []array);
 
     /**

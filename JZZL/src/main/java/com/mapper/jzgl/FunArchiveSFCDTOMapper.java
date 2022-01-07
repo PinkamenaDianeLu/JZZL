@@ -42,8 +42,17 @@ public interface FunArchiveSFCDTOMapper {
      * @createTime  2020/12/17 18:00
      * @return    |
       */
-    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid);
+    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid,Integer archivetype);
 
+
+     /**
+     * 通过案件编号查询案件的基础卷
+     * @author MrLu
+     * @param ajbh 案件编号
+     * @createTime  2021/6/17 16:40
+     * @return    |
+      */
+    FunArchiveSFCDTO selectBaseSfcByAjbh(String ajbh);
      /**
      * 查询新的原始卷
       * --AND ID &gt; #{id,jdbcType=DECIMAL}
@@ -53,6 +62,15 @@ public interface FunArchiveSFCDTOMapper {
      * @return    |
       */
     List<FunArchiveSFCDTO>  selectNewOriginArchive(Integer id);
+
+     /**
+     * 查询需要临时抽取整理的案件
+     * @author MrLu
+     * @param
+     * @createTime  2021/8/24 14:55
+     * @return    |
+      */
+    List<FunArchiveSFCDTO>  selectTempArchive( );
 
 
      /**
@@ -73,4 +91,43 @@ public interface FunArchiveSFCDTOMapper {
      * @return    |
       */
     FunArchiveSFCDTO selectArchiveSfcBySeqid(Integer seqid);
+
+     /**
+     * 审批卷宗
+     * @author MrLu
+     * @param
+     * @createTime  2021/6/16 15:23
+     * @return    |
+      */
+    void  approvalArchive(Integer approval,Integer id);
+
+
+     /**
+     * 查询一个案件除基础卷外最新操作的卷的状态
+     * @author MrLu
+     * @param  caseinfoid  案件id
+     * @createTime  2021/7/2 10:06
+     * @return    |
+      */
+    FunArchiveSFCDTO selectLastSfcByCaseId(Integer caseinfoid);
+
+
+    /**
+     * 查询一个案件的原始卷
+     * @author MrLu
+     * @param  caseinfoid  案件id
+     * @createTime  2021/7/2 10:06
+     * @return    |
+     */
+    FunArchiveSFCDTO selectOriArchiveByCaseId(Integer caseinfoid);
+
+
+     /**
+     * 更改一个sfc的发送状态
+     * @author MrLu
+     * @param
+     * @createTime  2021/12/18 12:27
+     * @return    |
+      */
+    void updateSendTypeById(Integer issend,Integer sfcid);
 }

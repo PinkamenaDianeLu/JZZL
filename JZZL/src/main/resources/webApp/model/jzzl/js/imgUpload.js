@@ -69,7 +69,7 @@ var dropUpload = (function () {
                 let msg = '';//提示信息
                 let isCool = true;//该图片是否符合规范
                 let fileSize = +Math.round(thisImg.size * 100 / 1024) / 100;
-                if (!/\/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(thisImg.type)) {
+                if (!/\/(jpg|jpeg|png|JPG|PNG)$/.test(thisImg.type)) {
                     msg += ' 不是可上传的类型！';
                     isCool = false;
                 } else if (fileSize > (5 * 1024)) {

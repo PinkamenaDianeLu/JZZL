@@ -12,17 +12,18 @@ var ajcxTable = (function () {
 
     let tableObject;
 
-    const searchParam = function (zlrq,larq,ajbh, jqbh,casename, casetype,barxm,persontype,badwdwmc,sfcnumber) {
+    const searchParam = function (zlrq, larq, ajbh, jqbh, casename, casetype, barxm, persontype, badwdwmc, sfcnumber,issend) {
         this.ajbh = ajbh;
         this.jqbh = jqbh;
-        this.casename=casename;
+        this.casename = casename;
         this.casetype = casetype;
         this.barxm = barxm;
         this.persontype = persontype;
         this.badwdwmc = badwdwmc;
-        this.larq=larq;
-        this.zlrq=zlrq;
-        this.sfcnumber=sfcnumber;
+        this.larq = larq;
+        this.zlrq = zlrq;
+        this.issend=issend;
+        // this.sfcnumber = sfcnumber;
         // this.casetype = casetype;
         // this.casetype = casetype;
         // this.casetype = casetype;
@@ -31,20 +32,21 @@ var ajcxTable = (function () {
     function getSearchParam() {
         let reS = new searchParam();
         //去掉原有的A23
-        reS.ajbh = $('#ajbhHead').val().trim() + $('#ajbh').val().replace('A23','').trim();
+        reS.ajbh = $('#ajbhHead').val().trim() + $('#ajbh').val().replace('A23', '').trim();
         reS.jqbh = $('#jqbh').val().trim();
-        reS.casename=$('#casename').val().trim();
+        reS.casename = $('#casename').val().trim();
         reS.casetype = $('#casetype').val();
-        reS.barxm=$('#barxm').val().trim();
-        reS.persontype=$('#persontype').val().trim();
-        reS.badwdwmc=$('#badwdwmc').val().trim();
-        reS.sfcnumber=$('#sfcnumber').val().trim();
-        if($("#larq").val()){
-                var sj = $("#larq").val().split(' - ');
-                reS.fciTimebegin = sj[0];
-                reS.fciateTimeend = sj[1];
+        reS.barxm = $('#barxm').val().trim();
+        reS.persontype = $('#persontype').val().trim();
+        reS.badwdwmc = $('#badwdwmc').val().trim();
+        reS.issend = $('#issend').val();
+        // reS.sfcnumber = $('#sfcnumber').val().trim();
+        if ($("#larq").val()) {
+            var sj = $("#larq").val().split(' - ');
+            reS.fciTimebegin = sj[0];
+            reS.fciTimeend = sj[1];
         }
-        if(""!==$("#zlrq").val()&&null!=$("#zlrq").val()){
+        if ("" !== $("#zlrq").val() && null != $("#zlrq").val()) {
             var sjj = $("#zlrq").val().split(' - ');
             reS.sfcTimebegin = sjj[0];
             reS.sfcTimeend = sjj[1];
@@ -52,6 +54,7 @@ var ajcxTable = (function () {
 
         return reS;
     }
+
     /**
      * 查看送检记录
      * @author MrLu
@@ -63,14 +66,14 @@ var ajcxTable = (function () {
         let urlP = window.btoa(id + sessionStorage.salt);
         window.open('/model/ajcx/sjjl.html?id=' + urlP);
     };
-     /**
+    /**
      * 合案
      * @author MrLu
      * @param id 案件信息表id
      * @createTime  2021/1/8 15:14
      * @return    |
-      */
-    this.combinationCase=function (id,casename) {
+     */
+    this.combinationCase = function (id, casename) {
         //打开合案页面
         layer.open({
             icon: 1,
@@ -80,18 +83,18 @@ var ajcxTable = (function () {
             maxmin: false,
             shadeClose: false, //点击遮罩关闭层
             area: ['1000px', '700px'],
-            content: '/model/ajcx/combinationCase.html?caseinfoid=' +id+'&casename='+ utils.Base64.utoa(casename)
+            content: '/model/ajcx/combinationCase.html?caseinfoid=' + id + '&casename=' + utils.Base64.utoa(casename)
         });
 
     };
-     /**
+    /**
      * 拆案
      * @author MrLu
      * @param id 案件信息表id
      * @createTime  2021/1/8 15:14
      * @return    |
-      */
-    this.splitCase=function (id) {
+     */
+    this.splitCase = function (id) {
         //拆案选择同一单位下的人
         layer.open({
             icon: 1,
@@ -101,7 +104,7 @@ var ajcxTable = (function () {
             maxmin: false,
             shadeClose: false, //点击遮罩关闭层
             area: ['1000px', '700px'],
-            content: '/model/ajcx/splitCase.html?caseinfoid=' +id
+            content: '/model/ajcx/splitCase.html?caseinfoid=' + id
         });
     };
 
@@ -109,10 +112,12 @@ var ajcxTable = (function () {
         tableObject = createTable({
             tableId: 'ajcxTable',
             searchUrl: '/CaseSearch/selectPeopleCasePage',
-            column: [{
+            column: [
+               {
                 field: 'jqbh',
                 title: '警情编号'
-            }, {
+            },
+                {
                 field: 'ajbh',
                 title: '案件编号',
 
@@ -122,27 +127,37 @@ var ajcxTable = (function () {
                 formatter: (value, row) => {
                     return utils.beautifulTitle(value, 13);
                 }
-            }, {
+            },
+               /* {
                 field: 'createtime',
                 title: '整理时间', formatter: (value) => {
                     return utils.timeFormat.timestampToDate2(value)
                 }
-            }, {
-                field: 'name',
+            },*/
+                {
+                field: 'barxm',
                 title: '主办人'
             }, {
-                field: 'idcard',
+                field: 'baridcard',
                 title: '主办人身份证号'
             }, {
-                field: 'idcard',
-                title: '送检状态'
+                field: 'badwdwmc',
+                title: '办案单位',
+                formatter: (value, row) => {
+                    if (value){
+
+                        return utils.beautifulTitle(value.replace('黑龙江省公安厅',''), 10);
+                    }else {
+                        return  '-';
+                    }
+                }
             }, {
                 title: '操作',
                 align: 'center',
                 formatter: function (value, row, index) {
-                    let combinationCase = '<a class="b_but edit" onclick="combinationCase(\'' + row.caseinfoid+ '\',\'' + row.casename + '\')">合案</a>';
-                    let splitCase = '<a class="b_but edit" onclick="splitCase(\'' + row.caseinfoid + '\')">拆案</a>';
-                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.caseinfoid + '\')">进入卷宗</a>' + combinationCase + splitCase;
+                    let combinationCase = '<a class="b_but edit" onclick="combinationCase(\'' + row.id + '\',\'' + row.casename + '\')">合案</a>';
+                    let splitCase = '<a class="b_but edit" onclick="splitCase(\'' + row.id + '\')">拆案</a>';
+                    return '<a class="b_but edit" onclick="submitHistory(\'' + row.id + '\')">进入卷宗</a>' + combinationCase + splitCase;
                 }
             }], param: function () {
                 return getSearchParam();
@@ -187,7 +202,6 @@ $(function () {
     });
     let at = new ajcxTable();
 
-
     $('.caseTypeTab').click(function () {
         //样式转换
         $('.caseTypeTab').removeClass('active');
@@ -196,6 +210,10 @@ $(function () {
         $('#casetype').val(+$(this).attr('value'));
         at.searchTable();
     })
+    //省厅版没有行政案件
+    if (sessionStorage.version === 'province'||sessionStorage.version === 'provinceTest') {
+        $('#xzTab').remove();
+    }
     $('#ajcxSearchBtn').click(function () {
         at.searchTable();
     });

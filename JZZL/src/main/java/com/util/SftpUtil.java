@@ -17,8 +17,8 @@ import java.util.Properties;
 public class SftpUtil {
 
 
-
     final static private int timeout = 60000; //超时数,一分钟
+//    private static Session session;
 
     /**
      * @author MrLu
@@ -29,7 +29,7 @@ public class SftpUtil {
     private static ChannelSftp getChannel(String username, String password, String ip, int port) throws Exception {
         JSch jsch = new JSch(); // 创建JSch对象
         // 根据用户名，主机ip，端口获取一个Session对象
-        Session  session = jsch.getSession(username, ip, port);
+        Session session = jsch.getSession(username, ip, port);
         if (password != null) {
             session.setPassword(password); // 设置密码
         }
@@ -40,6 +40,7 @@ public class SftpUtil {
         session.connect(); // 通过Session建立链接
         Channel channel = session.openChannel("sftp"); // 打开SFTP通道
         channel.connect(); // 建立SFTP通道的连接
+//        session.disconnect();
         return (ChannelSftp) channel;
     }
 
@@ -52,6 +53,12 @@ public class SftpUtil {
     private static void closeChannel(ChannelSftp channelSftp) throws Exception {
         if (channelSftp != null) {
             channelSftp.disconnect();
+            if (channelSftp.isClosed()) {
+                System.out.println("关闭完成");
+            }
+        }
+        if (null != channelSftp.getSession() && channelSftp.getSession().isConnected()) {
+            channelSftp.getSession().disconnect();
         }
 //        if (channel != null) {
 //            channel.disconnect();
@@ -83,43 +90,55 @@ public class SftpUtil {
         if ("img".equals(fileType)) {
             nginxUrl = GlobalUtil.getGlobal("nginxImgUrl");
         } else if ("others".equals(fileType)) {
-            nginxUrl = "/TLJJ/attachments";
+            nginxUrl = "/";
         } else {
             throw new Exception("请指定合法的上传文件类型");
         }
         rePath += nginxUrl;
-        ChannelSftp channelSftp = new ChannelSftp();
 
-        try {
-            channelSftp = getChannel(username, password, host, port);
-            channelSftp.cd(nginxUrl);
-            // 这个jb玩应竟然没有mkdir -p  气死我了
-            String[] dst = dstDirPath.split("/");
-            //循环判断生成目录
-            for (String thisDst :
-                    dst) {
-                try {
-                    channelSftp.cd(thisDst);
-                } catch (Exception e) {
-                    channelSftp.mkdir(thisDst);
-                    channelSftp.cd(thisDst);
-                }
+        JSch jsch = new JSch(); // 创建JSch对象
+        // 根据用户名，主机ip，端口获取一个Session对象
+        Session session = jsch.getSession(username, host, port);
+        if (password != null) {
+            session.setPassword(password); // 设置密码
+        }
+        Properties config = new Properties();
+        config.put("StrictHostKeyChecking", "no");
+        session.setConfig(config); // 为Session对象设置properties
+        session.setTimeout(timeout); // 设置timeout时间
+        session.connect(); // 通过Session建立链接
+        Channel channel = session.openChannel("sftp"); // 打开SFTP通道
+        channel.connect(); // 建立SFTP通道的连接
+
+
+//        ChannelSftp channelSftp =  getChannel(username, password, host, port);
+        ChannelSftp channelSftp = (ChannelSftp) channel;
+        channelSftp.cd(GlobalUtil.getGlobal("ftpFileUrlForLinux"));
+        // 这个jb玩应竟然没有mkdir -p  气死我了
+        String[] dst = dstDirPath.split("/");
+        //循环判断生成目录
+        for (String thisDst : dst) {
+            try {
+                channelSftp.cd(thisDst);
+            } catch (Exception e) {
+                channelSftp.mkdir(thisDst);
+                channelSftp.cd(thisDst);
             }
-            //上传文件
-            channelSftp.put(inputFile, fileName);
-            rePath += "/" + dstDirPath + "/" + fileName;
-        } catch (Exception e) {
+        }
+        //上传文件
+        channelSftp.put(inputFile, fileName);
+        rePath += "" + dstDirPath + "/" + fileName;
+  /*      } catch (Exception e) {
             //即使这里不输出也会在上面输出的jojo！
+            inputFile.close();
             closeChannel(channelSftp);
             e.printStackTrace();
-        }
+        }*/
         //没多线程这事  可以放心finally
         //释放连接
-
+        inputFile.close();
         closeChannel(channelSftp);
+        session.disconnect();
         return rePath;
-
     }
-
-
 }

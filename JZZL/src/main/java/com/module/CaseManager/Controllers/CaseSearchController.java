@@ -59,6 +59,7 @@ public class CaseSearchController extends BaseFactory {
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
                 pJsonObj.put("sysuserid",userNow.getId());
+
             reMap.put("rows", caseSearchService.selectPeopleCasePage(pJsonObj));
             reMap.put("total", caseSearchService.selectPeopleCasePageCount(pJsonObj));
         } catch (Exception e) {

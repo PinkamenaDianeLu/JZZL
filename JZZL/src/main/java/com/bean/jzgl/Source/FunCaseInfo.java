@@ -51,6 +51,8 @@ public class FunCaseInfo {
 
     private Date jarq;
 
+    private Date sarq;
+    private Integer issorted;
     public Integer getId() {
         return id;
     }
@@ -233,5 +235,21 @@ public class FunCaseInfo {
 
     public void setJarq(Date jarq) {
         this.jarq = jarq;
+    }
+
+    public Date getSarq() {
+        return sarq;
+    }
+
+    public void setSarq(Date sarq) {
+        this.sarq = sarq;
+    }
+
+    public Integer getIssorted() {
+        return issorted;
+    }
+
+    public void setIssorted(Integer issorted) {
+        this.issorted = issorted;
     }
 }

@@ -1,12 +1,15 @@
 package com.module.SystemManagement.Services.Impl;
 
 import com.bean.jzgl.Converter.SysUserMapper;
+import com.bean.jzgl.Source.SysRoleUser;
 import com.bean.jzgl.Source.SysUser;
+import com.mapper.jzgl.SysRoleUserMapper;
 import com.mapper.jzgl.SysUserDTOMapper;
 import com.module.SystemManagement.Services.UserService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author MrLu
@@ -17,6 +20,9 @@ import javax.annotation.Resource;
 public class UserServiceImpl  implements UserService {
     @Resource
     SysUserDTOMapper sysUserDTOMapper;
+
+    @Resource
+    SysRoleUserMapper sysRoleUserMapper;
     //此时的vkey应当是用户id
     @Override
     public SysUser getUserNow(String VKey) throws Exception {
@@ -37,5 +43,10 @@ public class UserServiceImpl  implements UserService {
     @Override
     public SysUser loginVerification(String username) throws Exception {
         return SysUserMapper.INSTANCE.pcDTOToPc(sysUserDTOMapper.loginNoPasswd(username));
+    }
+
+    @Override
+    public List<SysRoleUser> selectRoleByUserid(Integer sysuserid) {
+        return sysRoleUserMapper.selectRoleByUserid(sysuserid);
     }
 }

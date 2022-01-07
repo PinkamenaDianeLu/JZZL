@@ -29,12 +29,13 @@
         <result column="RECORDUUID" jdbcType="VARCHAR" property="recorduuid"/>
         <result column="WJBM" jdbcType="VARCHAR" property="wjbm"/>
         <result column="WJBID" jdbcType="DECIMAL" property="wjbid"/>
+        <result column="AUTHORIDCARD" jdbcType="VARCHAR" property="authoridcard"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH,ARCHIVESEQID,
      THISORDER, RECORDNAME, ARCHIVETYPEID,ARCHIVECODE,RECORDSTYLE,RECORDSCODE
     ,ISDELETE,ISAZXT,ARCHIVESFCID,AUTHOR,AUTHORID,JCYRECORDCODE,PREVID,RECORDWH,
-    EFFECTIVETIME,BASERECORDID,RECORDUUID,WJBID,WJBM
+    EFFECTIVETIME,BASERECORDID,RECORDUUID,WJBID,WJBM,AUTHORIDCARD
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -80,6 +81,7 @@
             RECORDUUID,
             WJBM,
             WJBID,
+            AUTHORIDCARD,
             <if test="recordstyle != null">
                 RECORDSTYLE,
             </if>
@@ -114,6 +116,7 @@
             #{recorduuid,jdbcType=VARCHAR},
             #{wjbm,jdbcType=VARCHAR},
             #{wjbid,jdbcType=DECIMAL},
+            #{authoridcard,jdbcType=VARCHAR},
             <if test="recordstyle != null">
                 #{recordstyle,jdbcType=VARCHAR},
             </if>
@@ -186,6 +189,10 @@
             <if test="recorduuid != null">
                 RECORDUUID = #{recorduuid,jdbcType=VARCHAR},
             </if>
+            <if test="authoridcard != null">
+                AUTHORIDCARD = #{authoridcard,jdbcType=VARCHAR},
+            </if>
+
         </set>
         where ID = #{id,jdbcType=DECIMAL}
     </update>
@@ -202,6 +209,15 @@
         <if test="archiveseqid != null">
             AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
         </if>
+
+        <if test="wjbm != null">
+            AND WJBM = UPPER(#{wjbm,jdbcType=VARCHAR})
+        </if>
+        <if test="wjbid != null">
+            AND WJBID = #{wjbid,jdbcType=DECIMAL}
+        </if>
+
+
         order by id desc
         ) A )
         WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
@@ -219,6 +235,12 @@
         </if>
         <if test="archiveseqid != null">
             AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+        </if>
+        <if test="wjbm != null">
+            AND WJBM = UPPER(#{wjbm,jdbcType=VARCHAR})
+        </if>
+        <if test="wjbid != null">
+            AND WJBID = #{wjbid,jdbcType=DECIMAL}
         </if>
     </select>
 
@@ -299,6 +321,14 @@
         WHERE SCBJ=0
         AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
         and RECORDSTYLE=1
+        AND ISDELETE &lt; 2
+    </select>
+    <select id="selectMaxOrderByTypeid" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+        SELECT NVL(MAX(THISORDER),0) FROM FUN_ARCHIVE_RECORDS
+        WHERE SCBJ=0
+        AND ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL}
+        and RECORDSTYLE=1
+        AND RECORDSTYLE  &lt;&gt; 0
         AND ISDELETE &lt; 2
     </select>
     <select id="selectLastRsByTypeid" resultType="java.lang.Integer" parameterType="java.lang.Integer">
@@ -554,6 +584,9 @@
             <if test="recorduuid != null">
                 RECORDUUID = #{recorduuid,jdbcType=VARCHAR},
             </if>
+            <if test="authoridcard != null">
+                AUTHORIDCARD = #{authoridcard,jdbcType=VARCHAR},
+            </if>
         </set>
         where RECORDUUID = #{recorduuid,jdbcType=DECIMAL}
 
@@ -635,6 +668,16 @@
         and sfc.issend=0)
     </select>
 
+    <select id="selectRecordsByWjMessage" resultMap="BaseResultMap" parameterType="map">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from fun_archive_records
+        WHERE SCBJ=0 and WJBM= #{wjbm,jdbcType=VARCHAR}
+        AND WJBID=#{wjbid,jdbcType=DECIMAL}
+        AND ARCHIVESEQID=#{archiveseqid,jdbcType=DECIMAL}
+    </select>
+
+
     <update id="deleteRecordsByWjMessageNotSend" parameterType="com.bean.jzgl.DTO.FunArchiveRecordsDTO" >
      update fun_archive_records ar
      set UPDATETIME = SYSDATE
@@ -653,5 +696,21 @@
         AND RECORDUUID= #{recorduuid,jdbcType=VARCHAR}
         AND ISDELETE= 0
         AND EXISTS (SELECT 1 FROM FUN_ARCHIVE_SEQ seq WHERE seq.id=ar.archiveseqid AND seq.isfinal=0)
+    </select>
+
+
+    <update id="updateWrongOrderBySeq" parameterType="java.lang.Integer" >
+       UPDATE  FUN_ARCHIVE_RECORDS SET THISORDER=1 WHERE SCBJ=0 AND THISORDER
+         &lt;0 AND RECORDSCODE NOT LIKE 'ZL%'
+         AND  ARCHIVESEQID=#{archiveseqid,jdbcType=DECIMAL}
+    </update>
+
+    <select id="selectRecordNameByRecordIds" parameterType="int[]" resultType="java.lang.String">
+        SELECT RECORDNAME  FROM FUN_ARCHIVE_RECORDS WHERE SCBJ=0
+         AND RECORDSCODE NOT LIKE 'ZL%'
+         AND  ID IN
+        <foreach collection="ids" item="item" separator="," open="(" close=")">
+        #{item,jdbcType=DECIMAL}
+    </foreach>
     </select>
 </mapper>

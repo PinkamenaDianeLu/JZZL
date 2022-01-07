@@ -182,20 +182,21 @@ public class BaseFactory {
         //1.验证发送的用户是否在线
         consigneeIdCard = Optional.ofNullable(consigneeIdCard).orElse("noBody");
         WebSocketMessage messageObj = new WebSocketMessage();
-        boolean isSend = false;
+//        boolean isSend = false;
         //判断用户是否在线
+
+        //发送消息
+        messageObj.setMessage(message);//消息内容
+        messageObj.setsender("system");//发送人 系统
+        messageObj.setreceiver(consigneeIdCard);//发给谁
+        messageObj.setMessagetype(messageType.getValue());//发送类型
+        messageObj.setSendtime(new Date());//发送时间
         if (redisOnlineUserTemplate.hasKey(consigneeIdCard)) {
-            //发送消息
-            messageObj.setMessage(message);//消息内容
-            messageObj.setsender("system");//发送人 系统
-            messageObj.setreceiver(consigneeIdCard);//发给谁
-            messageObj.setMessagetype(messageType.getValue());//发送类型
-            messageObj.setSendtime(new Date());//发送时间
-            isSend = true;
+//            isSend = true;
             messagingTemplate.convertAndSend("/queues/" + consigneeIdCard, messageObj);
         }
         //记录日志
-        webSocketService.insertWebSocketLog(messageObj, isSend);
+        webSocketService.insertWebSocketLog(messageObj, false);
     }
 
     protected void unlockRecord(String sender, String receiver, Integer sfcid) {

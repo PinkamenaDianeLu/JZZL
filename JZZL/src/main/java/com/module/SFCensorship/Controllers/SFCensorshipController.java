@@ -77,6 +77,16 @@ public class SFCensorshipController extends BaseFactory {
             pJsonObj.put("pageEnd", String.valueOf((offset) * limit));
             //解密id参数
             pJsonObj.put("caseinfoid", DecodeUrlP(pJsonObj.getString("id")));//解密的id
+            String version = GlobalUtil.getGlobal("version");//查询版本
+            if ("province".equals(version) || "provinceTest".equals(version)) {
+                //省厅版  只查询传入的文书  也只能新建传入的文书
+                if (StringUtils.isNotEmpty(userSession.getTempString())) {
+                    JSONObject wjxx = JSONObject.parseObject(userSession.getTempString());
+                    pJsonObj.put("wjbm", wjxx.getString("wjbm"));
+                    pJsonObj.put("wjbid", wjxx.getString("wjbid"));
+                }
+            }
+            pJsonObj.put("issuspectorder",1);
             reMap.put("rows", transformBmField(sFCensorshipService.selectArchiveSFCPage(pJsonObj), FunArchiveSFC.class));
             reMap.put("total", sFCensorshipService.selectArchiveSFCPageCount(pJsonObj));
         } catch (Exception e) {
@@ -117,7 +127,7 @@ public class SFCensorshipController extends BaseFactory {
             newSfc.setArchivename(pJsonObj.getString("archivename"));
             newSfc.setCaseinfoid(thisFunCaseInfo.getId());//案件表id
             newSfc.setBaserecordid(recordId);//基于那张文书选择的
-            newSfc.setIssuspectorder(1);//已经排序
+            newSfc.setIssuspectorder(0);//已经排序
             sFCensorshipService.insertFunArchiveSFC(newSfc);
             //查询正在活跃的基础卷
             FunArchiveSeqDTO BaseSeq = sFCensorshipService.selectActiveSeqByCaseId(caseInfoId);
@@ -146,6 +156,11 @@ public class SFCensorshipController extends BaseFactory {
 
             //新的卷就是在复制基础卷
             cloneBaseRecords(BaseSeq, suspects);
+
+            //记录为整理完成
+            //标记为已为嫌疑人排序
+            sFCensorshipService.updateIssuspectorderBySfcId(1, newSfc.getId());
+
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,11 +182,13 @@ public class SFCensorshipController extends BaseFactory {
         List<FunArchiveTypeDTO> oriArchiveTypes = sFCensorshipService.selectArchiveTypeByJqSeq(newSeq.getPrevid());
 
         int typeOrder = 1;
+        final Integer archiveType = newSeq.getArchivetype();//卷宗类型
         for (FunArchiveTypeDTO thisType :
                 oriArchiveTypes) {
             int oriTypeId = thisType.getId();//源id
             thisType.setArchiveseqid(newSeq.getId());//整理次序id
             thisType.setArchivesfcid(newSeq.getArchivesfcid());//送检记录id
+
             thisType.setIsazxt(1);//非安综系统抽取
             thisType.setDefaultorder(typeOrder++);
             //新建一个
@@ -197,10 +214,12 @@ public class SFCensorshipController extends BaseFactory {
             cover.setPrevid(0);
             cover.setAuthor(newSeq.getAuthor());//整理人姓名
             cover.setAuthorid(newSeq.getAuthorid());//整理人id
+            cover.setAuthoridcard(newSeq.getAuthoridcard());
             cover.setIsazxt(1);//封皮、目录、封底 都不是安综原有的东西
             cover.setArchiveseqid(newSeq.getId());
             cover.setRecordscode(EnumSoft.fplx.COVER.getValue());//文件代码
             cover.setRecorduuid(UUID.randomUUID().toString());
+            cover.setAuthoridcard("system");
             cover.setWjbid(0);
             cover.setWjbm(EnumSoft.fplx.COVER.getValue());
             sFCensorshipService.insertZlRecords(cover, thisType);
@@ -240,6 +259,7 @@ public class SFCensorshipController extends BaseFactory {
                 thisRecord.setArchivetypeid(newTypeId);//对应了新的archiveType表id
                 thisRecord.setBaserecordid(thisRecord.getId());//基于的基础卷id
                 thisRecord.setPrevid(thisRecord.getId());
+                //查询法律文书代码
 //                sFCensorshipService.insertFunArchiveRecords(thisRecord, thisType);
                 copyRecordsToNew(thisRecord);
             }
@@ -268,11 +288,11 @@ public class SFCensorshipController extends BaseFactory {
             int caseInfoId = Integer.parseInt(DecodeUrlP(caseinfoid));
 
             reValue.put("value", sFCensorshipService.getFunCaseInfoById(caseInfoId));
-            FunArchiveSFCDTO sfc = sFCensorshipService.selectBaseSfcByCaseinfoid(caseInfoId);
+            FunArchiveSFCDTO sfc = sFCensorshipService.selectBaseSfcByCaseinfoid(caseInfoId, null);
             //判断该卷是否被整理
             if (null != sfc) {
                 //有基础卷
-                reValue.put("issuspectorder", 1 == sFCensorshipService.selectBaseSfcByCaseinfoid(caseInfoId).getIssuspectorder());//基础卷是否已经为嫌疑人排序
+                reValue.put("issuspectorder", 1 == sfc.getIssuspectorder());//基础卷是否已经为嫌疑人排序
             } else {
                 //没有基础卷
                 reValue.put("issuspectorder", false);
@@ -318,6 +338,31 @@ public class SFCensorshipController extends BaseFactory {
     }
 
     /**
+     * 审批卷综
+     *
+     * @param
+     * @return |
+     * @author MrLu
+     * @createTime 2021/6/16 15:21
+     */
+    @RequestMapping(value = "/approvalArchive", method = {RequestMethod.GET,
+            RequestMethod.POST})
+    @ResponseBody
+    @OperLog(operModul = operModul, operDesc = "审批", operType = OperLog.type.UPDATE)
+    public String approvalArchive(Integer id) {
+        JSONObject reValue = new JSONObject();
+        try {
+            //审批成功
+            sFCensorshipService.approvalArchive(1, id);
+            reValue.put("message", "success");
+        } catch (Exception e) {
+            e.printStackTrace();
+            reValue.put("message", "error");
+        }
+        return reValue.toJSONString();
+    }
+
+    /**
      * 发送打包
      *
      * @param id fun_archivesfc表id
@@ -329,19 +374,30 @@ public class SFCensorshipController extends BaseFactory {
             RequestMethod.POST})
     @ResponseBody
     @OperLog(operModul = operModul, operDesc = "发送打包", operType = OperLog.type.SELECT)
-    public String sendArchive(String id) {
+    public String sendArchive(Integer id) {
+
 
         JSONObject reValue = new JSONObject();
         try {
             //解密ip
-            int sfcId = Integer.parseInt(DecodeUrlP(id));
+            int sfcId = id;
+            //Integer.parseInt(DecodeUrlP(id));
+            FunArchiveSFCDTO thisSfc= arrangeArchivesService.selectFunArchiveSFCDTOById(sfcId);
+            //判断包是否是已发送状态
+            if (thisSfc.getIssend()!=0){
+                //不让再发了
+                reValue.put("message", "issended");
+                reValue.put("value", thisSfc.getIssend());
+                return reValue.toJSONString();
+            }
+
             //找到需要打包的seq
             FunArchiveSeq needSeq = arrangeArchivesService.selectLastSeqBySfc(sfcId);
             //调用打包程序
             String version = GlobalUtil.getGlobal("version");//查询的单位代码
             JSONObject paramJsonObj = new JSONObject();//打包所需参数
             //根据不同版本调用不同的打包程序
-            if ("province".equals(version)) {
+            if ("province".equals(version) || "provinceTest".equals(version)) {
                 paramJsonObj.put("key", Enums.passwordSwitch.sendToAz.getValue());
                 paramJsonObj.put("message", userSession.getTempString());
                 paramJsonObj.put("seqid", needSeq.getId());
@@ -350,11 +406,14 @@ public class SFCensorshipController extends BaseFactory {
             }
             String archiveUrl = GlobalUtil.getGlobal("archiveUrl");//查询发送打包的websocket地址
             if (StringUtils.isNotEmpty(archiveUrl)) {
-                WebSocketClientUtil c = new WebSocketClientUtil(new URI("ws://localhost:9003")); // more about drafts here: http://github.com/TooTallNate/Java-WebSocket/wiki/Drafts
+                SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
+                WebSocketClientUtil c = new WebSocketClientUtil(new URI(archiveUrl + userNow.getUsername() + "/"));
 
                 c.connectBlocking();//等待连接成功ing...
                 c.getReadyState();
                 c.send(paramJsonObj.toJSONString());//发送参数
+                sFCensorshipService.updateSendTypeById(2,sfcId);//更改为打包中
+                //updateSendTypeById
             } else {
                 throw new Exception("打你妈包呢，地址呢");
             }
@@ -527,14 +586,20 @@ public class SFCensorshipController extends BaseFactory {
         copyFilesToNew(oriId, newRecord);
         //判断是否是对人文书 如果是对人文书则复制关系表
         if (1 == newRecord.getRecordstyle() || 7 == newRecord.getRecordstyle()) {
-            FunSuspectRecordDTO sr = sFCensorshipService.selectSuspectRecordByRid(newRecord.getPrevid());//此时使用原有的id查询
-            if (null != sr) {
+            List<FunSuspectRecordDTO> sr = sFCensorshipService.selectSuspectRecordByRid(newRecord.getPrevid());//此时使用原有的id查询
+            if (null != sr && sr.size() > 0) {
                 //这里应该保证sr不能为空  因为这个文书如果对人但是在嫌疑人文书关联表中没有数据那么就是数据出现错误了  是个问题了
                 //对人文书复制关联表
-                sr.setRecordid(newRecord.getId());//注意此时是新的id了
-                sr.setArchiveseqid(newRecord.getArchiveseqid());//新的seqid
-                sFCensorshipService.insertSuspectRecord(sr);
+
+                for (FunSuspectRecordDTO thisR :
+                        sr) {
+                    thisR.setRecordid(newRecord.getId());//注意此时是新的id了
+                    thisR.setArchiveseqid(newRecord.getArchiveseqid());//seqid也是新的
+                    sFCensorshipService.insertSuspectRecord(thisR);
+                }
             }
+
+
         }
 
         //复制文书也要复制对应的标签

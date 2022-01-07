@@ -308,7 +308,7 @@ public interface ArrangeArchivesService {
      * @author MrLu
      * @createTime 2020/12/17 18:00
      */
-    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid);
+    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid,Integer archivetype);
 
 
 

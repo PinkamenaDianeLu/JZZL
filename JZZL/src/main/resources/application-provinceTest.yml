@@ -1,0 +1,123 @@
+# 省厅测试版
+spring:
+  datasource:
+    jzgl:
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:oracle:thin:@10.112.1.226:1521:orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      username: jzzl
+      password: jzzl
+      max-active: 500
+      maximum-pool-size: 100
+      max-idle: 10
+      max-wait: 10000
+      min-idle: 5
+      initial-size: 5
+      validation-query: SELECT 1 FROM DUAL
+      testOnBorrow: false
+      testOnReturn: false
+      test-on-borrow: false
+      poolPreparedStatements: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+    zfba:
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:oracle:thin:@35.0.11.101:1521:orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      username: zfba
+      password: zfba
+      max-active: 50
+      maximum-pool-size: 100
+      max-idle: 10
+      max-wait: 10000
+      min-idle: 5
+      initial-size: 5
+      validation-query: SELECT 1 FROM DUAL
+      testOnBorrow: false
+      testOnReturn: false
+      test-on-borrow: false
+      poolPreparedStatements: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+    thkjdmtjz:
+      type: com.alibaba.druid.pool.DruidDataSource
+      url: jdbc:oracle:thin:@35.108.7.16:1521:orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      username: thkjdmtjz
+      password: thkjdmtjz
+      max-active: 50
+      maximum-pool-size: 100
+      max-idle: 10
+      max-wait: 10000
+      min-idle: 5
+      initial-size: 5
+      validation-query: SELECT 1 FROM DUAL
+      testOnBorrow: false
+      testOnReturn: false
+      test-on-borrow: false
+      poolPreparedStatements: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+  output:
+    ansi:
+      enabled: always
+  freemarker:
+    cache: false
+  redis:
+    cacheDatabase: 0
+    sessionDatabase: 1
+    onlineUsers: 2
+    casesAreOccupied: 3
+    host: 35.1.1.239
+    port: 6379
+    password: jzzl
+    timeout: 3000
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 5
+        max-wait: 5
+        min-idle: 0
+      shutdown-timeout: 10
+
+  resources:
+    static-locations: classpath:webApp/,classpath:static/
+  servlet:
+    multipart:
+      max-file-size: 13MB
+      max-request-size: 39MB
+  cache:
+    type: redis
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      exclude: /**
+      enabled: true
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+server:
+  port: 8080
+  error:
+    path: /error
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    session:
+      cookie:
+        max-age: -1s
+
+logging:
+  level:
+    root: info
+    com.mapper: debug
+mybatis:
+  typeAliasesPackage: com.bean
+  mapperLocations: classpath:mapper/**/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+

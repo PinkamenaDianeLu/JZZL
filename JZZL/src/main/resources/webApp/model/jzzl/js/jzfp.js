@@ -188,7 +188,14 @@ $(function () {
         let ColumnNum = rc.getColumnNum();
         $('#archivecount').val(ColumnNum[0]);//共几卷
         $('#recordcount').val(ColumnNum[1]);//第几卷
-         $('#pagecount').val( rc.getArchivePageNum(thisCover.archivetypeid));//总页数
+        $('#pagecount').val(rc.getArchivePageNum(thisCover.archivetypeid));//总页数
+        layer.msg('计算完成！');
+    })
+
+    $('#coverToImg').click(function () {
+        //jzfpDiv
+        saveImg('jzfpDiv');
+
     })
 
 })

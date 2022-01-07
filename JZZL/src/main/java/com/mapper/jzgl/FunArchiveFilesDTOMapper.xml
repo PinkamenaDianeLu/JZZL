@@ -459,4 +459,10 @@
         AND exists (select 1 from fun_archive_sfc sfc where  sfc.id=f.archivesfcid
         AND sfc.issend=0)
     </select>
+
+    <select id="selectFileBySeq" parameterType="java.lang.Integer"  resultMap="BaseResultMap">
+        SELECT  <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_FILES  WHERE SCBJ=0 AND SCBJ=0 AND ISDELETE=0 AND ISSHOW=0
+        AND ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL}
+    </select>
 </mapper>

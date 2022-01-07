@@ -50,7 +50,7 @@
     from XT_WJFLB
     WHERE SCBJ=0
     AND JQBH = #{jqbh,jdbcType=VARCHAR}
-    AND (DYLX &gt; 1 OR DYLX IS NULL)
+    AND DYDM IS NULL
     order by id desc
   </select>
 
@@ -65,5 +65,20 @@
     WHERE SCBJ=0
     AND GXSJ &gt; #{lastpkdatevalue,jdbcType=TIMESTAMP}
     AND JLRGAJGJGDM LIKE  #{jlrgajgjgdm,jdbcType=VARCHAR}||'%'
+    order by GXSJ asc
+  </select>
+
+
+  <select id="selectNewRecordsForAjbh" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    from XT_WJFLB
+    WHERE SCBJ=0
+    AND JQBH IN ( select JQBH from xt_ajxxb aj where aj.scbj=0 and aj.ajbh in
+    <foreach collection="ajbhAry.split(',')" item="item" separator=","
+             open="(" close=")">
+      #{jqbh,jdbcType=VARCHAR}
+    </foreach>
+    )
+
   </select>
 </mapper>

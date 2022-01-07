@@ -25,7 +25,7 @@ var recycleBin = (function () {
                         loadArchiveType(thisType);
                     });
                 } else {
-                    alert('文书信息无法加载');
+                    layer.alert('文书信息无法加载');
                 }
             }
         });

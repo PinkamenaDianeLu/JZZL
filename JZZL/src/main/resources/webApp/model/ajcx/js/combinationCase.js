@@ -24,7 +24,7 @@ var ajcxTable = (function () {
     function getSearchParam() {
         let reS = new searchParam();
         //去掉原有的A23
-        reS.ajbh = $('#ajbhHead').val().trim() + $('#ajbh').val().replace('A23', '').trim();
+        reS.ajbh =$('#ajbh').val().trim();
         reS.casename = $('#casename').val().trim();
         return reS;
     }
@@ -62,7 +62,7 @@ var ajcxTable = (function () {
             $('#appurtenance').append(caseElement);
             appurtenances.add(id)
         } else {
-            alert('该案件已被选择，请勿重复选择');
+            layer.alert('该案件已被选择，请勿重复选择');
 
         }
     };
@@ -102,7 +102,7 @@ var ajcxTable = (function () {
 
     function getAppurtenances() {
         if (appurtenances.size === 0) {
-            alert('您没有选择任何辅案！')
+            layer.alert('您没有选择任何辅案！')
             return false;
         } else {
             return Array.from(appurtenances).join(',');
@@ -171,34 +171,42 @@ var combination = (function () {
             suspectids[suspectids.length] = thisSelectedSuspect.id;
         }
         if (suspectids.length === 0) {
-            if (!confirm('合并的案件没有选择任何嫌疑人，是否继续？')) {
+            layer.confirm('合并的案件没有选择任何嫌疑人，是否继续？', {
+                btn: ['取消', '确定']//按钮
+            }, function (index) {
+                layer.close(index);
                 return false;
-            }
+            });
         }
-        console.log(appurtenances);
-        console.log(suspectids);
-        $.post({
-            url: '/CaseManager/combinationCase',
-            data: {
-                mainCaseId: caseinfoid,
-                suspectids: suspectids.join(','),
-                fcaseids: appurtenances,
-                newcasename: $('#combinationCasename').val()
-            },
-            success: (re) => {
-                const reV = JSON.parse(re);
-                if ('success' === reV.message) {
-                    alert("合案完成")
-                    const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                    parent.layer.close(index);
-                } else {
-                    layer.alert('数据异常，无法完成合案');
+
+        layer.confirm('确定合并案件？', {
+            btn: [ '确定','取消']//按钮
+        }, function (index) {
+            alert('已为您开始合并案件，合并进度请注意右上角通知');
+            $.post({
+                url: '/CaseManager/combinationCase',
+                data: {
+                    mainCaseId: caseinfoid,
+                    suspectids: suspectids.join(','),
+                    fcaseids: appurtenances,
+                    newcasename: $('#combinationCasename').val()
+                },
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        layer.alert("合案完成")
+                        const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index);
+                    } else {
+                        layer.alert('数据异常，无法完成合案');
+                    }
                 }
-            }
+            });
+            const PIndex = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+            parent.layer.close(PIndex);
         });
-        alert('您选择的案件已经开始合案，请留意右上角通知！');
-        const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-        parent.layer.close(index);
+
+
 
     }
 

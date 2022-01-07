@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.FunArchiveXzcoverDTOMapper">
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.DTO.FunArchiveXzcoverDTO">
+    <id column="ID" jdbcType="DECIMAL" property="id" />
+    <result column="SCBJ" jdbcType="DECIMAL" property="scbj" />
+    <result column="STATE" jdbcType="DECIMAL" property="state" />
+    <result column="CREATETIME" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime" />
+    <result column="AUTHOR" jdbcType="VARCHAR" property="author" />
+    <result column="AUTHORID" jdbcType="DECIMAL" property="authorid" />
+    <result column="AUTHORXM" jdbcType="VARCHAR" property="authorxm" />
+    <result column="JQBH" jdbcType="VARCHAR" property="jqbh" />
+    <result column="AJBH" jdbcType="VARCHAR" property="ajbh" />
+    <result column="ARCHIVESFCID" jdbcType="DECIMAL" property="archivesfcid" />
+    <result column="ARCHIVESEQID" jdbcType="DECIMAL" property="archiveseqid" />
+    <result column="ARCHIVETYPEID" jdbcType="DECIMAL" property="archivetypeid" />
+    <result column="ARCHIVEFILEID" jdbcType="DECIMAL" property="archivefileid" />
+    <result column="FILECODE" jdbcType="VARCHAR" property="filecode" />
+    <result column="SFCNAME" jdbcType="VARCHAR" property="sfcname" />
+    <result column="ARCHIVENAME" jdbcType="VARCHAR" property="archivename" />
+    <result column="CASENAME" jdbcType="VARCHAR" property="casename" />
+    <result column="ARCHIVECOUNT" jdbcType="VARCHAR" property="archivecount" />
+    <result column="RECORDCOUNT" jdbcType="VARCHAR" property="recordcount" />
+    <result column="PAGECOUNT" jdbcType="DECIMAL" property="pagecount" />
+    <result column="STARTTIME" jdbcType="VARCHAR" property="starttime" />
+    <result column="ENDTIME" jdbcType="VARCHAR" property="endtime" />
+    <result column="RETENTIONPERIOD" jdbcType="VARCHAR" property="retentionperiod" />
+    <result column="QZCODE" jdbcType="VARCHAR" property="qzcode" />
+    <result column="LBCODE" jdbcType="VARCHAR" property="lbcode" />
+    <result column="MLCODE" jdbcType="VARCHAR" property="mlcode" />
+    <result column="AJCODE" jdbcType="VARCHAR" property="ajcode" />
+    <result column="LJDW" jdbcType="VARCHAR" property="ljdw" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.bean.jzgl.DTO.FunArchiveXzcoverDTO">
+    <result column="DESCRIBE" jdbcType="CLOB" property="describe" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, AUTHOR, AUTHORID, AUTHORXM, JQBH, AJBH,
+    ARCHIVESFCID, ARCHIVESEQID, ARCHIVETYPEID, ARCHIVEFILEID, FILECODE, SFCNAME, ARCHIVENAME,
+    CASENAME, ARCHIVECOUNT, RECORDCOUNT, PAGECOUNT, STARTTIME, ENDTIME, RETENTIONPERIOD,
+    QZCODE, LBCODE, MLCODE, AJCODE, LJDW
+  </sql>
+  <sql id="Blob_Column_List">
+    DESCRIBE
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from FUN_ARCHIVE_XZCOVER
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveXzcoverDTO">
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_FUN_ARC_XZCOVER_ID.nextval from dual
+    </selectKey>
+    insert into FUN_ARCHIVE_XZCOVER
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+        ID,
+        SCBJ,
+        STATE,
+        CREATETIME,
+        UPDATETIME,
+        AUTHOR,
+        AUTHORID,
+        AUTHORXM,
+        JQBH,
+        AJBH,
+        ARCHIVESFCID,
+        ARCHIVESEQID,
+        ARCHIVETYPEID,
+        ARCHIVEFILEID,
+        FILECODE,
+      <if test="sfcname != null">
+        SFCNAME,
+      </if>
+      <if test="archivename != null">
+        ARCHIVENAME,
+      </if>
+      <if test="casename != null">
+        CASENAME,
+      </if>
+      <if test="archivecount != null">
+        ARCHIVECOUNT,
+      </if>
+      <if test="recordcount != null">
+        RECORDCOUNT,
+      </if>
+      <if test="pagecount != null">
+        PAGECOUNT,
+      </if>
+      <if test="starttime != null">
+        STARTTIME,
+      </if>
+      <if test="endtime != null">
+        ENDTIME,
+      </if>
+      <if test="retentionperiod != null">
+        RETENTIONPERIOD,
+      </if>
+      <if test="qzcode != null">
+        QZCODE,
+      </if>
+      <if test="lbcode != null">
+        LBCODE,
+      </if>
+      <if test="mlcode != null">
+        MLCODE,
+      </if>
+      <if test="ajcode != null">
+        AJCODE,
+      </if>
+      <if test="ljdw != null">
+        LJDW,
+      </if>
+      <if test="describe != null">
+        DESCRIBE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+        #{id,jdbcType=DECIMAL},
+        0,
+        0,
+        SYSDATE,
+        SYSDATE,
+        #{author,jdbcType=VARCHAR},
+        #{authorid,jdbcType=DECIMAL},
+        #{authorxm,jdbcType=VARCHAR},
+        #{jqbh,jdbcType=VARCHAR},
+        #{ajbh,jdbcType=VARCHAR},
+        #{archivesfcid,jdbcType=DECIMAL},
+        #{archiveseqid,jdbcType=DECIMAL},
+        #{archivetypeid,jdbcType=DECIMAL},
+        #{archivefileid,jdbcType=DECIMAL},
+        #{filecode,jdbcType=VARCHAR},
+      <if test="sfcname != null">
+        #{sfcname,jdbcType=VARCHAR},
+      </if>
+      <if test="archivename != null">
+        #{archivename,jdbcType=VARCHAR},
+      </if>
+      <if test="casename != null">
+        #{casename,jdbcType=VARCHAR},
+      </if>
+      <if test="archivecount != null">
+        #{archivecount,jdbcType=VARCHAR},
+      </if>
+      <if test="recordcount != null">
+        #{recordcount,jdbcType=VARCHAR},
+      </if>
+      <if test="pagecount != null">
+        #{pagecount,jdbcType=DECIMAL},
+      </if>
+      <if test="starttime != null">
+        #{starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="endtime != null">
+        #{endtime,jdbcType=VARCHAR},
+      </if>
+      <if test="retentionperiod != null">
+        #{retentionperiod,jdbcType=VARCHAR},
+      </if>
+      <if test="qzcode != null">
+        #{qzcode,jdbcType=VARCHAR},
+      </if>
+      <if test="lbcode != null">
+        #{lbcode,jdbcType=VARCHAR},
+      </if>
+      <if test="mlcode != null">
+        #{mlcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ajcode != null">
+        #{ajcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ljdw != null">
+        #{ljdw,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null">
+        #{describe,jdbcType=CLOB},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.FunArchiveXzcoverDTO">
+    update FUN_ARCHIVE_XZCOVER
+    <set>
+        UPDATETIME = sysdate,
+      <if test="author != null">
+        AUTHOR = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="authorid != null">
+        AUTHORID = #{authorid,jdbcType=DECIMAL},
+      </if>
+      <if test="authorxm != null">
+        AUTHORXM = #{authorxm,jdbcType=VARCHAR},
+      </if>
+      <if test="jqbh != null">
+        JQBH = #{jqbh,jdbcType=VARCHAR},
+      </if>
+      <if test="ajbh != null">
+        AJBH = #{ajbh,jdbcType=VARCHAR},
+      </if>
+      <if test="archivesfcid != null">
+        ARCHIVESFCID = #{archivesfcid,jdbcType=DECIMAL},
+      </if>
+      <if test="archiveseqid != null">
+        ARCHIVESEQID = #{archiveseqid,jdbcType=DECIMAL},
+      </if>
+      <if test="archivetypeid != null">
+        ARCHIVETYPEID = #{archivetypeid,jdbcType=DECIMAL},
+      </if>
+      <if test="archivefileid != null">
+        ARCHIVEFILEID = #{archivefileid,jdbcType=DECIMAL},
+      </if>
+      <if test="filecode != null">
+        FILECODE = #{filecode,jdbcType=VARCHAR},
+      </if>
+      <if test="sfcname != null">
+        SFCNAME = #{sfcname,jdbcType=VARCHAR},
+      </if>
+      <if test="archivename != null">
+        ARCHIVENAME = #{archivename,jdbcType=VARCHAR},
+      </if>
+      <if test="casename != null">
+        CASENAME = #{casename,jdbcType=VARCHAR},
+      </if>
+      <if test="archivecount != null">
+        ARCHIVECOUNT = #{archivecount,jdbcType=VARCHAR},
+      </if>
+      <if test="recordcount != null">
+        RECORDCOUNT = #{recordcount,jdbcType=VARCHAR},
+      </if>
+      <if test="pagecount != null">
+        PAGECOUNT = #{pagecount,jdbcType=DECIMAL},
+      </if>
+      <if test="starttime != null">
+        STARTTIME = #{starttime,jdbcType=VARCHAR},
+      </if>
+      <if test="endtime != null">
+        ENDTIME = #{endtime,jdbcType=VARCHAR},
+      </if>
+      <if test="retentionperiod != null">
+        RETENTIONPERIOD = #{retentionperiod,jdbcType=VARCHAR},
+      </if>
+      <if test="qzcode != null">
+        QZCODE = #{qzcode,jdbcType=VARCHAR},
+      </if>
+      <if test="lbcode != null">
+        LBCODE = #{lbcode,jdbcType=VARCHAR},
+      </if>
+      <if test="mlcode != null">
+        MLCODE = #{mlcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ajcode != null">
+        AJCODE = #{ajcode,jdbcType=VARCHAR},
+      </if>
+      <if test="ljdw != null">
+        LJDW = #{ljdw,jdbcType=VARCHAR},
+      </if>
+      <if test="describe != null">
+        DESCRIBE = #{describe,jdbcType=CLOB},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <select id="selectFunArchiveXzCoverDTOByFileId" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from FUN_ARCHIVE_XZCOVER
+    WHERE SCBJ=0 AND ARCHIVEFILEID=#{archivefileid,jdbcType=DECIMAL}
+  </select>
+</mapper>

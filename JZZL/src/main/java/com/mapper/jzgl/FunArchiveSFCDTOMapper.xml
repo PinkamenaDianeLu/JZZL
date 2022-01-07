@@ -19,10 +19,12 @@
         <result column="CASEINFOID" jdbcType="DECIMAL" property="caseinfoid"/>
         <result column="BASERECORDID" jdbcType="DECIMAL" property="baserecordid"/>
         <result column="ISSUSPECTORDER" jdbcType="DECIMAL" property="issuspectorder"/>
+        <result column="APPROVAL" jdbcType="DECIMAL" property="approval"/>
+
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, ISSEND, AUTHOR, AUTHORIDCARD, 
-      SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,CASEINFOID,BASERECORDID,ISSUSPECTORDER
+      SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,CASEINFOID,BASERECORDID,ISSUSPECTORDER,APPROVAL
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -35,7 +37,7 @@
       CREATETIME, UPDATETIME, JQBH, 
       AJBH, ISSEND, AUTHOR, 
       AUTHORIDCARD,
-      SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,BASERECORDID,ISSUSPECTORDER
+      SFCNUMBER, ARCHIVETYPE, ARCHIVENAME,BASERECORDID,ISSUSPECTORDER,APPROVAL
       )
     values (#{id,jdbcType=DECIMAL}, #{scbj,jdbcType=DECIMAL}, #{state,jdbcType=DECIMAL}, 
       #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{jqbh,jdbcType=VARCHAR}, 
@@ -44,6 +46,7 @@
       #{sfcnumber,jdbcType=VARCHAR}, #{archivetype,jdbcType=DECIMAL},
       #{archivename,jdbcType=VARCHAR},#{caseinfoid,jdbcType=DECIMAL},
       #{baserecordid,jdbcType=DECIMAL},#{issuspectorder,jdbcType=DECIMAL}
+      ,#{approval,jdbcType=DECIMAL}
       )
   </insert>
     <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunArchiveSFCDTO">
@@ -65,6 +68,7 @@
             caseinfoid,
             BASERECORDID,
             ISSUSPECTORDER,
+            APPROVAL,
             <if test="issend != null">
                 ISSEND,
             </if>
@@ -91,6 +95,7 @@
             #{caseinfoid,jdbcType=DECIMAL},
             #{baserecordid,jdbcType=DECIMAL},
             #{issuspectorder,jdbcType=DECIMAL},
+            0,
             <if test="issend != null">
                 #{issend,jdbcType=DECIMAL},
             </if>
@@ -142,6 +147,9 @@
             <if test="issuspectorder != null">
                 ISSUSPECTORDER = #{issuspectorder,jdbcType=DECIMAL},
             </if>
+            <if test="approval != null">
+                APPROVAL = #{approval,jdbcType=DECIMAL},
+            </if>
         </set>
         where ID = #{id,jdbcType=DECIMAL}
     </update>
@@ -161,19 +169,33 @@
         from FUN_ARCHIVE_SFC asfc
         WHERE 1=1 AND SCBJ=0
         AND ARCHIVETYPE > 0
-        and CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
+        AND CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
+        AND ISSUSPECTORDER = #{issuspectorder,jdbcType=DECIMAL}
+
+        <if test="wjbm != null and wjbid != null">
+            AND BASERECORDID IN (SELECT ID FROM FUN_ARCHIVE_RECORDS WHERE SCBJ=0 AND WJBM =
+            UPPER(#{wjbm,jdbcType=VARCHAR})
+            AND WJBID = #{wjbid,jdbcType=DECIMAL})
+        </if>
         order by id desc
         ) A )
         WHERE rum &gt; #{pageStart,jdbcType=DECIMAL}
         AND rum &lt;= #{pageEnd,jdbcType=DECIMAL}
     </select>
     <select id="selectArchiveSFCPageCount" resultType="java.lang.Integer" parameterType="map">
-    select count(0) from   FUN_ARCHIVE_SFC where 1=1 and scbj=0 AND ARCHIVETYPE >= 0
-    and CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
-  </select>
+        select count(0) from FUN_ARCHIVE_SFC where 1=1 and scbj=0 AND ARCHIVETYPE >= 0
+        and CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
+        AND ISSUSPECTORDER = #{issuspectorder,jdbcType=DECIMAL}
+        <if test="wjbm != null and wjbid != null">
+            AND BASERECORDID IN (SELECT ID FROM FUN_ARCHIVE_RECORDS WHERE SCBJ=0 AND WJBM =
+            UPPER(#{wjbm,jdbcType=VARCHAR})
+            AND WJBID = #{wjbid,jdbcType=DECIMAL})
+        </if>
+    </select>
 
     <update id="updateIssuspectorderByCaseinfoid" parameterType="java.lang.Integer">
     UPDATE FUN_ARCHIVE_SFC SET ISSUSPECTORDER=#{issuspectorder,jdbcType=DECIMAL}
+    ,UPDATETIME = sysdate
     WHERE  SCBJ=0 AND
     id=#{sfcid,jdbcType=DECIMAL}
   </update>
@@ -183,22 +205,41 @@
         <include refid="Base_Column_List"/>
         FROM FUN_ARCHIVE_SFC WHERE SCBJ=0
         AND CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
-        AND ARCHIVETYPE = 0
+        <if test="archivetype != null">
+            AND ARCHIVETYPE = #{archivetype,jdbcType=DECIMAL}
+        </if>
+        <if test="archivetype == null">
+            AND ARCHIVETYPE &gt; -1 AND ARCHIVETYPE &lt; 2
+        </if>
         and rownum = 1
         order by id desc
     </select>
 
-
-    <select id="selectNewOriginArchive" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <select id="selectBaseSfcByAjbh" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_SFC WHERE SCBJ=0
+        AND AJBH = #{ajbh,jdbcType=VARCHAR}
+        AND ARCHIVETYPE = 0
+        and rownum = 1
+        order by id desc
+    </select>
+    <select id="selectNewOriginArchive" parameterType="map" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM fun_archive_sfc
         WHERE scbj=0
-        AND ID &gt; #{id,jdbcType=DECIMAL}
-
         AND archivetype=-1
+        AND ID &gt; #{id,jdbcType=DECIMAL}
     </select>
 
+    <select id="selectTempArchive" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM fun_archive_sfc
+        where ajbh in (select ajbh from tempajbh) and archivetype=-1
+        AND archivetype=-1
+    </select>
 
     <select id="selectArchivesRearranged" parameterType="map" resultType="java.lang.Integer">
         SELECT COUNT(1) FROM FUN_ARCHIVE_SFC SFC
@@ -221,12 +262,49 @@
     </select>
 
     <select id="selectArchiveSfcBySeqid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List"/>
+        SELECT
+        <include refid="Base_Column_List"/>
         FROM FUN_ARCHIVE_SFC
-            WHERE SCBJ=0
-                AND ID =
-                    (SELECT ARCHIVESFCID
-                        FROM FUN_ARCHIVE_SFC
-                            WHERE ID = #{id,jdbcType=DECIMAL})
-  </select>
+        WHERE SCBJ=0
+        AND ID =
+        (SELECT ARCHIVESFCID
+        FROM FUN_ARCHIVE_SEQ
+        WHERE ID = #{id,jdbcType=DECIMAL})
+    </select>
+
+    <update id="approvalArchive" parameterType="java.lang.Integer">
+        UPDATE FUN_ARCHIVE_SFC SET  APPROVAL = #{approval,jdbcType=DECIMAL} ,UPDATETIME = sysdate
+         WHERE ID = #{id,jdbcType=DECIMAL}
+    </update>
+
+    <select id="selectLastSfcByCaseId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM (
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_SFC
+        WHERE SCBJ=0 AND ARCHIVETYPE &gt; 0
+        AND CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
+        ORDER BY UPDATETIME DESC
+        ) WHERE ROWNUM =1
+    </select>
+
+    <select id="selectOriArchiveByCaseId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM FUN_ARCHIVE_SFC
+        WHERE SCBJ=0
+        AND ARCHIVETYPE=-1
+        AND CASEINFOID = #{caseinfoid,jdbcType=DECIMAL}
+        AND ROWNUM=1
+    </select>
+
+    <update id="updateSendTypeById" parameterType="java.lang.Integer">
+         UPDATE FUN_ARCHIVE_SFC
+          SET ISSEND=#{issend,jdbcType=DECIMAL}
+    ,UPDATETIME = sysdate
+    WHERE  SCBJ=0 AND
+    id=#{sfcid,jdbcType=DECIMAL}
+    </update>
 </mapper>

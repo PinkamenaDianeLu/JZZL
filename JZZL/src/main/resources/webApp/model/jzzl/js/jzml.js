@@ -61,7 +61,7 @@ var recordCoverIndex = (function () {
         });
         let thisPagenumberInput = utils.createElement.createElement({
             tag: 'td',
-            arg: '<input class="indexValue" name="pagenumber"  value="' + pagenumber + '" />'
+            arg: '<input class="indexValue" name="pagenumber"  value="' +(pagenumber>0?pagenumber:'')  + '" />'
         });
         let thisCommentInput = utils.createElement.createElement({
             tag: 'td',
@@ -134,9 +134,10 @@ var recordCoverIndex = (function () {
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
+                        let isXtws=thisRecord.recordObj.recordscode.indexOf('ZL')>-1;
                         records[records.length] = new recordObj(
                             thisRecord.name,
-                            lastPageCount,
+                            (isXtws?0:lastPageCount),
                             i++,
                             thisRecord.recordObj.author,
                             utils.timeFormat.timestampToDate(thisRecord.recordObj.effectivetime||''),
@@ -144,7 +145,11 @@ var recordCoverIndex = (function () {
                             ''
                         );
                         // lastPageCount += thisRecord.filecodes.split(',').length;
-                        lastPageCount += reV.value;
+                        if (!isXtws){
+                            //非系统文书 页码增加
+                            lastPageCount += reV.value;
+                        }
+
                     } else {
                         console.error('查询失败:' + thisRecord.id + ':' + thisRecord.name);
                     }
@@ -196,7 +201,7 @@ var recordCoverIndex = (function () {
                     getIndexInfo();
                     layer.msg('保存成功');
                 } else {
-                    alert('保存失败，请重新登录再试');
+                    layer.alert('保存失败，请重新登录再试');
                 }
             }
         });
@@ -270,7 +275,7 @@ $(function () {
 
 
     } else {
-        alert('该文书信息无法获取，请刷新页面重试！');
+        layer.alert('该文书信息无法获取，请刷新页面重试！');
     }
 
 

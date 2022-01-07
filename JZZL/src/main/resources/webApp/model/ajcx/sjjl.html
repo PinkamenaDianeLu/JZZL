@@ -6,8 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Framework/jqueryUI/jquery-ui.min.css">
     <link href="/Framework/bootstrapTable/bootstrap-table.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="/css/style.css">
+<style>
+    .lc_but{padding: 0px 16px;
+        display: inline-block;outline: none; border: 1px solid #ddd; color: #333; background: rgba(0,0,0,0.2); }
+.text_m{text-align: center;}
+    .text_m h3{padding: 10px 20px; font-size: 20px;}
+    .text_m p{text-indent: 40px; font-size: 15px; line-height: 20px; text-align: left;}
+</style>
 </head>
 <body>
 <div id="userHeart"  ></div>
@@ -21,7 +29,11 @@
                 </li>
                 <div class="right" style="margin-top: 5px;">
                     <button class="ok_but" id="suspectOrder">嫌疑人排序</button>
-                    <button class="ok_but" id="createSFC">+ 新建</button></div>
+                    <button class="ok_but" id="createSFC">新建卷宗</button>
+                    <button class="ok_but" id="recordSync" >文书同步</button>
+                    <button class="ok_but" id="integralityCheck" >完整性校验</button>
+                    <button class="lc_but" id="promptAlert" >流程说明</button>
+                </div>
             </ul>
             <div class="tab-content">
                 <div class="f_main">
@@ -43,6 +55,7 @@
 <script>
 
 </script>
+
 <script src="/Framework/js/jquery.min.js"></script>
 <script src="/Framework/layer/layer.js"></script>
 <script src="/Framework/jqueryUI/jquery-ui.js"></script>
@@ -56,5 +69,10 @@
         <li id="suspectHead"><span>姓名</span><span>身份证号码</span></li>
 
     </ul>
+</div>
+
+<div id="integralityCheckDiv" style="display: none">
+
+    <div id="integralityCheckMessgae" class="text_m"></div>
 </div>
 </html>

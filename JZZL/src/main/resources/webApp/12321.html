@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用于把一个案件的文书抽一下</title>
+</head>
+<body>
+
+
+<form>
+
+    <h1>案件编号</h1>
+    <input type="text" id="ajbh">
+
+    <h1>多个案件可逗号（  ,  ）分隔</h1>
+    <button id="supplementaryRecords">补充文书</button>
+<!--    <button id="reorganizeArchive">整理案件</button>-->
+</form>
+</body>
+<script src="/Framework/js/jquery.min.js"></script>
+<script src="/Framework/layer/layer.js"></script>
+<script src="/utils/utils.js"></script>
+<script>
+
+    function supplementaryRecords(ajbh) {
+
+        $.post({
+            url:'/tempRemedial/supplementaryRecords',
+            data:{
+                ajbh
+            },success:function (re) {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    $('#ajbh').val('');
+                    alert('整理成功！')
+                } else {
+                }
+            }
+        })
+    }
+    function reorganizeArchive(ajbh) {
+        $.post({
+            url:'/tempRemedial/reorganizeArchive',
+            data:{
+                ajbh
+            },success:function (re) {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    $('#ajbh').val('');
+                    alert('整理成功！')
+                } else {
+                }
+            }
+        })
+    }
+
+    $('#reorganizeArchive').click(function () {
+        const  ajbh=$('#ajbh').val().trim();
+        if (!ajbh){
+            alert('请填写警情编号！！')
+        }else {
+            reorganizeArchive(ajbh);
+        }
+
+    })
+
+    $('#supplementaryRecords').click(function () {
+        const  ajbh=$('#ajbh').val().trim();
+        if (!ajbh){
+            alert('请填写警情编号！！')
+        }else {
+            supplementaryRecords(ajbh);
+        }
+    })
+
+</script>
+</html>

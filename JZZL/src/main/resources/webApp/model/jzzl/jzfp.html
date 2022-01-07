@@ -28,8 +28,12 @@
 </style>
 <body>
 
-	<div class="list_a"><a class="save" id="getPageNum">计算页码</a><a class="save"  id="saveCover">保存</a></div>
-	<div class="juan" >
+	<div class="list_a"><a class="save" id="getPageNum">计算页码</a>
+		<a class="save"  id="saveCover">保存</a>
+		<a class="save"  id="coverToImg">图片</a>
+
+	</div>
+	<div class="juan"  style="height: 900px" id="jzfpDiv">
 		<h2 style="margin-top: 2rem;" ><input class="coverInfo" type="text" id="qzname" style="height: 90px;" /></h2>
 		<h3 ><input type="text"  class="coverInfo" id="sfcname"/></h3>
 		<p><b><input type="text"  class="coverInfo" id="archivename"/></b></p>
@@ -50,5 +54,7 @@
 	</div>
 
 </body>
+<script src="/Framework/js/html2canvas.min.js"></script>
+<script src="/model/jzzl/js/CoverToImg.js"></script>
 <script src="/model/jzzl/js/jzfp.js"></script>
 </html>

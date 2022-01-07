@@ -4,14 +4,15 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.SysRecordMessage;
-import com.bean.zfba.SysUser;
+import com.bean.thkjdmtjz.JzFjcb;
 import com.bean.zfba.Wh;
 import com.bean.zfba.WjBjz;
 import com.bean.zfba.XtWjflb;
 import com.enums.EnumSoft;
 import com.mapper.jzgl.*;
-import com.mapper.zfba.SysUserMapper;
+import com.mapper.thkjdmtjz.JzFjcbMapper;
 import com.mapper.zfba.WjBjzMapper;
+import com.util.GlobalUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -40,6 +41,8 @@ public class BaseServer {
     FunArchiveRecordsDTOMapper funArchiveRecordsDTOMapper;
     @Resource
     FunSuspectRecordDTOMapper funSuspectRecordDTOMapper;
+    @Resource
+    JzFjcbMapper jzFjcbMapper;
 
     /**
      * 查询某个值 （哎我不想取名了，自己明白就行了 d=====(￣▽￣*)b）
@@ -117,8 +120,8 @@ public class BaseServer {
      * @author MrLu
      * @createTime 2021/3/19 14:28
      */
-    public SysRecordMessage selectMessageByCode(String recordcode) {
-        return sysRecordMessageMapper.selectMessageByCode(recordcode);
+    public SysRecordMessage selectMessageByCode(String recordcode,Integer archivetype) {
+        return sysRecordMessageMapper.selectMessageByCode(recordcode,archivetype);
     }
 
     /**
@@ -168,7 +171,7 @@ public class BaseServer {
      */
     public void recordSetWhJcycode(FunArchiveRecordsDTO newRecord, String wjdm, String wjbm, Integer wjbid) {
         //查询该文书信息
-        SysRecordMessage recordMessage = selectMessageByCode(wjdm);
+        SysRecordMessage recordMessage = selectMessageByCode(wjdm,null);
         if (null == recordMessage) {
             //该文书没有查询到信息
             newRecord.setJcyrecordcode("");
@@ -257,7 +260,7 @@ public class BaseServer {
         FunArchiveRecordsDTO newRecord = new FunArchiveRecordsDTO();
         newRecord.setJqbh(newType.getJqbh());
         newRecord.setAjbh(newType.getAjbh());
-        newRecord.setThisorder(order);
+        newRecord.setThisorder(order<0?1:order);
         newRecord.setRecordname(thisR.getWjzw());
         newRecord.setArchivetypeid(newType.getId());
         newRecord.setRecordstyle(EnumSoft.recordstyle.DEWS.getValue());
@@ -266,7 +269,20 @@ public class BaseServer {
         newRecord.setIsdelete(0);//是否已删除
         newRecord.setIsazxt(0);//"系统抽取"
         newRecord.setArchivesfcid(newType.getArchivesfcid());
-        newRecord.setAuthor("系统抽取");
+
+        if(StringUtils.isBlank(thisR.getJlrxm())){
+            newRecord.setAuthor("系统抽取");
+        }else{
+            newRecord.setAuthor(thisR.getJlrxm());
+        }
+
+        if(StringUtils.isBlank(thisR.getJlrgmsfhm())){
+            newRecord.setAuthoridcard("系统抽取");
+        }else{
+            newRecord.setAuthoridcard(thisR.getJlrgmsfhm());
+        }
+//        newRecord.setAuthor(thisR.getJlrxm());
+//        newRecord.setAuthoridcard(thisR.getJlrgmsfhm());
         newRecord.setAuthorid(0);//作者id
         newRecord.setPrevid(0);
         newRecord.setJcyrecordcode("");//检察院文书代码
@@ -280,7 +296,11 @@ public class BaseServer {
         newRecord.setWjbm(thisR.getWjbm());//文件表名
         newRecord.setWjbid(thisR.getWjbid());//文件表id
         createNewRecord(newRecord);
-        createFiles(newRecord);
+        if (!"thkjdmtjz".equals(thisR.getWjbm())) {
+            createFiles(newRecord);
+        } else {
+            createFiles_dmtjz(newRecord);
+        }
         //查询是文件是否是受案登记表
         if ("XT005".equals(thisR.getWjdm())) {
             // caseServer.selectSahzBool(thisR.getJqbh(),thisR.getId())
@@ -290,7 +310,13 @@ public class BaseServer {
             newRecord.setRecordscode("XT013");//文件代码  该文件代码为卷整理自创
             newRecord.setRecordname("受案回执");
             createNewRecord(newRecord);//再复制创建一个受案回执
-            createFiles(newRecord);
+            if (!"thkjdmtjz".equals(thisR.getWjbm())) {
+                createFiles(newRecord);
+            } else {
+                createFiles_dmtjz(newRecord);
+            }
+
+
         }
     }
 
@@ -314,7 +340,7 @@ public class BaseServer {
         FunArchiveRecordsDTO newRecord = new FunArchiveRecordsDTO();
         newRecord.setJqbh(newType.getJqbh());
         newRecord.setAjbh(newType.getAjbh());
-        newRecord.setThisorder(order);
+        newRecord.setThisorder(order<0?1:order);
         newRecord.setRecordname(thisR.getWjzw());
         newRecord.setArchivetypeid(newType.getId());
         newRecord.setArchivecode(thisR.getWjdm());
@@ -324,7 +350,19 @@ public class BaseServer {
         newRecord.setIsdelete(0);
         newRecord.setIsazxt(0);//"系统抽取"
         newRecord.setArchivesfcid(newType.getArchivesfcid());
-        newRecord.setAuthor("系统抽取");
+
+        if(StringUtils.isBlank(thisR.getJlrxm())){
+            newRecord.setAuthor("系统抽取");
+        }else{
+            newRecord.setAuthor(thisR.getJlrxm());
+        }
+
+        if(StringUtils.isBlank(thisR.getJlrgmsfhm())){
+            newRecord.setAuthoridcard("系统抽取");
+        }else{
+            newRecord.setAuthoridcard(thisR.getJlrgmsfhm());
+        }
+
         newRecord.setAuthorid(0);
         newRecord.setPrevid(0);
         //查询文号！、检察院代码
@@ -346,7 +384,12 @@ public class BaseServer {
         newSR.setRecordtype(newType.getRecordtype());//文书类型
         newSR.setArchiveseqid(newRecord.getArchiveseqid());
         createNewSR(newSR);
-        createFiles(newRecord);
+        if (!"thkjdmtjz".equals(thisR.getWjbm())) {
+            createFiles(newRecord);
+        } else {
+            createFiles_dmtjz(newRecord);
+        }
+
 
     }
 
@@ -387,7 +430,11 @@ public class BaseServer {
             }
 
             newFile.setBjzid(thisWjdz.getId());
-            newFile.setFiletype(0);//标准文书
+            if("XT_FJZB".equals(thisWjdz.getWjbm())){
+                newFile.setFiletype(4);//附件
+            }else {
+                newFile.setFiletype(0);//标准文书
+            }
             newFile.setArchiverecordid(newRecord.getId());
             newFile.setArchivetypeid(newRecord.getArchivetypeid());
             newFile.setFileurl(thisWjdz.getWjdz());
@@ -402,7 +449,90 @@ public class BaseServer {
             newFile.setIsshow(0);
             newFile.setFilecode(UUID.randomUUID().toString());
             newFile.setIsdelete(0);
+
+            String httpHead="http://35.0.11.40";
+            String version = GlobalUtil.getGlobal("version");//查询版本
+             if ("provinceTest".equals(version)) {
+                //省厅测试版本
+                httpHead="http://35.0.40.36:8081";
+            }
+
             if ("1".equals(thisWjdz.getWsgl())) {
+                newFile.setServerip(httpHead+"/WordToImage/");
+            } else {
+                //if ("3".equals(thisWjdz.getWsgl()))
+                //设置用于判断是否是附件的关键词
+                String[] wsfj_directory_yuejuan = {"wsfjNew", "wsfj", "wpfjNew", "wpfj"};
+                for (String thisWDY :
+                        wsfj_directory_yuejuan) {
+                    //判断是否有这些关键词
+                    if (thisWjdz.getWjdz().indexOf(thisWDY) > -1) {
+                        //yes
+
+                        if ("provinceTest".equals(version)) {
+                            //省厅测试版本
+                            newFile.setServerip(httpHead+":8080/fjupload");
+                        }else{
+                            newFile.setServerip(httpHead+":8080/fjupload");
+                        }
+                        break;
+                    } else {
+                        //no   //这个是上传的word转换的
+                        newFile.setServerip(httpHead+"/UploadFileToImage");
+                    }
+                }
+            }
+            createFils(newFile);
+        }
+    }
+
+    /**
+     * 多媒体卷宗对应的文件创建
+     *
+     * @param newRecord FunArchiveRecordsDTO
+     * @return |
+     * @author MrLu
+     * @createTime 2021/6/18 9:47
+     */
+    public void createFiles_dmtjz(FunArchiveRecordsDTO newRecord) throws Exception {
+        String wjbm = newRecord.getWjbm();
+        if ("XT013".equals(newRecord.getRecordscode())) {
+            //xt013是受案回执 但是在案宗中表现为sadjb
+            wjbm = "XT_SADJB";
+        }
+        List<JzFjcb> fjcmList = jzFjcbMapper.selectFjcbByzbid(newRecord.getWjbid());
+        int i = 0;
+        for (JzFjcb thisFjcm: fjcmList) {
+            FunArchiveFilesDTO newFile = new FunArchiveFilesDTO();
+            newFile.setJqbh(newRecord.getJqbh());
+            newFile.setAjbh(newRecord.getAjbh());
+            newFile.setThisorder(i++);
+            //是受案回执就不要第一页  第一页是受案登记表
+            if ("XT013".equals(newRecord.getRecordscode()) && thisFjcm.getWjdz().endsWith("0.jpg")) {
+                continue;
+            } else if ("XT005".equals(newRecord.getRecordscode()) && thisFjcm.getWjdz().endsWith("1.jpg")) {
+                //是受案登记表就不要第二页  第二页是受案回执
+                continue;
+            }
+
+            newFile.setBjzid(thisFjcm.getId());
+            newFile.setFiletype(4);//来的都算附件
+            newFile.setArchiverecordid(newRecord.getId());
+            newFile.setArchivetypeid(newRecord.getArchivetypeid());
+            newFile.setFileurl(thisFjcm.getWjdz());
+            newFile.setOriginurl(thisFjcm.getWjdz());
+            newFile.setIsdowland(0);
+            newFile.setFilename(thisFjcm.getWjzw());
+            newFile.setArchiveseqid(newRecord.getArchiveseqid());
+            newFile.setArchivesfcid(newRecord.getArchivesfcid());
+            newFile.setIsazxt(0);
+            newFile.setAuthor("系统抽取");
+            newFile.setAuthorid(0);
+            newFile.setIsshow(0);
+            newFile.setFilecode(UUID.randomUUID().toString());
+            newFile.setIsdelete(0);
+            newFile.setServerip("http://35.108.7.18:8099/dqZfqlcFile/");
+   /*         if ("1".equals(thisWjdz.getWsgl())) {
                 newFile.setServerip("http://35.0.11.40/WordToImage/");
             } else {
                 //if ("3".equals(thisWjdz.getWsgl()))
@@ -412,7 +542,7 @@ public class BaseServer {
                 for (String thisWDY :
                         wsfj_directory_yuejuan) {
                     //判断是否有这些关键词
-                    if (thisWjdz.getWjdz().indexOf(thisWDY) > -1) {
+                    if (thisFjcm.getWjdz().contains(thisWDY)) {
                         //yes
                         newFile.setServerip("http://35.0.11.40:8080/fjupload");
                         break;
@@ -421,7 +551,7 @@ public class BaseServer {
                         newFile.setServerip("http://35.0.11.40/UploadFileToImage");
                     }
                 }
-            }
+            }*/
             createFils(newFile);
         }
     }

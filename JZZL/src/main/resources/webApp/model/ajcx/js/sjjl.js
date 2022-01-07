@@ -45,7 +45,10 @@ var sjjlTable = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
-                    layer.alert("打包成功");
+                    layer.alert("打包程序调用成功");
+                    searchTable();
+                }else if ('issended' === reV.message){
+                    layer.alert("已为您发送，请不要重复点击");
                 } else {
                     layer.alert("打包程序调用失败");
                 }
@@ -53,6 +56,28 @@ var sjjlTable = (function () {
         });
 
         layer.alert("打包程序已在后台运行，请关注右上角通知");
+    }
+
+    /**
+     * 审批卷
+     * @author MrLu
+     * @createTime  2021/6/16 15:00
+     * @return    |
+     * @param id
+     */
+    this.approvalArchive = function (id) {
+        $.post({
+            url: '/SFCensorship/approvalArchive',
+            data: {id},
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    layer.msg("审批成功");
+                } else {
+                    layer.alert("审批程序调用失败");
+                }
+            }
+        });
     }
 
     function loadTable(ajidP) {
@@ -63,8 +88,8 @@ var sjjlTable = (function () {
             searchUrl: '/SFCensorship/selectSFCensorshipPage',
             column: [
                 {
-                    field: 'jqbh',
-                    title: '卷宗编号'
+                    field: 'ajbh',
+                    title: '案件编号'
                 }
                 , {
                     field: 'archivename',
@@ -99,10 +124,18 @@ var sjjlTable = (function () {
                     formatter: function (value, row, index) {
                         let reBtn = '<a class="b_but edit" onclick="submitForCensorship(\'' + row.id + '\')">整理</a>';
                         if (0 !== row.archivetype) {
-                            if (sessionStorage.version ==='province'){
-                                reBtn += '<a class="b_but edit" onclick="sendArchive(\'' + row.id + '\')">打包发送</a>';
-                            }
+                            console.log(row)
+                            //省厅办调用打包发送
+                            if ((sessionStorage.version === 'province' || sessionStorage.version === 'provinceTest') &&
+                                (sessionStorage.js === 'fz') && row.issend === '未发送') {
+                                //
 
+                                reBtn += '<a class="b_but edit" onclick="sendArchive(\'' + row.id + '\')">发送接收机关</a>';
+                            }
+                            if (sessionStorage.groupcode === '2306' && sessionStorage.version === 'city') {
+                                //大庆地市
+                                reBtn += '<a class="b_but edit" onclick="approvalArchive(\'' + row.id + '\')">审批通过</a>';
+                            }
                         }
 
                         return reBtn;
@@ -207,7 +240,7 @@ var suspectOrder = function (ajid) {
             if ('success' === reV.message) {
 
                 if (!reV.value || 0 === reV.value.length) {
-                    alert('该案件没有任何嫌疑人！');
+                    layer.alert('该案件没有任何嫌疑/行为人！');
                 } else {
                     $('#suspectUl').empty();//清空之前的嫌疑人
                     let suspects = document.createDocumentFragment();
@@ -220,7 +253,7 @@ var suspectOrder = function (ajid) {
                         })
                         suspects.appendChild(thisSuspectTd);
                     }
-                    ;
+
                     $('#suspectUl').append(suspects);
 
                     //嫌疑人开启拖拽
@@ -261,7 +294,7 @@ var suspectOrder = function (ajid) {
                                     }
                                 }
                             });
-                            alert('已开始将所有卷按照嫌疑人顺序智能排序，请注意右上角提醒');
+                            layer.alert('已开始将所有卷按照嫌疑人顺序智能排序，请注意右上角提醒');
                         },
                         area: ['338px', '471px'],
                         content: $('#suspectOrderDiv')
@@ -296,6 +329,14 @@ $(function () {
                 $('#sjjlSearchBtn').click(function () {
                     st.searchTable();
                 });
+                //确定当前案件类别
+                if (reV.value.casetype === '行政') {
+                    $('#createSFC').remove();//行政案件只有一个基础卷
+                    $('#suspectOrder').html('行为人排序');//行政叫行为人
+                }
+                if (reV.value.casestate !== '案综案件'){
+                    $('#recordSync').remove();//合案拆案没有同步文书按钮  因为这个已经不是案综的案件了
+                }
                 if (reV.issuspectorder) {
                     $('#issuspectorder').remove();
                     //新建送检按钮
@@ -312,9 +353,22 @@ $(function () {
                         });
                     });
                 } else {
-                    $('#issuspectorder').html('您还没有为嫌疑人排序！');
+                    $('#issuspectorder').html('案卷未自动排序，现已为您提前排序，请稍后刷新网页');
                     //弹出给嫌疑人排序窗口
-                    suspectOrder(ajid);
+                    // suspectOrder(ajid);
+                    $.post({
+                        url: '/ManualSort/manualSort',
+                        data: {caseId: reV.value.id},
+                        success: (re) => {
+                            const reV = JSON.parse(re);
+                            if ('success' === reV.message) {
+                                layer.msg("整理成功");
+                                location.reload();
+                            } else {
+                                layer.alert("整理失败");
+                            }
+                        }
+                    })
                     //新建功能删除
                     $('#createSFC').remove();
                 }
@@ -329,4 +383,67 @@ $(function () {
     })
 
 
+
+    //文书同步按钮
+    $('#recordSync').click(function () {
+        layer.alert('已为您快速同步文书，请稍后...');
+        $.post({
+            url: '/tempRemedial/supplementaryRecordsByAjid',
+            data: {
+                ajid: ajid
+            }, success: function (re) {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+                    layer.alert('同步成功！')
+                } else {
+                }
+            }
+        })
+    })
+
+    //操作说明
+    $('#promptAlert').click(function () {
+        layer.open({
+            icon: 1,
+            type: 2,
+            title: '流程提示',
+            skin: 'layui-layer-lan',
+            maxmin: false,
+            shadeClose: true, //点击遮罩关闭层
+            area: ['1111px', '600px'],
+            content: '/model/ajcx/prompt.html'
+        });
+    })
+
+    //完整性校验
+    $('#integralityCheck').click(function () {
+        layer.alert('已开始为所有卷进行完整性校验，请稍后...');
+        $.post({
+            url: '/tempRemedial/integralityCheck',
+            data: {
+                ajid: ajid
+            }, success: function (re) {
+                const reV = JSON.parse(re);
+                if ('success' === reV.message) {
+
+                    document.getElementById('integralityCheckMessgae').innerHTML=reV.value
+                    layer.closeAll();
+                    layer.open({
+                        id: 86016,
+                        type: 1,
+                        title: '校验结果',
+                        skin: 'layui-layer-lan',
+                        maxmin: false,
+                        shadeClose: true, //点击遮罩关闭层
+                        shade: [0.8, '#393D49'],
+                        closeBtn: 1,
+                        area: ['1000px', '600px'],
+                        content: $('#integralityCheckDiv')
+                    });
+                } else {
+                    layer.alert('校验失败');
+                }
+            }
+        })
+    })
 })

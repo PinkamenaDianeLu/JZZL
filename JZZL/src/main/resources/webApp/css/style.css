@@ -177,7 +177,7 @@ input[type=checkbox] {
 
 .header .logo {
     float: left;
-    width: 290px;
+    width: 697px;
     height: 80px;
     background-image: url(../images/logo.png);
     background-position: left center;
@@ -341,7 +341,7 @@ input[type=checkbox] {
 
 .index-main1 {
     display: inline-block;
-    width: 1360px;
+    width: 1270px;
     background: #fff;
     margin: 0px auto;
     position: relative;
@@ -389,7 +389,7 @@ input[type=checkbox] {
 .t_search .col-md-1 {
     text-align: right;
     line-height: 35px;
-    margin: 5px 0px;
+    margin: 5px 0px; padding: 0px;
 }
 
 .t_search .col-md-2, .t_search .col-md-4, .t_search .col-md-3 {

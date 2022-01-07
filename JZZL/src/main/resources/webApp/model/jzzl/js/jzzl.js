@@ -37,7 +37,7 @@ var loadArchiveIndex = (function () {
                         loadArchiveType(thisType);
                     });
                 } else {
-                    alert('文书信息无法加载');
+                    layer.alert('文书信息无法加载');
                 }
             }
         });
@@ -194,7 +194,7 @@ var loadArchiveIndex = (function () {
 
                         const thisDD = createRecordDiv(thisRecord, indexing);
                         //判断划分拖拽域
-                        if ('ZL001' === thisDD.class || 'ZL003' === thisDD.class) {
+                        if ('ZL001' === thisDD.class || 'ZL003' === thisDD.class|| 'ZL004' === thisDD.class) {
                             //卷首、文书目录 正常加载
                             $('#' + liD).append(thisDD);
                         } else if ('ZL002' === thisDD.class) {
@@ -324,7 +324,7 @@ var loadArchiveIndex = (function () {
             tag: 'div', attrs: {
                 id: key,
                 class: 'v3',
-                style: 0 === thisFile.filetype ? '' : 'display:none'
+                style: (0 === thisFile.filetype||4 === thisFile.filetype) ? '' : 'display:none'
             }
         });
         let p = utils.createElement.createElement({
@@ -408,7 +408,8 @@ var loadArchiveIndex = (function () {
         const thisRecord = recordsMap.get(ddId);
         let div = document.createElement('span');
         //判断卷类型
-        if (viewModel && ((!thisRecord) || !('ZL001' === thisRecord.recordscode || 'ZL003' === thisRecord.recordscode || 'ZL002' === thisRecord.recordscode))) {
+        //thisRecord.recordscode.substr(0,2)
+        if (viewModel && ((!thisRecord) || !('ZL' === thisRecord.recordscode.substr(0,2)))) {
             //封皮//封底  没有操作按钮
             div.setAttribute('class', 'tools');
             //用文书代码分辨html还是图片
@@ -693,12 +694,15 @@ var loadArchiveIndex = (function () {
             // thisRecord = thisRecord.parent().parent('.v2');//变成文书
             // let thumbnailList=
             //判断是否是最后一张图片 如果是的话也删除文书
-            console.log(filesMap)
-            if ($('#thumbnail').find('a').length === 1) {
-                if (confirm('这是该文书的最后一张图片！删除后该文书也会一起删除，是否继续？')) {
+            console.log($('#thumbnailDiv').find('a'))
+            if (!$('#thumbnailDiv').find('a').length||$('#thumbnailDiv').find('a').length === 1) {
+                layer.confirm('这是该文书的最后一张图片！删除后该文书也会一起删除，是否继续？', {
+                    btn: ['确定', '取消']//按钮
+                }, function (index) {
+                    layer.close(index);
                     delFun('dd'+recordId);//删除文书
                     // filesMap.delete(ddId);
-                }
+                });
             } else {
                 //删除单个文件
                 // let thisRecordId = thisRecord.attr('id').replace('dd', '');
@@ -896,7 +900,7 @@ var loadArchiveIndex = (function () {
     function saveData() {
         const archiveTypeList = $('#archiveIndex').find('.v1');
         if (archiveTypeList.length < 1) {
-            alert('未正确加载文书目录，无法保存！');
+            layer.alert('未正确加载文书目录，无法保存！');
             throw  '未正确加载文书目录，无法保存！';
         }
 
@@ -989,7 +993,7 @@ var loadArchiveIndex = (function () {
         $.each($(thisType).find('.v2'), function (i, v) {
             let thisDDid = $(v).attr('id');//获取文书的id  该id也是recordsMap中的key
             let thisRecord = recordsMap.get(thisDDid);//通过key获取该文书的value
-            if ('ZL001' === thisRecord.recordscode) {
+            if ('ZL001' === thisRecord.recordscode||'ZL004' === thisRecord.recordscode) {
                 i = -9999;//卷宗封皮顺序永远是第一个
             } else if ('ZL003' === thisRecord.recordscode) {
                 i = -9900;//文书目录是第二个
@@ -1025,7 +1029,10 @@ var loadArchiveIndex = (function () {
             maxmin: false,
             shadeClose: true, //点击遮罩关闭层
             area: ['1111px', '600px'],
-            content: '/model/jzzl/createNewRecord.html?seqid=' + seqid
+            content: '/model/jzzl/createNewRecord.html?seqid=' + seqid,
+            end:function () {
+                location.reload();
+            }
         });
     }
 
@@ -1078,7 +1085,10 @@ var loadArchiveIndex = (function () {
             maxmin: false,
             shadeClose: true, //点击遮罩关闭层
             area: ['1111px', '600px'],
-            content: '/model/jzzl/importRecords.html?seqid=' + seqid
+            content: '/model/jzzl/importRecords.html?seqid=' + seqid,
+            end:function () {
+                location.reload();
+            }
         });
     }
 
@@ -1292,10 +1302,11 @@ $(function () {
                 $('#recordStatusMessage').html(reV.value.casename);
                 const caseStatus = reV.value.caseStatus;//送检卷信息
                 let viewModel = true;
-                if ('已发送'===sfc.issend){
+               /* if ('已发送'===sfc.issend){
                     viewModel = false;
                     layer.msg('该卷已经打包！当前卷处于只读状态！');
-                }else  if ("0" !== caseStatus) {
+                }else */
+                    if ("0" !== caseStatus) {
                     viewModel = false;
                     layer.msg('正由其它用户操作，当前窗口处于只读状态！');
                     $('#recordStatusMessage').html('当前案件处于只读状态！正在由用户：' + caseStatus.xm + "对《" + caseStatus.sfcname + "》进行编辑")
@@ -1308,7 +1319,10 @@ $(function () {
                     })
                     //解锁
                     unLock.addEventListener('click', function () {
-                        if (confirm('此操作将强制关闭对方页面，是否继续？')) {
+                        layer.confirm('此操作将强制关闭对方页面，是否继续？', {
+                            btn: ['确定', '取消']//按钮
+                        }, function (index) {
+                            layer.close(index);
                             $.post({
                                 url: '/ArrangeArchives/unlockReocrd',
                                 data: {
@@ -1325,7 +1339,7 @@ $(function () {
                                     }
                                 }
                             });
-                        }
+                        })
                     })
                     $('#recordStatusMessage').append(unLock);
 
@@ -1345,9 +1359,12 @@ $(function () {
 
                 //拍摄快照按钮
                 $('#snapshot').click(function () {
-                    if (confirm('确定完成整理？')) {
+                    layer.confirm('确定完成整理？', {
+                        btn: ['确定', '取消']//按钮
+                    }, function (index) {
+                        layer.close(index);
                         lai.saveData();
-                    }
+                    });
                 });
                 //新创建文书
                 $('#createRecord').click(function () {

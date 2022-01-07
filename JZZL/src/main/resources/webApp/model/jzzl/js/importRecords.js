@@ -304,8 +304,9 @@ $(function () {
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {
-                            layer.msg("导入成功！");
+                            layer.msg("导入成功");
                             console.log('导入成功');
+
                         } else {
                             layer.msg("导入失败，无法确认该文书的相对位置！");
                             console.log('导入失败');

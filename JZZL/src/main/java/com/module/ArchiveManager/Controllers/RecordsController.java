@@ -9,9 +9,11 @@ import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.OperLog;
 import com.config.annotations.recordTidy;
+import com.config.session.UserSession;
 import com.factory.BaseFactory;
 import com.module.ArchiveManager.Services.RecordsService;
 import com.module.SystemManagement.Services.UserService;
+import com.util.GlobalUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -35,10 +37,14 @@ public class RecordsController extends BaseFactory {
     private final
     RecordsService recordsService;
     private final UserService userServiceByRedis;
+    private final
+    UserSession userSession;
 
     @Autowired
-    public RecordsController(RecordsService recordsService, @Qualifier("UserServiceByRedis") UserService userServiceByRedis) {
+    public RecordsController(RecordsService recordsService, @Qualifier("UserServiceByRedis") UserService userServiceByRedis, @Qualifier("UserService") UserService userService,
+                             UserSession userSession) {
         this.recordsService = recordsService;
+        this.userSession = userSession;
         this.userServiceByRedis = userServiceByRedis;
     }
 
@@ -89,6 +95,15 @@ public class RecordsController extends BaseFactory {
             //查找该案件的基础卷的第0次（案宗抽取次）的整理次序id
             FunArchiveSeqDTO thisSeq = recordsService.selectBaseArchive(caseInfoId);
             pJsonObj.put("archiveseqid", thisSeq.getId());//这里查询的是未被送检的卷 所有传0
+            String version = GlobalUtil.getGlobal("version");//查询版本
+            if ("province".equals(version)||"provinceTest".equals(version)) {
+                //省厅版  只查询传入的文书  也只能新建传入的文书
+                if (StringUtils.isNotEmpty(userSession.getTempString())) {
+                    JSONObject wjxx = JSONObject.parseObject(userSession.getTempString());
+                    pJsonObj.put("wjbm", wjxx.getString("wjbm"));
+                    pJsonObj.put("wjbid", wjxx.getString("wjbid"));
+                }
+            }
             List<FunArchiveRecordsDTO> records = recordsService.selectRecordsByJqbhPage(pJsonObj);
             JSONArray recordsArray = new JSONArray();
             for (FunArchiveRecordsDTO thisRecord :
@@ -190,6 +205,7 @@ public class RecordsController extends BaseFactory {
             FunArchiveSeqDTO thisSeq = recordsService.selectFunArchiveSeqById(seqId);
             //查看这个文书代码应有的信息
             SysRecordorderDTO thisRecordOrder = recordsService.selectSysRecordorderDTOById(newRecordJsonObj.getInteger("sysRecordId"));
+
             Integer suspectId = newRecordJsonObj.getInteger("suspectId");//被选中的嫌疑人id
             SysUser userNow = userServiceByRedis.getUserNow(null);//当前用户
 
@@ -215,6 +231,7 @@ public class RecordsController extends BaseFactory {
             newRecordObj.setRecordwh(newRecordJsonObj.getString("recordWh"));//recordWh
             newRecordObj.setPrevid(0);
             newRecordObj.setAuthor(userNow.getUsername());
+            newRecordObj.setAuthoridcard(userNow.getIdcardnumber());
             newRecordObj.setAuthorid(userNow.getId());
             newRecordObj.setRecorduuid(UUID.randomUUID().toString());
             newRecordObj.setRecordstyle(thisRecordOrder.getRecordstyle());
@@ -235,8 +252,10 @@ public class RecordsController extends BaseFactory {
                     newRecordObj.getArchivetypeid()
                     , newRecordObj.getThisorder());
             //插入该文书
-            recordsService.insertFunArchiveRecords(newRecordObj);
+            String recordID="";
 
+            recordsService.insertFunArchiveRecords(newRecordObj);
+            recordID=newRecordObj.getId().toString();
 
             //插入
             if (null != suspectId && suspectId > 0) {
@@ -254,10 +273,33 @@ public class RecordsController extends BaseFactory {
                 suspectRecord.setRecordtype(thisRecordOrder.getRecordtype());
                 suspectRecord.setArchiveseqid(newRecordObj.getArchiveseqid());
                 recordsService.insertSuspectRecord(suspectRecord);
+//                recordID=suspectRecord.getId().toString();
+            }
+
+
+            //判断此次上传是否是基础卷
+            if (thisSeq.getArchivetype()>0){
+                //在基础卷中插入
+                //查询到基础卷
+                FunArchiveSeqDTO baseSeq = recordsService.selectBaseArchiveBySeqId(seqId);
+
+                //找到在基础卷中对应的type
+                FunArchiveTypeDTO thisRecordType= recordsService.selectTypeBySeqType(baseSeq.getId(),thisRecordOrder.getRecordtype());
+                newRecordObj.setArchivetypeid(thisRecordType.getId());
+                newRecordObj.setArchiveseqid(thisRecordType.getArchiveseqid());
+                newRecordObj.setArchivesfcid(thisRecordType.getArchivesfcid());
+
+                //基础卷对应位置后面的所有文书顺序+1
+                recordsService.updateOrderAdd(baseSeq.getId(),
+                        newRecordObj.getArchivetypeid()
+                        , newRecordObj.getThisorder());
+                recordsService.insertFunArchiveRecords(newRecordObj);
+                recordID+=","+newRecordObj.getId();
             }
 
             reValue.put("prevRId", prevRid);//返回新创建的文书id
-            reValue.put("value", newRecordObj);//返回新创建的文书id
+            reValue.put("value", newRecordObj);//返回新创建的文书
+            reValue.put("recordID", recordID);//返回新创建的文书id
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -294,10 +336,10 @@ public class RecordsController extends BaseFactory {
             SysRecordorderDTO thisRecordOrder = recordsService.selectRecordOrderByTypes(baseRecord.getRecordscode(), targetSeq.getArchivetype(), baseRecordType.getRecordtype());
             //判断文书是否对人（基础卷）
             Integer suspectId = null;
-            FunSuspectRecordDTO suspectR = recordsService.selectSuspectRecordByRid(recordId);
-            if (null != suspectR) {
+            List<FunSuspectRecordDTO> suspectR = recordsService.selectSuspectRecordByRid(recordId);
+            if (null != suspectR&&suspectR.size()>0) {
                 //是对人的
-                suspectId = suspectR.getSuspectid();
+                suspectId = suspectR.get(0).getSuspectid();
             }
 
             //上一个文书
@@ -330,6 +372,14 @@ public class RecordsController extends BaseFactory {
                 baseRecord.setBaserecordid(baseRecord.getId());//基础卷文书id
                 recordsService.insertFunArchiveRecords(baseRecord);
                 targetRecord = baseRecord;
+            }else {
+                baseRecord.setThisorder(targetRecord.getThisorder() + 1);//顺序
+                baseRecord.setArchivetypeid(targetRecord.getArchivetypeid());//type
+                baseRecord.setArchiveseqid(targetRecord.getArchiveseqid());//seq
+                baseRecord.setArchivesfcid(targetRecord.getArchivesfcid());//sfc
+                baseRecord.setPrevid(baseRecord.getId());//上一个的id
+                baseRecord.setBaserecordid(baseRecord.getId());//基础卷文书id
+                recordsService.insertFunArchiveRecords(baseRecord);
             }
 
             List<FunArchiveFilesDTO> newFileList = new ArrayList<>();
@@ -350,10 +400,10 @@ public class RecordsController extends BaseFactory {
             for (FunArchiveFilesDTO thisFile :
                     newFileList) {
 //               thisFile.setThisorder();
-                thisFile.setArchiverecordid(targetRecord.getId());
-                thisFile.setArchivetypeid(targetRecord.getArchivetypeid());
-                thisFile.setArchiveseqid(targetRecord.getArchiveseqid());
-                thisFile.setArchivesfcid(targetRecord.getArchivesfcid());
+                thisFile.setArchiverecordid(baseRecord.getId());
+                thisFile.setArchivetypeid(baseRecord.getArchivetypeid());
+                thisFile.setArchiveseqid(baseRecord.getArchiveseqid());
+                thisFile.setArchivesfcid(baseRecord.getArchivesfcid());
                 recordsService.insertFunRecordFilesDTO(thisFile);
             }
             reValue.put("message", "success");

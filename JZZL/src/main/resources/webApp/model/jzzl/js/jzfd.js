@@ -18,6 +18,11 @@ var recordBackCover = (function () {
      * @return    |
      */
     function saveBackCover(backcoverid) {
+
+        if (!$('#ljr').val()){
+            layer.alert("请填写立卷人！");
+            return false;
+        }
         let cover = {};
         for (let thisCol of $('.coverInfo')) {
             cover[$(thisCol).attr('id')] = $(thisCol).val() || ' ';
@@ -63,7 +68,7 @@ var recordBackCover = (function () {
                             $('#' + thisCol).val(reV.value[thisCol]);
                         }
                         //保存卷宗封皮
-                        $('#saveCover').unbind().click(function () {
+                        $('#saveBackCover').unbind().click(function () {
                             saveBackCover(reV.value.id)
                         });
                     } else {
@@ -97,7 +102,6 @@ var recordBackCover = (function () {
 
 $(function () {
     const thisCover = parent.recordImgLoad.pValue;
-    console.log(thisCover);
     let rbc = new recordBackCover(thisCover);
     rbc.loadBackCover();
 });

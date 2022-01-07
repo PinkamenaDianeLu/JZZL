@@ -67,7 +67,7 @@ public class ArrangeArchivesController extends BaseFactory {
             FunArchiveSFC thisSfc = arrangeArchivesService.selectFunArchiveSFCById(sfcId);
             reV.put("sfc", thisSfc);
             reV.put("seq", arrangeArchivesService.selectLastSeqBySfc(sfcId));
-            reV.put("issuspectorder", arrangeArchivesService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid()).getIssuspectorder());//基础卷是否已经为嫌疑人排序
+            reV.put("issuspectorder", arrangeArchivesService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid(),thisSfc.getArchivetype()).getIssuspectorder());//基础卷是否已经为嫌疑人排序
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
             //判断是否有人占用这个案件
             System.out.print(thisSfc.getCaseinfoid());
@@ -752,6 +752,9 @@ public class ArrangeArchivesController extends BaseFactory {
             JSONObject paramObj = (JSONObject) JSONObject.parse(paramjson);
             int seqId = paramObj.getInteger("seqId");//整理次序id
             String name = paramObj.getString("rename");//更新的名
+            if (StringUtils.isNotBlank(name)){
+                name=name.replaceAll("<","").replaceAll(">","");
+            }
             String fileCode = paramObj.getString("filecode");
 
             if (StringUtils.isEmpty(fileCode)) {
@@ -918,6 +921,7 @@ public class ArrangeArchivesController extends BaseFactory {
                                 thisSuspectRecord.setThisorder(recordOrder++);//文书顺序
                                 thisSuspectRecord.setAuthorid(userNow.getId());
                                 thisSuspectRecord.setAuthor(userNow.getXm());
+                                thisSuspectRecord.setAuthoridcard(userNow.getIdcardnumber());
                                 //得到文书代码的顺序
                                 copyRecordToNew(oriRecordId, thisSuspectRecord);
                             }

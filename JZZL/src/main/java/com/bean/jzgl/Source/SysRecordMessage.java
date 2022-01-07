@@ -25,6 +25,8 @@ public class SysRecordMessage {
 
     private String difference;
 
+    private Integer recordtype;
+
     public Integer getId() {
         return id;
     }
@@ -111,5 +113,13 @@ public class SysRecordMessage {
 
     public void setDifference(String difference) {
         this.difference = difference == null ? null : difference.trim();
+    }
+
+    public Integer getRecordtype() {
+        return recordtype;
+    }
+
+    public void setRecordtype(Integer recordtype) {
+        this.recordtype = recordtype;
     }
 }

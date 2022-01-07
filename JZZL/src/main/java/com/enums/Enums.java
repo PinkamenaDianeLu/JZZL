@@ -58,7 +58,8 @@ public class Enums {
         PRIMARY(0, "主办人"),//主办人
         SECONDARY(1, "辅办人"),//副办人
         LEADER(2, "部门领导"),
-        LEGAL(3, "法治科");//副办人
+        LEGAL(3, "法治科"),
+        LEADERLEGAL(23, "领导&法治科");
 
         PersonType(int value, String name) {
             this.value = value;
@@ -102,6 +103,9 @@ public class Enums {
     public enum IsSend {
         YES(1, "已发送"),
         NO(0, "未发送"),
+        MAKING(2, "打包中"),
+        JCY(7, "已到检察院"),
+        FY(8, "已到接收单位"),
         CANNOT(-1, "-");
 
         IsSend(int value, String name) {
@@ -182,8 +186,8 @@ public class Enums {
      * @createTime 2020/9/27 14:55
      */
     public enum CaseState {
-        NORMAL(0, "未完结"),
-        MERGE(1, "已合案"),
+        NORMAL(0, "案综案件"),
+        MERGE(1, "已合案件"),
         SPLIT(2, "已拆案件");
 
         CaseState(int value, String name) {
@@ -313,6 +317,9 @@ public class Enums {
         typeThree(3, "其它"),
         typeFive(5, "拆案"),
         typeSix(6, "合案"),
+        typeSeven(7, "到检察院"),
+        typeEight(8, "到接收单位"),
+        typeNine(9, "打包失败"),
         typeFour(4, "解锁案件");
 
         messagetype(int value, String name) {
@@ -355,8 +362,10 @@ public class Enums {
      */
     public enum passwordSwitch {
         sendToAz("U2FsdGVkX1/dptwdF69wXVS+73EstHw926CvL5NuP+dkQGwRLJuxmN1Q+CSza8TK", "发送给安综"),
-        sendToZfxz("BBF47EFDAE317C557C1BDBFA7B32D494", "发送给执法写作");
-
+        sendToZfxz("BBF47EFDAE317C557C1BDBFA7B32D494", "发送给执法协作"),
+        sendToDqZfqlc("BBF47EFDAE317C557C1BDBFA7B32D494", "发送给大庆执法全流程"),
+        sendToDxalZfqlc("BBF48484UKSNFVOAWFC557C1BDBFA7B32D494", "发送给大兴安岭执法全流程"),
+        sendToYTJ("BBF47EFDAE31S15889AIFJLDOJF32D494", "一体机");
         passwordSwitch(String value, String name) {
             this.value = value;
             this.name = name;

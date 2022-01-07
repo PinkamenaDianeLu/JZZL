@@ -27,10 +27,11 @@ public class SysUser implements Serializable {
     private String xm;
     private  String agencyname;
     private  String agencycode;
+    private String role;
 
     @Override
     public String toString() {
-        return "SysUser{" +
+        return "SysUserCity{" +
                 "id=" + id +
                 ", scbj=" + scbj +
                 ", state=" + state +
@@ -44,6 +45,7 @@ public class SysUser implements Serializable {
                 ", xm='" + xm + '\'' +
                 ", agencyname='" + agencyname + '\'' +
                 ", agencycode='" + agencycode + '\'' +
+                ", role='" + role + '\'' +
                 '}';
     }
 
@@ -149,5 +151,13 @@ public class SysUser implements Serializable {
 
     public void setAgencycode(String agencycode) {
         this.agencycode = agencycode;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

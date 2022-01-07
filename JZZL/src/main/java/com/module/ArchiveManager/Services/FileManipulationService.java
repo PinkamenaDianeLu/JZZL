@@ -21,7 +21,8 @@ public interface FileManipulationService {
      * @createTime 2020/10/23 10:17
      */
     FunArchiveCoverDTO selectFunArchiveCoverDTOByFileId(Integer fileid);
-
+    //行政
+    FunArchiveXzcoverDTO selectFunArchiveXzCoverDTOByFileId (Integer fileid);
     /**
      * 通过fileid查询文书封底
      *
@@ -133,7 +134,7 @@ public interface FileManipulationService {
      * @createTime 2020/10/30 15:44
      */
     void updateFunArchiveCoverById(FunArchiveCoverDTO record);
-
+    void updateFunArchiveCoverById(FunArchiveXzcoverDTO record);
     /**
      * 更新卷宗封底
      *
@@ -153,7 +154,7 @@ public interface FileManipulationService {
      * @createTime 2020/10/30 15:57
      */
     void insertFunArchiveCover(FunArchiveCoverDTO record);
-
+    void insertFunArchiveCover(FunArchiveXzcoverDTO record);//行政
     /**
      * 新建卷宗封底
      *

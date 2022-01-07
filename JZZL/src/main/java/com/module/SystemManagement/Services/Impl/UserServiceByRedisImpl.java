@@ -1,5 +1,6 @@
 package com.module.SystemManagement.Services.Impl;
 
+import com.bean.jzgl.Source.SysRoleUser;
 import com.bean.jzgl.Source.SysUser;
 import com.config.session.UserSession;
 import com.module.SystemManagement.Services.UserService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -59,6 +61,12 @@ public class UserServiceByRedisImpl implements UserService {
 
     @Override
     public SysUser loginVerification(String username) throws Exception {
+        System.err.println("空实现！");
+        return null;
+    }
+
+    @Override
+    public List<SysRoleUser> selectRoleByUserid(Integer sysuserid) {
         System.err.println("空实现！");
         return null;
     }

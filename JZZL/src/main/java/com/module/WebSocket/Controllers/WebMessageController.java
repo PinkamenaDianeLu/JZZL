@@ -38,6 +38,7 @@ public class WebMessageController {
         JSONObject reValue = new JSONObject();
         try {
             SysUser userNow = userServiceByRedis.getUserNow(null);
+
             reValue.put("value", webSocketService.selectUnreadMessageByUsername(userNow.getUsername()));
             reValue.put("message", "success");
         } catch (Exception e) {
@@ -62,11 +63,16 @@ public class WebMessageController {
     public String readMessage(String ids) {
         JSONObject reValue = new JSONObject();
         try {
-            if (StringUtils.isEmpty(ids)) {
-                throw new Exception("长点心啊！！！！！！！！！");
+            if (StringUtils.isBlank(ids)) {
+                //全部已读
+                //把这个用户的全部已读
+                SysUser userNow = userServiceByRedis.getUserNow(null);
+                webSocketService.readMessageAll(userNow.getIdcardnumber());
+            }else {
+                String[] idAry = ids.split(",");
+                webSocketService.readMessage(idAry);
             }
-            String[] idAry = ids.split(",");
-            webSocketService.readMessage(idAry);
+
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

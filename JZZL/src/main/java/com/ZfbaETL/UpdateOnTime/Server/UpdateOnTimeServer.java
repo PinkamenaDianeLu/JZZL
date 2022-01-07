@@ -5,15 +5,11 @@ package com.ZfbaETL.UpdateOnTime.Server;/**
  */
 
 import com.bean.jzgl.DTO.*;
-import com.bean.zfba.Wh;
-import com.bean.zfba.WjBjz;
-import com.bean.zfba.XtWjflb;
-import com.bean.zfba.XtXyrxxb;
+import com.bean.thkjdmtjz.JzFjzb;
+import com.bean.zfba.*;
 import com.mapper.jzgl.*;
-import com.mapper.zfba.WjBjzMapper;
-import com.mapper.zfba.XtDzqzbMapper;
-import com.mapper.zfba.XtWjflbMapper;
-import com.mapper.zfba.XtXyrxxbMapper;
+import com.mapper.thkjdmtjz.JzFjzbMapper;
+import com.mapper.zfba.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -49,9 +45,12 @@ public class UpdateOnTimeServer {
     FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
     @Resource
     XtXyrxxbMapper xtXyrxxbMapper;
-
-
-
+    @Resource
+    JzFjzbMapper jzFjzbMapper;
+    @Resource
+    FunCaseInfoDTOMapper funCaseInfoDTOMapper;
+    @Resource
+    XtAjxxbMapper xtAjxxbMapper;
 
      /**
      * 查询应该盖章却没有盖章的文书
@@ -169,6 +168,17 @@ public class UpdateOnTimeServer {
     }
 
     /**
+     * 查询某些警情编号的文书
+     * @author MrLu
+     * @param
+     * @createTime  2021/3/25 10:22
+     * @return    |
+     */
+    public List<XtWjflb> selectNewRecordsForAjbh(String jqbhAry){
+        return xtWjflbMapper.selectNewRecordsForAjbh(jqbhAry);
+    }
+    ;
+    /**
      * 按照警情编号查询没有发送的seq
      * @author MrLu
      * @param jqbh 警情编号
@@ -272,6 +282,7 @@ public class UpdateOnTimeServer {
     public int selectMaxOrderByCaseid(Integer caseinfoid){
         return funSuspectDTOMapper.selectMaxOrderByCaseid(caseinfoid);
     }
+
     /**
      * 查询一个type中对嫌疑人文书的最大顺序（不针对某个嫌疑人）
      * @author MrLu
@@ -281,6 +292,16 @@ public class UpdateOnTimeServer {
      */
     public Integer selectRsMaxOrderByTypeid(int typeid){
         return funArchiveRecordsDTOMapper.selectRsMaxOrderByTypeid(typeid);
+    }
+    /**
+     * 查询一个type中文书的最大顺序
+     * @author MrLu
+     * @param typeid
+     * @createTime  2021/3/25 16:19
+     * @return    |
+     */
+    public Integer selectMaxOrderByTypeid(int typeid){
+        return funArchiveRecordsDTOMapper.selectMaxOrderByTypeid(typeid);
     }
 
     /**
@@ -292,5 +313,54 @@ public class UpdateOnTimeServer {
      */
     public boolean selectFileCountByBjzid(Integer bjzid){
         return  funArchiveFilesDTOMapper.selectFileCountByBjzid(bjzid)>0;
+    }
+
+    /**
+     * 查看更新的附件
+     * @author MrLu
+     * @param
+     * @createTime  2021/6/17 14:47
+     * @return    |
+     */
+    public List<JzFjzb> selectFjzbGtFxsj(Date gxsj){
+        return  jzFjzbMapper.selectFjzbGtFxsj(gxsj);
+    };
+
+    public FunArchiveSeqDTO selectActiveSeqByJqbh(String jqbh){
+        return funArchiveSeqDTOMapper.selectActiveSeqByJqbh(jqbh);
+    };
+
+    /**
+     * 查询一个文书类型中的最大顺序数
+     *
+     * @param id 文书id
+     * @return int   |
+     * @author MrLu
+     * @createTime 2020/11/5 15:02
+     */
+    public int selectRecordMaxOrder(int id){
+        return funArchiveRecordsDTOMapper.selectRecordMaxOrder(id);
+    };
+    /**
+     * 查询更新的案件
+     * @param gxsj Date
+     * @return |
+     * @author MrLu
+     * @createTime 2021/1/4 17:41
+     */
+    public List<XtAjxxb> selectUpdateCase(Date gxsj){
+        return  xtAjxxbMapper.selectUpdateCase(gxsj);
+    }
+
+
+    /**
+     * 根据案件id查询案件信息
+     * @param id Date
+     * @return |
+     * @author MrLu
+     * @createTime 2021/1/4 17:41
+     */
+    public FunCaseInfoDTO selectCaseInfoById(Integer id) {
+        return funCaseInfoDTOMapper.selectByPrimaryKey(id);
     }
 }

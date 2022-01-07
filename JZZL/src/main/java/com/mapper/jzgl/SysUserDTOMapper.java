@@ -18,5 +18,6 @@ public interface SysUserDTOMapper {
     SysUserDTO login(@Param("username") String username, @Param("pwd") String password);
 
     SysUserDTO loginNoPasswd(String username);
+    //查询法制员角色
 
 }
