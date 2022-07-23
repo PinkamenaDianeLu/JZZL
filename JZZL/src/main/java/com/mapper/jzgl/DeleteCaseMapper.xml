@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mapper.jzgl.DeleteCaseMapper">
+
+  <delete id="delFunarchiverecords"  parameterType="java.lang.String">
+  delete  FUN_ARCHIVE_RECORDS  where ajbh = #{ajbh,jdbcType=VARCHAR}
+</delete>
+  <delete id="delFunarchivesfc"  parameterType="java.lang.String">
+      delete  FUN_ARCHIVE_SFC where ajbh = #{ajbh,jdbcType=VARCHAR}
+</delete>
+  <delete id="delFunarchiveseq"  parameterType="java.lang.String">
+      delete  FUN_ARCHIVE_SEQ where ajbh  =#{ajbh,jdbcType=VARCHAR}
+</delete>
+  <delete id="delFunarchivetype"  parameterType="java.lang.String">
+     delete  FUN_ARCHIVE_TYPE where ajbh  =#{ajbh,jdbcType=VARCHAR}
+</delete>
+  <delete id="delFunarchivefiles"  parameterType="java.lang.String">
+     delete  FUN_ARCHIVE_FILES where ajbh  =#{ajbh,jdbcType=VARCHAR}
+</delete>
+  <delete id="delFuncaseinfo"  parameterType="java.lang.String">
+     delete  FUN_CASE_INFO  where ajbh  =#{ajbh,jdbcType=VARCHAR}
+</delete>
+  <delete id="delFuncasepeoplecase"  parameterType="java.lang.String">
+  delete  FUN_CASE_PEOPLECASE  where ajbh  =#{ajbh,jdbcType=VARCHAR}
+</delete>
+  <delete id="delFunsuspectrecord"  parameterType="java.lang.String">
+  delete  Fun_Suspect_Record  where ajbh  =#{ajbh,jdbcType=VARCHAR}
+</delete>
+  <delete id="delFunsuspect"  parameterType="java.lang.String">
+  delete  Fun_Suspect where ajbh  =#{ajbh,jdbcType=VARCHAR}
+</delete>
+</mapper>

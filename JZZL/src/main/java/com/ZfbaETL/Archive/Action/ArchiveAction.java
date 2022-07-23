@@ -2,13 +2,16 @@ package com.ZfbaETL.Archive.Action;
 
 import com.ZfbaETL.Archive.Service.AutoArchiveService;
 import com.ZfbaETL.BaseServer.BaseServer;
+import com.ZfbaETL.Case.Server.ArchiveService;
 import com.bean.jzgl.DTO.*;
 import com.enums.EnumSoft;
+import com.util.GlobalUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.*;
 
@@ -24,6 +27,8 @@ public class ArchiveAction implements CommandLineRunner {
     private BaseServer baseServer;
     @Autowired
     private AutoArchiveService autoArchiveService;
+    @Autowired
+    private ArchiveService archiveService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -38,29 +43,47 @@ public class ArchiveAction implements CommandLineRunner {
      * @author MrLu
      * @createTime 2021/1/6 13:58
      */
+  //  @Scheduled(fixedRate=2000000)//每小时
     public void autoManager() {
+        if ("1".equals(GlobalUtil.getGlobal("startEtl"))){
+            return;
+        }
         EtlTablelogDTO lastV = baseServer.selectLastValue("FUN_ARCHIVE_SFC", "ID");
         //查询所有的未被整理的原始卷
-
         List<FunArchiveSFCDTO> newSfcList = autoArchiveService.selectNewOriginArchive(lastV.getLastpknumvalue());
+
+//        List<FunArchiveSFCDTO> newSfcList = autoArchiveService.selectTempArchive();
         EtlLogsDTO record = new EtlLogsDTO();
         record.setSystemname(lastV.getSystemname());
         record.setTablename(lastV.getTablename());
         record.setStarttime(new Date());
         record.setLastpkname(lastV.getLastpkname());
-
         int insertCount = 0;
         if (0 < newSfcList.size()) {
             for (FunArchiveSFCDTO thisSfc :
                     newSfcList) {
                 try {
+
+                    if (autoArchiveService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid(),null)) {
+                        continue;
+                    }
+                    //thisSfc.getCaseinfoid()
+                    FunCaseInfoDTO caseInfo = autoArchiveService.getFunCaseInfoDTOById(thisSfc.getCaseinfoid());
                     //新建一个基础卷
                     Integer oriSfcid = thisSfc.getId();
 
                     thisSfc.setAuthor("系统整理");
                     thisSfc.setAuthoridcard("0");
-                    thisSfc.setArchivetype(EnumSoft.archivetype.JCJ.getValue());//基础卷
-                    thisSfc.setArchivename(EnumSoft.archivetype.JCJ.getName());//基础卷
+                    if (1 == caseInfo.getCasetype()) {
+                        //刑事案件
+                        thisSfc.setArchivetype(EnumSoft.archivetype.JCJ.getValue());//基础卷
+                        thisSfc.setArchivename(EnumSoft.archivetype.JCJ.getName());//基础卷
+                    } else {
+                        //行政案件
+                        thisSfc.setArchivetype(EnumSoft.archivetype.ZAGLCFJ.getValue());//治安管理处罚卷
+                        thisSfc.setArchivename(EnumSoft.archivetype.ZAGLCFJ.getName());//治安管理处罚卷
+                    }
+
                     thisSfc.setIssuspectorder(1);//基础卷是某人给人排好序的
                     autoArchiveService.createNewSfc(thisSfc);//新建这个基础sfc
                     //新建一个基础卷的seq  这时候案卷应该只有一个原始卷
@@ -81,18 +104,21 @@ public class ArchiveAction implements CommandLineRunner {
                     insertCount++;
                     lastV.setLastpknumvalue(thisSfc.getId());
                     baseServer.updateLastValue(lastV);
+                    //案件更新为整理过
+                    autoArchiveService.updateCaseIsSorted(thisSfc.getCaseinfoid());
+                    baseServer.insertSuccessLog(record, insertCount);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    System.err.println("文书保存错误，sfcid="+thisSfc.getId());
                     //错误日志
                     baseServer.insertErrorLog(record, e.getMessage(), thisSfc.getId() + "");
                 }
             }
-            baseServer.insertSuccessLog(record, insertCount);
 
         } else {
-            if (StringUtils.isEmpty(lastV.getLastpkstrvalue())){
+            if (StringUtils.isEmpty(lastV.getLastpkstrvalue())) {
                 record.setLastpkstrvalue(lastV.getLastpknumvalue().toString());
-            }else {
+            } else {
                 record.setLastpkstrvalue(lastV.getLastpkstrvalue());
             }
 
@@ -108,15 +134,15 @@ public class ArchiveAction implements CommandLineRunner {
         //得到基础卷的默认顺序
         List<SysRecordorderDTO> baseOrder = autoArchiveService.selectSysRecordOrderByArchiveType(newSeq.getArchivetype());
         //查询基础卷需要的卷
-        List<SysRecordtypeorderDTO> needRecordType = autoArchiveService.selectRecordtypeorderByArchivetype(0);
+        List<SysRecordtypeorderDTO> needRecordType = autoArchiveService.selectRecordtypeorderByArchivetype(newSeq.getArchivetype());
         FunArchiveTypeDTO funArchiveTypeDTO = new FunArchiveTypeDTO();
         funArchiveTypeDTO.setArchiveseqid(newSeq.getId());//seqid
         funArchiveTypeDTO.setIsazxt(1);//不是案宗来的了
         funArchiveTypeDTO.setJqbh(newSeq.getJqbh());//警情编号
         funArchiveTypeDTO.setArchivesfcid(newSeq.getArchivesfcid());//sfcid
         funArchiveTypeDTO.setAjbh(newSeq.getAjbh());//案件编号
-        funArchiveTypeDTO.setArchivename("?");//不知道干啥的两个字段
-        funArchiveTypeDTO.setArchivecode("?");
+        funArchiveTypeDTO.setArchivename("-");//不知道干啥的两个字段
+        funArchiveTypeDTO.setArchivecode("-");
         //循环插入对应的类型
         Map<Integer, Integer> recordTypeIdMap = new HashMap<>();
         for (SysRecordtypeorderDTO thisRecordType : needRecordType) {
@@ -129,8 +155,21 @@ public class ArchiveAction implements CommandLineRunner {
             cover.setJqbh(funArchiveTypeDTO.getJqbh());
             cover.setAjbh(funArchiveTypeDTO.getAjbh());
             cover.setBaserecordid(0);//封皮目录封底等不会基于什么生成 而是新建一个
-            cover.setThisorder(EnumSoft.fplx.COVER.getOrder());
-            cover.setRecordname(EnumSoft.fplx.COVER.getName());
+
+            //判断是否是治安管理处罚卷
+            if (thisRecordType.getRecordcode() == EnumSoft.recordtype.ZAGLCFJ.getValue()) {
+                //行政
+                cover.setThisorder(EnumSoft.fplx.XZCOVER.getOrder());
+                cover.setRecordname(EnumSoft.fplx.XZCOVER.getName());
+                cover.setRecordscode(EnumSoft.fplx.XZCOVER.getValue());//文件代码
+            } else {
+                //刑事
+                cover.setThisorder(EnumSoft.fplx.COVER.getOrder());
+                cover.setRecordname(EnumSoft.fplx.COVER.getName());
+                cover.setRecordscode(EnumSoft.fplx.COVER.getValue());//文件代码
+            }
+
+
             cover.setArchivetypeid(funArchiveTypeDTO.getId());
             cover.setArchivecode(funArchiveTypeDTO.getArchivecode());
             cover.setArchivesfcid(newSeq.getArchivesfcid());
@@ -139,9 +178,10 @@ public class ArchiveAction implements CommandLineRunner {
             cover.setPrevid(0);
             cover.setAuthor(newSeq.getAuthor());//整理人姓名
             cover.setAuthorid(newSeq.getAuthorid());//整理人id
+            cover.setAuthoridcard(newSeq.getAuthoridcard());//整理人身份证号
             cover.setIsazxt(1);//封皮、目录、封底 都不是安综原有的东西
             cover.setArchiveseqid(newSeq.getId());
-            cover.setRecordscode(EnumSoft.fplx.COVER.getValue());//文件代码
+
             autoArchiveService.insertZlRecords(cover, funArchiveTypeDTO);
             //文书目录
             cover.setThisorder(EnumSoft.fplx.INDEX.getOrder());
@@ -164,7 +204,7 @@ public class ArchiveAction implements CommandLineRunner {
         for (SysRecordorderDTO thisOrder :
                 baseOrder) {
             //判断文书是否对嫌疑人或是对多人
-            if (1 == thisOrder.getRecordstyle() || 7 == thisOrder.getRecordstyle()) {
+            if (1 == thisOrder.getRecordstyle() || 7 == thisOrder.getRecordstyle()|| 9 == thisOrder.getRecordstyle()) {
                 //如果对嫌疑人 按照人查询文书
                 //该卷类型中所有的对嫌疑人文书都已经创建过了  跳过
                 if (recordType.contains(thisOrder.getRecordtype())) {
@@ -185,22 +225,31 @@ public class ArchiveAction implements CommandLineRunner {
                     int j = 1;//相对顺序
                     for (FunArchiveRecordsDTO thisSuspectRecord :
                             suspectRecord) {
+                        FunArchiveRecordsDTO newRecord =
+                                archiveService.selectRecordsByWjMessage(thisSuspectRecord.getWjbm(), thisSuspectRecord.getWjbid(), newSeq.getId());
+                        if (newRecord != null) {
+                            continue;
+                        }
                         i = i + j++;
                         thisSuspectRecord.setArchivetypeid(recordTypeIdMap.get(thisOrder.getRecordtype()));//typeid
                         thisSuspectRecord.setArchiveseqid(newSeq.getId());//seqid
                         thisSuspectRecord.setThisorder(i);//顺序
-//                        thisSuspectRecord.setArchivesfcid(newSeq.getArchivesfcid());//sfcid
-                        FunSuspectRecordDTO sr = autoArchiveService.selectSuspectRecordByRid(thisSuspectRecord.getId());//此时使用原有的id查询
+                        thisSuspectRecord.setArchivesfcid(newSeq.getArchivesfcid());//sfcid
+                        List<FunSuspectRecordDTO> sr = autoArchiveService.selectSuspectRecordByRid(thisSuspectRecord.getId());//此时使用原有的id查询
 
                         //查询该文书取第几页
-                        SysRecordorderDTO ro=  autoArchiveService.selectRecordOrderByTypes(thisSuspectRecord.getRecordscode(),0);  //文书取第几页
+                        SysRecordorderDTO ro = autoArchiveService.selectRecordOrderByTypes(thisSuspectRecord.getRecordscode(), newSeq.getArchivetype());  //文书取第几页
                         copyRecordsToNew(thisSuspectRecord, ro.getDemand());//（copy）
-                        if (null != sr) {
+                        if (null != sr && sr.size() > 0) {
                             //这里应该保证sr不能为空  因为这个文书如果对人但是在嫌疑人文书关联表中没有数据那么就是数据出现错误了  是个问题了
                             //对人文书复制关联表
-                            sr.setRecordid(thisSuspectRecord.getId());//注意此时是新的id了
-                            sr.setArchiveseqid(newSeq.getId());//seqid也是新的
-                            autoArchiveService.createNewSR(sr);
+                            for (FunSuspectRecordDTO thisR :
+                                    sr) {
+                                thisR.setRecordid(thisSuspectRecord.getId());//注意此时是新的id了
+                                thisR.setArchiveseqid(newSeq.getId());//seqid也是新的
+                                autoArchiveService.createNewSR(thisR);
+                            }
+
                         }
                     }
                 }
@@ -237,23 +286,24 @@ public class ArchiveAction implements CommandLineRunner {
     private void copyRecordsToNew(FunArchiveRecordsDTO newRecord, Integer demand) {
         int oriId = newRecord.getId();//此时还是原有的id
         newRecord.setPrevid(oriId);//上一个 源于谁的id
+        newRecord.setIscoverimg(0);
         autoArchiveService.createNewRecord(newRecord);//新建 （此时该实体类的id已经变成新的了）
         copyFilesToNew(oriId, newRecord, demand);
     }
 
     private void copyFilesToNew(int oriId, FunArchiveRecordsDTO newRecord, Integer demand) {
 
-        if (newRecord.getRecordscode().equals("AS021")){
+        if (newRecord.getRecordscode().equals("AS021")) {
             System.out.println(demand);
         }
         int newRecordId = newRecord.getId();//新建的文书id
         //开始复制文书文件
         //查找该文书原有的文件
-        int index =1;
+        int index = 1;
         for (FunArchiveFilesDTO thisFile :
                 autoArchiveService.selectRecordFilesByRecordId(oriId, null)) {
             //只取第几页
-            if ( 0 != demand&&index != demand ) {
+            if (0 != demand && index != demand) {
                 index++;
                 continue;
             }
@@ -271,7 +321,7 @@ public class ArchiveAction implements CommandLineRunner {
             thisFile.setAuthorid(newRecord.getAuthorid());
             //复制插入
             autoArchiveService.createFiles(thisFile);
-            if ( 0 != demand){
+            if (0 != demand) {
                 //当该文书抽取指定页数 此页整理完毕后后面的就不要了
                 break;
             }

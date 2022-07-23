@@ -37,4 +37,17 @@ public class DataSourceConfig {
      DataSource zfba(){
          return DruidDataSourceBuilder.create().build();
      }
+
+
+
+      /**
+      * 多媒体卷宗 数据源
+      * @author MrLu
+      * @createTime  2021/6/17 10:06
+       */
+     @Bean
+     @ConfigurationProperties("spring.datasource.thkjdmtjz")
+     DataSource thkjdmtjz(){
+         return DruidDataSourceBuilder.create().build();
+     }
 }

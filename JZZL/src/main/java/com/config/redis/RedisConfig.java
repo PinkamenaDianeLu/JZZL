@@ -155,7 +155,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 
 
     @CacheEvict(allEntries = true, cacheNames = {"manufacturedGood", "rawMaterial"})
-    @Scheduled(fixedDelay = 60 * 1000)
+  //  @Scheduled(fixedDelay = 60 * 1000)
     public void cacheEvict() {
     }
 

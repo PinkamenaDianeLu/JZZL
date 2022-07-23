@@ -1,6 +1,7 @@
 package com.module.SystemManagement.Services;
 
 
+import com.bean.jzgl.DTO.FunCaseInfoDTO;
 import com.bean.jzgl.DTO.FunCasePeoplecaseDTO;
 import com.bean.jzgl.DTO.SysLogsDTO;
 import com.bean.jzgl.DTO.SysLogsLoginDTO;
@@ -58,6 +59,16 @@ public interface LogService {
      * @author MrLu
      * @createTime 2021/4/8 16:03
      */
-    List<FunCasePeoplecaseDTO> selectCaseByJqIDCard(String jqbh, String idcard);
+    List<FunCasePeoplecaseDTO> selectCaseByJqIDCard(String jqbh);
+
+
+     /**
+     * 根据警情编号查询案件
+     * @author MrLu
+     * @param jqbh
+     * @createTime  2021/8/17 11:34
+     * @return    |
+      */
+    FunCaseInfoDTO selectCaseByJqID(String jqbh);
 
 }

@@ -61,7 +61,7 @@ var recordCoverIndex = (function () {
         });
         let thisPagenumberInput = utils.createElement.createElement({
             tag: 'td',
-            arg: '<input class="indexValue" name="pagenumber"  value="' + pagenumber + '" />'
+            arg: '<input class="indexValue" name="pagenumber"  value="' +(pagenumber>0?pagenumber:'')  + '" />'
         });
         let thisCommentInput = utils.createElement.createElement({
             tag: 'td',
@@ -134,9 +134,10 @@ var recordCoverIndex = (function () {
                 success: (re) => {
                     const reV = JSON.parse(re);
                     if ('success' === reV.message) {
+                        let isXtws=thisRecord.recordObj.recordscode.indexOf('ZL')>-1;
                         records[records.length] = new recordObj(
                             thisRecord.name,
-                            lastPageCount,
+                            (isXtws?0:lastPageCount),
                             i++,
                             thisRecord.recordObj.author,
                             utils.timeFormat.timestampToDate(thisRecord.recordObj.effectivetime||''),
@@ -144,7 +145,11 @@ var recordCoverIndex = (function () {
                             ''
                         );
                         // lastPageCount += thisRecord.filecodes.split(',').length;
-                        lastPageCount += reV.value;
+                        if (!isXtws){
+                            //非系统文书 页码增加
+                            lastPageCount += reV.value;
+                        }
+
                     } else {
                         console.error('查询失败:' + thisRecord.id + ':' + thisRecord.name);
                     }
@@ -163,6 +168,8 @@ var recordCoverIndex = (function () {
      * @return    |
      */
     function saveIndexInfo(indexId) {
+
+        $('#saveIndexInfo').unbind().html('保存中....');
         let recordInfo = [];
         utils.functional.forEach($('#indexTable').find('.indexTr'), function (thisTr) {
 
@@ -170,7 +177,6 @@ var recordCoverIndex = (function () {
                 return $(thisIndex).val();
             })
             //name, pagenumber, index, author, recorddate, wh, comment
-            console.log(trValue)
             recordInfo[recordInfo.length] = new recordObj(
                 trValue[3],
                 trValue[5],
@@ -180,26 +186,39 @@ var recordCoverIndex = (function () {
                 trValue[1],
                 trValue[6]);
         });
-        console.log(JSON.stringify(recordInfo));
-        console.log(file);
-        $.post({
-            url: '/FileManipulation/saveFunArchiveRecordindex',
-            data: {
-                fileid: file.id,
-                indexinfo: JSON.stringify(recordInfo),
-                indexid: indexId
-
-            },
-            success: (re) => {
-                const reV = JSON.parse(re);
-                if ('success' === reV.message) {
-                    getIndexInfo();
-                    layer.msg('保存成功');
-                } else {
-                    alert('保存失败，请重新登录再试');
+        let coverDiv=document.getElementById('jzmlDiv');
+        html2canvas(coverDiv).then(function (canvas) {
+            // $('#qzname').css('font-size','36px');
+            const  imgBase64=canvas.toDataURL('image/jpg');
+            //将画布的图片转成base64再转成File
+            const coverImg= utils.Base64.base64ToFile(imgBase64,'RecordIndex','jpg');
+            // $('#backCoverImg').attr('src',imgBase64);
+            let formData = new FormData();//fileType
+            formData.append('newFile',coverImg);//文件本身
+            formData.append('fileid',file.id);//
+            formData.append('indexid',indexId);//
+            formData.append('indexinfo',JSON.stringify(recordInfo));//
+            $.post({
+                url: '/FileManipulation/saveFunArchiveRecordindex',
+                ache: false,
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    $('#saveIndexInfo').unbind().html('保存').click(function () {
+                        saveIndexInfo(reV.value);
+                    })
+                    if ('success' === reV.message) {
+                        getIndexInfo();
+                        layer.msg('保存成功');
+                    } else {
+                        layer.alert('卷封皮保存失败');
+                    }
                 }
-            }
-        });
+            })
+        })
+
     }
 
     /**
@@ -270,7 +289,7 @@ $(function () {
 
 
     } else {
-        alert('该文书信息无法获取，请刷新页面重试！');
+        layer.alert('该文书信息无法获取，请刷新页面重试！');
     }
 
 

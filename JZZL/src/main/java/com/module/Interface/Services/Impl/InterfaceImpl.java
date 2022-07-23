@@ -1,11 +1,14 @@
 package com.module.Interface.Services.Impl;
 
 import com.bean.jzgl.DTO.FunArchiveSFCDTO;
+import com.bean.jzgl.DTO.FunCasePeoplecaseDTO;
 import com.mapper.jzgl.FunArchiveSFCDTOMapper;
+import com.mapper.jzgl.FunCasePeoplecaseDTOMapper;
 import com.module.Interface.Services.InterfaceService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author MrLu
@@ -17,6 +20,8 @@ public class InterfaceImpl implements InterfaceService {
 
     @Resource
     FunArchiveSFCDTOMapper funArchiveSFCDTOMapper;
+    @Resource
+    FunCasePeoplecaseDTOMapper FunCasePeoplecaseDTOMapper;
     @Override
     public FunArchiveSFCDTO selectArchiveSfcBySeqid(Integer seqid) {
         return funArchiveSFCDTOMapper.selectArchiveSfcBySeqid(seqid);
@@ -29,5 +34,10 @@ public class InterfaceImpl implements InterfaceService {
         sfc.setId(funArchiveSFCDTO.getId());
         sfc.setIssend(1);
         funArchiveSFCDTOMapper.updateByPrimaryKeySelective(funArchiveSFCDTO);
+    }
+
+    @Override
+    public List<FunCasePeoplecaseDTO> selectRelationByCaseid(Integer caseinfoid) {
+        return FunCasePeoplecaseDTOMapper.selectRelationByCaseid(caseinfoid);
     }
 }

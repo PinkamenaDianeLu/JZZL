@@ -166,6 +166,7 @@ public class CaseManagerController extends BaseFactory {
             mainCaseInfo.setCasename(newcasename);
             mainCaseInfo.setSfcnumber(StringUtil.createSfcNumber(dwdm.substring(0, 6)));//送检编号
             mainCaseInfo.setCasestate(Enums.CaseState.MERGE.getValue());//合案
+            mainCaseInfo.setIssorted(1);//已排序
             caseManagerService.insertCaseinfo(mainCaseInfo);//新建案件信息
             List<FunCasePeoplecaseDTO> casePeople = caseManagerService.selectRelationByCaseid(mainCaseId);//查询原有案件的人关系
             //循环复制关系
@@ -179,7 +180,7 @@ public class CaseManagerController extends BaseFactory {
                 caseManagerService.insertCasePeopleCase(thisGx);
             }
             //查询原案件的sfc以供复制
-            FunArchiveSFCDTO oriSfc = caseManagerService.selectBaseSfcByCaseinfoid(mainCaseId);
+            FunArchiveSFCDTO oriSfc = caseManagerService.selectBaseSfcByCaseinfoid(mainCaseId, null);
             oriSfc.setSfcnumber(mainCaseInfo.getSfcnumber());
             oriSfc.setAjbh(mainCaseInfo.getAjbh());
             oriSfc.setJqbh(mainCaseInfo.getJqbh());
@@ -196,6 +197,8 @@ public class CaseManagerController extends BaseFactory {
             FcaseSeq.add(oriSeq);//把主案的基础卷也放进去
             Integer OriSeqId = oriSeq.getId();//原始卷的seqid
             oriSeq.setAuthor(oriSfc.getAuthor());
+            oriSeq.setAuthoridcard(oriSfc.getAuthoridcard());
+            oriSeq.setAuthorid(userNow.getId());
             oriSeq.setBatchesseq(0);//基础卷
             oriSeq.setIsfinal(0);//已经完结了 -> 没有
             oriSeq.setJqbh(oriSfc.getJqbh());//警情编号
@@ -212,6 +215,7 @@ public class CaseManagerController extends BaseFactory {
 
             List<FunArchiveTypeDTO> archiveTypes = caseManagerService.selectArchiveTypeByJqSeq(OriSeqId);
             List<Integer> seqIdList = FcaseSeq.stream().map(FunArchiveSeqDTO::getId).collect(Collectors.toList());
+            seqIdList.add(OriSeqId);//此时seq对象内存中的id已经变成新id了  将原有id放回来
             String[] suspectIds = Optional.ofNullable(suspectids).orElse("").split(",");//所有基础卷的id
             List<FunSuspectDTO> suspectList = caseManagerService.selectSuspectsByIds(suspectIds);
             //存储嫌疑人信息  key：嫌疑人原id  V：复制的嫌疑人对象
@@ -228,7 +232,7 @@ public class CaseManagerController extends BaseFactory {
                 suspectMap.put(oriSuspectId, thisSuspect);
             }
 
-            int typeOrder=1;//type的顺序
+            int typeOrder = 1;//type的顺序
             for (FunArchiveTypeDTO thisType :
                     archiveTypes) {
                 //查询这个
@@ -255,8 +259,9 @@ public class CaseManagerController extends BaseFactory {
                 cover.setRecordstyle(0);
                 cover.setIsdelete(0);
                 cover.setPrevid(0);
-                cover.setAuthor(oriSeq.getAuthor());//整理人姓名
-                cover.setAuthorid(oriSeq.getAuthorid());//整理人id
+                cover.setAuthor(userNow.getXm());//整理人姓名
+                cover.setAuthoridcard(userNow.getIdcardnumber());//整理人身份证号
+                cover.setAuthorid(userNow.getId());//整理人id
                 cover.setIsazxt(1);//封皮、目录、封底 都不是安综原有的东西
                 cover.setArchiveseqid(oriSeq.getId());
                 cover.setRecordscode(EnumSoft.fplx.COVER.getValue());//文件代码
@@ -369,6 +374,7 @@ public class CaseManagerController extends BaseFactory {
             oriCaseInfo.setCasename(Optional.ofNullable(newcasename).orElse(oriCaseInfo.getCasename() + "_拆案"));
             oriCaseInfo.setSfcnumber(StringUtil.createSfcNumber(dwdm.substring(0, 6)));//送检编号
             oriCaseInfo.setCasestate(Enums.CaseState.SPLIT.getValue());//拆案
+            oriCaseInfo.setIssorted(1);//已排序
 //            oriCaseInfo.setGajgmc("公安机关名称");
 //            oriCaseInfo.setGajgdm("公安机关代码");
             //新建案件
@@ -388,7 +394,7 @@ public class CaseManagerController extends BaseFactory {
                 caseManagerService.insertCasePeopleCase(thisGx);
             }
 
-            FunArchiveSFCDTO oriSfc = caseManagerService.selectBaseSfcByCaseinfoid(oricaseid);
+            FunArchiveSFCDTO oriSfc = caseManagerService.selectBaseSfcByCaseinfoid(oricaseid, null);
             oriSfc.setSfcnumber(oriCaseInfo.getSfcnumber());
             oriSfc.setAjbh(oriCaseInfo.getAjbh());
             oriSfc.setJqbh(oriCaseInfo.getJqbh());
@@ -456,7 +462,7 @@ public class CaseManagerController extends BaseFactory {
         List<FunArchiveTypeDTO> archiveTypes = caseManagerService.selectArchiveTypeByJqSeq(oriSeqId);
         String[] notSuspectIds = Optional.ofNullable(notSuspectids).orElse("").split(",");
         //开始复制
-        int typeOrder=1;
+        int typeOrder = 1;
         for (FunArchiveTypeDTO thisType :
                 archiveTypes) {
             //查询这个卷  下的文书 只包含其中的嫌疑人
@@ -485,21 +491,25 @@ public class CaseManagerController extends BaseFactory {
                 if (thisRecord.getRecordstyle() == 1 || thisRecord.getRecordstyle() == 7) {
                     //查询原有的人文书关系表
                     //是对人的文书  复制对应关系
-                    FunSuspectRecordDTO sr = caseManagerService.selectSuspectRecordByRid(oriRecorId);//此时使用原有的id查询
+                    List<FunSuspectRecordDTO> sr = caseManagerService.selectSuspectRecordByRid(oriRecorId);//此时使用原有的id查询
                     //找到被复制的嫌疑人
-                    if (null != sr) {
-                        FunSuspectDTO suspect = suspectMap.get(Optional.ofNullable(sr.getSuspectid()).orElse(0));
-                        if (null != suspect) {
-                            sr.setArchiveseqid(thisRecord.getArchiveseqid());
-                            sr.setRecordid(thisRecord.getId());//新的文书id
-                            sr.setJqbh(thisRecord.getJqbh());
-                            sr.setAjbh(thisRecord.getAjbh());
-                            sr.setSuspectid(suspect.getId());
-                            sr.setCaseinfoid(newSeq.getCaseinfoid());
-                            sr.setSfcnumber(newSeq.getSfcnumber());
-                            sr.setRecordtype(thisType.getRecordtype());
-                            caseManagerService.createNewSR(sr);//复制关系
+                    if (null != sr && sr.size() > 0) {
+                        for (FunSuspectRecordDTO thisRecordSuspect :
+                                sr) {
+                            FunSuspectDTO suspect = suspectMap.get(Optional.ofNullable(thisRecordSuspect.getSuspectid()).orElse(0));
+                            if (null != suspect) {
+                                thisRecordSuspect.setArchiveseqid(thisRecord.getArchiveseqid());
+                                thisRecordSuspect.setRecordid(thisRecord.getId());//新的文书id
+                                thisRecordSuspect.setJqbh(thisRecord.getJqbh());
+                                thisRecordSuspect.setAjbh(thisRecord.getAjbh());
+                                thisRecordSuspect.setSuspectid(suspect.getId());
+                                thisRecordSuspect.setCaseinfoid(newSeq.getCaseinfoid());
+                                thisRecordSuspect.setSfcnumber(newSeq.getSfcnumber());
+                                thisRecordSuspect.setRecordtype(thisType.getRecordtype());
+                                caseManagerService.createNewSR(thisRecordSuspect);//复制关系
+                            }
                         }
+
                     }
                 }
                 copyFiles(caseManagerService.selectRecordFilesByRecordId(oriRecorId), thisRecord);

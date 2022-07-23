@@ -56,9 +56,15 @@ public class CaseServer {
      * @author MrLu
      * @createTime 2021/1/4 17:41
      */
-    public List<XtAjxxb> selectNewCase(Integer id,String groupcode) {
-        return xtAjxxbMapper.selectNewCase(id,groupcode);
+    public List<XtAjxxb> selectNewCase(Integer id,String groupcode,boolean isXz) {
+        return xtAjxxbMapper.selectNewCase(id,groupcode,isXz);
     }
+
+    public List<XtAjxxb> selectNeededAj() {
+        return xtAjxxbMapper.selectNeededAj();
+    }
+
+
 
     /**
      * 新建案件
@@ -212,4 +218,15 @@ public class CaseServer {
     public  SysGroup selectGroupByDwdm(String dwmcdm){
 return  sysGroupMapper.selectGroupByDwdm(dwmcdm);
     }
+
+    /**
+     * 通过警情编号查询是否有案件
+     * @author MrLu
+     * @param jqbh String
+     * @createTime  2021/6/18 17:25
+     * @return    |
+     */
+    public Integer selectCaseCountByJqbh(String jqbh){
+        return  funCaseInfoDTOMapper.selectCaseCountByJqbh(jqbh);
+    };
 }

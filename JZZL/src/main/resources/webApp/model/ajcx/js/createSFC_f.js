@@ -37,6 +37,7 @@ var recordsTable = (function () {
                     field: 'recordname',
                     title: '文书名称',
                     formatter: (value, row) => {
+                        debugger;
                         return utils.beautifulTitle(value, 18);
                     }
                 }, {
@@ -103,7 +104,7 @@ var createNewSFC = (function () {
         let reS = new searchParam();
         reS.recordscode = $('[name=recordscode]:checked').val();
         reS.archivename = $('#archivename').val().trim();
-        reS.recordsId = $('#recordsTable').bootstrapTable('getSelections')[0].id;
+        reS.recordsId = $('#recordsTable').bootstrapTable('getSelections')[0].id||null;
         reS.caseinfoid = caseinfoid;
         return reS;
     };
@@ -114,23 +115,31 @@ var createNewSFC = (function () {
      * @createTime  2020/10/7 15:17
      */
     function createNSFC(loadIndex) {
-        $.post({
-            url: '/SFCensorship/createNewSFCensorship',
-            data: {params: JSON.stringify(getSearchParam())},
-            success: (re) => {
-                const reV = JSON.parse(re);
-                if ('success' === reV.message) {
-                    layer.msg('成功');
-                    window.parent.st.searchTable();//父页面表格刷新
+      let p=  getSearchParam();//参数
+        if (p.recordsId){
+            $.post({
+                url: '/SFCensorship/createNewSFCensorship',
+                data: {params: JSON.stringify(getSearchParam())},
+                success: (re) => {
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        layer.msg('成功');
+                        window.parent.st.searchTable();//父页面表格刷新
+                        const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        parent.layer.close(index);
+                    } else {
+                        layer.msg('失败');
+
+                        window.close();
+                    }
                     layer.close(loadIndex);//关闭遮罩层
-                    const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                    parent.layer.close(index);
-                } else {
-                    layer.msg('失败');
-                    window.close();
                 }
-            }
-        });
+            });
+        }else {
+            layer.close(loadIndex);//关闭遮罩层
+            layer.alert("请选择文书！");
+        }
+
     }
 
     function _createNewSFC(idP) {
@@ -150,14 +159,27 @@ $(function () {
         $('#archivename').val('');//清空名称
     });
 
+
+    //只有省厅版有换押证
+    if (sessionStorage.version !== 'province'||sessionStorage.version === 'provinceTest') {
+        $('#recordAS062').remove();
+    }
     let cnf = new createNewSFC(ajid);
     //保存按钮
     $('#createNewSFC').click(function () {
-        let index = layer.load(1, {
-            content:'正在生成中....',
-            shade: [0.3,'#fff'] //0.1透明度的白色背景
-        });
-        cnf.createNSFC(index);
+
+        if (!$('#recordsTable').bootstrapTable('getSelections')[0]){
+            layer.alert("请选择文书！");
+        }else if (!$('#archivename').val()){
+            layer.alert("请填写卷宗名称！");
+        }else {
+            let index = layer.load(1, {
+                content:'正在生成中....',
+                shade: [0.3,'#fff'] //0.1透明度的白色背景
+            });
+            cnf.createNSFC(index);
+        }
+
     });
     //关闭当前页面
     $('#closeWindow').click(function () {

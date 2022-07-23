@@ -150,4 +150,9 @@
       #{item,jdbcType=DECIMAL}
     </foreach>
   </update>
+  <update id="readMessageAll" parameterType="java.lang.String">
+    UPDATE SYS_LOGS_WEBSOCKET
+    SET  ISRECEIVED = 1 where scbj=0
+    and RECEIVER = #{receiver,jdbcType=VARCHAR}
+  </update>
 </mapper>

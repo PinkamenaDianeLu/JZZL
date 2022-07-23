@@ -1,7 +1,10 @@
 package com.module.SystemManagement.Services;
 
 
+import com.bean.jzgl.Source.SysRoleUser;
 import com.bean.jzgl.Source.SysUser;
+
+import java.util.List;
 
 /**
  * @Author MrLu
@@ -40,5 +43,14 @@ public interface UserService {
     SysUser loginVerification(String username, String pwd) throws Exception;
 
     SysUser loginVerification(String username) throws Exception;
+
+    /**
+     * 查询用户的权限
+     * @author MrLu
+     * @param sysuserid 用户id
+     * @createTime  2021/6/11 10:57
+     * @return   List<SysRoleUser> |
+     */
+    List<SysRoleUser> selectRoleByUserid(Integer sysuserid);
 
 }

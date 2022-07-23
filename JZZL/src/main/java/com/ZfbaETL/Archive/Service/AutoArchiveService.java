@@ -75,6 +75,18 @@ public class AutoArchiveService {
    public List<FunArchiveSFCDTO>  selectNewOriginArchive(Integer id){
         return funArchiveSFCDTOMapper.selectNewOriginArchive(id);
     };
+
+
+    /**
+     * 查询需要临时抽取整理的案件
+     * @author MrLu
+     * @param
+     * @createTime  2021/8/24 14:55
+     * @return    |
+     */
+    public List<FunArchiveSFCDTO>  selectTempArchive(){
+        return funArchiveSFCDTOMapper.selectTempArchive();
+    };
     /**
      * 根据案件信息表id查询嫌疑人
      * @author MrLu
@@ -122,7 +134,7 @@ public class AutoArchiveService {
         map.put("archiveseqid", archiveseqid);
         return funArchiveRecordsDTOMapper.selectRecordOrderForSuspect(map);
     }
-    public FunSuspectRecordDTO selectSuspectRecordByRid(int recordid) {
+    public List<FunSuspectRecordDTO> selectSuspectRecordByRid(int recordid) {
         return funSuspectRecordDTOMapper.selectSuspectRecordByRid(recordid);
     }
     public  void createNewRecord(FunArchiveRecordsDTO record){
@@ -150,6 +162,42 @@ public class AutoArchiveService {
         map.put("archivetype", archivetype);
         return sysRecordorderDTOMapper.selectRecordOrderByTypes(map);
     }
+
+
+     /**
+     * 验证是否已经处理过
+     * @author MrLu
+     * @param
+     * @createTime  2021/6/21 9:27
+     * @return    |
+      */
+    public boolean selectBaseSfcByCaseinfoid(Integer caseinfoid,Integer archivetype){
+        return null != funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid, archivetype);
+
+    }
+
+     /**
+     * 根据id查询案件信息
+     * @author MrLu
+     * @param
+     * @createTime  2021/6/21 15:55
+     * @return    |
+      */
+    public FunCaseInfoDTO getFunCaseInfoDTOById(Integer id) {
+        return funCaseInfoDTOMapper.selectByPrimaryKey(id);
+    }
+
+     /**
+     * 标记为已整理
+     * @author MrLu
+     * @param caseInfoId 案件id
+     * @createTime  2021/7/2 11:21
+     * @return    |
+      */
+    public void updateCaseIsSorted(Integer caseInfoId){
+        funCaseInfoDTOMapper.updateCaseIsSorted(caseInfoId);
+    }
+
     /**
      * 新建文书目录 封皮 封底
      * @author MrLu
@@ -162,6 +210,7 @@ public class AutoArchiveService {
         record.setRecorduuid(UUID.randomUUID().toString());
         record.setWjbid(0);
         record.setWjbm("0");
+        record.setIscoverimg(1);
         funArchiveRecordsDTOMapper.insertSelective(record);
         if (record.getRecordscode().startsWith("ZL")) {
             //是文书封皮、目录、封底
@@ -174,6 +223,9 @@ public class AutoArchiveService {
             switch (record.getRecordscode()) {
                 case "ZL001":
                     r.setFiletype(1);
+                    break;
+                case "ZL004":
+                    r.setFiletype(5);
                     break;
                 case "ZL002":
                     r.setFiletype(3);
@@ -196,10 +248,23 @@ public class AutoArchiveService {
             r.setServerip("/");
             r.setFilecode("F" + record.getRecordscode() + "R" + record.getId() + "T" + type.getId());
             r.setBjzid(0);
+
             createFiles(r);
         } else {
             //查询复制
 
         }
     }
+
+
+    /**
+     * 查询一个案件的原始卷
+     * @author MrLu
+     * @param  caseinfoid  案件id
+     * @createTime  2021/7/2 10:06
+     * @return    |
+     */
+    public FunArchiveSFCDTO selectOriArchiveByCaseId(Integer caseinfoid){
+        return funArchiveSFCDTOMapper.selectOriArchiveByCaseId(caseinfoid);
+    };
 }

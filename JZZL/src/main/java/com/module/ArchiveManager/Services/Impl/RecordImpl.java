@@ -12,7 +12,6 @@ import com.bean.jzgl.Source.selectObj;
 import com.factory.BaseFactory;
 import com.mapper.jzgl.*;
 import com.module.ArchiveManager.Services.RecordsService;
-import com.util.MapFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -186,7 +185,7 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     }
 
     @Override
-    public FunSuspectRecordDTO selectSuspectRecordByRid(int recordid) {
+    public List<FunSuspectRecordDTO>  selectSuspectRecordByRid(int recordid) {
         return funSuspectRecordDTOMapper.selectSuspectRecordByRid(recordid);
     }
 
@@ -200,5 +199,18 @@ public class RecordImpl extends BaseFactory implements RecordsService {
     @Override
     public int selectRsMaxOrderByTypeid(int typeid){
         return funArchiveRecordsDTOMapper.selectRsMaxOrderByTypeid(typeid);
+    }
+
+    /**
+     * 查询seq下某个type
+     * @author MrLu
+     * @param archiveseqid
+     * @param recordtype
+     * @createTime  2021/3/25 14:55
+     * @return    |
+     */
+    @Override
+    public FunArchiveTypeDTO  selectTypeBySeqType(Integer archiveseqid,Integer recordtype){
+        return funArchiveTypeDTOMapper.selectTypeBySeqType(archiveseqid,recordtype);
     }
 }

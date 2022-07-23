@@ -43,6 +43,7 @@ public class FunCasePeoplecaseDTO {
 
     private String badwdwmc;
 
+
     public Integer getId() {
         return id;
     }

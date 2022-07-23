@@ -3,24 +3,23 @@ package com.ZfbaETL.Case.Action;
 import com.ZfbaETL.BaseServer.BaseServer;
 import com.ZfbaETL.Case.Server.ArchiveService;
 import com.ZfbaETL.Case.Server.CaseServer;
-import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
-import com.bean.jzgl.Source.SysRecordMessage;
+import com.bean.jzgl.Source.SysRoleUser;
 import com.bean.zfba.*;
 import com.enums.EnumSoft;
 import com.enums.Enums;
+import com.module.SystemManagement.Services.UserService;
 import com.util.GlobalUtil;
 import com.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author MrLu
@@ -36,10 +35,13 @@ public class CaseAction implements CommandLineRunner {
     private CaseServer caseServer;
     @Autowired
     private ArchiveService archiveService;
+    @Qualifier("UserService")
+    @Autowired
+    private UserService userService;
 
     @Override
     public void run(String... args) throws Exception {
-//        ImportCases();
+//      ImportCases();
     }
 
     /**
@@ -50,13 +52,37 @@ public class CaseAction implements CommandLineRunner {
      * @author MrLu
      * @createTime 2021/1/4 17:51
      */
-//    @Scheduled(fixedRate=70000)
+  //  @Scheduled(fixedRate=3000000)//每50分钟
     public void ImportCases() {
+        if ("1".equals(GlobalUtil.getGlobal("startEtl"))){
+            return;
+        }
         String groupcode = GlobalUtil.getGlobal("groupcode");//查询的单位代码
-
+        String version = GlobalUtil.getGlobal("version");//查询版本
         EtlTablelogDTO lastV = baseServer.selectLastValue("XT_AJXXB", "ID");
+        boolean isXz = true;//是否抽取行政案件
+        if ("city".equals(version)) {
+            //地市版  这是省厅版本的！
+            return;
+        } else if ("province".equals(version)) {
+            //省厅版本
+            isXz = false;
+        } else if ("provinceTest".equals(version)) {
+            //省厅测试版本
+            isXz = false;
+        } else {
+            System.err.println("啥版本啊？！ global.properties -> version ");
+            return;
+        }
+        List<XtAjxxb> cases =  caseServer.selectNewCase(lastV.getLastpknumvalue(), groupcode, isXz);
+//        List<XtAjxxb> cases = caseServer.selectNeededAj();
 
-        List<XtAjxxb> cases = caseServer.selectNewCase(lastV.getLastpknumvalue(),groupcode);
+//       if ("province".equals(version)) {
+//            //省厅版本  表中可以放一些非得抽的案件
+//            List<XtAjxxb> neededAj = caseServer.selectNeededAj();
+//            cases.addAll(neededAj);
+//        }
+        //selectNeededAj
         EtlLogsDTO record = new EtlLogsDTO();
         record.setSystemname(lastV.getSystemname());
         record.setTablename(lastV.getTablename());
@@ -67,22 +93,37 @@ public class CaseAction implements CommandLineRunner {
         for (XtAjxxb thisCase :
                 cases) {
             try {
+                int isHaved = caseServer.selectCaseCountByJqbh(thisCase.getJqbh());
+                if (isHaved > 0) {
+                    continue;
+                }
                 FunCaseInfoDTO newCaseInfo = new FunCaseInfoDTO();
                 XtBarb zbr = caseServer.selectZbrByJqbh(thisCase.getJqbh());//主办人
                 SysBadwb zbdw = caseServer.selectZbdwByJqbn(thisCase.getJqbh());//主办单位
+
                 if (null == zbr) {
-                    baseServer.insertErrorLog(record, "案件没有主办人", thisCase.getId() + "");
-                    continue;
+                    //大概率主办人是后出现的
+                    baseServer.insertErrorLog(record, "案件没有主办人，主办人暂为admin", thisCase.getId() + "");
+                    zbr =new XtBarb();
+                    zbr.setBargmsfhm("admin");
+                    zbr.setBarxm("admin");
+//                    continue;
                 }
+
                 if (null == zbdw) {
+                    //此情况从未发生过
                     baseServer.insertErrorLog(record, "案件没有主办单位", thisCase.getId() + "");
                     continue;
                 }
                 SysUserDTO thisJzlZbr = caseServer.selectJzUserByIdCard(zbr.getBargmsfhm());
                 if (null == thisJzlZbr) {
-                    baseServer.insertErrorLog(record, "主办人不在当前单位", thisCase.getId() + "");
+                    //把这个案件的主办人添加到数据库中即可
+                    baseServer.insertErrorLog(record, "系统中未查询到主办人对应的用户", thisCase.getId() + "");
                     continue;
                 }
+
+
+
                 newCaseInfo.setJqbh(thisCase.getJqbh());
                 newCaseInfo.setAjbh(thisCase.getAjbh());
                 newCaseInfo.setCasename(Optional.ofNullable(thisCase.getAjmc()).orElse("未填写案件名称"));
@@ -91,10 +132,21 @@ public class CaseAction implements CommandLineRunner {
                 newCaseInfo.setCasetype(Integer.parseInt(thisCase.getAjlx()));//形式行政
                 newCaseInfo.setCasestage(thisCase.getZcjddm());//案件阶段
                 newCaseInfo.setCaseclass(thisCase.getAjlx());//案件类别
+
+                if ("1".equals(newCaseInfo.getCaseclass())) {
+                    //刑事案件
+                    newCaseInfo.setLarq(thisCase.getLarq());
+                } else {
+                    //行政案件
+                    newCaseInfo.setLarq(thisCase.getSarq());
+                }
                 newCaseInfo.setCaseclasscn(Optional.ofNullable(thisCase.getAjlbzw()).orElse("无"));//案件类别中文
-                newCaseInfo.setBarxm(zbr.getBarxm());//主办人
+                newCaseInfo.setBarxm( Optional.ofNullable(zbr.getBarxm()).orElse("系统抽取"));//主办人
                 newCaseInfo.setBarsysuserid(thisJzlZbr.getId());//主办人再卷整理系统中的用户id
-                newCaseInfo.setBaridcard(zbr.getBargmsfhm());//办案人
+                newCaseInfo.setBaridcard(Optional.ofNullable(zbr.getBargmsfhm()).orElse("系统抽取"));//办案人
+
+
+
                 newCaseInfo.setBadwdwdm(zbdw.getBadwdm());//办案单位
                 newCaseInfo.setBadwdwmc(zbdw.getBadwzw());
                 String gajgmc = Optional.ofNullable(caseServer.selectGroupByDwdm(zbdw.getBadwdm()).getDwjc()).orElse(zbdw.getBadwzw());
@@ -103,7 +155,7 @@ public class CaseAction implements CommandLineRunner {
                 newCaseInfo.setGajgdm(zbdw.getBadwdm());
                 newCaseInfo.setLarq(thisCase.getLarq());//立案日期
                 newCaseInfo.setJarq(thisCase.getJarq());//简要案情
-
+                newCaseInfo.setIssorted(0);//未整理
                 caseServer.insertCaseinfo(newCaseInfo);
 
 
@@ -128,12 +180,53 @@ public class CaseAction implements CommandLineRunner {
                 }
                 //查询可以看该案件的人  （部门领导、法制科）
 
+                //开始截0  然后每两个0查一级
+                String group = zbdw.getBadwdm();
+                Set<SysUser> leaderUsers = new HashSet<>();
+                for (int i = 12; i > 0; i = i - 2) {
+                    String subGroup = group.substring(0, i);
+                    String thisGroupCOde = String.format("%-12s", subGroup).replace(" ", "0");
+                    List<SysUser> lu = caseServer.selectLeaderByDwdm(thisGroupCOde);
+                    if (null != lu && lu.size() > 0) {
+                        leaderUsers.addAll(lu);
+                    }
+                }
+                System.out.println(leaderUsers);
+
                 for (SysUser thisAzUser :
-                        caseServer.selectLeaderByDwdm(zbdw.getBadwdm())) {
+                        leaderUsers) {
+//                    String badwdm=zbdw.getBadwdm().substring(01);
                     //查询该用户对应卷整理的用户
                     SysUserDTO thisJzlUser = caseServer.selectJzUserByAzId(thisAzUser.getId());
-                    insertCasePeopleCase(thisJzlUser, newCaseInfo, Enums.PersonType.LEADER);
+                    if (null==thisJzlUser||null==thisJzlUser.getId()){
+                        continue;
+                    }
+                    //查看该用户的权限
+                    List<SysRoleUser> userRoles = userService.selectRoleByUserid(thisJzlUser.getId());
+
+                    String roles = userRoles.stream().map(SysRoleUser::getRolecode).map(String::valueOf).collect(Collectors.joining(",", ",", ","));//将用户的权限转换成一个以，分割的字符串
+
+                    int roleCount = 0;
+                    if (roles.contains(",81,") || roles.contains(",82,")) {
+                        roleCount = 1;
+                    }
+                    if (roles.contains(",41,") || roles.contains(",25,")) {
+                        roleCount = roleCount + 2;
+                    }
+                    if (1 == roleCount) {
+                        //部门领导
+                        insertCasePeopleCase(thisJzlUser, newCaseInfo, Enums.PersonType.LEADER);
+                    } else if (2 == roleCount) {
+                        //法制科
+                        insertCasePeopleCase(thisJzlUser, newCaseInfo, Enums.PersonType.LEGAL);
+                    } else {
+                        //即是领导 又是法制科
+                        insertCasePeopleCase(thisJzlUser, newCaseInfo, Enums.PersonType.LEADERLEGAL);
+                    }
+
                 }
+
+
                 //更新最后抽取的值
                 lastV.setLastpknumvalue(thisCase.getId());
                 baseServer.updateLastValue(lastV);
@@ -286,9 +379,9 @@ public class CaseAction implements CommandLineRunner {
             try {
 
                 baseServer.createRecordsNoSuspect(newType, i++, thisR);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
-                System.out.printf("错误："+newType.getId());
+                System.out.printf("错误：" + newType.getId());
             }
         }
     }
@@ -301,51 +394,53 @@ public class CaseAction implements CommandLineRunner {
         int i = 0;
         for (XtWjflb thisR :
                 SusRecords) {
-            try{
+            try {
 
+                //查看这个文书有没有  如果有就不插文书只插关系表
+                FunArchiveRecordsDTO newRecord = archiveService.selectRecordsByWjMessage(thisR.getWjbm(), thisR.getWjbid(), newType.getArchiveseqid());
+                if (null == newRecord) {
+                    newRecord = new FunArchiveRecordsDTO();
+                    newRecord.setJqbh(newType.getJqbh());
+                    newRecord.setAjbh(newType.getAjbh());
+                    newRecord.setThisorder(i++);
+                    newRecord.setRecordname(thisR.getWjzw());
+                    newRecord.setArchivetypeid(newType.getId());
+                    newRecord.setArchivecode(thisR.getWjdm());
+                    newRecord.setRecordstyle(EnumSoft.recordstyle.DRWS.getValue());
+                    newRecord.setArchiveseqid(newType.getArchiveseqid());
+                    newRecord.setRecordscode(thisR.getWjdm());
+                    newRecord.setIsdelete(0);
+                    newRecord.setIsazxt(0);//"系统抽取"
+                    newRecord.setArchivesfcid(newType.getArchivesfcid());
+                    newRecord.setAuthor(thisR.getJlrxm());
+                    newRecord.setAuthoridcard(thisR.getJlrgmsfhm());
+                    newRecord.setAuthorid(0);
+                    newRecord.setPrevid(0);
+                    //查询文号！、检察院代码
+                    baseServer.recordSetWhJcycode(newRecord, thisR.getWjdm(), thisR.getWjbm().toUpperCase(), thisR.getWjbid());
+                    newRecord.setEffectivetime(thisR.getJlsj());
+                    newRecord.setBaserecordid(0);
+                    newRecord.setRecorduuid(UUID.randomUUID().toString());
+                    newRecord.setWjbm(thisR.getWjbm());//文件表名
+                    newRecord.setWjbid(thisR.getWjbid());//文件表id
+                    archiveService.createNewRecord(newRecord);
+                }
 
-            FunArchiveRecordsDTO newRecord = new FunArchiveRecordsDTO();
-            newRecord.setJqbh(newType.getJqbh());
-            newRecord.setAjbh(newType.getAjbh());
-            newRecord.setThisorder(i++);
-            newRecord.setRecordname(thisR.getWjzw());
-            newRecord.setArchivetypeid(newType.getId());
-            newRecord.setArchivecode(thisR.getWjdm());
-            newRecord.setRecordstyle(EnumSoft.recordstyle.DRWS.getValue());
-            newRecord.setArchiveseqid(newType.getArchiveseqid());
-            newRecord.setRecordscode(thisR.getWjdm());
-            newRecord.setIsdelete(0);
-            newRecord.setIsazxt(0);//"系统抽取"
-            newRecord.setArchivesfcid(newType.getArchivesfcid());
-            newRecord.setAuthor("系统抽取");
-            newRecord.setAuthorid(0);
-            newRecord.setPrevid(0);
-            //查询文号！、检察院代码
-            baseServer.recordSetWhJcycode(newRecord, thisR.getWjdm(), thisR.getWjbm().toUpperCase(), thisR.getWjbid());
-            newRecord.setEffectivetime(thisR.getJlsj());
-            newRecord.setBaserecordid(0);
-            newRecord.setRecorduuid(UUID.randomUUID().toString());
-            newRecord.setWjbm(thisR.getWjbm());//文件表名
-            newRecord.setWjbid(thisR.getWjbid());//文件表id
-            archiveService.createNewRecord(newRecord);
-            //插入嫌疑人文书关系表
-            FunSuspectRecordDTO newSR = new FunSuspectRecordDTO();
-            newSR.setJqbh(newRecord.getJqbh());
-            newSR.setCaseinfoid(newCaseInfo.getId());
-            newSR.setAjbh(newRecord.getAjbh());
-            newSR.setSfcnumber(newCaseInfo.getSfcnumber());
-            newSR.setSuspectid(newSuspect.getId());
-            newSR.setRecordid(newRecord.getId());
-            newSR.setRecordtype(newType.getRecordtype());//文书类型
-            newSR.setArchiveseqid(newRecord.getArchiveseqid());
-            archiveService.createNewSR(newSR);
-            baseServer.createFiles(newRecord);
-            }catch (Exception e){
+                //插入嫌疑人文书关系表
+                FunSuspectRecordDTO newSR = new FunSuspectRecordDTO();
+                newSR.setJqbh(newRecord.getJqbh());
+                newSR.setCaseinfoid(newCaseInfo.getId());
+                newSR.setAjbh(newRecord.getAjbh());
+                newSR.setSfcnumber(newCaseInfo.getSfcnumber());
+                newSR.setSuspectid(newSuspect.getId());
+                newSR.setRecordid(newRecord.getId());
+                newSR.setRecordtype(newType.getRecordtype());//文书类型
+                newSR.setArchiveseqid(newRecord.getArchiveseqid());
+                archiveService.createNewSR(newSR);
+                baseServer.createFiles(newRecord);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
     }
-
-
 }

@@ -1,3 +1,8 @@
 spring:
   profiles:
-    active: dev
+    active: province
+#cityDq  大庆
+#cityDxal  大兴安岭
+#city 地市模板
+#province 省厅版
+#provinceTest 省厅测试版

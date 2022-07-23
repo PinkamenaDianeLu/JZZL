@@ -5,7 +5,6 @@ import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunArchiveType;
 import com.bean.jzgl.Source.FunCaseInfo;
 import com.bean.jzgl.Source.selectObj;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -221,7 +220,7 @@ public interface RecordsService {
      * @createTime  2020/12/24 23:03
      * @return    |
      */
-    FunSuspectRecordDTO selectSuspectRecordByRid (int recordid);
+    List<FunSuspectRecordDTO> selectSuspectRecordByRid (int recordid);
 
     /**
      * 查询一个type中对嫌疑人文书的最大顺序（不针对某个嫌疑人）
@@ -231,4 +230,14 @@ public interface RecordsService {
      * @return    |
      */
     public int selectRsMaxOrderByTypeid(int typeid);
+
+    /**
+     * 查询seq下某个type
+     * @author MrLu
+     * @param archiveseqid
+     * @param recordtype
+     * @createTime  2021/3/25 14:55
+     * @return    |
+     */
+    public FunArchiveTypeDTO  selectTypeBySeqType(Integer archiveseqid,Integer recordtype);
 }

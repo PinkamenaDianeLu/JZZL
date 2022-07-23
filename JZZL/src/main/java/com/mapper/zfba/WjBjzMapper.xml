@@ -72,6 +72,7 @@
     AND (BJZ.JLSJ >  #{lastpkdatevalue,jdbcType=TIMESTAMP}
     OR BJZ.GXSJ >  #{lastpkdatevalue,jdbcType=TIMESTAMP})
     AND EXISTS (SELECT 1 FROM CASES C WHERE BJZ.JQBH =  C.JQBH)
+    AND BJZ.JZFL = 9
 
   </select>
 </mapper>

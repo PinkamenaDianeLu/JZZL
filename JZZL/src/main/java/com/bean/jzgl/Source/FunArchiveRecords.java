@@ -45,6 +45,7 @@ public class FunArchiveRecords {
     private Integer wjbid;
     private String wjbm;
     private  Date effectivetime;
+    private String authoridcard;
     public Integer getId() {
         return id;
     }
@@ -275,5 +276,13 @@ public class FunArchiveRecords {
 
     public void setEffectivetime(Date effectivetime) {
         this.effectivetime = effectivetime;
+    }
+
+    public String getAuthoridcard() {
+        return authoridcard;
+    }
+
+    public void setAuthoridcard(String authoridcard) {
+        this.authoridcard = authoridcard;
     }
 }

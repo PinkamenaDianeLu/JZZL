@@ -44,6 +44,10 @@ public class FunArchiveRecordsDTO {
     private Integer wjbid;
     private String wjbm;
 
+
+    private String authoridcard;
+    private Integer iscoverimg;
+
     public Integer getId() {
         return id;
     }
@@ -258,5 +262,21 @@ public class FunArchiveRecordsDTO {
 
     public void setWjbm(String wjbm) {
         this.wjbm = wjbm;
+    }
+
+    public String getAuthoridcard() {
+        return authoridcard;
+    }
+
+    public void setAuthoridcard(String authoridcard) {
+        this.authoridcard = authoridcard;
+    }
+
+    public Integer getIscoverimg() {
+        return iscoverimg;
+    }
+
+    public void setIscoverimg(Integer iscoverimg) {
+        this.iscoverimg = iscoverimg;
     }
 }

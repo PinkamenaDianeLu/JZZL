@@ -12,43 +12,50 @@
 	.save:hover{color: #fff;background-color: rgba(18,78,184,0.7); }
 	.list_a{position: relative; width: 90%; margin: 0 auto; text-align: left; border-bottom: 1px solid #D3D3D3;}
 	.juan{color:#363636;text-align: center; margin: 0 auto; width: 880px; font-size: 14px; text-decoration: none; padding: 50px 0 100px; background: #fff;}
-	.juan h2{ font-size: 40px; padding: 10px 0;}
-	.juan h3{ font-size: 24px;}
+	.juan input{ display: inline-block; width: 500px; height: 40px; font-size: 18px; border: none;  border-bottom: 1px solid #333; padding: 0px 10px;}
+	.juan h2{ font-size: 40px; padding: 0px 0;  }
+	.juan h3{ font-size: 24px; }
 	.juan p{ font-size: 18px;padding: 10px 0;}
-	.juan h2 input{ font-size: 40px; text-align: center; padding: 10px 0;}
-	.juan h3 input{ font-size: 24px; text-align: center;}
+	.juan h2 input{ font-size: 40px; text-align: center; vertical-align: middle; height: 90px; padding-top: 20px; line-height: 70px; }
+	.juan h3 input{ font-size: 24px; text-align: center;line-height: 45px;height: 45px; padding-top: 10px;}
 	.juan p b input{ font-size: 18px;padding: 10px 0; font-weight: bold; text-align: center;}
 	.juan .content{ position: relative; width: 650px; margin: 30px auto 10px; padding: 20px 10px; border-bottom: 1px solid #333;}
 	.juan .content p{ text-align: left;}
-	.juan .content p span{display: inline-block; width: 100px;}
-	.juan input{ display: inline-block; width: 500px; height: 40px; font-size: 18px; border: none;  border-bottom: 1px solid #333; padding: 0px 10px;}
+	.juan .content p .p-min{display: inline-block; width: 110px; border: none;}
 	.juan .bottom {position: relative;padding: 0px 10px;width:650px; margin: 0px auto; text-align: left; background: #fff;}
 	.juan .bottom input{ width: 60px; text-align: center; font-size: 16px; }
+	.juan .bottom .p-min{display: inline-block; width: 80px; border: none;}
 	.juan .save{ display: inline-block; width: 100px; height: 35px; line-height: 35px; margin: 50px auto; background: #114eb8; color: #fff;}
+
 </style>
 <body>
 
-	<div class="list_a"><a class="save" id="getPageNum">计算页码</a><a class="save"  id="saveCover">保存</a></div>
-	<div class="juan" >
-		<h2 style="margin-top: 2rem;" ><input class="coverInfo" type="text" id="qzname" style="height: 90px;" /></h2>
+	<div class="list_a"><a class="save" id="getPageNum">计算页码</a>
+		<a class="save"  id="saveCover">保存</a>
+
+	</div>
+	<div class="juan"  style="height: 900px" id="jzfpDiv">
+		<input class="coverInfo" type="text" id="qzname" style="text-align: center;line-height:40px;font-size: 36px;margin-top: 48px"/>
 		<h3 ><input type="text"  class="coverInfo" id="sfcname"/></h3>
 		<p><b><input type="text"  class="coverInfo" id="archivename"/></b></p>
 		<div class="content">
-			<p><span>案件名称：</span><input type="text" class="coverInfo"  id="casename"/></p>
-			<p><span>案件编号：</span><input type="text"  class="coverInfo" id="ajbh"/></p>
-			<p><span style="width: 150px;">犯罪嫌疑人姓名：</span><input type="text" style="width: 450px;"  class="coverInfo" id="suspectsxm" /></p>
-			<p><span>立案时间：</span><input type="text"   class="coverInfo"  id="larq"/></p>
-			<p><span>结案时间：</span><input type="text"   class="coverInfo"  id="jarq" /></p>
-			<p><span>立卷单位：</span><input type="text" class="coverInfo"  id="ljdw" />
+			<p><input value="案件名称：" checked class="p-min" /><input type="text" class="coverInfo"  id="casename"/></p>
+			<p><input value="案件编号：" checked class="p-min" /><input type="text"  class="coverInfo" id="ajbh"/></p>
+			<p><input value="犯罪嫌疑人姓名：" checked class="p-min" style="width: 160px;" /><input type="text" style="width: 450px;"  class="coverInfo" id="suspectsxm" /></p>
+			<p><input value="立案时间：" checked class="p-min" /><input type="text"   class="coverInfo"  id="larq"/></p>
+			<p><input value="结案时间：" checked class="p-min" /><input type="text"   class="coverInfo"  id="jarq" /></p>
+			<p><input value="立卷单位：" checked class="p-min" /><input type="text" class="coverInfo"  id="ljdw" />
 			</p>
-			<p><span>立卷人：</span><input type="text" class="coverInfo"  id="ljr" /></p>
-			<p><span>审核人：</span><input type="text" class="coverInfo"  id="reviewxm"/></p>
+			<p><input value="立卷人：" checked class="p-min" /><input type="text" class="coverInfo"  id="ljr"  /></p>
+			<p><input value="审核人：" checked class="p-min" /><input type="text" class="coverInfo"  id="reviewxm"/></p>
 		</div>
-		<div class="bottom">本案共<input type="text"  class="coverInfo" id="archivecount"/>卷
-			第<input type="text"  class="coverInfo" id="recordcount" />卷
-			共<input type="number"  class="coverInfo" id="pagecount" />页</div>
+		<div class="bottom"><input value="本案共" checked class="p-min" /><input type="text"  class="coverInfo" id="archivecount"/><input value="卷
+			第" checked class="p-min" /><input type="text"  class="coverInfo" id="recordcount" /><input value="卷
+			共" checked class="p-min" /><input type="number"  class="coverInfo" id="pagecount" /><input value="页" checked class="p-min" /></div>
 	</div>
 
 </body>
+<script src="/utils/utils.js"></script>
+<script src="/Framework/js/html2canvas.min.js"></script>
 <script src="/model/jzzl/js/jzfp.js"></script>
 </html>

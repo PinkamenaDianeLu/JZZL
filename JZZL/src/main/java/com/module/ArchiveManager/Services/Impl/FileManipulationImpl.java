@@ -38,12 +38,16 @@ public class FileManipulationImpl implements FileManipulationService {
     FunArchiveSeqDTOMapper funArchiveSeqDTOMapper;
     @Resource
     FunArchiveTypeDTOMapper funArchiveTypeDTOMapper;
-
+    @Resource
+    FunArchiveXzcoverDTOMapper funArchiveXzcoverDTOMapper;
     @Override
     public FunArchiveCoverDTO selectFunArchiveCoverDTOByFileId (Integer fileid){
         return  funArchiveCoverDTOMapper.selectFunArchiveCoverDTOByFileId(fileid);
     }
-
+    @Override
+    public FunArchiveXzcoverDTO selectFunArchiveXzCoverDTOByFileId (Integer fileid){
+        return  funArchiveXzcoverDTOMapper.selectFunArchiveXzCoverDTOByFileId(fileid);
+    }
     @Override
     public FunArchiveBackcoverDTO selectFunArchiveBackCoverDTOByFileId(Integer fileid) {
         return FunArchiveBackcoverDTOMapper.selectFunArchiveBackCoverDTOByFileId(fileid);
@@ -96,7 +100,10 @@ public class FileManipulationImpl implements FileManipulationService {
     public void  updateFunArchiveCoverById(FunArchiveCoverDTO record){
         funArchiveCoverDTOMapper.updateByPrimaryKeySelective(record);
     }
-
+    @Override
+    public void  updateFunArchiveCoverById(FunArchiveXzcoverDTO record){
+        funArchiveXzcoverDTOMapper.updateByPrimaryKeySelective(record);
+    }
     @Override
     public void updateFunArchiveBackCoverById(FunArchiveBackcoverDTO FunArchiveBackcoverDTO) {
         FunArchiveBackcoverDTOMapper.updateByPrimaryKeySelective(FunArchiveBackcoverDTO);
@@ -106,6 +113,11 @@ public class FileManipulationImpl implements FileManipulationService {
     @Override
     public void  insertFunArchiveCover(FunArchiveCoverDTO record){
         funArchiveCoverDTOMapper.insertSelective(record);
+    }
+
+    @Override
+    public void  insertFunArchiveCover(FunArchiveXzcoverDTO record){
+        funArchiveXzcoverDTOMapper.insertSelective(record);
     }
 
     @Override
@@ -188,6 +200,11 @@ public class FileManipulationImpl implements FileManipulationService {
     @Override
     public List<FunArchiveFilesDTO> selectFilesByCodeNotSend(String filecode) {
        return   funArchiveFilesDTOMapper.selectFilesByCodeNotSend(filecode);
+    }
+
+    @Override
+    public void updateRecordsIscoverimg( Integer id) {
+        funArchiveRecordsDTOMapper.updateRecordsIscoverimg(0,id);
     }
 
 }

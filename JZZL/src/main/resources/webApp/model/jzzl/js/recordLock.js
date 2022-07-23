@@ -53,7 +53,7 @@ var recordWebSocket = (function () {
         console.log(message);
         let thisMes = JSON.parse(message);
         if ('destroy' === thisMes.message) {
-            alert("用户：" + thisMes.sender + "需要编辑该案卷，页面即将关闭！");
+            layer.alert("用户：" + thisMes.sender + "需要编辑该案卷，页面即将关闭！");
             window.close();
         }
     }

@@ -1,8 +1,10 @@
 package com.module.SystemManagement.Services.Impl;
 
+import com.bean.jzgl.DTO.FunCaseInfoDTO;
 import com.bean.jzgl.DTO.FunCasePeoplecaseDTO;
 import com.bean.jzgl.DTO.SysLogsDTO;
 import com.bean.jzgl.DTO.SysLogsLoginDTO;
+import com.mapper.jzgl.FunCaseInfoDTOMapper;
 import com.mapper.jzgl.FunCasePeoplecaseDTOMapper;
 import com.mapper.jzgl.SysLogsLoginDTOMapper;
 import com.mapper.jzgl.SysLogsMapper;
@@ -25,6 +27,8 @@ public class LogImpl implements LogService {
     SysLogsLoginDTOMapper sysLogsLoginDTOMapper;
     @Resource
     FunCasePeoplecaseDTOMapper funCasePeoplecaseDTOMapper;
+    @Resource
+    FunCaseInfoDTOMapper funCaseInfoDTOMapper;
     @Override
     public void insertLog(SysLogsDTO record) {
         sysLogsMapper.insertSelective(record);
@@ -46,8 +50,13 @@ public class LogImpl implements LogService {
     }
 
     @Override
-    public List<FunCasePeoplecaseDTO> selectCaseByJqIDCard(String jqbh, String idcard) {
-        return funCasePeoplecaseDTOMapper.selectCaseByJqIDCard(jqbh,idcard);
+    public List<FunCasePeoplecaseDTO> selectCaseByJqIDCard(String jqbh) {
+        return funCasePeoplecaseDTOMapper.selectCaseByJqIDCard(jqbh);
+    }
+
+    @Override
+    public FunCaseInfoDTO selectCaseByJqID(String jqbh) {
+        return funCaseInfoDTOMapper.selectCaseInfoByJqbh(jqbh);
     }
 
 }

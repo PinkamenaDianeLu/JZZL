@@ -5,6 +5,7 @@ import com.bean.jzgl.Source.FunArchiveRecords;
 import com.bean.jzgl.Source.FunPeopelCase;
 import com.bean.jzgl.Source.SysUser;
 import com.config.annotations.CodeTableMapper;
+import com.enums.Enums;
 import com.util.EnumsUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
@@ -150,10 +151,16 @@ public class testg {
 
     @Test
     public void md5() {
-        System.out.println(Base64.getEncoder().encodeToString("230103198810140915".getBytes(StandardCharsets.UTF_8)));
-        String encodeStr = DigestUtils.md5Hex("230103198810140915SSHB_AZXT");
-        System.out.println(Base64.getEncoder().encodeToString(encodeStr.getBytes(StandardCharsets.UTF_8)));
-        System.out.println(Base64.getEncoder().encodeToString("SSHB_AZXT,J2310020600002020020015".getBytes(StandardCharsets.UTF_8)));
+//        System.out.println(Base64.getEncoder().encodeToString("J2310020900002020020028".getBytes(StandardCharsets.UTF_8)));
+//        String encodeStr = DigestUtils.md5Hex("230103198810140915SSHB_AZXT");
+//        System.out.println(Base64.getEncoder().encodeToString(encodeStr.getBytes(StandardCharsets.UTF_8)));
+//        System.out.println(Base64.getEncoder().encodeToString("SSHB_AZXT,J2310020600002020020015".getBytes(StandardCharsets.UTF_8)));
+
+        byte[] passwordBytes = Base64.getDecoder().decode("e2tleToiVTJGc2RHVmtYMS9kcHR3ZEY2OXdYVlMrNzNFc3RIdzkyNkN2TDVOdVArZGtRR3dSTEp1eG1OMVErQ1N6YThUSyIsdXNlcm5hbWU6IjIzMTAwNDE5NzQxMTMwMDAxOCIsc2VxaWQ6IjE1ODQyIixtZXNzYWdlY29kZToiMCIsbWVzc2FnZToi5pegIn0=");
+        String realPasswordBytes = new String(passwordBytes);
+        System.out.println(realPasswordBytes);
+
+
     }
 
     @Test
@@ -218,7 +225,7 @@ public class testg {
     @Test
     public void testSubstring() {
         String realKeys = "JQBH,A230102151854,{a:1,b:2,c:3}";
-        String paramJson =realKeys.substring(realKeys.indexOf("{"));
+        String paramJson = realKeys.substring(realKeys.indexOf("{"));
 
         System.out.println(paramJson);
     }
@@ -235,6 +242,18 @@ public class testg {
     public void testOption() {
         FunArchiveRecordsDTO thisRecord = new FunArchiveRecordsDTO();
         System.out.println(thisRecord.getId());
+    }
+    @Test
+    public  void testAzGroup(){
+        //230501120200
+
+        String group ="230501120200";
+        for (int i=12;i>0;i=i-2){
+            Integer l=12-i;
+            String subGroup=group.substring(0,i);
+            System.out.println(subGroup);
+            System.out.println(String.format("%-12s",subGroup).replace(" ","0"));
+        }
     }
 
 }

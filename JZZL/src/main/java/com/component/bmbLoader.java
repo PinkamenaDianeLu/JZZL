@@ -35,7 +35,7 @@ public class bmbLoader implements CommandLineRunner {
         go();
     }
 
-    @Scheduled(cron = "0 0 10 * * ?")
+   // @Scheduled(cron = "0 0 10 * * ?")
     public  void  gogo(){
         go();
     }

@@ -144,27 +144,47 @@ var recordCover = (function () {
      * @return    |
      */
     function saveCover(coverId) {
+        $('#saveCover').unbind().html('生成中...');
         let cover = {};
         for (let thisCol of $('.coverInfo')) {
             cover[$(thisCol).attr('id')] = $(thisCol).val() || ' ';
         }
-        $.post({
-            url: '/FileManipulation/saveCover',
-            data: {
-                coverid: coverId,
-                fileid: file.id,
-                cover: JSON.stringify(cover)
-            },
-            success: (re) => {
-                const reV = JSON.parse(re);
-                if ('success' === reV.message) {
-                    loadCover();
-                    layer.msg('保存成功');
-                } else {
-                    layer.alert('卷封皮保存失败');
+
+        let coverDiv=document.getElementById('jzfpDiv');
+        $('#qzname').css('font-size','20px')
+
+
+
+        //生成图片至画布
+        html2canvas(coverDiv).then(function (canvas) {
+            $('#qzname').css('font-size','36px');
+            //将画布的图片转成base64再转成File
+            const coverImg= utils.Base64.base64ToFile(canvas.toDataURL('image/jpg'),'fileCover','jpg');
+            let formData = new FormData();//fileType
+            formData.append('newFile',coverImg);//文件本身
+            formData.append('fileid',file.id);//
+            formData.append('coverid',coverId);//
+            formData.append('cover',JSON.stringify(cover));//
+            $.post({
+                url: '/FileManipulation/saveCover',
+                ache: false,
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: (re) => {
+                    $('#saveCover').unbind().html('保存').click(function () {
+                        saveCover(reV.id)
+                    });
+                    const reV = JSON.parse(re);
+                    if ('success' === reV.message) {
+                        loadCover();
+                        layer.msg('保存成功');
+                    } else {
+                        layer.alert('卷封皮保存失败');
+                    }
                 }
-            }
-        });
+            })
+        })
 
     }
 
@@ -177,9 +197,9 @@ var recordCover = (function () {
     };
     return _recordCover;
 })();
-
 $(function () {
     const thisCover = parent.recordImgLoad.pValue;
+    console.log(thisCover.id)
     let rc = new recordCover(thisCover);
     rc.loadCover();
 
@@ -188,7 +208,8 @@ $(function () {
         let ColumnNum = rc.getColumnNum();
         $('#archivecount').val(ColumnNum[0]);//共几卷
         $('#recordcount').val(ColumnNum[1]);//第几卷
-         $('#pagecount').val( rc.getArchivePageNum(thisCover.archivetypeid));//总页数
+        $('#pagecount').val(rc.getArchivePageNum(thisCover.archivetypeid));//总页数
+        layer.msg('计算完成！');
     })
 
 })

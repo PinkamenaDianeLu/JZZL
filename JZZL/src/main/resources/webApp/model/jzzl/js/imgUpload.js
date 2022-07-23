@@ -62,14 +62,13 @@ var dropUpload = (function () {
     function createThumbnailZone(thisImgs) {
         if (thisImgs.length > 0) {
             let frag = document.createDocumentFragment();
-            console.log(thisImgs);
             // for (let thisImg of thisImgs) {
             for (let i = 0; i < thisImgs.length; i++) {
                 let thisImg = thisImgs[i]
                 let msg = '';//提示信息
                 let isCool = true;//该图片是否符合规范
                 let fileSize = +Math.round(thisImg.size * 100 / 1024) / 100;
-                if (!/\/(gif|jpg|jpeg|png|GIF|JPG|PNG)$/.test(thisImg.type)) {
+                if (!/\/(jpg|png|JPG|PNG|jpeg|JPEG)$/.test(thisImg.type)||thisImg.name.indexOf('jpeg')>0) {
                     msg += ' 不是可上传的类型！';
                     isCool = false;
                 } else if (fileSize > (5 * 1024)) {
@@ -110,7 +109,7 @@ var dropUpload = (function () {
         let msgDiv = utils.createElement.createElement({
             tag: 'span', attrs: {
                 style: 'color:red', class: 'thumbnailMsg'
-            }, arg: isCool ? '' : msg + ',请删除重传'
+            }, arg: isCool ? '' : msg + '   请删除重传'
         });
         let delDiv = utils.createElement.createElement({
             tag: 'span', attrs: {
@@ -161,6 +160,9 @@ var dropUpload = (function () {
         if ($('#thumbnailZone').find('.redThumbnail').length > 0) {
             layer.alert('红色边框的图片无法上传，请删除后重试！')
         } else {
+            startUpload(recordId)
+
+/*
             const iterator1 = files[Symbol.iterator]();
             let overSize = files.size;
             let thumbnailCDF = $(document.createDocumentFragment());//创建一个存放上传后文件的虚拟dom节点
@@ -220,20 +222,41 @@ var dropUpload = (function () {
                     }
                 })
 
-                /*         if (files.size === 0) {
-                             layer.alert('上传完成');
-                             const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-                             parent.layer.close(index);
-                         }*/
-                //如果有上传失败的话
-                /*
-                /  pDiv.find('.thumbnailMsg').html('上传失败');
-                  layer.alert('有部分文件未能完成上传，请检查文件并刷新后重试');
-                   const index = parent.layer.getFrameIndex(window.name);
-                    parent.layer.close(index);
-                / */
-            }
+            }*/
         }
+    }
+
+
+    function startUpload(recordId) {
+        const iterator1 = files[Symbol.iterator]();
+        // let fileNameAry=new Array();
+        let formData = new FormData();
+        formData.append('recordId', recordId);//文件所属文书的id
+        for (const item of iterator1) {
+            console.log(item)
+            let pDiv = $('#' + item[0]);
+            formData.append('newFile', item[1]);//文件本身
+            pDiv.find('.thumbnailMsg').html('正在上传');
+        }
+
+        $.post({
+            url: '/FileManipulation/addUpLoadRecordFileList',
+            ache: false,
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: (re) => {
+                const reV = JSON.parse(re);
+                if ("success" === reV.message){
+                    const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    parent.location.reload();
+                    parent.layer.close(index);
+                }else {
+                    layer.alert("上传失败");
+                }
+
+            }
+        })
     }
 
 

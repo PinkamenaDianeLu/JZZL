@@ -52,4 +52,15 @@ public class UserSession    {
     public void setTempString(String tempString) {
         this.tempString = tempString;
     }
+
+    //登录版本
+    private String loginVersion;
+
+    public String getLoginVersion() {
+        return loginVersion;
+    }
+
+    public void setLoginVersion(String loginVersion) {
+        this.loginVersion = loginVersion;
+    }
 }

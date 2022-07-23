@@ -92,7 +92,7 @@ public interface CaseManagerService {
      * @author Mrlu
      * @createTime 2021/3/5 16:09
      */
-    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid);
+    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid,Integer archivetype);
 
     /**
      * 新建sfc
@@ -161,7 +161,7 @@ public interface CaseManagerService {
      * @createTime  2021/3/8 10:34
      * @return    |
       */
-    FunSuspectRecordDTO selectSuspectRecordByRid(int recordid);
+     List<FunSuspectRecordDTO> selectSuspectRecordByRid(int recordid);
 
     /**
      * 根据id查询嫌疑人信息

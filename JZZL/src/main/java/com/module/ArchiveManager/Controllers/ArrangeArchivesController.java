@@ -67,7 +67,7 @@ public class ArrangeArchivesController extends BaseFactory {
             FunArchiveSFC thisSfc = arrangeArchivesService.selectFunArchiveSFCById(sfcId);
             reV.put("sfc", thisSfc);
             reV.put("seq", arrangeArchivesService.selectLastSeqBySfc(sfcId));
-            reV.put("issuspectorder", arrangeArchivesService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid()).getIssuspectorder());//基础卷是否已经为嫌疑人排序
+            reV.put("issuspectorder", arrangeArchivesService.selectBaseSfcByCaseinfoid(thisSfc.getCaseinfoid(),thisSfc.getArchivetype()).getIssuspectorder());//基础卷是否已经为嫌疑人排序
             SysUser userNow = userServiceByRedis.getUserNow(null);//获取当前用户
             //判断是否有人占用这个案件
             System.out.print(thisSfc.getCaseinfoid());
@@ -372,6 +372,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 if (1 == thisJsonObj.getInteger("isdelete")) {
                     //未完全删除  更新对应状态 此时更新的是在saveArchiveIndexSortByType中新建完的文书
                     thisRecord.setIsdelete(1);
+                    thisRecord.setIscoverimg(0);
                     arrangeArchivesService.updateFunArchiveRecordsById(thisRecord);
                 } else {
                     //完全删除 新建文书为删除
@@ -587,6 +588,7 @@ public class ArrangeArchivesController extends BaseFactory {
                 recordsDTO.setThisorder(order);
                 recordsDTO.setId(recordId);
                 recordsDTO.setArchivetypeid(typeId);
+                recordsDTO.setIscoverimg(0);
                 //更改该文书的信息
                 arrangeArchivesService.updateFunArchiveRecordsById(recordsDTO);
                 //更新文书下的文件
@@ -649,6 +651,9 @@ public class ArrangeArchivesController extends BaseFactory {
             } else {
                 //删除文书
                 //文书isdelete为2 ：文书全部删除
+                //获取文书对象  查看文书类型
+
+
                 thisRecord.setIsdelete(2);
                 //文书内的所有文件删除
                 thisFile.setArchiverecordid(recordId);
@@ -752,6 +757,10 @@ public class ArrangeArchivesController extends BaseFactory {
             JSONObject paramObj = (JSONObject) JSONObject.parse(paramjson);
             int seqId = paramObj.getInteger("seqId");//整理次序id
             String name = paramObj.getString("rename");//更新的名
+            if (StringUtils.isNotBlank(name)){
+                name=name.replaceAll("<","").replaceAll(">","");
+                name=name.replaceAll(" ","").replaceAll("&nbsp;","");
+            }
             String fileCode = paramObj.getString("filecode");
 
             if (StringUtils.isEmpty(fileCode)) {
@@ -918,6 +927,7 @@ public class ArrangeArchivesController extends BaseFactory {
                                 thisSuspectRecord.setThisorder(recordOrder++);//文书顺序
                                 thisSuspectRecord.setAuthorid(userNow.getId());
                                 thisSuspectRecord.setAuthor(userNow.getXm());
+                                thisSuspectRecord.setAuthoridcard(userNow.getIdcardnumber());
                                 //得到文书代码的顺序
                                 copyRecordToNew(oriRecordId, thisSuspectRecord);
                             }
@@ -970,4 +980,6 @@ public class ArrangeArchivesController extends BaseFactory {
         }
 
     }
+
+
 }

@@ -81,9 +81,12 @@ var loadMessage = (function () {
             suspectids[suspectids.length] = thisSelectedSuspect.id;
         }
         if (suspectids.length === 0) {
-            if (!confirm('拆分的案件没有选择任何嫌疑人，是否继续？')) {
+            layer.confirm('拆分的案件没有选择任何嫌疑人，是否继续？', {
+                btn: ['取消', '确定']//按钮
+            }, function (index) {
+                layer.close(index);
                 return false;
-            }
+            });
         }
 
         //没被选中的嫌疑人们
@@ -91,7 +94,7 @@ var loadMessage = (function () {
         for (let thisSelectedSuspect of $('#suspectsListA').find('p')) {
             notsuspectids[notsuspectids.length] = thisSelectedSuspect.id;
         }
-        alert('您的案件已经开始拆分，请注意左上角通知！');
+        layer.alert('您的案件已经开始拆分，请注意右上角通知！');
         $.post({
             url: '/CaseManager/splitCase',
             data: {
@@ -103,11 +106,11 @@ var loadMessage = (function () {
             success: (re) => {
                 const reV = JSON.parse(re);
                 if ('success' === reV.message) {
-                    alert('拆案成功！');
+                    layer.alert('拆案成功！');
                     const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     parent.layer.close(index);
                 } else {
-                    alert('数据异常，案件拆分失败');
+                    layer.alert('数据异常，案件拆分失败');
                 }
             }
         });

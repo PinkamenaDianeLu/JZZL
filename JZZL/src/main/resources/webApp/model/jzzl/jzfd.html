@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 </head>
 <style type="text/css">
-
+    .save{ display: inline-block; width: 100px; height: 35px; line-height: 35px; margin: 10px 20px 10px 0px; background: #114eb8; color: #fff; text-align: center;}
+    .save:hover{color: #fff;background-color: rgba(18,78,184,0.7); }
+    .list_a{position: relative; width: 90%; margin: 0 auto; text-align: left; border-bottom: 1px solid #D3D3D3;}
     .juan{color:#363636;text-align: center; margin: 0 auto; width: 880px; font-size: 14px; text-decoration: none; padding: 30px 0 50px; background: #fff;}
     .juan h2{ font-size: 40px; padding: 10px 0;}
     .juan h3{ font-size: 24px;}
@@ -22,24 +24,42 @@
     .juan .content p.text_r{ text-align: right; padding: 0;font-size: 16px;}
     .juan .content p.text_r input{ border-bottom: none; width: 120px; }
     .juan .content p textarea{ width: 100%; line-height: 30px; padding: 10px; margin-bottom: 50px; border: none;}
+    .juan h2 input{ width: 100%;background-color:#fff;font-size: 40px; text-align: center; vertical-align: middle; height: 90px; padding-top: 20px; line-height: 70px;border-bottom: none }
+    .juan .content p .p-min{display: inline-block; width: 110px; border: none;}
 </style>
 <body>
-<div class="roll" style="z-index: 9999;margin-bottom: 0px;">
-    <div class="juan">
-        <h2 style="margin-top: 2rem;">卷内备考表</h2>
+<div class="list_a">
+    <a class="save"  id="saveBackCover">保存</a>
+
+</div>
+    <div class="juan" id="jzfdDiv">
+        <h2 style="margin-top: 2rem;"><input type="text" id="coverTitle" value="卷内备考表" disabled></h2>
         <div class="content">
-            <p style="text-indent: 1em;"><span>本案卷共有文件材料</span><input  class="coverInfo" type="text" id="documentpage"/>页，其中：</p>
-            <p style="text-indent: 1em;"><span>文字材料</span><input   class="coverInfo"type="text" id="scriptpage"/>页，照片<input type="text" id="photopage"  class="coverInfo"/>张。</p>
-            <p><span>说明：</span></p>
+            <p style="text-indent: 1em;">
+                <input value="本案卷共有文件材料：" readonly style="width: 200px"  class="p-min" />
+                <input  class="coverInfo" type="text" id="documentpage"/>
+                <input value=" 页，其中：" readonly style="width: 50px"  class="p-min" />
+              </p>
+            <p style="text-indent: 1em;"><input value="文字材料：" readonly class="p-min" />
+                <input   class="coverInfo"type="text" id="scriptpage"/>
+                <input value="  页，照片" readonly style="width: 100px"  class="p-min" />
+                <input type="text" id="photopage" style=" width: 100px"  class="coverInfo"/>
+                <input value="  张。" readonly style="width: 100px"  class="p-min" />
+                </p>
+            <p><input value=" 说明：" readonly style="width: 100px"  class="p-min" /></p>
             <p><textarea rows="10"  class="coverInfo" id="explain"></textarea></p>
-            <p class="text_r"><span>立卷人：</span><input type="text" id="ljr"  class="coverInfo"/></p>
+            <p class="text_r">   <input value=" 立卷人：" readonly style="width: 100px"  class="p-min" /><input type="text" id="ljr"  class="coverInfo"/></p>
             <p class="text_r"><input type="text" id="ljsj"  class="coverInfo"/></p>
-            <p class="text_r"><span>审核人：</span><input type="text" id="reviewxm"  class="coverInfo"/></p>
+            <p class="text_r"><input value=" 审核人：" readonly style="width: 100px"  class="p-min" /><input type="text" id="reviewxm"  class="coverInfo"/></p>
             <p class="text_r"><input type="text" id="reviewdate"  class="coverInfo"/></p>
         </div>
-        <a class="save" id="saveBackCover">保存</a>
+
     </div>
-</div>
+
+
 </body>
+<script src="/utils/utils.js"></script>
+<script src="/Framework/js/html2canvas.js"></script>
+<script src="/model/jzzl/js/CoverToImg.js"></script>
 <script src="/model/jzzl/js/jzfd.js"></script>
 </html>

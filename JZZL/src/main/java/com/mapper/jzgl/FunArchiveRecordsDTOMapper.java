@@ -112,7 +112,14 @@ public interface FunArchiveRecordsDTOMapper {
      * @return    |
       */
     Integer selectRsMaxOrderByTypeid(int typeid);
-
+     /**
+     * 查询一个type中文书的最大顺序
+     * @author MrLu
+     * @param typeid int
+     * @createTime  2021/6/18 15:44
+     * @return    Integer|
+      */
+    Integer selectMaxOrderByTypeid(int typeid);
     /**
      * 分页查询文书
      *
@@ -314,7 +321,14 @@ public interface FunArchiveRecordsDTOMapper {
       */
     List<FunArchiveRecordsDTO> selectRecordsByWjMessageNotSend(Map<String, Object> map);
 
-
+     /**
+     * 根据文件表名表idseqid查询文书
+     * @author MrLu
+     * @param
+     * @createTime  2021/6/24 17:11
+     * @return    |
+      */
+    FunArchiveRecordsDTO  selectRecordsByWjMessage(@Param("wjbm") String wjbm,@Param("wjbid") Integer wjbid,@Param("archiveseqid") Integer archiveseqid);
      /**
      * 删除文书 isdelete=2 未被送检的
      * @author MrLu
@@ -333,4 +347,32 @@ public interface FunArchiveRecordsDTOMapper {
      * @return    |
       */
     List<FunArchiveRecordsDTO> selectFunArchiveRecordsByUUID(String uuid);
+
+     /**
+     * 更新一个seq下的错误顺序 将非系统文书的负数顺序改为1
+     * @author MrLu
+     * @param archiveseqid
+     * @createTime  2021/12/21 10:38
+     * @return    |
+      */
+    void updateWrongOrderBySeq(Integer archiveseqid);
+
+     /**
+     * 查询文书名
+     * @author MrLu
+     * @param ids
+     * @createTime  2021/12/21 10:54
+     * @return    |
+      */
+    List<String> selectRecordNameByRecordIds(@Param("ids") int[] ids);
+
+
+     /**
+     * 更新为已经生成图片
+     * @author MrLu
+     * @param 
+     * @createTime  2022/1/11 15:44
+     * @return    |  
+      */
+    void updateRecordsIscoverimg(Integer iscoverimg,Integer id);
 }

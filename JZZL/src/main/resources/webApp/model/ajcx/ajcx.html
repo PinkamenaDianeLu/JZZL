@@ -18,10 +18,10 @@
     <div class="index-main1">
     <div class="in_tab">
         <ul id="myTab" class="nav nav-tabs">
-            <li class="caseTypeTab active" value="1" >
+            <li class="caseTypeTab active" id="xsTab" value="1" >
                 <a data-toggle="tab">刑事</a>
             </li>
-            <li  value="2"  class="caseTypeTab"><a data-toggle="tab">行政</a></li>
+            <li  value="2" id="xzTab" class="caseTypeTab"><a data-toggle="tab">行政</a></li>
         </ul>
         <div id="myTabContent" class="tab-content">
             <div class="tab-pane fade in active" id="xingshi">
@@ -29,27 +29,36 @@
                     <div class="row">
                         <input type="hidden" id="casetype" value="1"/>
                         <div class="col-md-1">案件名称 ：</div>
-                        <div class="col-md-2"><input id="casename" type="text" placeholder=""/></div>
+                        <div class="col-md-3"><input id="casename" type="text" placeholder=""/></div>
                         <div class="col-md-1">主办人：</div>
-                        <div class="col-md-2"><input type="text" id="barxm" placeholder=""/><input type="hidden" id="persontype" value="0"></div>
+                        <div class="col-md-3"><input type="text" id="barxm" placeholder=""/><input type="hidden" id="persontype"></div>
                         <div class="col-md-1">办案单位 ：</div>
-                        <div class="col-md-2"><input type="text" id="badwdwmc" placeholder=""/></div>
-                        <div class="col-md-1">送检编号 ：</div>
-                        <div class="col-md-2"><input type="text" id="sfcnumber" placeholder=""/></div>
+                        <div class="col-md-3"><input type="text" id="badwdwmc" placeholder=""/></div>
+<!--                        <div class="col-md-1">送检编号 ：</div>-->
+<!--                        <div class="col-md-3"><input type="text" id="sfcnumber" placeholder=""/></div>-->
                         <!--<div class="col-md-1">被害人：</div>-->
                         <!--<div class="col-md-2"><input type="text" placeholder=""/></div>-->
                         <div class="col-md-1">送检状态 ：</div>
-                        <div class="col-md-2"><input type="text" placeholder=""/></div>
+                        <div class="col-md-3">
+                            <select id="issend" style="width: 100%">
+                            <option value="">全部</option>
+                            <option value="0">未送检</option>
+                            <option value="2">打包中</option>
+                            <option value="1">已发送</option>
+                            <option value="7">到政法委</option>
+                            <option value="8">到接收机关</option>
+                        </select>
+                        </div>
                         <div class="col-md-1">警情编号 ：</div>
-                        <div class="col-md-2"><input type="text" placeholder="" id="jqbh"/></div>
+                        <div class="col-md-3"><input type="text" placeholder="" id="jqbh"/></div>
                         <div class="col-md-1">案件编号 ：</div>
-                        <div class="col-md-2"><input type="text" style="width: 60px;" placeholder="" value="A23" id="ajbhHead"/>+<input type="text" style="width: 145px;" placeholder="" id="ajbh"/></div>
+                        <div class="col-md-3"><input type="text" style="width: 70px;" placeholder="" value="A23" id="ajbhHead"/>+<input type="text" style="width: 224px;" placeholder="" id="ajbh"/></div>
                         <div class="col-md-1">立案时间 ：</div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <input type="text"  autocomplete="off" class="layui-input" id="larq" >
                             </div>
                         <div class="col-md-1">整理时间 ：</div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <input type="text" id="zlrq" autocomplete="off" class="layui-input">
                         </div>
                         <div class="col-md-2" style="padding-left: 10px">

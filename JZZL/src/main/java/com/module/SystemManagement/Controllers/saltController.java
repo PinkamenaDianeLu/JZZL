@@ -34,6 +34,7 @@ public class saltController {
         try {
             reValue.put("value",  redisCCTemplate.opsForValue().get("salt"));
             reValue.put("version",  GlobalUtil.getGlobal("version"));
+            reValue.put("groupcode",  GlobalUtil.getGlobal("groupcode"));
             reValue.put("message", "success");
         } catch (Exception e) {
             e.printStackTrace();

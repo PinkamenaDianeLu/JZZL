@@ -62,4 +62,9 @@ public class WebSocketImpl implements WebSocketService {
     public void readMessage(String[] ids) {
         sysLogsWebsocketDTOMapper.readMessage(ids);
     }
+
+    @Override
+    public void readMessageAll(String receiver) {
+        sysLogsWebsocketDTOMapper.readMessageAll(receiver);
+    }
 }

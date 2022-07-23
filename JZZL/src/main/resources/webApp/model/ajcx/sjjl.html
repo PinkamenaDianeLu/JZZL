@@ -6,8 +6,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
     <link href="/Framework/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Framework/jqueryUI/jquery-ui.min.css">
     <link href="/Framework/bootstrapTable/bootstrap-table.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="/css/style.css">
+<style>
+    .lc_but{padding: 0px 16px;
+        display: inline-block;outline: none; border: 1px solid #ddd; color: #333; background: rgba(0,0,0,0.2); }
+.text_m{text-align: center;}
+    .text_m h3{padding: 10px 20px; font-size: 20px;}
+    .text_m p{text-indent: 40px; font-size: 15px; line-height: 20px; text-align: left;}
+</style>
 </head>
 <body>
 <div id="userHeart"  ></div>
@@ -17,11 +25,17 @@
             <ul id="myTab" class="nav nav-tabs" style="padding-top: 10px;">
                 <li style="line-height:50px; font-size: 16px;"><span id="sfcnumber">送检编号</span>&nbsp;&nbsp;&nbsp;
                     &nbsp;<span id="casename">案件名称</span>
-                    &nbsp;<span style="color: red" id="issuspectorder">是否为嫌疑人排序</span>
+                    <span style="color:red;margin-left: 300px">提示：出现发送失败的卷请点击"完整性校验"查看原因</span>
+                    &nbsp;<span style="color: red;display: block" id="issuspectorder">是否为嫌疑人排序</span>
                 </li>
                 <div class="right" style="margin-top: 5px;">
                     <button class="ok_but" id="suspectOrder">嫌疑人排序</button>
-                    <button class="ok_but" id="createSFC">+ 新建</button></div>
+                    <button class="ok_but" id="createSFC">新建卷宗</button>
+                    <button class="ok_but" id="recordSync" >文书同步</button>
+                    <button class="ok_but" id="integralityCheck" >完整性校验</button>
+                    <button class="ok_but" id="deleteCase" >重新抽取</button>
+                    <button class="lc_but" id="promptAlert" >流程说明</button>
+                </div>
             </ul>
             <div class="tab-content">
                 <div class="f_main">
@@ -43,6 +57,7 @@
 <script>
 
 </script>
+
 <script src="/Framework/js/jquery.min.js"></script>
 <script src="/Framework/layer/layer.js"></script>
 <script src="/Framework/jqueryUI/jquery-ui.js"></script>
@@ -56,5 +71,17 @@
         <li id="suspectHead"><span>姓名</span><span>身份证号码</span></li>
 
     </ul>
+</div>
+
+<div id="integralityCheckDiv" style="display: none">
+
+    <div id="integralityCheckMessgae" class="text_m"></div>
+</div>
+
+<div id="sendErrorMessage" style="display: none">
+<!--    <h2 style="font-size: 24px; color: #f00; line-height: 40px; margin:20px 0 5px;">您有发送失败的文书！</h2>-->
+<!--    <p style="text-align: left; line-height: 30px;padding: 0px 10px;"><b style="font-size: 20px;">·</b>《王丽丽 提请批准逮捕书》 创建人：宋鑫</p>-->
+<!--    <p>具体原因请查看右上角消息提醒！</p>-->
+
 </div>
 </html>

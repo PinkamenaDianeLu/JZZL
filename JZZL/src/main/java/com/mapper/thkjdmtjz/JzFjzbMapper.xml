@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.thkjdmtjz.JzFjzbMapper" >
+  <resultMap id="BaseResultMap" type="com.bean.thkjdmtjz.JzFjzb" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="JQBH" property="jqbh" jdbcType="VARCHAR" />
+    <result column="AJBH" property="ajbh" jdbcType="VARCHAR" />
+    <result column="AJMC" property="ajmc" jdbcType="VARCHAR" />
+    <result column="XYRBH" property="xyrbh" jdbcType="VARCHAR" />
+    <result column="XYRXM" property="xyrxm" jdbcType="VARCHAR" />
+    <result column="WJMC" property="wjmc" jdbcType="VARCHAR" />
+    <result column="WJDM" property="wjdm" jdbcType="VARCHAR" />
+    <result column="WJZW" property="wjzw" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="DECIMAL" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+    <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="CREATEXM" property="createxm" jdbcType="VARCHAR" />
+    <result column="CREATEZJHM" property="createzjhm" jdbcType="VARCHAR" />
+    <result column="CREATEDWMC" property="createdwmc" jdbcType="VARCHAR" />
+    <result column="CREATEDWDM" property="createdwdm" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="WJUUID" property="wjuuid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, JQBH, AJBH, AJMC, XYRBH, XYRXM, WJMC, WJDM, WJZW, STATE, SCBJ, CREATETIME, UPDATETIME, 
+    CREATEXM, CREATEZJHM, CREATEDWMC, CREATEDWDM, REMARK, WJUUID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from JZ_FJZB
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectFjzbGtFxsj" resultMap="BaseResultMap" parameterType="java.util.Date">
+    select
+    <include refid="Base_Column_List" />
+    from JZ_FJZB
+    where UPDATETIME &gt; #{gxsj,jdbcType=TIMESTAMP}
+  </select>
+</mapper>

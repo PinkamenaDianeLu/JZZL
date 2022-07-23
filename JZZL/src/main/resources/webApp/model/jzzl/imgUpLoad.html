@@ -7,7 +7,7 @@
         body{color:#363636;text-align: center; font-family: "Microsoft YaHei"; font-size: 14px;margin:0;padding: 0; text-decoration: none; }
         #dropZone {
             position: relative;
-            width: 300px;
+            width: 100%;
             height: 150px;
             border: 1px dashed #ddd;
             border-radius: 5px;
@@ -50,9 +50,12 @@
 
 <form enctype="multipart/form-data" style="padding: 10px;">
 <div id="dropZone">
-    <div class="text"><span>+</span><span>将文件拖到此处，即可上传</span><input type="file" name="files" style="display: none" multiple id="newFiles"/></div>
+    <div class="text"><span>·</span><span>点击/将文件拖到此处，即可上传（限制文件类型为jpg、png，图片最大为5M）</span><input type="file" name="files" style="display: none" multiple id="newFiles"/></div>
+    <br>
+
 </div>
-<div id="thumbnailZone"></div>
+    <div class="text" style="color: red"><span>·</span><span>提示：由于服务器性能限制，上传附件功能使用频率过高，建议不要大批量上传附件，少量多次分别上传</span></div>
+    <div id="thumbnailZone"></div>
 </form>
 <div style="position: absolute; text-align: right; bottom:0px; padding:15px 15px; border-top:1px solid #ccc;box-sizing: border-box; width: 100%;">
     <button id="submit-all" class="ok_but">确认上传</button>&nbsp;&nbsp;&nbsp;&nbsp;

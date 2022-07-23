@@ -32,7 +32,7 @@ var webSocket = (function () {
         let newMessage = utils.createElement.createElement({
             tag: 'li',
             attrs: {}, arg: '<b>发件人：' + thisMes.sender + '</b>' +
-                '<font>' + utils.timeFormat.timestampToDate(thisMes.sendtime) + '</font>'
+                '<font>' + utils.timeFormat.timestampToDate(thisMes.createtime) + '</font>'
         });
         let readed = utils.createElement.createElement({
             tag: 'a',
@@ -81,10 +81,16 @@ var webSocket = (function () {
      * @createTime  2020/12/18 16:50
      */
     function readAllMessage() {
-        if (confirm('确认全部标记已读？')) {
+        layer.confirm('确认全部标记已读？', {
+                btn: ['确定', '取消']//按钮
+        }, function (index) {
+            layer.close(index);
             readMessage(Array.from(messageIds).join(','));
             $('#messageCount').hide();
-        }
+        });
+        // if (confirm('')) {
+        //
+        // }
     }
 
     /**
@@ -139,7 +145,6 @@ var webSocket = (function () {
      * @version 1.0
      */
     function showGreeting(message) {
-        console.log(message);
         let messageObj=JSON.parse(message);
         if ('destroy'===messageObj.message){
             //提示关闭页面功能 不需要记录为消息
@@ -205,11 +210,16 @@ var webSocket = (function () {
 
 
 $(function () {
-    let mes = new webSocket(sessionStorage.username);
-    //全部已读按钮
-    $('#haveRead').click(function () {
-        //event不推荐了  那应该用啥啊  你倒是说啊
-        event.stopPropagation();
-        mes.readAllMessage();
-    })
+    console.log(sessionStorage.username)
+    if ("admin"!==sessionStorage.username){
+        let mes = new webSocket(sessionStorage.username);
+        //全部已读按钮
+        $('#haveRead').click(function () {
+            //event不推荐了  那应该用啥啊  你倒是说啊
+            event.stopPropagation();
+            mes.readAllMessage();
+        })
+    }
+
+
 })

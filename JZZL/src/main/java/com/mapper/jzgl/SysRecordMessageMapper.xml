@@ -13,6 +13,7 @@
     <result column="JCYCODE" property="jcycode" jdbcType="VARCHAR" />
     <result column="Z" property="z" jdbcType="VARCHAR" />
     <result column="DIFFERENCE" property="difference" jdbcType="VARCHAR" />
+    <result column="RECORDTYPE" property="recordtype" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, RECORDNAME, WJBM, RECORDCODE, JCYCODE, Z, 
@@ -29,5 +30,9 @@
     SELECT  <include refid="Base_Column_List" />
     from SYS_RECORDMESSAGE
     where SCBJ=0 AND RECORDCODE=#{recordcode,jdbcType=VARCHAR}
+    <if test="recordtype != null">
+      AND RECORDTYPE=#{recordtype,jdbcType=DECIMAL}
+    </if>
   </select>
+
 </mapper>

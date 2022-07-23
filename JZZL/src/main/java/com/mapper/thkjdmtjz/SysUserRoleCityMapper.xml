@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.thkjdmtjz.SysUserRoleCityMapper" >
+  <resultMap id="BaseResultMap" type="com.bean.thkjdmtjz.SysUserRoleCity" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="USERID" property="userid" jdbcType="DECIMAL" />
+    <result column="ROLEID" property="roleid" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="DECIMAL" />
+    <result column="SCBJ" property="scbj" jdbcType="VARCHAR" />
+    <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="CREATEXM" property="createxm" jdbcType="VARCHAR" />
+    <result column="CREATEZJHM" property="createzjhm" jdbcType="VARCHAR" />
+    <result column="CREATEDWMC" property="createdwmc" jdbcType="VARCHAR" />
+    <result column="CREATEDWDM" property="createdwdm" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, USERID, ROLEID, STATUS, SCBJ, CREATETIME, UPDATETIME,CREATEXM,CREATEZJHM,CREATEDWMC,CREATEDWDM
+  </sql>
+
+  <select id="selectUserRoleByUserid" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT <include refid="Base_Column_List" />
+    from SYS_USER_ROLE
+    where 1 = 1 and scbj = 0
+    AND USERID = #{userid,jdbcType=DECIMAL}
+  </select>
+</mapper>

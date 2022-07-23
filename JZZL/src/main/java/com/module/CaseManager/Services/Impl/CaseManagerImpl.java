@@ -93,8 +93,8 @@ public class CaseManagerImpl extends BaseFactory implements CaseManagerService {
     }
 
     @Override
-    public FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid) {
-        return funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid);
+    public FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid,Integer archivetype) {
+        return funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid,archivetype);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class CaseManagerImpl extends BaseFactory implements CaseManagerService {
     }
 
     @Override
-    public FunSuspectRecordDTO selectSuspectRecordByRid(int recordid) {
+    public List<FunSuspectRecordDTO> selectSuspectRecordByRid(int recordid) {
         return funSuspectRecordDTOMapper.selectSuspectRecordByRid(recordid);
     }
 
@@ -200,11 +200,13 @@ public class CaseManagerImpl extends BaseFactory implements CaseManagerService {
         record.setRecorduuid(UUID.randomUUID().toString());
         record.setWjbid(0);
         record.setWjbm("0");
+        record.setIscoverimg(1);
         funArchiveRecordsDTOMapper.insertSelective(record);
         if (record.getRecordscode().startsWith("ZL")) {
             //是文书封皮、目录、封底
             FunArchiveFilesDTO r = new FunArchiveFilesDTO();
             r.setJqbh(record.getJqbh());
+            r.setBjzid(0);
             r.setAjbh(record.getAjbh());
             r.setThisorder(0);//封皮、目录、封底 他们只有一页，在文书中永远是第一页
             r.setArchiverecordid(record.getId());
@@ -212,6 +214,9 @@ public class CaseManagerImpl extends BaseFactory implements CaseManagerService {
             switch (record.getRecordscode()) {
                 case "ZL001":
                     r.setFiletype(1);
+                    break;
+                case "ZL004":
+                    r.setFiletype(5);
                     break;
                 case "ZL002":
                     r.setFiletype(3);

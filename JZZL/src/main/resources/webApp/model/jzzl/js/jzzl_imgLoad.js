@@ -51,7 +51,7 @@ var recordImgLoad = (function () {
                         console.error('该文书下没有任何文件可供显示！'); //一页文书都没有还显示个p
                         return;
                     }
-                    if (0 !== files[0].filetype) {
+                    if (0 !== files[0].filetype&&4 !== files[0].filetype) {
                         //是卷宗封皮、封底、目录
                         $('.recordImgBtn').unbind().hide();//功能区按钮隐藏
                         const thisFile = files[0];//对象拿出
@@ -59,6 +59,9 @@ var recordImgLoad = (function () {
                         switch (thisFile.filetype) {
                             case 1://卷封皮
                                 url = '/model/jzzl/jzfp.html';
+                                break;
+                            case 5://卷封皮 行政
+                                url = '/model/jzzl/jzfp_xz.html';
                                 break;
                             case 2://卷目录
                                 url = '/model/jzzl/jzml.html';
@@ -152,6 +155,7 @@ var recordImgLoad = (function () {
     function loadBtn(thisFileCode) {
         //为下载按钮添加方法
         $('#downLoadBtn').unbind().click(function () {
+            layer.alert("因网络安全要求，系统不提供自动下载，请在目标图片上点击右键->另存为");
             if (thisFileCode) {
                 utils.createElement.downLoadImg(imgMap.get(thisFileCode).serverip + imgMap.get(thisFileCode).fileurl);
             } else {
@@ -269,7 +273,7 @@ var recordImgLoad = (function () {
                 maxmin: false,
                 shadeClose: false, //点击遮罩关闭层
                 area: ['1111px', '600px'],
-                content: '/model/jzzl/imgUpload.html?recordId=' + recordId + '&maxOrder=' + imgMap.get(key).thisorder
+                content: '/model/jzzl/imgUpLoad.html?recordId=' + recordId + '&maxOrder=' + imgMap.get(key).thisorder
             });
         });
         //删除按钮
@@ -278,15 +282,21 @@ var recordImgLoad = (function () {
                 layer.msg('当前案件处于只读状态！4');
                 return false;
             }
-            if (confirm('确认删除？')) {
-                if (thisFileCode) {
+            layer.confirm('确认删除？', {
+                btn: ['确定', '取消']//按钮
+            }, function (index) {
+                pString = Array.from(checkFile).join(',');
+                layer.close(index);
+                if (thisFileCode&&checkFile.size==1) {
                     //删除单页文书 recordId
                     parent.lai.delFun('thumbnail' + thisFileCode, recordId);
-                } else {
+                } else if(1==2){
+                    parent.lai.delFun('thumbnail' + pString, recordId);
+                }else  {
                     //删除整个文书
                     parent.lai.delFun('dd' + recordId, recordId);
                 }
-            }
+            });
         });
         //图片详细按钮
         /**
@@ -307,6 +317,7 @@ var recordImgLoad = (function () {
         });
         //为移动至按钮添加方法
         $('#moveToBtn').unbind().click(function () {
+            debugger;
             if (thisFileCode) {
                 //移动单个图片
                 moveToFn(thisFileCode, recordId);
@@ -577,11 +588,12 @@ var recordImgLoad = (function () {
 
             }
         } else {
+            debugger;
             //平面图状态
             //多选移动至
             //被移动的文书filecode set
             if (!checkFile || checkFile.size === 0) {
-                alert('请选择要移动的图片！');
+                layer.alert('请选择要移动的图片！');
                 return false;
             }
             pString = Array.from(checkFile).join(',');

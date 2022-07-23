@@ -201,8 +201,8 @@ public class ArrangeArchivesImpl implements ArrangeArchivesService {
     }
 
     @Override
-    public FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid) {
-        return funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid);
+    public FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid,Integer archivetype) {
+        return funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid,archivetype);
     }
 
 

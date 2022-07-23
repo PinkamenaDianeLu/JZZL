@@ -3,7 +3,7 @@ spring:
  datasource:
   jzgl:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:oracle:thin:@192.168.30.3:1521:orcl
+    url: jdbc:oracle:thin:@10.112.57.160:1521:orcl
     driver-class-name: oracle.jdbc.driver.OracleDriver
     username: jzzl
     password: jzzl
@@ -22,11 +22,11 @@ spring:
     time-between-eviction-runs-millis: 18800
   zfba:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:oracle:thin:@192.168.1.250:1521:orcl
+    url: jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=35.0.11.100)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=35.0.11.101)(PORT=1521))(LOAD_BALANCE=yes)(CONNECT_DATA=(SERVICE_NAME=orclsrv)(FAILOVER_MODE=(TYPE=SELECT)(METHOD=BASIC)(RETRIES=180)(DELAY=5))))
     driver-class-name: oracle.jdbc.driver.OracleDriver
     username: zfba
-    password: zfba
-    max-active: 500
+    password: zfba_sshb_2017
+    max-active: 50
     maximum-pool-size: 100
     max-idle: 10
     max-wait: 10000
@@ -49,9 +49,9 @@ spring:
    sessionDatabase: 1
    onlineUsers: 2
    casesAreOccupied: 3
-   host: 192.168.30.3
+   host: 35.35.50.100
    port: 6379
-   password: sshbjzzl2020
+   password: redis
    timeout: 3000
    lettuce:
      pool:

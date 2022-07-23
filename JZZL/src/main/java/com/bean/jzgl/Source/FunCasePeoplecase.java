@@ -43,6 +43,7 @@ public class FunCasePeoplecase {
 
     private String badwdwmc;
 
+
     public Integer getId() {
         return id;
     }
@@ -202,4 +203,5 @@ public class FunCasePeoplecase {
     public void setCasetype(Integer casetype) {
         this.casetype = casetype;
     }
+
 }

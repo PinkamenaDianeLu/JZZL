@@ -51,6 +51,6 @@ public interface FunCasePeoplecaseDTOMapper {
      * @author MrLu
      * @createTime 2021/4/8 16:03
      */
-    List<FunCasePeoplecaseDTO> selectCaseByJqIDCard(String jqbh, String idcard);
+    List<FunCasePeoplecaseDTO> selectCaseByJqIDCard(String jqbh);
 
 }

@@ -162,7 +162,6 @@
         <include refid="Base_Column_List"/>
         FROM FUN_SUSPECT_RECORD WHERE SCBJ=0
         AND RECORDID = #{recordid,jdbcType=DECIMAL}
-        AND rownum=1
     </select>
 
     <select id="selectRecordBoolSuspect" parameterType="map" resultMap="BaseResultMap">
@@ -175,5 +174,6 @@
                  open="(" close=")">
             #{item,jdbcType=VARCHAR}
         </foreach>
+        and rownum = 1
     </select>
 </mapper>

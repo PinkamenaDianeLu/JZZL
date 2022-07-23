@@ -52,6 +52,7 @@ var recordsTable = (function () {
                         i: 999,
                         f: 999
                     };
+                    console.log(reV.value)
                     for (let thisFile of reV.value) {
                         //判断是否是最后一个文书
                         lastFileCount--;
@@ -62,7 +63,6 @@ var recordsTable = (function () {
                                 f: 993
                             };
                         }
-
                         Fragment.appendChild(parent.lai.createFilesDiv(thisFile, fileIndexing));
                         //将原有的删除
                         parent.$('#front' + thisFile.filecode).remove();
@@ -70,15 +70,16 @@ var recordsTable = (function () {
                         parent.$('#thumbnail' + thisFile.filecode).remove();
                         parent.$('#fileIndex' + thisFile.filecode).remove();
                     }
-                    //重新计算按钮
-                    parent.lai.reloadButton(parent.$('#dd' + oriRecordId).find('.v3').last());
-                    parent.lai.reloadButton(parent.$('#dd' + oriRecordId).find('.v3').first());
-                    const lastFile = parent.$('#dd' + recordId).find('.v3').last();//保存目标文书的原最后一个文书
+                    // console.log(oriRecordId)
+                    //重新计算按钮  因为没有子目录了  以下代码废弃
+                    // parent.lai.reloadButton(parent.$('#dd' + oriRecordId).find('.v3').last());
+                    // parent.lai.reloadButton(parent.$('#dd' + oriRecordId).find('.v3').first());
+                    // const lastFile = parent.$('#dd' + recordId).find('.v3').last();//保存目标文书的原最后一个文书
                     //移动到新目录
-                    parent.$('#dd' + recordId).find('.fileSortZone').append(Fragment);
-                    parent.lai.reloadButton(lastFile);//刷新按钮
+                    // parent.$('#dd' + recordId).find('.fileSortZone').append(Fragment);
+                    // parent.lai.reloadButton(lastFile);//刷新按钮
 
-                    layer.msg('开始完成！');
+                    layer.msg('移动完成！');
                     //自我关闭
                     const index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
                     parent.layer.close(index);
@@ -182,7 +183,7 @@ $(function () {
                 $('#archiveTypeTab').append(Fragment)
 
             } else {
-                alert('没有找到可以移动的文书信息！');
+                layer.alert('没有找到可以移动的文书信息！');
                 console.error('文书信息加载失败');
             }
         }

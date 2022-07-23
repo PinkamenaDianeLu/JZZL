@@ -45,7 +45,7 @@ public interface FunSuspectRecordDTOMapper {
      * @author MrLu
      * @createTime 2020/12/24 23:03
      */
-    FunSuspectRecordDTO selectSuspectRecordByRid(int recordid);
+    List<FunSuspectRecordDTO> selectSuspectRecordByRid(int recordid);
 
      /**
      * 判断这个文书是否对应某些的嫌疑人

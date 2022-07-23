@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.jzgl.SysRoleUserMapper" >
+  <resultMap id="BaseResultMap" type="com.bean.jzgl.Source.SysRoleUser" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+    <result column="STATE" property="state" jdbcType="DECIMAL" />
+    <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="SYSUSERID" property="sysuserid" jdbcType="DECIMAL" />
+    <result column="ROLECODE" property="rolecode" jdbcType="VARCHAR" />
+    <result column="ROLENAME" property="rolename" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, SCBJ, STATE, CREATETIME, UPDATETIME, USERNAME, SYSUSERID, ROLECODE, ROLENAME
+
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from SYS_ROLE_USER
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <insert id="insert" parameterType="com.bean.jzgl.DTO.SysRoleUserDTO" >
+    <selectKey resultType="INTEGER" order="BEFORE"
+               keyProperty="id">
+      select SEQ_SYS_ROLE_USER_ID.nextval from dual
+    </selectKey>
+  insert into SYS_ROLE_USER (ID, SCBJ, STATE,
+      CREATETIME, UPDATETIME, USERNAME,
+      SYSUSERID, ROLECODE, ROLENAME
+      )
+    values (#{id,jdbcType=DECIMAL}, 0, 0,
+      sysdate, sysdate, #{username,jdbcType=VARCHAR},
+      #{sysuserid,jdbcType=DECIMAL}, #{rolecode,jdbcType=VARCHAR}, #{rolename,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.bean.jzgl.DTO.SysRoleUserDTO" >
+    update SYS_ROLE_USER
+    <set >
+      <if test="updatetime != null" >
+        UPDATETIME = sysdate,
+      </if>
+      <if test="username != null" >
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="sysuserid != null" >
+        SYSUSERID = #{sysuserid,jdbcType=VARCHAR},
+      </if>
+      <if test="rolecode != null" >
+        ROLECODE = #{rolecode,jdbcType=CHAR},
+      </if>
+      <if test="rolename != null" >
+        ROLENAME = #{rolename,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+
+  <delete id="deleteRoles" parameterType="java.lang.Integer">
+    delete SYS_ROLE_USER where  scbj=0 and SYSUSERID = #{sysuserid,jdbcType=VARCHAR}
+  </delete>
+
+  <select id="selectRoleByUserid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List" />
+    FROM SYS_ROLE_USER
+    WHERE  SCBJ=0 AND SYSUSERID = #{sysuserid,jdbcType=VARCHAR}
+  </select>
+</mapper>

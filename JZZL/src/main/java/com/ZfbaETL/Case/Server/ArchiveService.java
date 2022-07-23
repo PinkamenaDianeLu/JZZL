@@ -1,23 +1,18 @@
 package com.ZfbaETL.Case.Server;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.bean.jzgl.DTO.*;
 import com.bean.jzgl.Source.SysRecordMessage;
-import com.bean.zfba.Wh;
-import com.bean.zfba.WjBjz;
 import com.bean.zfba.WjWjdz;
 import com.bean.zfba.XtWjflb;
 import com.mapper.jzgl.*;
 import com.mapper.zfba.WjBjzMapper;
 import com.mapper.zfba.WjWjdzMapper;
 import com.mapper.zfba.XtWjflbMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author MrLu
@@ -119,10 +114,21 @@ public class ArchiveService {
      * @author MrLu
      * @createTime 2021/3/19 14:28
      */
-    public SysRecordMessage selectMessageByCode(String recordcode) {
-        return sysRecordMessageMapper.selectMessageByCode(recordcode);
+    public SysRecordMessage selectMessageByCode(String recordcode,Integer recordtype) {
+        return sysRecordMessageMapper.selectMessageByCode(recordcode,recordtype);
     }
 
+
+    /**
+     * 根据文件表名表idseqid查询文书
+     * @author MrLu
+     * @param
+     * @createTime  2021/6/24 17:11
+     * @return    |
+     */
+    public FunArchiveRecordsDTO  selectRecordsByWjMessage(@Param("wjbm") String wjbm, @Param("wjbid") Integer wjbid, @Param("archiveseqid") Integer archiveseqid){
+        return funArchiveRecordsDTOMapper.selectRecordsByWjMessage(wjbm,wjbid,archiveseqid);
+    };
 
 
 }

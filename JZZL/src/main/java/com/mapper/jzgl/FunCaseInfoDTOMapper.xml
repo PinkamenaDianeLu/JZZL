@@ -25,17 +25,27 @@
         <result column="GAJGDM" jdbcType="VARCHAR" property="gajgdm"/>
         <result column="LARQ" jdbcType="TIMESTAMP" property="larq"/>
         <result column="JARQ" jdbcType="TIMESTAMP" property="jarq"/>
+        <result column="SARQ" jdbcType="TIMESTAMP" property="sarq"/>
+        <result column="ISSORTED" jdbcType="DECIMAL" property="issorted"/>
     </resultMap>
     <sql id="Base_Column_List">
     ID, SCBJ, STATE, CREATETIME, UPDATETIME, JQBH, AJBH, CASENAME, SFCNUMBER, CASESTATE, 
     CASETYPE, CASESTAGE, CASECLASS, CASECLASSCN, BARXM, BARSYSUSERID, BARIDCARD, BADWDWDM, 
-    BADWDWMC, GAJGMC, GAJGDM, LARQ, JARQ
+    BADWDWMC, GAJGMC, GAJGDM, LARQ, JARQ,SARQ,ISSORTED
   </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from FUN_CASE_INFO
         where ID = #{id,jdbcType=DECIMAL}
+    </select>
+
+    <select id="selectCaseInfoByJqbh"  parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from FUN_CASE_INFO
+        where JQBH = #{jqbh,jdbcType=VARCHAR}
+        AND ROWNUM =1
     </select>
     <insert id="insertSelective" parameterType="com.bean.jzgl.DTO.FunCaseInfoDTO">
         <selectKey resultType="INTEGER" order="BEFORE"
@@ -49,6 +59,7 @@
             STATE,
             CREATETIME,
             UPDATETIME,
+            ISSORTED,
             JQBH,
             AJBH,
             CASENAME,
@@ -79,10 +90,15 @@
             <if test="jarq != null">
                 JARQ,
             </if>
+
+            <if test="sarq != null">
+                SARQ,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             #{id,jdbcType=DECIMAL},
             0,0,sysdate,sysdate,
+            #{issorted,jdbcType=DECIMAL},
             #{jqbh,jdbcType=VARCHAR},
             #{ajbh,jdbcType=VARCHAR},
             #{casename,jdbcType=VARCHAR},
@@ -112,6 +128,9 @@
             </if>
             <if test="jarq != null">
                 #{jarq,jdbcType=TIMESTAMP},
+            </if>
+            <if test="sarq != null">
+                #{SARQ,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
@@ -184,6 +203,13 @@
             <if test="jarq != null">
                 JARQ = #{jarq,jdbcType=TIMESTAMP},
             </if>
+            <if test="sarq != null">
+                SARQ = #{SARQ,jdbcType=TIMESTAMP},
+            </if>
+            <if test="issorted != null">
+                ISSORTED = #{issorted,jdbcType=DECIMAL},
+            </if>
+
         </set>
         where ID = #{id,jdbcType=DECIMAL}
     </update>
@@ -210,4 +236,13 @@
         </if>
 
     </select>
+
+    <select id="selectCaseCountByJqbh" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT nvl(COUNT(1),0) FROM FUN_CASE_INFO
+        WHERE SCBJ=0 AND JQBH = #{jqbh,jdbcType=VARCHAR}
+    </select>
+
+    <update id="updateCaseIsSorted" parameterType="java.lang.Integer">
+        UPDATE FUN_CASE_INFO SET ISSORTED = 1 WHERE ID= #{id,jdbcType=DECIMAL}
+    </update>
 </mapper>

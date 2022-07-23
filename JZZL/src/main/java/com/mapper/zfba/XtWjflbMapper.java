@@ -50,4 +50,14 @@ public interface XtWjflbMapper {
       */
     List<XtWjflb> selectNewRecordsAfterDate(Map<String, Object> map);
 
+
+    /**
+     * 查询某些警情编号的文书
+     * @author MrLu
+     * @param
+     * @createTime  2021/3/25 10:22
+     * @return    |
+     */
+    List<XtWjflb> selectNewRecordsForAjbh(String ajbhAry);
+
 }

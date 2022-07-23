@@ -21,6 +21,32 @@ var utils = {
         },
         atou:function (str) {
             return decodeURIComponent(escape(window.atob(str)));
+        },
+         /**
+         * base64转blob
+         * @author MrLu
+         * @param
+         * @createTime  2022/1/10 11:19
+         * @return    |
+          */
+        base64ToFile(data,fileName,fileType){
+            var arr=data.split(','),
+                type=arr[0].match(/:(.*?);/)[1],
+                bstr=atob(arr[1]),
+                l=bstr.length,
+                u8Arr=new Uint8Array(l);
+
+            while (l--){
+                u8Arr[l]=bstr.charCodeAt(l);
+            }
+           let reFile= new File([u8Arr],fileName+'.'+fileType,{
+                type:type
+            })
+             reFile.lastModifiedDate=new Date();
+             reFile.name=fileName;
+             reFile.fileName=fileName;
+             reFile.type=fileType;
+             return reFile;
         }
     },
     /**

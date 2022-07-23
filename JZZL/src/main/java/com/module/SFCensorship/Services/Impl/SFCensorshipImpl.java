@@ -89,8 +89,8 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid) {
-        return funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid);
+    public FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid,Integer archivetype) {
+        return funArchiveSFCDTOMapper.selectBaseSfcByCaseinfoid(caseinfoid,archivetype);
     }
 
     @Override
@@ -122,6 +122,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
 
     @Override
     public void insertZlRecords(FunArchiveRecordsDTO record, FunArchiveTypeDTO type) {
+        record.setIscoverimg(1);//此时未生成图片
         funArchiveRecordsDTOMapper.insertSelective(record);
         if (record.getRecordscode().startsWith("ZL")) {
             //是文书封皮、目录、封底
@@ -140,6 +141,9 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
                     break;
                 case "ZL003":
                     r.setFiletype(2);
+                    break;
+                case "ZL004":
+                    r.setFiletype(5);
                     break;
             }
             r.setFileurl("/");
@@ -244,7 +248,7 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     }
 
     @Override
-    public FunSuspectRecordDTO selectSuspectRecordByRid(int recordid) {
+    public List<FunSuspectRecordDTO>  selectSuspectRecordByRid(int recordid) {
         return funSuspectRecordDTOMapper.selectSuspectRecordByRid(recordid);
     }
 
@@ -275,6 +279,21 @@ public class SFCensorshipImpl extends BaseFactory implements SFCensorshipService
     @Override
     public void createNewTags(FunArchiveTagsDTO funArchiveTagsDTO) {
         funArchiveTagsDTOMapper.insert(funArchiveTagsDTO);
+    }
+
+    @Override
+    public void approvalArchive(Integer approval, Integer id) {
+        funArchiveSFCDTOMapper.approvalArchive(approval,id);
+    }
+
+    @Override
+    public void updateSendTypeById(Integer issend, Integer sfcid) {
+        funArchiveSFCDTOMapper.updateSendTypeById(issend,sfcid);
+    }
+
+    @Override
+    public List<FunArchiveSFCDTO> selectSendErrorArchive(Integer caseinfoid) {
+        return funArchiveSFCDTOMapper.selectSendErrorArchive(caseinfoid);
     }
 
 }

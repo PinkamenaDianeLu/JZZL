@@ -22,7 +22,7 @@ public class saltLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
        go();
     }
-    @Scheduled(cron = "0 0 1 * * ?")
+  //  @Scheduled(cron = "0 0 1 * * ?")
     public  void  gogo(){
         go();
     }

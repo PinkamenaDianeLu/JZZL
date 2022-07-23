@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mapper.thkjdmtjz.JzFjcbMapper" >
+  <resultMap id="BaseResultMap" type="com.bean.thkjdmtjz.JzFjcb" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="JQBH" property="jqbh" jdbcType="VARCHAR" />
+    <result column="AJBH" property="ajbh" jdbcType="VARCHAR" />
+    <result column="AJMC" property="ajmc" jdbcType="VARCHAR" />
+    <result column="XYRBH" property="xyrbh" jdbcType="VARCHAR" />
+    <result column="XYRXM" property="xyrxm" jdbcType="VARCHAR" />
+    <result column="WJMC" property="wjmc" jdbcType="VARCHAR" />
+    <result column="WJDM" property="wjdm" jdbcType="VARCHAR" />
+    <result column="WJZW" property="wjzw" jdbcType="VARCHAR" />
+    <result column="WJDZ" property="wjdz" jdbcType="VARCHAR" />
+    <result column="FJZBID" property="fjzbid" jdbcType="DECIMAL" />
+    <result column="STATE" property="state" jdbcType="DECIMAL" />
+    <result column="SCBJ" property="scbj" jdbcType="DECIMAL" />
+    <result column="CREATETIME" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="CREATEXM" property="createxm" jdbcType="VARCHAR" />
+    <result column="CREATEZJHM" property="createzjhm" jdbcType="VARCHAR" />
+    <result column="CREATEDWMC" property="createdwmc" jdbcType="VARCHAR" />
+    <result column="CREATEDWDM" property="createdwdm" jdbcType="VARCHAR" />
+    <result column="REMARK" property="remark" jdbcType="VARCHAR" />
+    <result column="WJUUID" property="wjuuid" jdbcType="VARCHAR" />
+    <result column="FILETYPE" property="filetype" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, JQBH, AJBH, AJMC, XYRBH, XYRXM, WJMC, WJDM, WJZW, WJDZ, FJZBID, STATE, SCBJ, 
+    CREATETIME, UPDATETIME, CREATEXM, CREATEZJHM, CREATEDWMC, CREATEDWDM, REMARK, WJUUID, 
+    FILETYPE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM JZ_FJCB
+    WHERE ID = #{id,jdbcType=DECIMAL}
+  </select>
+
+  <select id="selectFjcbByzbid"  resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM JZ_FJCB WHERE FJZBID = #{fjzbid,jdbcType=DECIMAL}
+  </select>
+</mapper>

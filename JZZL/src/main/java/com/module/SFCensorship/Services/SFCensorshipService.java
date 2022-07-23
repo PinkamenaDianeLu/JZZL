@@ -54,7 +54,7 @@ public interface SFCensorshipService {
      * @author MrLu
      * @createTime 2020/12/17 18:00
      */
-    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid);
+    FunArchiveSFCDTO selectBaseSfcByCaseinfoid(Integer caseinfoid,Integer archivetype);
 
     /**
      * 得到某个案件最后的送检次序
@@ -274,7 +274,7 @@ public interface SFCensorshipService {
      * @author MrLu
      * @createTime 2020/12/24 23:03
      */
-    FunSuspectRecordDTO selectSuspectRecordByRid(int recordid);
+    List<FunSuspectRecordDTO>  selectSuspectRecordByRid(int recordid);
 
     /**
      * 插入嫌疑人文书关联表
@@ -325,4 +325,31 @@ public interface SFCensorshipService {
      * @return    |
      */
     void createNewTags(FunArchiveTagsDTO funArchiveTagsDTO);
+
+    /**
+     * 审批卷宗
+     * @author MrLu
+     * @param
+     * @createTime  2021/6/16 15:23
+     * @return    |
+     */
+    void  approvalArchive(Integer approval,Integer id);
+
+    /**
+     * 更改一个sfc的发送状态
+     * @author MrLu
+     * @param
+     * @createTime  2021/12/18 12:26
+     * @return    |
+     */
+    void updateSendTypeById(Integer issend,Integer sfcid);
+
+    /**
+     * 查询一个案件发送失败的卷
+     * @author MrLu
+     * @param caseinfoid 案件表id
+     * @createTime  2022/2/16 16:12
+     * @return    |
+     */
+    List<FunArchiveSFCDTO> selectSendErrorArchive(Integer caseinfoid);
 }

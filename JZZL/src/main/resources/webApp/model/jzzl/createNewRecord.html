@@ -183,7 +183,8 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">文书文号：</label>
-                    <div class="col-sm-9"><input type="text" placeholder="文书文号" id="recordWh"></div>
+                    <div class="col-sm-9"><input type="text" placeholder="文书文号" id="recordWh">
+                    <br>(请使用中文中括号：【】)</div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label">文书类型：</label>
@@ -211,6 +212,7 @@
         <div class="col-sm-9"><input type="text" placeholder="嫌疑人" readonly="readonly"  id="suspectName">
         <input type="hidden" id="suspectId">
             <input type="hidden" id="sysRecordId">
+            <input type="hidden" id="isSuspectRecord">
         </div>
     </div>
     <div class="table-responsive" >
@@ -228,10 +230,12 @@
 <div style="position: relative; width: 50%; height: 480px; overflow-y: auto; float: left;">
     <form enctype="multipart/form-data" style="padding: 10px;">
         <div id="dropZone">
-            <div class="text"><span>+</span><span>将文件拖到此处，即可上传</span><input type="file" name="files"
+            <div class="text"><span>·</span><span>点击/将文件拖到此处，即可上传（限制文件类型为jpg、png，图片最大为5M</span><input type="file" name="files"
                                                                             style="display: none" multiple
                                                                             id="newFiles"/></div>
+            <br>
         </div>
+        <div class="text" style="color: red"><span>·</span><span>提示：由于服务器性能限制，上传附件功能使用频率过高，建议不要大批量上传附件，少量多次分别上传</span></div>
         <div id="thumbnailZone"></div>
     </form>
     <div style="position:relative; text-align: right; padding:15px 15px; border-top:1px solid #ccc;box-sizing: border-box; width: 100%;">
