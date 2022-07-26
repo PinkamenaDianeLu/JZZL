@@ -288,6 +288,8 @@ var recordImgLoad = (function () {
                 pString = Array.from(checkFile).join(',');
                 layer.close(index);
                 if (thisFileCode&&checkFile.size==1) {
+                layer.close(index);
+           //     if (thisFileCode) {
                     //删除单页文书 recordId
                     parent.lai.delFun('thumbnail' + thisFileCode, recordId);
                 } else if(1==2){

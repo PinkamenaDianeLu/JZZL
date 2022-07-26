@@ -724,6 +724,7 @@
     <select id="selectRecordNameByRecordIds" parameterType="int[]" resultType="java.lang.String">
         SELECT RECORDNAME  FROM FUN_ARCHIVE_RECORDS WHERE SCBJ=0
 <!--          AND RECORDSCODE NOT LIKE 'ZL%' -->
+         AND RECORDSCODE NOT LIKE 'ZL%'
          AND  ID IN
         <foreach collection="ids" item="item" separator="," open="(" close=")">
         #{item,jdbcType=DECIMAL}

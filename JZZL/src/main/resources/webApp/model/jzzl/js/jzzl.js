@@ -1116,7 +1116,10 @@ var loadArchiveIndex = (function () {
             maxmin: false,
             shadeClose: true, //点击遮罩关闭层
             area: ['1111px', '600px'],
-            content: '/model/jzzl/importRecords.html?seqid=' + seqid
+            content: '/model/jzzl/importRecords.html?seqid=' + seqid,
+            end:function () {
+                location.reload();
+            }
         });
     }
 
@@ -1334,6 +1337,11 @@ $(function () {
                     viewModel = false;
                     layer.msg('该卷当前状态为：'+sfc.issend+'！当前卷处于只读状态！');
                 }else if ("0" !== caseStatus) {
+               /* if ('已发送'===sfc.issend){
+                    viewModel = false;
+                    layer.msg('该卷已经打包！当前卷处于只读状态！');
+                }else */
+                 else   if ("0" !== caseStatus) {
                     viewModel = false;
                     layer.msg('正由其它用户操作，当前窗口处于只读状态！');
                     $('#recordStatusMessage').html('当前案件处于只读状态！正在由用户：' + caseStatus.xm + "对《" + caseStatus.sfcname + "》进行编辑")

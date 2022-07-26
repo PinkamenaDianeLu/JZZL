@@ -67,6 +67,7 @@ var sjjlTable = (function () {
                     });
 
                 }else {
+
                     layer.alert("打包程序调用失败");
                 }
             }
@@ -149,6 +150,7 @@ var sjjlTable = (function () {
                             } else if (row.issend === '案件数据包过大') {
                                 reBtn += '案件数据包过大';
                             }
+
 
                             if (sessionStorage.groupcode === '2306' && sessionStorage.version === 'city') {
                                 //大庆地市
@@ -527,6 +529,4 @@ $(function () {
             }
         })
     })
-
-
 })
