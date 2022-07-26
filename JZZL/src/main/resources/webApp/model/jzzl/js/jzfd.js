@@ -19,7 +19,6 @@ var recordBackCover = (function () {
      */
     function saveBackCover(backcoverid) {
         $('#saveBackCover').unbind().html('保存中...');
-
         if (!$('#ljr').val()){
             layer.alert("请填写立卷人！");
             return false;

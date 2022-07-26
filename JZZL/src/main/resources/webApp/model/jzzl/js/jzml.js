@@ -215,23 +215,6 @@ var recordCoverIndex = (function () {
                     } else {
                         layer.alert('卷封皮保存失败');
                     }
-        console.log(JSON.stringify(recordInfo));
-        console.log(file);
-        $.post({
-            url: '/FileManipulation/saveFunArchiveRecordindex',
-            data: {
-                fileid: file.id,
-                indexinfo: JSON.stringify(recordInfo),
-                indexid: indexId
-
-            },
-            success: (re) => {
-                const reV = JSON.parse(re);
-                if ('success' === reV.message) {
-                    getIndexInfo();
-                    layer.msg('保存成功');
-                } else {
-                    layer.alert('保存失败，请重新登录再试');
                 }
             })
         })

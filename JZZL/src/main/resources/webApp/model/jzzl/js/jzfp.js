@@ -212,10 +212,4 @@ $(function () {
         layer.msg('计算完成！');
     })
 
-    $('#coverToImg').click(function () {
-        //jzfpDiv
-        saveImg('jzfpDiv');
-
-    })
-
 })

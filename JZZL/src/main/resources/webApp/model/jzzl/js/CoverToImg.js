@@ -10,22 +10,3 @@
 
 
 
-function saveImg(divID) {
-
-    let cover=document.getElementById(divID);
-/*    var width=cover.offsetWidth;
-    var height=cover.offsetHeight;
-    var canvas=document.createElement('canvas');
-    canvas.width=width*2;
-    canvas.height=height*2;
-    canvas.getContext("2d").scale(2,2);*/
-    html2canvas(cover,{
-        // scale:2,
-        // canvas:canvas,
-        // width:width,height:height,useCORS: true,logging: true
-    }).then(function (canvas) {
-        $('#'+divID).after(canvas)
-        console.log(canvas)
-    })
-
-}

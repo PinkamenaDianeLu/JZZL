@@ -46,7 +46,6 @@ public class FunArchiveRecordsDTO {
 
 
     private String authoridcard;
-
     private Integer iscoverimg;
 
     public Integer getId() {
@@ -273,7 +272,6 @@ public class FunArchiveRecordsDTO {
         this.authoridcard = authoridcard;
     }
 
-
     public Integer getIscoverimg() {
         return iscoverimg;
     }
@@ -281,5 +279,4 @@ public class FunArchiveRecordsDTO {
     public void setIscoverimg(Integer iscoverimg) {
         this.iscoverimg = iscoverimg;
     }
-
 }

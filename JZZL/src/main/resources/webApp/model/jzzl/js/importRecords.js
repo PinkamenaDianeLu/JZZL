@@ -304,11 +304,14 @@ $(function () {
                     success: (re) => {
                         const reV = JSON.parse(re);
                         if ('success' === reV.message) {
+
                             layer.msg("导入成功");
                             console.log('导入成功');
                             setTimeout(function () {
                                 parent.location.reload();
                             },3000)
+                            layer.msg("导入成功");
+                            console.log('导入成功');
 
                         } else {
                             setTimeout(function () {
